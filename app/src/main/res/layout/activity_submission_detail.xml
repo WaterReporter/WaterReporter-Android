@@ -1,0 +1,111 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.viableindustries.waterreporter.SubmissionDetailActivity">
+
+    <TextView
+        android:id="@+id/date_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date: "
+        android:textStyle="bold"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/date_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="october"
+        android:layout_toRightOf="@id/date_label"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/location_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Location: "
+        android:layout_below="@id/date_label"
+        android:textStyle="bold"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/location_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="location"
+        android:layout_toRightOf="@id/location_label"
+        android:layout_below="@id/date_text"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/issue_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Issue: "
+        android:layout_below="@id/location_label"
+        android:textStyle="bold"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/issue_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="issue"
+        android:layout_toRightOf="@id/issue_label"
+        android:layout_below="@id/location_text"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/facility_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Facility: "
+        android:layout_below="@id/issue_label"
+        android:textStyle="bold"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/facility_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="facility"
+        android:layout_below="@id/issue_text"
+        android:layout_toRightOf="@id/facility_label"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/comments_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Comments: "
+        android:layout_below="@id/facility_label"
+        android:textStyle="bold"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/comments_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="comments"
+        android:layout_below="@id/facility_text"
+        android:layout_toRightOf="@id/comments_label"
+        android:layout_marginBottom="10dp"/>
+
+    <ImageView
+        android:id="@+id/submission_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/comments_text"/>
+
+</RelativeLayout>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Water Reporter</string>
+    <string name="streetMapId">developedsimple.hno186oj</string>
+    <string name="title_activity_submissions">My Submissions</string>
+    <string name="action_legend">Legend</string>
+    <string name="action_submissions">My Submissions</string>
+    <string name="action_report">Make A Report</string>
+    <string name="title_activity_submission_detail">Submission Detail</string>
+    <string name="title_activity_report">Submit A Report</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_legend">Legend</string>
+    <string name="date_hint">Enter Date</string>
+    <string name="incident_hint">Incident Type</string>
+    <string name="facility_hint">Facility Type</string>
+    <string name="comment_hint">Comments</string>
+    <string name="legend_header">Legend</string>
+    <string name="marker_header">General Oil &amp; Gas Report</string>
+    <string name="title_activity_marker">General Report</string>
+    <string name="marker_issue">Rig/Well Pad, Traffic</string>
+    <string name="conventional_well">Conventional Wells</string>
+    <string name="unconventional_well">Unconventional Wells</string>
+    <string name="citizen_report">Citizen Reports</string>
+    <string name="wells500">1–500 Drilled Wells</string>
+    <string name="wells1000">501–1,000 Drilled Wells</string>
+    <string name="wells1500">1,001–1,500 Drilled Wells</string>
+    <string name="wells5000">1,501–5,000 Drilled Wells</string>
+    <string name="wells10000">5,001–10,000 Drilled Wells</string>
+    <string name="wells20000">10,0001–20,000 Drilled Wells</string>
+    <string name="wells20001">20,001+ Drilled Wells</string>
+    <string name="legend_title">Understanding Unconventional Wells</string>
+    <string name="legend_body"> Oil and gas drilling has garnered new attention in recent years, as the combination of horizontal drilling and hydraulic fracturing has transformed the landscape of a drill site from a relatively small area to a multi-acre industrial zone, often in the middle of residential areas.\n\nBecause each state handles their data differently, it is not always possible to identify the larger unconventional sites. However, the FracTracker Alliance has identified wells that are known to be horizontally or directionally drilled, hydraulically fractured or drilled into a major shale formation. These are labeled as "Unconventional" on this map. Wells that are simply labeled as being vertically drilled or that lack any data about slant, producing formation or drilling techniques are considered "Conventional" on this map, even though many of them have undergone similar processes as the Unconventional wells described above.</string>
+    <string name="location_prompt">Choose a location</string>
+    <string name="issue_prompt">Choose an issue</string>
+    <string name="facility_prompt">Choose a facility</string>
+    <string name="date_button_text">Enter Date</string>
+    <string name="album_name">WaterReporter</string>
+    <string name="save">Save</string>
+    <string name="title_activity_map">Set Your Location</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_photo_preview">PhotoPreview</string>
+    <string name="title_activity_sign_in">Get Started</string>
+    <string name="email_hint">Email</string>
+    <string name="user_name">Name</string>
+    <string name="get_started">Get Started</string>
+    <string name="user_type_prompt">Who are you?</string>
+    <string name="user_data_string">We like to know who\'s submitting.\nRead more about how we use your data.</string>
+    <string name="about_you_string">Tell us about yourself.</string>
+    <string name="data_statement_uri">http://www.fractracker.org/data-statement/</string>
+    <string name="unknown_issue">Issue Type</string>
+    <string name="log_tag">VILog</string>
+    <string name="package_name">com.viableindustries.waterreporter</string>
+    <string name="marker_date"></string>
+    <string name="marker_caption"></string>
+    <string name="title_activity_well_detail">WellDetailActivity</string>
+    <string name="waterreporter_orange">#F8AC00</string>
+    <string name="waterreporter_green">#72C224</string>
+
+</resources>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+<<<<<<< HEAD
+    package="com.viableindustries.waterreporter"
+    android:versionCode="1"
+    android:versionName="1.0" >
+=======
+    package="com.viableindustries.fractracker"
+    android:versionCode="2"
+    android:versionName="1.1" >
+>>>>>>> FETCH_HEAD
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature
+        android:name="android.hardware.Camera"
+        android:required="false" />
+
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="L" />
+
+    <application
+        android:name="com.orm.SugarApp"
+        android:allowBackup="true"
+        android:icon="@drawable/water_reporter_logo"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme"
+        tools:replace="android:icon" >
+        <meta-data
+            android:name="DATABASE"
+            android:value="reports.db" />
+        <meta-data
+            android:name="VERSION"
+            android:value="2" />
+        <meta-data
+            android:name="QUERY_LOG"
+            android:value="true" />
+        <meta-data
+            android:name="DOMAIN_PACKAGE_NAME"
+            android:value="com.viableindustries.waterreporter.data" />
+
+        <activity
+            android:name="com.viableindustries.waterreporter.MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.viableindustries.waterreporter.SubmissionsActivity"
+            android:label="@string/title_activity_submissions"
+            android:parentActivityName="com.viableindustries.waterreporter.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.viableindustries.waterreporter.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.viableindustries.waterreporter.SubmissionDetailActivity"
+            android:label="@string/title_activity_submission_detail"
+            android:parentActivityName="com.viableindustries.waterreporter.SubmissionsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.viableindustries.waterreporter.SubmissionsActivity" />
+        </activity>
+        <activity
+            android:name="com.viableindustries.waterreporter.ReportActivity"
+            android:label="@string/title_activity_report"
+            android:parentActivityName="com.viableindustries.waterreporter.MainActivity"
+            android:windowSoftInputMode="stateHidden" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.viableindustries.waterreporter.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.viableindustries.waterreporter.MarkerDetailActivity"
+            android:label="@string/title_activity_marker"
+            android:parentActivityName="com.viableindustries.waterreporter.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.viableindustries.waterreporter.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.viableindustries.waterreporter.MapActivity"
+            android:label="@string/title_activity_map"
+            android:parentActivityName="com.viableindustries.waterreporter.ReportActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.viableindustries.waterreporter.ReportActivity" />
+        </activity>
+        <activity
+            android:name="com.viableindustries.waterreporter.SignInActivity"
+            android:label="@string/title_activity_sign_in"
+            android:parentActivityName="com.viableindustries.waterreporter.MainActivity"
+            android:theme="@android:style/Theme.Holo.Light.Dialog" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.viableindustries.waterreporter.MainActivity" />
+        </activity>
+    </application>
+
+</manifest>

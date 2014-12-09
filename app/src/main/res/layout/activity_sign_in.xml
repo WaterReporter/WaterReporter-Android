@@ -1,0 +1,76 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context="com.viableindustries.waterreporter.SignInActivity">
+
+    <TextView
+        android:id="@+id/about_you"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/about_you_string"
+        android:textColor="@color/waterreporter_blue"
+        android:textSize="18dp"
+        android:textAlignment="center"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"/>
+
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/user_name"
+        android:inputType="text"
+        android:layout_below="@id/about_you"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:background="@null" />
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/email_hint"
+        android:inputType="textEmailAddress"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@id/name"
+        android:background="@null"/>
+
+    <TextView
+        android:id="@+id/data_use_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/email"
+        android:text="@string/user_data_string"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="25dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:clickable="true"
+        android:onClick="openBrowser" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/data_use_text"
+        android:text="Save"
+        android:textColor="@color/white"
+        android:background="@color/waterreporter_dark"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginLeft="50dp"
+        android:onClick="saveAccount" />
+
+</RelativeLayout>
