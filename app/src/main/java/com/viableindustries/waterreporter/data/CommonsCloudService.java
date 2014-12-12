@@ -7,7 +7,6 @@ import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.Part;
 import retrofit.http.Path;
-import retrofit.http.Query;
 import retrofit.mime.TypedFile;
 
 /**
@@ -29,29 +28,57 @@ public interface CommonsCloudService {
     @GET("/type_2c1bd72acccf416aada3a6824731acc9/{report}.json")
     public void getSingleReport(@Path("report") int reportId, Callback<SingleFeatureResponse> report);
 
-    @GET("/templates/3/fields.json")
-    public void getFields(Callback<TemplateResponse> fields);
-
     @Multipart
-    @POST("/type_01b37f984f5b4d5c9b906651f62597f5.json")
-    public void postReport(@Part("caption") String caption,
+    @POST("/type_2c1bd72acccf416aada3a6824731acc9.json")
+    public void postActivityReport(@Part("comments") String comment,
+                                    @Part("useremail_address") String email,
+                                    @Part("username") String name,
+                                    @Part("usertitle") String title,
                                     @Part("date") String date,
-                                    @Part("facility") String facility,
-                                    @Part("issue") String issue,
-                                    @Part("location") String location,
+                                    @Part("type_8f432efc18c545ea9578b4bdea860b4c") String type,
+                                    @Part("type_0e9423a9a393481f82c4f22ff5954567") String activity,
                                     @Part("status") String status,
                                     @Part("geometry") String geometry,
                                     Callback<PostResponse> cb);
 
     @Multipart
-    @POST("/type_01b37f984f5b4d5c9b906651f62597f5.json")
-    public void postReportWithPhoto(@Part("caption") String caption,
-                                @Part("date") String date,
-                                @Part("facility") String facility,
-                                @Part("issue") String issue,
-                                @Part("location") String location,
-                                @Part("status") String status,
-                                @Part("geometry") String geometry,
-                                @Part("attachment_7097c3caac4149d5900559916b902ec3") TypedFile photo,
-                                Callback<PostResponse> cb);
+    @POST("/type_2c1bd72acccf416aada3a6824731acc9.json")
+    public void postActivityReportWithPhoto(@Part("comments") String comment,
+                                             @Part("useremail_address") String email,
+                                             @Part("username") String name,
+                                             @Part("usertitle") String title,
+                                             @Part("date") String date,
+                                             @Part("type_8f432efc18c545ea9578b4bdea860b4c") String type,
+                                             @Part("type_0e9423a9a393481f82c4f22ff5954567") String activity,
+                                             @Part("status") String status,
+                                             @Part("geometry") String geometry,
+                                             @Part("attachment_76fc17d6574c401d9a20d18187f8083e") TypedFile photo,
+                                             Callback<PostResponse> cb);
+
+    @Multipart
+    @POST("/type_2c1bd72acccf416aada3a6824731acc9.json")
+    public void postPollutionReport(@Part("comments") String comment,
+                                    @Part("useremail_address") String email,
+                                    @Part("username") String name,
+                                    @Part("usertitle") String title,
+                                    @Part("date") String date,
+                                    @Part("type_8f432efc18c545ea9578b4bdea860b4c") String type,
+                                    @Part("type_05a300e835024771a51a6d3114e82abc") String pollution,
+                                    @Part("status") String status,
+                                    @Part("geometry") String geometry,
+                                    Callback<PostResponse> cb);
+
+    @Multipart
+    @POST("/type_2c1bd72acccf416aada3a6824731acc9.json")
+    public void postPollutionReportWithPhoto(@Part("comments") String comment,
+                                    @Part("useremail_address") String email,
+                                    @Part("username") String name,
+                                    @Part("usertitle") String title,
+                                    @Part("date") String date,
+                                    @Part("type_8f432efc18c545ea9578b4bdea860b4c") String type,
+                                    @Part("type_05a300e835024771a51a6d3114e82abc") String pollution,
+                                    @Part("status") String status,
+                                    @Part("geometry") String geometry,
+                                    @Part("attachment_76fc17d6574c401d9a20d18187f8083e") TypedFile photo,
+                                    Callback<PostResponse> cb);
 }

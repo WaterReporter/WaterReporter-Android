@@ -5,6 +5,7 @@ import android.os.Build;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.ShareActionProvider;
@@ -25,14 +26,21 @@ import butterknife.InjectView;
  * one in the submissions list.
  */
 public class SubmissionDetailActivity extends ActionBarActivity {
-    @InjectView(R.id.date_text) TextView dateText;
-    @InjectView(R.id.location_text) TextView locationText;
-    @InjectView(R.id.issue_text) TextView issueText;
-    @InjectView(R.id.facility_text) TextView facilityText;
-    @InjectView(R.id.comments_text) TextView commentsText;
+    @InjectView(R.id.report_label) TextView reportText;
+    @InjectView(R.id.activity_label) TextView activityText;
+    @InjectView(R.id.date_label) TextView dateText;
+    @InjectView(R.id.comments_label) TextView commentsText;
     @InjectView(R.id.submission_image) ImageView imageView;
 
     private String mDateStr;
+    private String[] pollutionTypes = {"Pollution Type", "Discolored water", "Eroded stream banks", "Excessive algae",
+            "Excessive trash", "Exposed soil", "Faulty construction entryway", "Faulty silt fences",
+            "Fish kill", "Foam", "Livestock in stream", "Oil and grease", "Other", "Pipe Discharge",
+            "Sewer overflow", "Stormwater", "Winter manure application"};
+    private String[] activityTypes = {"Activity Type", "Canoeing", "Diving", "Fishing", "Flatwater kayaking", "Hiking",
+            "Living the dream", "Rock climbing", "Sailing", "Scouting wildlife", "Snorkeling",
+            "Stand-up paddleboarding", "Stream cleanup", "Surfing", "Swimming", "Tubing", "Water Skiing",
+            "Whitewater kayaking", "Whitewater rafting"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +54,21 @@ public class SubmissionDetailActivity extends ActionBarActivity {
             long id = intent.getLongExtra("SubmissionId", 0);
             Submission submission = Submission.findById(Submission.class, id);
 
+            String mTypeStr, mActivityStr;
+            int activityId = Integer.parseInt(submission.activity.replaceAll("\\D+",""));
+
+            if(submission.type.equals("[{\"id\":1}]")){
+                mTypeStr = "Activity Report";
+                mActivityStr = activityTypes[activityId];
+            } else {
+                mTypeStr = "Pollution Report";
+                mActivityStr = pollutionTypes[activityId];
+            }
+
+            reportText.setText(mTypeStr);
+            activityText.setText(mActivityStr);
             mDateStr = submission.date;
-            dateText.setText(mDateStr);
-            locationText.setText(submission.location);
-            issueText.setText(submission.issue);
-            facilityText.setText(submission.facility);
+            dateText.setText("Submitted on " + mDateStr);
             commentsText.setText(submission.comments);
             if(submission.photoPath != null) {
                 Picasso.with(this).load(new File(submission.photoPath)).into(imageView);

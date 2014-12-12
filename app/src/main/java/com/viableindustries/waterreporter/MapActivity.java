@@ -1,6 +1,7 @@
 package com.viableindustries.waterreporter;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -27,14 +28,19 @@ public class MapActivity extends ActionBarActivity {
     @InjectView(R.id.mapview) MapView mv;
 
     private UserLocationOverlay myLocationOverlay;
-    private LatLng center = new LatLng(40.440625, -79.995886);
     private LatLng location;
 
     protected void setUpMap(){
+        SharedPreferences prefs =
+                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        float latitude = prefs.getFloat("latitude", 0);
+        float longitude = prefs.getFloat("longitude", 0);
+        LatLng center = new LatLng(latitude, longitude);
+
         mv.setMinZoomLevel(mv.getTileProvider().getMinimumZoomLevel());
         mv.setMaxZoomLevel(mv.getTileProvider().getMaximumZoomLevel());
         mv.setCenter(center);
-        mv.setZoom(8);
+        mv.setZoom(14);
 
         // Adds an icon that shows location
         myLocationOverlay = new UserLocationOverlay(new GpsLocationProvider(this), mv);
@@ -68,7 +74,8 @@ public class MapActivity extends ActionBarActivity {
                 String description = "My report was taken at this location";
                 location = (LatLng) iLatLng;
                 Marker marker = new Marker(mapView, title, description, location);
-                marker.setIcon(new Icon(getBaseContext(), Icon.Size.LARGE, "oil-well", "FF0000"));
+                marker.setIcon(new Icon(getBaseContext(), Icon.Size.LARGE, "",
+                        getString(R.string.waterreporter_green)));
                 mapView.clear();
                 mapView.addMarker(marker);
             }

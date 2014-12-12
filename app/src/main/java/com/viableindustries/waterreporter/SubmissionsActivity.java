@@ -1,6 +1,7 @@
 package com.viableindustries.waterreporter;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -49,6 +50,9 @@ public class SubmissionsActivity extends ActionBarActivity
 
     private List<Submission> submissions;
     private SubmittedAdapter adapter;
+    private static final String NAME_KEY = "user_name";
+    private static final String EMAIL_KEY = "user_email";
+    private static final String TITLE_KEY = "user_title";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +105,14 @@ public class SubmissionsActivity extends ActionBarActivity
 
         CommonsCloudService service = restAdapter.create(CommonsCloudService.class);
 
+        SharedPreferences prefs =
+                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        String name = prefs.getString(NAME_KEY, "");
+        String email = prefs.getString(EMAIL_KEY, "");
+        String title = prefs.getString(TITLE_KEY, "");
+
+        String pollutionType, activityType;
+
         ArrayList<Float> coordinates = new ArrayList<Float>(2);
         String point = "Point";
         String type = "GeometryCollection";
@@ -119,52 +131,124 @@ public class SubmissionsActivity extends ActionBarActivity
                 geometriesList.add(geometries);
                 GeometryResponse geometryResponse = new GeometryResponse(geometriesList, type);
 
-                if(submission.photoPath != null){
-                    File photo = new File(submission.photoPath);
-                    String mimeType = fileNameMap.getContentTypeFor(submission.photoPath);
-                    TypedFile typedPhoto = new TypedFile(mimeType, photo);
+                boolean isActivity;
 
-                    service.postReportWithPhoto(submission.comments, submission.date, submission.facility,
-                            submission.issue, submission.location, "crowd",
-                            new Gson().toJson(geometryResponse), typedPhoto,
-                            new Callback<PostResponse>() {
-                                @Override
-                                public void success(PostResponse postResponse, Response response) {
-                                    submission.feature_id = postResponse.resource_id;
-                                    submission.save();
-                                    adapter.notifyDataSetChanged();
-                                    swipeRefreshLayout.setRefreshing(false);
-                                }
-
-                                @Override
-                                public void failure(RetrofitError error) {
-                                    swipeRefreshLayout.setRefreshing(false);
-                                    CharSequence text = "Error posting reports. Try again later.";
-                                    Toast toast = Toast.makeText(getBaseContext(), text, Toast.LENGTH_SHORT);
-                                    toast.show();
-                                }
-                            });
+                if(submission.type.equals("[{\"id\":1}]")){
+                    activityType = submission.activity;
+                    pollutionType = null;
+                    isActivity = true;
                 } else {
-                    service.postReport(submission.comments, submission.date, submission.facility,
-                            submission.issue, submission.location, "crowd",
-                            new Gson().toJson(geometryResponse),
-                            new Callback<PostResponse>() {
-                                @Override
-                                public void success(PostResponse postResponse, Response response) {
-                                    submission.feature_id = postResponse.resource_id;
-                                    submission.save();
-                                    adapter.notifyDataSetChanged();
-                                    swipeRefreshLayout.setRefreshing(false);
-                                }
+                    pollutionType = submission.activity;
+                    activityType = null;
+                    isActivity = false;
+                }
 
-                                @Override
-                                public void failure(RetrofitError error) {
-                                    swipeRefreshLayout.setRefreshing(false);
-                                    CharSequence text = "Error posting reports. Try again later.";
-                                    Toast toast = Toast.makeText(getBaseContext(), text, Toast.LENGTH_SHORT);
-                                    toast.show();
-                                }
-                            });
+                if(isActivity){
+                    if(submission.photoPath != null){
+                        File photo = new File(submission.photoPath);
+                        String mimeType = fileNameMap.getContentTypeFor(submission.photoPath);
+                        TypedFile typedPhoto = new TypedFile(mimeType, photo);
+
+                        service.postActivityReportWithPhoto(submission.comments, email, name, title,
+                                submission.date, submission.type, activityType, "public",
+                                new Gson().toJson(geometryResponse), typedPhoto,
+                                new Callback<PostResponse>() {
+                                    @Override
+                                    public void success(PostResponse postResponse,
+                                                        Response response) {
+                                        submission.feature_id = postResponse.resource_id;
+                                        submission.save();
+                                        adapter.notifyDataSetChanged();
+                                        swipeRefreshLayout.setRefreshing(false);
+                                    }
+
+                                    @Override
+                                    public void failure(RetrofitError error) {
+                                        swipeRefreshLayout.setRefreshing(false);
+                                        CharSequence text =
+                                                "Error posting reports. Try again later.";
+                                        Toast toast = Toast.makeText(getBaseContext(), text,
+                                                Toast.LENGTH_SHORT);
+                                        toast.show();
+                                    }
+                                });
+                    } else {
+                        service.postActivityReport(submission.comments, email, name, title,
+                                submission.date, submission.type, activityType, "public",
+                                new Gson().toJson(geometryResponse), new Callback<PostResponse>() {
+                                    @Override
+                                    public void success(PostResponse postResponse,
+                                                        Response response) {
+                                        submission.feature_id = postResponse.resource_id;
+                                        submission.save();
+                                        adapter.notifyDataSetChanged();
+                                        swipeRefreshLayout.setRefreshing(false);
+                                    }
+
+                                    @Override
+                                    public void failure(RetrofitError error) {
+                                        swipeRefreshLayout.setRefreshing(false);
+                                        CharSequence text =
+                                                "Error posting reports. Try again later.";
+                                        Toast toast = Toast.makeText(getBaseContext(), text,
+                                                Toast.LENGTH_SHORT);
+                                        toast.show();
+                                    }
+                                });
+                    }
+                } else {
+                    if(submission.photoPath != null){
+                        File photo = new File(submission.photoPath);
+                        String mimeType = fileNameMap.getContentTypeFor(submission.photoPath);
+                        TypedFile typedPhoto = new TypedFile(mimeType, photo);
+
+                        service.postPollutionReportWithPhoto(submission.comments, email, name, title,
+                                submission.date, submission.type, pollutionType, "public",
+                                new Gson().toJson(geometryResponse), typedPhoto,
+                                new Callback<PostResponse>() {
+                                    @Override
+                                    public void success(PostResponse postResponse,
+                                                        Response response) {
+                                        submission.feature_id = postResponse.resource_id;
+                                        submission.save();
+                                        adapter.notifyDataSetChanged();
+                                        swipeRefreshLayout.setRefreshing(false);
+                                    }
+
+                                    @Override
+                                    public void failure(RetrofitError error) {
+                                        swipeRefreshLayout.setRefreshing(false);
+                                        CharSequence text =
+                                                "Error posting reports. Try again later.";
+                                        Toast toast = Toast.makeText(getBaseContext(), text,
+                                                Toast.LENGTH_SHORT);
+                                        toast.show();
+                                    }
+                                });
+                    } else {
+                        service.postPollutionReport(submission.comments, email, name, title,
+                                submission.date, submission.type, pollutionType, "public",
+                                new Gson().toJson(geometryResponse), new Callback<PostResponse>() {
+                                    @Override
+                                    public void success(PostResponse postResponse,
+                                                        Response response) {
+                                        submission.feature_id = postResponse.resource_id;
+                                        submission.save();
+                                        adapter.notifyDataSetChanged();
+                                        swipeRefreshLayout.setRefreshing(false);
+                                    }
+
+                                    @Override
+                                    public void failure(RetrofitError error) {
+                                        swipeRefreshLayout.setRefreshing(false);
+                                        CharSequence text =
+                                                "Error posting reports. Try again later.";
+                                        Toast toast = Toast.makeText(getBaseContext(), text,
+                                                Toast.LENGTH_SHORT);
+                                        toast.show();
+                                    }
+                                });
+                    }
                 }
             } else {
                 count++;
@@ -204,13 +288,22 @@ public class SubmissionsActivity extends ActionBarActivity
         public View getView(int position, View convertView, ViewGroup parent) {
             SubmittedViewHolder holder;
 
+            String type;
+            int id = Integer.parseInt(getItem(position).type.replaceAll("\\D+",""));
+
+            if(id == 1){
+                type = "Activity Report";
+            } else {
+                type = "Pollution Report";
+            }
+
             if(convertView == null){
                 convertView = getLayoutInflater()
                         .inflate(R.layout.list_item_submission, parent, false);
                 holder = new SubmittedViewHolder();
                 holder.text = (TextView)
                         convertView.findViewById(R.id.list_item_submission_textview);
-                holder.text.setText("Oil & Gas Report on " + getItem(position).date);
+                holder.text.setText(type + " on " + getItem(position).date);
                 convertView.setTag(holder);
             } else {
                 holder = (SubmittedViewHolder) convertView.getTag();

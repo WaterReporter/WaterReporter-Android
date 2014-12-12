@@ -17,7 +17,7 @@
     <string name="comment_hint">Comments</string>
     <string name="legend_header">Legend</string>
     <string name="marker_header">General Oil &amp; Gas Report</string>
-    <string name="title_activity_marker">General Report</string>
+    <string name="title_activity_marker">Submitted Report</string>
     <string name="marker_issue">Rig/Well Pad, Traffic</string>
     <string name="conventional_well">Conventional Wells</string>
     <string name="unconventional_well">Unconventional Wells</string>
@@ -56,5 +56,7 @@
     <string name="title_activity_well_detail">WellDetailActivity</string>
     <string name="waterreporter_orange">#F8AC00</string>
     <string name="waterreporter_green">#72C224</string>
+    <string name="activity_prompt">Pollution Report</string>
+    <string name="title_prompt">Title</string>
 
 </resources>

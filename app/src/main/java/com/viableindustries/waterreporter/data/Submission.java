@@ -7,10 +7,9 @@ import com.orm.SugarRecord;
  * This class turns user reports into objects which can be saved to the app database with Sugar
  */
 public class Submission extends SugarRecord<Submission> {
+    public String type;
     public String date;
-    public String location;
-    public String issue;
-    public String facility;
+    public String activity;
     public String comments;
     public String photoPath;
     public double latitude;
@@ -22,13 +21,11 @@ public class Submission extends SugarRecord<Submission> {
 
     }
 
-    public Submission(String aDate, String aLocation, String anIssue,
-                      String aFacility, String aComment, double aLatitude, double aLongitude,
-                      String aPhotoPath){
+    public Submission(String aType, String aDate, String anActivity, String aComment, double aLatitude,
+                      double aLongitude, String aPhotoPath){
+        this.type = aType;
         this.date = aDate;
-        this.location = aLocation;
-        this.issue = anIssue;
-        this.facility = aFacility;
+        this.activity = anActivity;
         this.comments = aComment;
         this.latitude = aLatitude;
         this.longitude = aLongitude;

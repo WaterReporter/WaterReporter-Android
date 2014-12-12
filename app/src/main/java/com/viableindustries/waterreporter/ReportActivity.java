@@ -16,31 +16,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.viableindustries.waterreporter.data.CommonsCloudService;
-import com.viableindustries.waterreporter.data.Field;
 import com.viableindustries.waterreporter.data.Submission;
-import com.viableindustries.waterreporter.data.TemplateResponse;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * Created by Ryan Hamley on 10/28/14.
@@ -48,10 +39,10 @@ import retrofit.client.Response;
  */
 public class ReportActivity extends ActionBarActivity
         implements PhotoPickerDialogFragment.PhotoPickerDialogListener {
+    @InjectView(R.id.pollution_button) Button pollutionButton;
+    @InjectView(R.id.activity_button) Button activityButton;
     @InjectView(R.id.date) EditText dateField;
-    @InjectView(R.id.location_spinner) Spinner locationSpinner;
-    @InjectView(R.id.issue_spinner) Spinner issueSpinner;
-    @InjectView(R.id.facility_spinner) Spinner facilitySpinner;
+    @InjectView(R.id.activity_type) Spinner activitySpinner;
     @InjectView(R.id.comments) EditText commentsField;
     @InjectView(R.id.preview) ImageView mImageView;
 
@@ -69,9 +60,6 @@ public class ReportActivity extends ActionBarActivity
 
     private LatLng location;
 
-    private String[] locationOptions;
-    private String[] issueOptions;
-    private String[] facilityOptions;
     private String dateText;
     private String commentsText;
     double latitude;
@@ -110,17 +98,21 @@ public class ReportActivity extends ActionBarActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        String locationText;
-        String issueText;
-        String facilityText;
+        long activity;
+        String activityText;
+        String reportType;
 
         int id = item.getItemId();
 
         if(id == R.id.action_save){
+            if(activitySpinner.getPrompt().toString().equals("Pollution Report")){
+                reportType = "[{\"id\":2}]";
+            } else {
+                reportType = "[{\"id\":1}]";
+            }
             dateText = String.valueOf(dateField.getText());
-            locationText = locationSpinner.getSelectedItem().toString();
-            issueText = issueSpinner.getSelectedItem().toString();
-            facilityText = facilitySpinner.getSelectedItem().toString();
+            activity = activitySpinner.getSelectedItemId();
+            activityText = "[{\"id\":" + activity + "}]";
             commentsText = String.valueOf(commentsField.getText());
             if(location != null){
                 latitude = location.getLatitude();
@@ -132,8 +124,8 @@ public class ReportActivity extends ActionBarActivity
                 longitude = prefs.getFloat("longitude", 0);
             }
 
-            Submission submission = new Submission(dateText, locationText, issueText,
-                    facilityText, commentsText, latitude, longitude, mCurrentPhotoPath);
+            Submission submission = new Submission(reportType, dateText, activityText,
+                    commentsText, latitude, longitude, mCurrentPhotoPath);
             submission.save();
 
             startActivity(new Intent(this, SubmissionsActivity.class));
@@ -152,59 +144,55 @@ public class ReportActivity extends ActionBarActivity
         dateField.setText(utilityMethods.getDateString(month, day, year));
     }
 
-    protected String[] addTitle(String[] array, String title){
-        List<String> list = new LinkedList<String>(Arrays.asList(array));
-        list.add(0, title);
-        return list.toArray(new String[list.size()]);
-    }
-
     protected void getFieldData(final Bundle bundle) {
-        RestAdapter restAdapter = CommonsCloudService.restAdapter;
+        final String[] pollutionTypes = {"Pollution Type", "Discolored water", "Eroded stream banks", "Excessive algae",
+        "Excessive trash", "Exposed soil", "Faulty construction entryway", "Faulty silt fences",
+        "Fish kill", "Foam", "Livestock in stream", "Oil and grease", "Other", "Pipe Discharge",
+        "Sewer overflow", "Stormwater", "Winter manure application"};
+        final String[] activityTypes = {"Activity Type", "Canoeing", "Diving", "Fishing", "Flatwater kayaking", "Hiking",
+        "Living the dream", "Rock climbing", "Sailing", "Scouting wildlife", "Snorkeling",
+        "Stand-up paddleboarding", "Stream cleanup", "Surfing", "Swimming", "Tubing", "Water Skiing",
+        "Whitewater kayaking", "Whitewater rafting"};
 
-        CommonsCloudService service = restAdapter.create(CommonsCloudService.class);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getBaseContext(),
+                android.R.layout.simple_spinner_item, pollutionTypes);
+        activitySpinner.setAdapter(adapter);
 
-        service.getFields(new Callback<TemplateResponse>() {
+        pollutionButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void success(TemplateResponse templateResponse, Response response) {
-                List<Field> fields = templateResponse.fieldsObject.getFields();
-
-                for(Field field : fields){
-                    String label = field.getLabel();
-
-                    if(label.equals("Location")){
-                        locationOptions = addTitle(field.getOptions(), "Select location of problem");
-                        final ArrayAdapter<String> adapter =
-                                new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, locationOptions);
-                        locationSpinner.setAdapter(adapter);
-                        if(bundle != null){
-                            locationSpinner.setSelection(bundle.getInt("location"));
-                        }
-                    }
-                    else if(label.equals("Issue")){
-                        issueOptions = addTitle(field.getOptions(), "Select issue");
-                        ArrayAdapter<String> adapter =
-                                new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, issueOptions);
-                        issueSpinner.setAdapter(adapter);
-                        if(bundle != null){
-                            issueSpinner.setSelection(bundle.getInt("issue"));
-                        }
-                    }
-                    else if(label.equals("Facility")){
-                        facilityOptions = addTitle(field.getOptions(), "Select facility type");
-                        ArrayAdapter<String> adapter =
-                                new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, facilityOptions);
-                        facilitySpinner.setAdapter(adapter);
-                        if(bundle != null){
-                            facilitySpinner.setSelection(bundle.getInt("facility"));
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
+            public void onClick(View v) {
+                pollutionButton.setBackgroundColor(getResources()
+                        .getColor(R.color.waterreporter_blue));
+                pollutionButton.setTextColor(getResources().getColor(R.color.white));
+                activityButton.setBackgroundColor(getResources()
+                        .getColor(R.color.white));
+                activityButton.setTextColor(getResources().getColor(R.color.primary_text_default_material_light));
+                activitySpinner.setPrompt("Pollution Report");
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getBaseContext(),
+                        android.R.layout.simple_spinner_item, pollutionTypes);
+                activitySpinner.setAdapter(adapter);
             }
         });
+
+        activityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pollutionButton.setBackgroundColor(getResources()
+                        .getColor(R.color.white));
+                pollutionButton.setTextColor(getResources().getColor(R.color.primary_text_default_material_light));
+                activityButton.setBackgroundColor(getResources()
+                        .getColor(R.color.waterreporter_blue));
+                activityButton.setTextColor(getResources().getColor(R.color.white));
+                activitySpinner.setPrompt("Activity Report");
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getBaseContext(),
+                        android.R.layout.simple_spinner_item, activityTypes);
+                activitySpinner.setAdapter(adapter);
+            }
+        });
+
+        if(bundle != null){
+            activitySpinner.setSelection(bundle.getInt("activity"));
+        }
     }
 
     private File getAlbumDir() {
@@ -283,7 +271,6 @@ public class ReportActivity extends ActionBarActivity
         if (mCurrentPhotoPath != null) {
             setPic();
             galleryAddPic();
-//            mCurrentPhotoPath = null;
         }
 
     }
@@ -383,9 +370,7 @@ public class ReportActivity extends ActionBarActivity
         super.onSaveInstanceState(outState);
 
         outState.putString("date", dateText);
-        outState.putInt("location", locationSpinner.getSelectedItemPosition());
-        outState.putInt("issue", issueSpinner.getSelectedItemPosition());
-        outState.putInt("facility", facilitySpinner.getSelectedItemPosition());
+        outState.putInt("activity", activitySpinner.getSelectedItemPosition());
         outState.putString("comments", commentsText);
         outState.putDouble("latitude", latitude);
         outState.putDouble("latitude", longitude);

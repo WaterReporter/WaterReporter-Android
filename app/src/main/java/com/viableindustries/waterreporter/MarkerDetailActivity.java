@@ -23,6 +23,8 @@ import retrofit.client.Response;
  * This activity displays detailed information about a report after clicking on its map marker.
  */
 public class MarkerDetailActivity extends ActionBarActivity {
+    @InjectView(R.id.marker_type) TextView tvType;
+    @InjectView(R.id.marker_activity) TextView tvActivity;
     @InjectView(R.id.marker_date) TextView tvDate;
     @InjectView(R.id.marker_caption) TextView tvCaption;
     @InjectView(R.id.marker_image) ImageView iv;
@@ -61,8 +63,19 @@ public class MarkerDetailActivity extends ActionBarActivity {
             @Override
             public void success(SingleFeatureResponse singleFeatureResponse, Response response) {
                 Report report = singleFeatureResponse.response;
-                String filePath = report.photo.get(0).getFilepath();
-                Picasso.with(getBaseContext()).load(filePath).into(iv);
+
+                if(report.photo.size() != 0){
+                    String filePath = report.photo.get(0).filepath;
+                    Picasso.with(getBaseContext()).load(filePath).into(iv);
+                }
+
+                if(report.isPollution){
+                    tvActivity.setText(report.pollution.get(0).name);
+                } else {
+                    tvActivity.setText(report.activity.get(0).name);
+                }
+
+                tvType.setText(report.type.get(0).name);
                 tvDate.setText("Submitted on " + report.getFormattedDateString());
                 tvCaption.setText(report.comments);
             }
