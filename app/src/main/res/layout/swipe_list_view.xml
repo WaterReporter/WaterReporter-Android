@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.fortysevendeg.swipelistview.SwipeListView
+        xmlns:swipe="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/swipe_container"
+        android:listSelector="@color/waterreporter_blue"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        swipe:swipeFrontView="@id/list_item_submission_view"
+        swipe:swipeBackView="@id/swipe_to_delete_button" >
+        </com.fortysevendeg.swipelistview.SwipeListView>
+
+</LinearLayout>
