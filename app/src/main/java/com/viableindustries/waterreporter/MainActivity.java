@@ -89,16 +89,6 @@ public class MainActivity extends ActionBarActivity {
         View view;
         CustomMarker m;
 
-        if(report.isPollution){
-            if(report.pollution.get(0).name == null){
-                report.pollution.get(0).name = "Unknown issue type";
-            }
-        } else {
-            if(report.activity.get(0).name == null){
-                report.activity.get(0).name = "Unknown issue type";
-            }
-        }
-
         //create an intent which will open the detailed view when the marker's info button is clicked
         //include the report id so that the detailed view can get the information for the report
         final Intent intent = new Intent(this, MarkerDetailActivity.class);
@@ -108,9 +98,25 @@ public class MainActivity extends ActionBarActivity {
         if(geometries.type.equals("Point")){
 
             if(report.isPollution){
-                issue = report.pollution.get(0).name;
+                if(report.pollution.size() != 0){
+                    if(report.pollution.get(0).name == null){
+                        issue = "Unknown issue type";
+                    } else {
+                        issue = report.pollution.get(0).name;
+                    }
+                } else {
+                    issue = "Unknown issue type";
+                }
             } else {
-                issue = report.activity.get(0).name;
+                if(report.activity.size() != 0){
+                    if(report.activity.get(0).name == null){
+                        issue = "Unknown issue type";
+                    } else {
+                        issue = report.activity.get(0).name;
+                    }
+                } else {
+                    issue = "Unknown issue type";
+                }
             }
 
             Log.d("VILog", "Is Pollution? " + report.isPollution);
