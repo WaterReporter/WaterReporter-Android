@@ -8,6 +8,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -43,6 +44,7 @@ public class MainActivity extends ActionBarActivity {
     private LocationListener locationListener;
     private RestAdapter restAdapter = CommonsCloudService.restAdapter;
     private CommonsCloudService service = restAdapter.create(CommonsCloudService.class);
+    private LatLng defaultCenter = new LatLng(38.8951, -77.0367);
 
     protected void setMapCenterByUserLocation() {
         // Acquire a reference to the system Location Manager
@@ -57,8 +59,11 @@ public class MainActivity extends ActionBarActivity {
                 float longitude = (float) location.getLongitude();
                 prefs.edit().putFloat("latitude", latitude).putFloat("longitude", longitude).apply();
 
-                mv.setCenter(new LatLng(location));
-
+                if(location.getLatitude() == 0 && location.getLongitude() == 0){
+                    mv.setCenter(defaultCenter);
+                } else {
+                    mv.setCenter(new LatLng(location));
+                }
             }
 
             public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -73,15 +78,25 @@ public class MainActivity extends ActionBarActivity {
 
         // Register the listener with the Location Manager to receive location updates
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                0, 100, locationListener);
+                0, 20, locationListener);
     }
 
     protected void addMarkers(Report report){
         //create the marker's LatLng
         Geometries geometries = report.geometry.geometries.get(0);
         LatLng latLng = geometries.getCoordinates();
-        if(report.pollution.get(0).name == null){
-            report.pollution.get(0).name = "Unknown issue type";
+        String issue, color;
+        View view;
+        CustomMarker m;
+
+        if(report.isPollution){
+            if(report.pollution.get(0).name == null){
+                report.pollution.get(0).name = "Unknown issue type";
+            }
+        } else {
+            if(report.activity.get(0).name == null){
+                report.activity.get(0).name = "Unknown issue type";
+            }
         }
 
         //create an intent which will open the detailed view when the marker's info button is clicked
@@ -91,22 +106,27 @@ public class MainActivity extends ActionBarActivity {
 
         //only put markers for Point geometries on the map
         if(geometries.type.equals("Point")){
-            String issue = report.pollution.get(0).name;
-            String color;
 
             if(report.isPollution){
-                color = getString(R.string.waterreporter_green);
+                issue = report.pollution.get(0).name;
             } else {
-                color = getString(R.string.waterreporter_orange);
+                issue = report.activity.get(0).name;
             }
 
-            CustomMarker m =
-                    new CustomMarker(mv, issue, report.getFormattedDateString(), latLng);
+            Log.d("VILog", "Is Pollution? " + report.isPollution);
+
+            if(report.isPollution){
+                color = getString(R.string.waterreporter_orange);
+            } else {
+                color = getString(R.string.waterreporter_green);
+            }
+
+            m = new CustomMarker(mv, issue, report.getFormattedDateString(), latLng);
             m.setIcon(new Icon(this, Icon.Size.LARGE, "", color));
             //get the InfoWindow's view so that you can set a touch listener which will switch
             //to the marker's detailed view when clicked
             final InfoWindow infoWindow = m.getToolTip(mv);
-            View view = infoWindow.getView();
+            view = infoWindow.getView();
             view.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -136,7 +156,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     protected void requestData(){
-        service.getReports(new Callback<CommonsCloudResponse>() {
+        service.getReports(500, new Callback<CommonsCloudResponse>() {
             @Override
             public void success(CommonsCloudResponse commonsCloudResponse, Response response) {
                 List<Report> reports = commonsCloudResponse.featuresResponse.features;
@@ -175,6 +195,7 @@ public class MainActivity extends ActionBarActivity {
 
         if(user_email.equals("")){
             startActivity(new Intent(this, SignInActivity.class));
+            setMapCenterByUserLocation();
         }
 
         myLocationOverlay.enableMyLocation();

@@ -80,13 +80,30 @@ public class SubmissionsActivity extends ActionBarActivity
         submitNewReports();
     }
 
-
-
     protected void createListElements(){
         submissions = Select.from(Submission.class).orderBy("id DESC").list();
 
         adapter = new SubmittedAdapter();
         submissionsListView.setAdapter(adapter);
+
+//        SwipeDismissListViewTouchListener touchListener = new SwipeDismissListViewTouchListener(
+//                submissionsListView, new SwipeDismissListViewTouchListener.DismissCallbacks() {
+//            @Override
+//            public boolean canDismiss(int position) {
+//                return true;
+//            }
+//
+//            @Override
+//            public void onDismiss(ListView listView, int[] reverseSortedPositions) {
+//                for(int position : reverseSortedPositions){
+//                    submissions.remove(adapter.getItem(position));
+//                }
+//                adapter.notifyDataSetChanged();
+//            }
+//        });
+//
+//        submissionsListView.setOnTouchListener(touchListener);
+//        submissionsListView.setOnScrollListener(touchListener.makeScrollListener());
 
         submissionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

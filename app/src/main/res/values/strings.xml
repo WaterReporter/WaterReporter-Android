@@ -54,7 +54,7 @@
     <string name="marker_date"></string>
     <string name="marker_caption"></string>
     <string name="title_activity_well_detail">WellDetailActivity</string>
-    <string name="waterreporter_orange">#F8AC00</string>
+    <string name="waterreporter_orange">#F9AC00</string>
     <string name="waterreporter_green">#72C224</string>
     <string name="activity_prompt">Pollution Report</string>
     <string name="title_prompt">Title</string>

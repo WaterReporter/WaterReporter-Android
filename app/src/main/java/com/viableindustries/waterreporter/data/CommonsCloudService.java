@@ -7,6 +7,7 @@ import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.Part;
 import retrofit.http.Path;
+import retrofit.http.Query;
 import retrofit.mime.TypedFile;
 
 /**
@@ -23,7 +24,8 @@ public interface CommonsCloudService {
             .build();
 
     @GET("/type_2c1bd72acccf416aada3a6824731acc9.json")
-    public void getReports(Callback<CommonsCloudResponse> response);
+    public void getReports(@Query("results_per_page") int numResults,
+                           Callback<CommonsCloudResponse> response);
 
     @GET("/type_2c1bd72acccf416aada3a6824731acc9/{report}.json")
     public void getSingleReport(@Path("report") int reportId, Callback<SingleFeatureResponse> report);
