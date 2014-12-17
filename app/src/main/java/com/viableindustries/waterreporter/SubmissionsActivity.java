@@ -50,6 +50,8 @@ public class SubmissionsActivity extends ActionBarActivity
 
     private List<Submission> submissions;
     private SubmittedAdapter adapter;
+    private static final String onResume = "onResume";
+    private static final String onRefresh = "onRefresh";
     private static final String NAME_KEY = "user_name";
     private static final String EMAIL_KEY = "user_email";
     private static final String TITLE_KEY = "user_title";
@@ -69,6 +71,15 @@ public class SubmissionsActivity extends ActionBarActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(!swipeRefreshLayout.isRefreshing()){
+            submitNewReports(onResume);
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.submissions, menu);
@@ -77,7 +88,7 @@ public class SubmissionsActivity extends ActionBarActivity
 
     @Override
     public void onRefresh() {
-        submitNewReports();
+        submitNewReports(onRefresh);
     }
 
     protected void createListElements(){
@@ -85,25 +96,6 @@ public class SubmissionsActivity extends ActionBarActivity
 
         adapter = new SubmittedAdapter();
         submissionsListView.setAdapter(adapter);
-
-//        SwipeDismissListViewTouchListener touchListener = new SwipeDismissListViewTouchListener(
-//                submissionsListView, new SwipeDismissListViewTouchListener.DismissCallbacks() {
-//            @Override
-//            public boolean canDismiss(int position) {
-//                return true;
-//            }
-//
-//            @Override
-//            public void onDismiss(ListView listView, int[] reverseSortedPositions) {
-//                for(int position : reverseSortedPositions){
-//                    submissions.remove(adapter.getItem(position));
-//                }
-//                adapter.notifyDataSetChanged();
-//            }
-//        });
-//
-//        submissionsListView.setOnTouchListener(touchListener);
-//        submissionsListView.setOnScrollListener(touchListener.makeScrollListener());
 
         submissionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -117,7 +109,23 @@ public class SubmissionsActivity extends ActionBarActivity
         });
     }
 
-    protected void submitNewReports(){
+    protected void onPostSuccess(Submission submission, PostResponse postResponse){
+        submission.feature_id = postResponse.resource_id;
+        submission.save();
+        adapter.notifyDataSetChanged();
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    protected void onPostError(){
+        swipeRefreshLayout.setRefreshing(false);
+        CharSequence text =
+                "Error posting reports. Try again later.";
+        Toast toast = Toast.makeText(getBaseContext(), text,
+                Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    protected void submitNewReports(String method){
         RestAdapter restAdapter = CommonsCloudService.restAdapter;
 
         CommonsCloudService service = restAdapter.create(CommonsCloudService.class);
@@ -173,20 +181,12 @@ public class SubmissionsActivity extends ActionBarActivity
                                     @Override
                                     public void success(PostResponse postResponse,
                                                         Response response) {
-                                        submission.feature_id = postResponse.resource_id;
-                                        submission.save();
-                                        adapter.notifyDataSetChanged();
-                                        swipeRefreshLayout.setRefreshing(false);
+                                        onPostSuccess(submission, postResponse);
                                     }
 
                                     @Override
                                     public void failure(RetrofitError error) {
-                                        swipeRefreshLayout.setRefreshing(false);
-                                        CharSequence text =
-                                                "Error posting reports. Try again later.";
-                                        Toast toast = Toast.makeText(getBaseContext(), text,
-                                                Toast.LENGTH_SHORT);
-                                        toast.show();
+                                        onPostError();
                                     }
                                 });
                     } else {
@@ -196,20 +196,12 @@ public class SubmissionsActivity extends ActionBarActivity
                                     @Override
                                     public void success(PostResponse postResponse,
                                                         Response response) {
-                                        submission.feature_id = postResponse.resource_id;
-                                        submission.save();
-                                        adapter.notifyDataSetChanged();
-                                        swipeRefreshLayout.setRefreshing(false);
+                                        onPostSuccess(submission, postResponse);
                                     }
 
                                     @Override
                                     public void failure(RetrofitError error) {
-                                        swipeRefreshLayout.setRefreshing(false);
-                                        CharSequence text =
-                                                "Error posting reports. Try again later.";
-                                        Toast toast = Toast.makeText(getBaseContext(), text,
-                                                Toast.LENGTH_SHORT);
-                                        toast.show();
+                                        onPostError();
                                     }
                                 });
                     }
@@ -226,20 +218,12 @@ public class SubmissionsActivity extends ActionBarActivity
                                     @Override
                                     public void success(PostResponse postResponse,
                                                         Response response) {
-                                        submission.feature_id = postResponse.resource_id;
-                                        submission.save();
-                                        adapter.notifyDataSetChanged();
-                                        swipeRefreshLayout.setRefreshing(false);
+                                        onPostSuccess(submission, postResponse);
                                     }
 
                                     @Override
                                     public void failure(RetrofitError error) {
-                                        swipeRefreshLayout.setRefreshing(false);
-                                        CharSequence text =
-                                                "Error posting reports. Try again later.";
-                                        Toast toast = Toast.makeText(getBaseContext(), text,
-                                                Toast.LENGTH_SHORT);
-                                        toast.show();
+                                        onPostError();
                                     }
                                 });
                     } else {
@@ -249,20 +233,12 @@ public class SubmissionsActivity extends ActionBarActivity
                                     @Override
                                     public void success(PostResponse postResponse,
                                                         Response response) {
-                                        submission.feature_id = postResponse.resource_id;
-                                        submission.save();
-                                        adapter.notifyDataSetChanged();
-                                        swipeRefreshLayout.setRefreshing(false);
+                                        onPostSuccess(submission, postResponse);
                                     }
 
                                     @Override
                                     public void failure(RetrofitError error) {
-                                        swipeRefreshLayout.setRefreshing(false);
-                                        CharSequence text =
-                                                "Error posting reports. Try again later.";
-                                        Toast toast = Toast.makeText(getBaseContext(), text,
-                                                Toast.LENGTH_SHORT);
-                                        toast.show();
+                                        onPostError();
                                     }
                                 });
                     }
@@ -271,7 +247,7 @@ public class SubmissionsActivity extends ActionBarActivity
                 count++;
             }
 
-            if(count == submissions.size()){
+            if(count == submissions.size() && method.equals(onRefresh)){
                 swipeRefreshLayout.setRefreshing(false);
                 CharSequence text = "All reports submitted!";
                 Toast toast = Toast.makeText(getBaseContext(), text, Toast.LENGTH_SHORT);
@@ -330,6 +306,9 @@ public class SubmissionsActivity extends ActionBarActivity
                 holder.checkMark = (ImageView) convertView.findViewById(R.id.ok_image);
                 Picasso.with(getBaseContext()).load(R.drawable.ic_done_grey600_24dp)
                         .into(holder.checkMark);
+            } else {
+                holder.checkMark = (ImageView) convertView.findViewById(R.id.ok_image);
+                Picasso.with(getBaseContext()).load(R.drawable.ajax_loader).into(holder.checkMark);
             }
 
             return convertView;

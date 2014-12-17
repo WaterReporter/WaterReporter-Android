@@ -8,7 +8,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -118,8 +117,6 @@ public class MainActivity extends ActionBarActivity {
                     issue = "Unknown issue type";
                 }
             }
-
-            Log.d("VILog", "Is Pollution? " + report.isPollution);
 
             if(report.isPollution){
                 color = getString(R.string.waterreporter_orange);
