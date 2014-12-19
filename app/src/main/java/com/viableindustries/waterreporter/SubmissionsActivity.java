@@ -50,6 +50,7 @@ public class SubmissionsActivity extends ActionBarActivity
 
     private List<Submission> submissions;
     private SubmittedAdapter adapter;
+    private boolean postFailed = false;
     private static final String onResume = "onResume";
     private static final String onRefresh = "onRefresh";
     private static final String NAME_KEY = "user_name";
@@ -80,6 +81,14 @@ public class SubmissionsActivity extends ActionBarActivity
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        submissions.clear();
+        createListElements();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.submissions, menu);
@@ -103,8 +112,8 @@ public class SubmissionsActivity extends ActionBarActivity
                 Submission submission = submissions.get(i);
                 Long id = submission.getId();
                 Intent intent = new Intent(getBaseContext(), SubmissionDetailActivity.class)
-                        .putExtra("SubmissionId", id);
-                startActivity(intent);
+                        .putExtra("SubmissionId", id).putExtra("AdapterPosition", i);
+                startActivityForResult(intent, 0);
             }
         });
     }
@@ -113,11 +122,19 @@ public class SubmissionsActivity extends ActionBarActivity
         submission.feature_id = postResponse.resource_id;
         submission.save();
         adapter.notifyDataSetChanged();
+
+        if(postFailed){
+            postFailed = false;
+        }
+
+        submissionsListView.invalidateViews();
         swipeRefreshLayout.setRefreshing(false);
     }
 
     protected void onPostError(){
         swipeRefreshLayout.setRefreshing(false);
+        postFailed = true;
+        submissionsListView.invalidateViews();
         CharSequence text =
                 "Error posting reports. Try again later.";
         Toast toast = Toast.makeText(getBaseContext(), text,
@@ -306,9 +323,14 @@ public class SubmissionsActivity extends ActionBarActivity
                 holder.checkMark = (ImageView) convertView.findViewById(R.id.ok_image);
                 Picasso.with(getBaseContext()).load(R.drawable.ic_done_grey600_24dp)
                         .into(holder.checkMark);
-            } else {
+            } else if(getItem(position).feature_id == 0 && !postFailed){
                 holder.checkMark = (ImageView) convertView.findViewById(R.id.ok_image);
-                Picasso.with(getBaseContext()).load(R.drawable.ajax_loader).into(holder.checkMark);
+                Picasso.with(getBaseContext()).load(R.drawable.upload).resize(75, 75)
+                        .into(holder.checkMark);
+            } else if(getItem(position).feature_id == 0 && postFailed){
+                holder.checkMark = (ImageView) convertView.findViewById(R.id.ok_image);
+                Picasso.with(getBaseContext()).load(R.drawable.warning).resize(75, 75)
+                        .into(holder.checkMark);
             }
 
             return convertView;

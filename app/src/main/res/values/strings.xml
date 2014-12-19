@@ -58,5 +58,7 @@
     <string name="waterreporter_green">#72C224</string>
     <string name="activity_prompt">Pollution Report</string>
     <string name="title_prompt">Title</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_share">Share</string>
 
 </resources>

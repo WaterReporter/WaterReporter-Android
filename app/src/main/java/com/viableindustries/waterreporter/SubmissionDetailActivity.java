@@ -31,6 +31,8 @@ public class SubmissionDetailActivity extends ActionBarActivity {
     @InjectView(R.id.comments_label) TextView commentsText;
     @InjectView(R.id.submission_image) ImageView imageView;
 
+    private Submission submission;
+    private int position;
     private String mDateStr;
     private String[] pollutionTypes = {"Pollution Type", "Discolored water", "Eroded stream banks", "Excessive algae",
             "Excessive trash", "Exposed soil", "Faulty construction entryway", "Faulty silt fences",
@@ -51,7 +53,7 @@ public class SubmissionDetailActivity extends ActionBarActivity {
         Intent intent = getIntent();
         if(intent != null && intent.hasExtra("SubmissionId")){
             long id = intent.getLongExtra("SubmissionId", 0);
-            Submission submission = Submission.findById(Submission.class, id);
+            submission = Submission.findById(Submission.class, id);
 
             String mTypeStr, mActivityStr;
             int activityId = Integer.parseInt(submission.activity.replaceAll("\\D+",""));
@@ -73,6 +75,10 @@ public class SubmissionDetailActivity extends ActionBarActivity {
                 Picasso.with(this).load(new File(submission.photoPath)).into(imageView);
             }
         }
+
+        if(intent != null && intent.hasExtra("AdapterPosition")){
+            position = intent.getIntExtra("AdapterPosition", 99);
+        }
     }
 
 
@@ -88,6 +94,7 @@ public class SubmissionDetailActivity extends ActionBarActivity {
         if(mShareActionProvider != null){
             mShareActionProvider.setShareIntent(createShareSubmissionIntent());
         }
+
         return true;
     }
 
@@ -104,5 +111,20 @@ public class SubmissionDetailActivity extends ActionBarActivity {
         shareIntent.putExtra(Intent.EXTRA_TEXT, mDateStr);
 
         return shareIntent;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if(id == R.id.action_delete){
+            Intent intent = new Intent(getBaseContext(), SubmissionDetailActivity.class)
+                    .putExtra("AdapterPosition", position);
+            setResult(1, intent);
+            submission.delete();
+            finish();
+        }
+
+        return true;
     }
 }

@@ -2,6 +2,7 @@ package com.viableindustries.waterreporter.data;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.Multipart;
 import retrofit.http.POST;
