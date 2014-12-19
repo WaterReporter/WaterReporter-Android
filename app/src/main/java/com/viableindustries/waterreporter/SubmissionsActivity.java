@@ -112,8 +112,8 @@ public class SubmissionsActivity extends ActionBarActivity
                 Submission submission = submissions.get(i);
                 Long id = submission.getId();
                 Intent intent = new Intent(getBaseContext(), SubmissionDetailActivity.class)
-                        .putExtra("SubmissionId", id).putExtra("AdapterPosition", i);
-                startActivityForResult(intent, 0);
+                        .putExtra("SubmissionId", id);
+                startActivity(intent);
             }
         });
     }
