@@ -8,123 +8,96 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.google.gson.Gson;
+import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
 import com.mapbox.mapboxsdk.overlay.Icon;
+import com.mapbox.mapboxsdk.overlay.Marker;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
+import com.mapbox.mapboxsdk.util.GeoUtils;
 import com.mapbox.mapboxsdk.views.InfoWindow;
 import com.mapbox.mapboxsdk.views.MapView;
-import com.viableindustries.waterreporter.data.CommonsCloudResponse;
-import com.viableindustries.waterreporter.data.CommonsCloudService;
-import com.viableindustries.waterreporter.data.Geometries;
+import com.viableindustries.waterreporter.camera.CameraActivity;
+import com.viableindustries.waterreporter.data.FeatureCollection;
+import com.viableindustries.waterreporter.data.ReportService;
+import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.Report;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class MainActivity extends ActionBarActivity {
-    @InjectView(R.id.mapview) MapView mv;
+public class MainActivity extends AppCompatActivity {
 
-    private SharedPreferences prefs = null;
-    private UserLocationOverlay myLocationOverlay;
-    private LocationManager locationManager;
-    private LocationListener locationListener;
-    private RestAdapter restAdapter = CommonsCloudService.restAdapter;
-    private CommonsCloudService service = restAdapter.create(CommonsCloudService.class);
-    private LatLng defaultCenter = new LatLng(38.8951, -77.0367);
+    @Bind(R.id.mapview)
+    MapView mv;
 
-    protected void setMapCenterByUserLocation() {
-        // Acquire a reference to the system Location Manager
-        locationManager = (LocationManager)
-                this.getSystemService(Context.LOCATION_SERVICE);
+    static final int REGISTRATION_REQUEST = 1;
 
-        // Define a listener that responds to location updates
-        locationListener = new LocationListener() {
-            public void onLocationChanged(Location location) {
-                // Called when a new location is found by the network location provider.
-                float latitude = (float) location.getLatitude();
-                float longitude = (float) location.getLongitude();
-                prefs.edit().putFloat("latitude", latitude).putFloat("longitude", longitude).apply();
+    static final int LOGIN_REQUEST = 2;
 
-                if(location.getLatitude() == 0 && location.getLongitude() == 0){
-                    mv.setCenter(defaultCenter);
-                } else {
-                    mv.setCenter(new LatLng(location));
-                }
-            }
+    protected SharedPreferences prefs = null;
 
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
+    protected int user_id;
 
-            public void onProviderEnabled(String provider) {
-            }
+    protected RestAdapter restAdapter = ReportService.restAdapter;
 
-            public void onProviderDisabled(String provider) {
-            }
-        };
+    protected ReportService service = restAdapter.create(ReportService.class);
 
-        // Register the listener with the Location Manager to receive location updates
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                0, 20, locationListener);
-    }
+    // Geographic center of contiguous United States
+    protected LatLng defaultCenter = new LatLng(39.828175, -98.5795);
 
-    protected void addMarkers(Report report){
+    protected List<LatLng> markers = new ArrayList<LatLng>();
+
+    protected void addMarkers(Report report) {
+
         //create the marker's LatLng
-        Geometries geometries = report.geometry.geometries.get(0);
-        LatLng latLng = geometries.getCoordinates();
+        Geometry geometry = report.geometry.geometries.get(0);
+
+        LatLng latLng = geometry.getCoordinates();
+
+        markers.add(latLng);
+
         String issue, color;
+
         View view;
+
         CustomMarker m;
 
         //create an intent which will open the detailed view when the marker's info button is clicked
         //include the report id so that the detailed view can get the information for the report
         final Intent intent = new Intent(this, MarkerDetailActivity.class);
-        intent.putExtra("REPORT_ID", report.id);
 
-        //only put markers for Point geometries on the map
-        if(geometries.type.equals("Point")){
+        intent.putExtra("REPORT_ID", report.properties.id);
 
-            if(report.isPollution){
-                if(report.pollution.size() != 0){
-                    if(report.pollution.get(0).name == null){
-                        issue = "Unknown issue type";
-                    } else {
-                        issue = report.pollution.get(0).name;
-                    }
-                } else {
-                    issue = "Unknown issue type";
-                }
-            } else {
-                if(report.activity.size() != 0){
-                    if(report.activity.get(0).name == null){
-                        issue = "Unknown issue type";
-                    } else {
-                        issue = report.activity.get(0).name;
-                    }
-                } else {
-                    issue = "Unknown issue type";
-                }
-            }
+        //only put markers for Point geometry on the map
+        if (geometry.type.equals("Point")) {
 
-            if(report.isPollution){
-                color = getString(R.string.waterreporter_orange);
-            } else {
-                color = getString(R.string.waterreporter_green);
-            }
+            color = getString(R.string.base_blue);
 
-            m = new CustomMarker(mv, issue, report.getFormattedDateString(), latLng);
+            String title = report.properties.owner.properties.first_name + " " +
+                    report.properties.owner.properties.last_name + " \u00B7 " +
+                    report.properties.getFormattedDateString();
+
+            m = new CustomMarker(mv, title, report.properties.report_description + " ....", latLng);
+
             m.setIcon(new Icon(this, Icon.Size.LARGE, "", color));
             //get the InfoWindow's view so that you can set a touch listener which will switch
             //to the marker's detailed view when clicked
@@ -134,7 +107,7 @@ public class MainActivity extends ActionBarActivity {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     //make sure to choose action down or up, otherwise the intent will launch twice
-                    if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                         startActivity(intent);
                         //close the InfoWindow so it's not still open when coming back to the map
                         infoWindow.close();
@@ -142,101 +115,206 @@ public class MainActivity extends ActionBarActivity {
                     return true;
                 }
             });
+
             mv.addMarker(m);
+
         }
+
+//        setBounds();
+
     }
 
-    protected void setUpMap(){
+    protected void setUpMap() {
+
+        mv.setCenter(defaultCenter);
+
         mv.setMinZoomLevel(mv.getTileProvider().getMinimumZoomLevel());
-        mv.setMaxZoomLevel(mv.getTileProvider().getMaximumZoomLevel());
-        mv.setZoom(11);
-        setMapCenterByUserLocation();
 
-        // Adds an icon that shows location
-        myLocationOverlay = new UserLocationOverlay(new GpsLocationProvider(this), mv);
-        myLocationOverlay.setDrawAccuracyEnabled(true);
-        mv.getOverlays().add(myLocationOverlay);
+        mv.setMaxZoomLevel(mv.getTileProvider().getMaximumZoomLevel());
+
+        // There are reports from across the nation now, so let's start way out before zooming to
+        // bounding box
+        mv.setZoom(4);
+
     }
 
-    protected void requestData(){
-        service.getReports(500, new Callback<CommonsCloudResponse>() {
+    protected void setBounds() {
+
+        BoundingBox box = GeoUtils.findBoundingBoxForGivenLocations(markers, 0.5);
+
+        mv.zoomToBoundingBox(box, true, true);
+
+    }
+
+    protected void requestData() {
+
+        SharedPreferences prefs =
+                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        final String access_token = prefs.getString("access_token", "");
+
+        Log.d("", access_token);
+
+        // We shouldn't need to retrieve this value again, but we'll deal with that issue later
+        user_id = prefs.getInt("user_id", 0);
+
+        String query = "{\"filters\":[{\"name\":\"owner_id\",\"op\":\"eq\",\"val\":" + user_id + "}],\"order_by\":[{\"field\":\"created\",\"direction\":\"desc\"}]}";
+
+        //String query = "{\"filters\":[],\"order_by\":[{\"field\":\"created\",\"direction\":\"desc\"}]}";
+
+        service.getReports("application/json", 500, query, new Callback<FeatureCollection>() {
+
             @Override
-            public void success(CommonsCloudResponse commonsCloudResponse, Response response) {
-                List<Report> reports = commonsCloudResponse.featuresResponse.features;
-                for(Report report : reports){
-                    addMarkers(report);
+            public void success(FeatureCollection featureCollection, Response response) {
+
+                List<Report> reports = featureCollection.getFeatures();
+
+                Log.v("list", reports.toString());
+
+                if (!reports.isEmpty()) {
+
+                    for (Report report : reports) {
+
+                        addMarkers(report);
+
+                    }
+
+                    setBounds();
+
                 }
+
             }
 
             @Override
             public void failure(RetrofitError error) {
+
+                error.printStackTrace();
+
+//                startActivity(new Intent(MainActivity.class, SignInActivity.class));
+
             }
+
         });
+
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
 
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         setUpMap();
 
-        requestData();
+        // Not sure we should attempt a call unless we pass all checks first
+        // Obviously if we're going to redirect then we need to ensure that user id
+        // and token are present. If we decide not to redirect or prompt (which we should)
+        // then this becomes less of a problem.
+        //requestData();
+
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
 
-        String user_email = prefs.getString("user_email", "");
+        String access_token = prefs.getString("access_token", "");
 
-        if(user_email.equals("")){
-            startActivity(new Intent(this, SignInActivity.class));
-            setMapCenterByUserLocation();
+        user_id = prefs.getInt("user_id", 0);
+
+        if (user_id == 0) {
+
+            startActivityForResult(new Intent(this, RegistrationActivity.class), REGISTRATION_REQUEST);
+
+        } else if (access_token.equals("")) {
+
+            startActivityForResult(new Intent(this, SignInActivity.class), LOGIN_REQUEST);
+
+        } else {
+
+            requestData();
+
         }
 
-        myLocationOverlay.enableMyLocation();
     }
 
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
         super.onPause();
-        myLocationOverlay.disableMyLocation();
-        locationManager.removeUpdates(locationListener);
+
+        // Disable for now
+        // myLocationOverlay.disableMyLocation();
+
+        // locationManager.removeUpdates(locationListener);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
+
         menuInflater.inflate(R.menu.main, menu);
+
         return super.onCreateOptionsMenu(menu);
+
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.action_submissions){
+
+        if (id == R.id.action_submissions) {
+
             startActivity(new Intent(this, SubmissionsActivity.class));
+
         }
-        if(id == R.id.action_report){
-            startActivity(new Intent(this, ReportActivity.class));
+
+        if (id == R.id.action_report) {
+
+            startActivity(new Intent(this, PhotoActivity.class));
+
         }
+
         return true;
+
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == REGISTRATION_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+
+                // Since the user just registered, direct them to create a new report
+                startActivity(new Intent(this, PhotoActivity.class));
+
+            }
+
+        } else if (requestCode == LOGIN_REQUEST) {
+
+            if (resultCode == RESULT_OK) {
+
+                // The user is logged in and may already have reports in the system.
+                // Let's attempt to fetch the user's report collection and, if none exist,
+                // direct the user to submit their first report.
+                requestData();
+
+            }
+
+        }
+
+    }
+
 }

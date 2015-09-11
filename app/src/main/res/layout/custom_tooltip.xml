@@ -1,63 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:background="@color/white"
-        android:id="@+id/parent_layout"
-        android:padding="5dp"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@null"
+    android:clickable="true"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:orientation="vertical"
+    tools:context="com.viableindustries.waterreporter.MainActivity">
+
+    <TextView
+        android:id="@+id/tooltip_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:clickable="true"
-        tools:context="com.viableindustries.waterreporter.MainActivity">
+        android:layout_gravity="left"
+        android:background="@color/gray_f5f7f9"
+        android:maxEms="17"
+        android:padding="10dp"
+        android:text="@string/toolTipTitle"
+        android:textColor="@color/black"
+        android:textSize="@dimen/base_text" />
 
-        <TextView
-            android:id="@+id/tooltip_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:maxEms="17"
-            android:layout_gravity="left"
-            android:layout_weight="1"
-            android:text="@string/toolTipTitle"/>
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray_224" />
 
-        <TextView
-            android:id="@+id/tooltip_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            android:maxEms="17"
-            android:text="@string/toolTipDescription"
-            android:layout_below="@+id/tooltip_title"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+    <TextView
+        android:id="@+id/tooltip_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:maxEms="17"
+        android:padding="10dp"
+        android:text="@string/toolTipDescription"
+        android:textColor="@color/black"
+        android:textSize="@dimen/small_text" />
 
-        <TextView
-            android:id="@+id/tooltip_subdescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="12sp"
-            android:maxEms="17"
-            android:text="@string/toolTipAddress"
-            android:visibility="gone"/>
+    <TextView
+        android:id="@+id/tooltip_subdescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxEms="17"
+        android:text="@string/toolTipAddress"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:visibility="gone" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/marker_about"
-            android:src="@drawable/ic_action_about"
-            android:layout_toEndOf="@+id/tooltip_description"
-            android:layout_toRightOf="@+id/tooltip_description"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="10dp" />
+    <!--<ImageView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:id="@+id/marker_about"-->
+    <!--android:src="@drawable/ic_action_about"-->
+    <!--android:layout_toEndOf="@+id/tooltip_description"-->
+    <!--android:layout_toRightOf="@+id/tooltip_description"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_marginLeft="10dp" />-->
 
-        <com.mapbox.mapboxsdk.views.TipView
-                android:layout_width="132dp"
-                android:layout_height="10dp"/>
+    <com.mapbox.mapboxsdk.views.TipView
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_gravity="center" />
 
-</RelativeLayout>
+</LinearLayout>

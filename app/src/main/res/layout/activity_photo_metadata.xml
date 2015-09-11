@@ -1,0 +1,88 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:orientation="vertical"
+    tools:context="com.viableindustries.waterreporter.PhotoMetaActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
+
+        <ImageView
+            android:id="@+id/preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true" />
+
+        <ProgressBar
+            android:id="@+id/photo_bar"
+            style="@android:style/Widget.Holo.ProgressBar.Horizontal"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/date"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/white_canvas"
+            android:clickable="true"
+            android:hint="@string/date_hint"
+            android:onClick="showDatePickerDialog"
+            android:padding="16dp"
+            android:textSize="@dimen/base_text" />
+
+        <EditText
+            android:id="@+id/comments"
+            android:layout_width="fill_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/white_canvas"
+            android:gravity="start"
+            android:hint="@string/comment_hint"
+            android:inputType="textMultiLine|textCapSentences"
+            android:padding="16dp"
+            android:textSize="@dimen/base_text" />
+
+        <Button
+            android:id="@+id/location_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/blue_button"
+            android:onClick="updateLocation"
+            android:text="Add a location"
+            android:textColor="@color/white" />
+
+        <!--<Button-->
+        <!--android:id="@+id/photo_button"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@color/waterreporter_blue"-->
+        <!--android:clickable="true"-->
+        <!--android:onClick="launchCamera"-->
+        <!--android:text="Add a photo to your report"-->
+        <!--android:textColor="@color/white" />-->
+        <ImageView
+            android:id="@+id/static_map"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/white_canvas"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</ScrollView>

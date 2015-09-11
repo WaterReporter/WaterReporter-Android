@@ -1,0 +1,83 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context="com.viableindustries.waterreporter.RegistrationActivity">
+
+    <TextView
+        android:id="@+id/prompt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="0dp"
+        android:background="@color/base_blue"
+        android:gravity="center"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:text="Sign Up"
+        android:textColor="@color/white"
+        android:textSize="@dimen/medium_text" />
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@null"
+        android:hint="@string/email_hint"
+        android:inputType="textEmailAddress"
+        android:padding="20dp"
+        android:textSize="@dimen/base_text" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@color/gray_224" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:padding="20dp"
+        android:textSize="@dimen/base_text" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/blue_button"
+        android:gravity="center"
+        android:onClick="saveAccount"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:text="Join"
+        android:textColor="@color/white"
+        android:textSize="@dimen/base_text" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="0dp"
+        android:background="@null"
+        android:gravity="center"
+        android:onClick="existingAccount"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:text="I already have an account."
+        android:textColor="@color/base_blue"
+        android:textSize="@dimen/base_text" />
+
+</LinearLayout>

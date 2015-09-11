@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/material_blue_grey_950"
+    android:orientation="vertical"
+    tools:context="com.viableindustries.waterreporter.PhotoActivity">
+
+    <!--<FrameLayout-->
+    <!--android:id="@+id/preview"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_weight="1"-->
+    <!--android:background="@color/gray_f5f7f9" />-->
+
+    <RelativeLayout
+        android:id="@+id/controls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/cancel"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentLeft="true"
+            android:layout_gravity="start"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/cancel_photo"
+            android:clickable="true"
+            android:onClick="cancel"
+            android:scaleType="fitXY" />
+
+        <ImageButton
+            android:id="@+id/button_save"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="end"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/advance"
+            android:clickable="true"
+            android:onClick="savePhoto"
+            android:scaleType="fitXY" />
+
+    </RelativeLayout>
+
+    <!--<ImageView-->
+    <!--android:id="@+id/preview"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_marginTop="10dp"-->
+    <!--android:layout_weight="1"-->
+    <!--android:adjustViewBounds="true" />-->
+
+    <!--<Button-->
+    <!--android:id="@+id/button_capture"-->
+    <!--android:layout_width="64dp"-->
+    <!--android:layout_height="64dp"-->
+    <!--android:layout_gravity="center|bottom"-->
+    <!--android:layout_marginBottom="20dp"-->
+    <!--android:layout_marginTop="20dp"-->
+    <!--android:background="@drawable/floating_action_green"-->
+    <!--android:clickable="true"-->
+    <!--android:onClick="savePhoto"-->
+    <!--android:text="" />-->
+
+    <RelativeLayout
+        android:id="@+id/photo_progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:adjustViewBounds="true"
+            android:visibility="gone" />
+
+        <!--<ProgressBar-->
+        <!--android:id="@+id/photo_bar"-->
+        <!--style="@android:style/Widget.Holo.ProgressBar.Horizontal"-->
+        <!--android:layout_width="240dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/preview"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:layout_marginBottom="@dimen/activity_vertical_margin"-->
+        <!--android:layout_marginTop="@dimen/activity_vertical_margin"-->
+        <!--android:visibility="gone" />-->
+
+        <Button
+            android:id="@+id/button_capture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/photo_bar"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/base_blue"
+            android:clickable="true"
+            android:onClick="launchCamera"
+            android:paddingBottom="20dp"
+            android:paddingTop="20dp"
+            android:text="Add Photo"
+            android:textColor="@color/white" />
+
+        <!--<Button-->
+        <!--android:id="@+id/button_save"-->
+        <!--android:layout_width="200dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/photo_bar"-->
+        <!--android:layout_gravity="center|bottom"-->
+        <!--android:layout_marginBottom="0dp"-->
+        <!--android:layout_marginLeft="20dp"-->
+        <!--android:layout_marginRight="20dp"-->
+        <!--android:layout_marginTop="0dp"-->
+        <!--android:background="@drawable/blue_button"-->
+        <!--android:clickable="true"-->
+        <!--android:onClick="savePhoto"-->
+        <!--android:text="Use Photo"-->
+        <!--android:textColor="@color/white"-->
+        <!--android:visibility="visible" />-->
+
+    </RelativeLayout>
+
+</LinearLayout>

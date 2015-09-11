@@ -9,8 +9,9 @@ import android.widget.EditText;
 
 import java.util.Calendar;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+//import butterknife.InjectView;
 
 /**
  * Created by Ryan Hamley on 10/23/14.
@@ -18,7 +19,7 @@ import butterknife.InjectView;
  */
 public class DatePickerFragment extends DialogFragment implements
         DatePickerDialog.OnDateSetListener {
-    @InjectView(R.id.date) EditText dateInput;
+    @Bind(R.id.date) EditText dateInput;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -34,7 +35,7 @@ public class DatePickerFragment extends DialogFragment implements
 
     @Override
     public void onDateSet(DatePicker datePicker, int i, int i2, int i3) {
-        ButterKnife.inject(this, getActivity());
+        ButterKnife.bind(this, getActivity());
 
         UtilityMethods utility = new UtilityMethods();
 

@@ -7,28 +7,40 @@ import com.orm.SugarRecord;
  * This class turns user reports into objects which can be saved to the app database with Sugar
  */
 public class Submission extends SugarRecord<Submission> {
-    public String type;
-    public String date;
-    public String activity;
-    public String comments;
-    public String photoPath;
-    public double latitude;
-    public double longitude;
-    public int feature_id;
 
+    public String report_date;
+
+    public String report_description;
+
+    public String photoPath;
+
+    public int photoId;
+
+    public double latitude;
+
+    public double longitude;
+
+    public int feature_id;
 
     public Submission(){
 
     }
 
-    public Submission(String aType, String aDate, String anActivity, String aComment, double aLatitude,
-                      double aLongitude, String aPhotoPath){
-        this.type = aType;
-        this.date = aDate;
-        this.activity = anActivity;
-        this.comments = aComment;
+    public Submission(String aDate, String aDescription, double aLatitude,
+                      double aLongitude, String aPhotoPath, int aPhotoId){
+
+        this.report_date = aDate;
+
+        this.report_description = aDescription;
+
         this.latitude = aLatitude;
+
         this.longitude = aLongitude;
+
         this.photoPath = aPhotoPath;
+
+        this.photoId = aPhotoId;
+
     }
+
 }

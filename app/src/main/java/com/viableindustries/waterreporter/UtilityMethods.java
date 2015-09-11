@@ -7,6 +7,7 @@ import java.util.Calendar;
  * Some useful utility methods to use throughout the application
  */
 public class UtilityMethods {
+
     private final Calendar c = Calendar.getInstance();
 
     public int getCurrentMonth(){

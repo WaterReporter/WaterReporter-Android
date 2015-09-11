@@ -1,20 +1,25 @@
 package com.viableindustries.waterreporter.data;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+
 /**
  * Created by Ryan Hamley on 10/9/14.
  * ReportPhoto is the photo information returned with a report by the API.
  */
-public class ReportPhoto {
-    public String caption;
-    public String created;
-    public String credit;
-    public String credit_link;
-    public String filename;
-    public String filepath;
-    public int id;
-    public String status;
+public class ReportPhoto implements Serializable {
 
-    public String getFilepath(){
-        return "http://" + filepath;
-    }
+    @SerializedName("geometry")
+    public GeometryResponse geometry;
+
+    @SerializedName("id")
+    public int id;
+
+    @SerializedName("properties")
+    public ImageProperties properties;
+
+    @SerializedName("type")
+    public String type;
+
 }

@@ -1,84 +1,168 @@
 package com.viableindustries.waterreporter;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Spinner;
+
+import com.viableindustries.waterreporter.data.AuthResponse;
+import com.viableindustries.waterreporter.data.LogInBody;
+import com.viableindustries.waterreporter.data.SecurityService;
+import com.viableindustries.waterreporter.data.UserBasicResponse;
+import com.viableindustries.waterreporter.data.UserService;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by Ryan Hamley on 10/28/14.
  * Activity shown as dialog to handle sign in functionality.
  */
 public class SignInActivity extends Activity {
-    @InjectView(R.id.name) EditText user_name;
-    @InjectView(R.id.email) EditText email_text;
-    @InjectView(R.id.title) Spinner titleSpinner;
 
-    private static final String NAME_KEY = "user_name";
-    private static final String EMAIL_KEY = "user_email";
-    private static final String TITLE_KEY = "user_title";
+    @Bind(R.id.password) EditText password_text;
+
+    @Bind(R.id.email) EditText email_text;
+
     private static final String EMAIL_PATTERN =
             "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                     + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
+    private Pattern emailPattern;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+
+//        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+
         setContentView(R.layout.activity_sign_in);
 
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
+
+        // Check to see if we can populate the email field with an account on device
+
+        emailPattern = android.util.Patterns.EMAIL_ADDRESS;
+
+        Account[] accounts = AccountManager.get(this).getAccounts();
+
+        for (Account account : accounts) {
+
+            if (emailPattern.matcher(account.name).matches()) {
+
+                String possibleEmail = account.name;
+
+                email_text.setText(possibleEmail);
+
+            }
+        }
 
         //set custom title layout for window
-        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.custom_title);
+//        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.custom_title);
         //prevent sign-in window from being closed by clicking outside of it
         //this forces the user to actually sign-in
         this.setFinishOnTouchOutside(false);
 
-        String[] titles = {"Who are you?", "Citizen", "Non-profit Organization Member", "Waterkeeper Member",
-                            "Waterkeeper"};
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getBaseContext(),
-                android.R.layout.simple_spinner_item, titles);
-        titleSpinner.setAdapter(adapter);
     }
 
     public void saveAccount(View view){
-        SharedPreferences prefs =
+
+        final RestAdapter restAdapter = SecurityService.restAdapter;
+
+        final SecurityService securityService = restAdapter.create(SecurityService.class);
+
+        final SharedPreferences prefs =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        String name = String.valueOf(user_name.getText());
+        String password = String.valueOf(password_text.getText());
+
         String email = String.valueOf(email_text.getText());
-        String title;
 
-        if(titleSpinner.getSelectedItemId() == 0){
-            title = "Citizen";
-        } else {
-            title = titleSpinner.getSelectedItem().toString();
-        }
-
-        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
-        Matcher matcher = pattern.matcher(email);
+        Matcher matcher = emailPattern.matcher(email);
 
         if(matcher.matches()){
-            prefs.edit().putString(EMAIL_KEY, email).putString(NAME_KEY, name)
-                    .putString(TITLE_KEY, title).apply();
 
-            finish();
+            LogInBody logInBody = new LogInBody(email, password, getString(R.string.response_type),
+                    getString(R.string.client_id), getString(R.string.redirect_uri),
+                    getString(R.string.scope), getString(R.string.state));
+
+            securityService.save(logInBody,
+                    new Callback<AuthResponse>() {
+                        @Override
+                        public void success(AuthResponse authResponse,
+                                            Response response) {
+
+                            String access_token = "Bearer " + authResponse.getAccessToken();
+
+                            prefs.edit().putString("access_token", access_token).apply();
+
+                            // Since the user may have arrived here after re-installing the app and
+                            // bypassing the registration dialog, we need to check for the presence of
+                            // a user id. If we don't have one stored, retrieve it via the UserService
+                            // by including the token obtained just now upon successful log-in.
+
+                            int user_id = prefs.getInt("user_id", 0);
+
+                            if (user_id == 0) {
+
+                                UserService userService = restAdapter.create(UserService.class);
+
+                                userService.getUser(access_token, "application/json",
+                                        new Callback<UserBasicResponse>() {
+                                            @Override
+                                            public void success(UserBasicResponse userBasicResponse,
+                                                                Response response) {
+
+                                                prefs.edit().putInt("user_id", userBasicResponse.getUserId()).apply();
+
+                                                Intent intent = new Intent();
+
+                                                setResult(RESULT_OK, intent);
+
+                                                finish();
+
+                                            }
+
+                                            @Override
+                                            public void failure(RetrofitError error) {
+
+                                            }
+                                        });
+
+                            } else {
+
+                                finish();
+
+                            }
+
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+
+                        }
+                    });
+
         } else {
+
             email_text.setText("");
+
             email_text.setHint("Enter a valid email address");
+
         }
 
     }
+
 }
