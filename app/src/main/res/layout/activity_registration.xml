@@ -48,21 +48,40 @@
         android:padding="20dp"
         android:textSize="@dimen/base_text" />
 
-    <Button
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="0dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/blue_button"
-        android:gravity="center"
-        android:onClick="saveAccount"
-        android:paddingBottom="20dp"
-        android:paddingTop="20dp"
-        android:text="Join"
-        android:textColor="@color/white"
-        android:textSize="@dimen/base_text" />
+        android:layout_marginTop="20dp">
+
+        <Button
+            android:id="@+id/register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="0dp"
+            android:background="@drawable/blue_button"
+            android:gravity="center"
+            android:onClick="saveAccount"
+            android:paddingBottom="20dp"
+            android:paddingTop="20dp"
+            android:text="Join"
+            android:textColor="@color/white"
+            android:textSize="@dimen/base_text" />
+
+        <ProgressBar
+            android:id="@+id/spinner"
+            style="@android:style/Widget.Holo.Light.ProgressBar.Large"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:visibility="gone" />
+
+    </FrameLayout>
 
     <Button
         android:layout_width="match_parent"

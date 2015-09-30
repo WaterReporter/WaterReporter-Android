@@ -188,6 +188,8 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             commentsText = String.valueOf(commentsField.getText());
 
+            // Step through comment and location checks and warn the user if anything's missing.
+
             if (commentsText.isEmpty()) {
 
                 CharSequence text = "Please add a comment.";

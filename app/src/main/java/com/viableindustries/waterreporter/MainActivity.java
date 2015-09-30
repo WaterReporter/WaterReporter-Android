@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
 
         //String query = "{\"filters\":[],\"order_by\":[{\"field\":\"created\",\"direction\":\"desc\"}]}";
 
-        service.getReports("application/json", 500, query, new Callback<FeatureCollection>() {
+        service.getReports(access_token, "application/json", 500, query, new Callback<FeatureCollection>() {
 
             @Override
             public void success(FeatureCollection featureCollection, Response response) {
@@ -188,9 +188,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void failure(RetrofitError error) {
 
-                error.printStackTrace();
+                Response response = error.getResponse();
 
-//                startActivity(new Intent(MainActivity.class, SignInActivity.class));
+                int status = response.getStatus();
+
+                if (status == 403) {
+
+                    startActivity(new Intent(MainActivity.this, SignInActivity.class));
+
+                }
 
             }
 

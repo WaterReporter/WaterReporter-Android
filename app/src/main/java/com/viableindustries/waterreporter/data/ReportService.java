@@ -25,25 +25,14 @@ public interface ReportService {
 
     final String ENDPOINT = "http://api.waterreporter.org/v1";
 
-//    public static Gson gson = new GsonBuilder()
-//            .registerTypeAdapter(FeatureCollection.class, new PropertiesDeserializer<FeatureCollection>())
-//            .registerTypeAdapter(Report.class, new PropertiesDeserializer<Report>())
-//            .registerTypeAdapter(Comment.class, new PropertiesDeserializer<Comment>())
-//            .registerTypeAdapter(ReportPhoto.class, new PropertiesDeserializer<ReportPhoto>())
-//            .registerTypeAdapter(Territory.class, new PropertiesDeserializer<Territory>())
-//            .registerTypeAdapter(HashTag.class, new PropertiesDeserializer<HashTag>())
-//            .registerTypeAdapter(User.class, new PropertiesDeserializer<User>())
-//            .setDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss")
-//            .create();
-
-
     public static RestAdapter restAdapter = new RestAdapter.Builder()
             .setLogLevel(RestAdapter.LogLevel.BASIC)
             .setEndpoint(ENDPOINT)
             .build();
 
     @GET("/data/report")
-    public void getReports(@Header("Content-Type") String contentType,
+    public void getReports(@Header("Authorization") String authorization,
+                           @Header("Content-Type") String contentType,
                            @Query("results_per_page") int numResults,
                            @Query("q") String q,
                            Callback<FeatureCollection> featureCollectionCallback);

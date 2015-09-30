@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.viableindustries.waterreporter.data.AuthResponse;
@@ -37,6 +39,12 @@ public class RegistrationActivity extends Activity {
 
     @Bind(R.id.email)
     EditText email_text;
+
+    @Bind(R.id.register)
+    Button registrationButton;
+
+    @Bind(R.id.spinner)
+    ProgressBar progressBar;
 
     static final int PROFILE_REQUEST = 1;
 
@@ -93,11 +101,29 @@ public class RegistrationActivity extends Activity {
 
         final String password = String.valueOf(password_text.getText());
 
+        // Check to make sure that the user's password is at least 6 characters long.
+
+        if (password.length() < 6) {
+
+            password_text.setText("");
+
+            CharSequence text = "Password must be at least 6 characters long.";
+            Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+            toast.show();
+
+            return;
+
+        }
+
         final String email = String.valueOf(email_text.getText());
 
         Matcher matcher = emailPattern.matcher(email);
 
         if (matcher.matches()) {
+
+            registrationButton.setVisibility(View.GONE);
+
+            progressBar.setVisibility(View.VISIBLE);
 
             RegistrationBody registrationBody = new RegistrationBody(email, password);
 
@@ -123,6 +149,10 @@ public class RegistrationActivity extends Activity {
                                         public void success(AuthResponse authResponse,
                                                             Response response) {
 
+                                            progressBar.setVisibility(View.GONE);
+
+                                            registrationButton.setVisibility(View.VISIBLE);
+
                                             // Store API access token
                                             prefs.edit().putString("access_token", "Bearer " + authResponse.getAccessToken()).apply();
 
@@ -135,6 +165,10 @@ public class RegistrationActivity extends Activity {
                                         @Override
                                         public void failure(RetrofitError error) {
 
+                                            progressBar.setVisibility(View.GONE);
+
+                                            registrationButton.setVisibility(View.VISIBLE);
+
                                         }
                                     });
 
@@ -143,6 +177,10 @@ public class RegistrationActivity extends Activity {
 
                         @Override
                         public void failure(RetrofitError error) {
+
+                            progressBar.setVisibility(View.GONE);
+
+                            registrationButton.setVisibility(View.VISIBLE);
 
                         }
                     });
@@ -182,6 +220,10 @@ public class RegistrationActivity extends Activity {
 
         if (matcher.matches()) {
 
+            registrationButton.setVisibility(View.GONE);
+
+            progressBar.setVisibility(View.VISIBLE);
+
             LogInBody logInBody = new LogInBody(email, password, getString(R.string.response_type),
                     getString(R.string.client_id), getString(R.string.redirect_uri),
                     getString(R.string.scope), getString(R.string.state));
@@ -212,6 +254,10 @@ public class RegistrationActivity extends Activity {
                                         public void success(UserBasicResponse userBasicResponse,
                                                             Response response) {
 
+                                            progressBar.setVisibility(View.GONE);
+
+                                            registrationButton.setVisibility(View.VISIBLE);
+
                                             prefs.edit().putInt("user_id", userBasicResponse.getUserId()).apply();
 
                                             Intent intent = new Intent();
@@ -225,6 +271,10 @@ public class RegistrationActivity extends Activity {
                                         @Override
                                         public void failure(RetrofitError error) {
 
+                                            progressBar.setVisibility(View.GONE);
+
+                                            registrationButton.setVisibility(View.VISIBLE);
+
                                         }
 
                                     });
@@ -234,7 +284,12 @@ public class RegistrationActivity extends Activity {
                         @Override
                         public void failure(RetrofitError error) {
 
+                            progressBar.setVisibility(View.GONE);
+
+                            registrationButton.setVisibility(View.VISIBLE);
+
                         }
+
                     });
 
         } else {
