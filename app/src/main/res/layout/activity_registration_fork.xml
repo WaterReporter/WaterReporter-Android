@@ -1,0 +1,73 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/gray_f5f7f9"
+    tools:context="com.viableindustries.waterreporter.RegistrationForkActivity">
+
+    <Button
+        android:id="@+id/register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/green_button"
+        android:gravity="center"
+        android:onClick="toRegistration"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:text="Sign Up"
+        android:textColor="@color/white"
+        android:textSize="@dimen/base_text" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_gravity="center|center_vertical"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@color/gray_224" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|center_vertical"
+            android:layout_marginBottom="0dp"
+            android:layout_marginTop="0dp"
+            android:background="@color/gray_f5f7f9"
+            android:gravity="center|center_vertical"
+            android:padding="8dp"
+            android:text="OR"
+            android:textAllCaps="true"
+            android:textColor="@color/gray_224"
+            android:textSize="@dimen/medium_text" />
+
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="0dp"
+        android:background="@drawable/blue_button"
+        android:gravity="center"
+        android:onClick="toLoginIn"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:text="Log In"
+        android:textColor="@color/white"
+        android:textSize="@dimen/base_text" />
+
+</LinearLayout>

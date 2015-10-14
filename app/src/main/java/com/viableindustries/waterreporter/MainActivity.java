@@ -1,16 +1,9 @@
 package com.viableindustries.waterreporter;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,21 +11,16 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
 import com.mapbox.mapboxsdk.overlay.Icon;
-import com.mapbox.mapboxsdk.overlay.Marker;
-import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.mapbox.mapboxsdk.util.GeoUtils;
 import com.mapbox.mapboxsdk.views.InfoWindow;
 import com.mapbox.mapboxsdk.views.MapView;
-import com.viableindustries.waterreporter.camera.CameraActivity;
 import com.viableindustries.waterreporter.data.FeatureCollection;
-import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.Report;
+import com.viableindustries.waterreporter.data.ReportService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -235,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (user_id == 0) {
 
-            startActivityForResult(new Intent(this, RegistrationActivity.class), REGISTRATION_REQUEST);
+            startActivityForResult(new Intent(this, RegistrationForkActivity.class), REGISTRATION_REQUEST);
 
         } else if (access_token.equals("")) {
 

@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="20dp"
         android:layout_marginTop="0dp"
         android:background="@color/base_blue"
         android:gravity="center"
@@ -19,6 +19,44 @@
         android:text="Sign In"
         android:textColor="@color/white"
         android:textSize="@dimen/medium_text" />
+
+    <LinearLayout
+        android:id="@+id/error_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="0dp"
+            android:background="@drawable/error_text"
+            android:padding="10dp"
+            android:text="@string/invalid_credentials"
+            android:textSize="@dimen/base_text" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginTop="0dp"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:onClick="toReset"
+            android:paddingBottom="16dp"
+            android:paddingTop="16dp"
+            android:text="I forgot my password."
+            android:textColor="@color/base_blue"
+            android:textSize="@dimen/base_text" />
+
+    </LinearLayout>
 
     <EditText
         android:id="@+id/email"
@@ -60,7 +98,7 @@
         android:onClick="saveAccount"
         android:paddingBottom="20dp"
         android:paddingTop="20dp"
-        android:text="Save"
+        android:text="Submit"
         android:textColor="@color/white"
         android:textSize="@dimen/base_text" />
 

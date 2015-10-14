@@ -302,25 +302,4 @@ public class RegistrationActivity extends Activity {
 
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        // Check which request we're responding to
-//        if (requestCode == PROFILE_REQUEST) {
-//            // Make sure the request was successful
-//            if (resultCode == RESULT_OK) {
-//
-//                // The user successfully added their first and last names, so let's proceed
-//                // to report creation
-//                Intent intent = new Intent();
-//
-//                setResult(RESULT_OK, intent);
-//
-//                finish();
-//
-//            }
-//
-//        }
-//
-//    }
-
 }

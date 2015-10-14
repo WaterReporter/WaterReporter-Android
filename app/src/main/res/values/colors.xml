@@ -5,7 +5,13 @@
     <color name="white">#FFFFFF</color>
     <color name="red">#FF0000</color>
 
+    <color name="base_red">#e01445</color>
+    <color name="red_canvas">#fce3e9</color>
+
     <color name="base_green">#14e049</color>
+
+    <color name="green_1">#0ad570</color>
+    <color name="green_canvas">#e0feef</color>
 
     <color name="base_blue">#14ABE0</color>
     <color name="dark_blue">#1087b1</color>

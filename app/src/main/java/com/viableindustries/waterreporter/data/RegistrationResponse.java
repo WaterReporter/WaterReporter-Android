@@ -13,17 +13,23 @@ public class RegistrationResponse {
     private Map<String, Integer> meta;
 
     @SerializedName("response")
-    private Map<String, Map<String, String>> response;
+    private Map<String, Map<String, Object>> response;
 
     public String getAccessToken() {
 
-        return response.get("user").get("authentication_token");
+        return (String) response.get("user").get("authentication_token");
 
     }
 
     public Integer getUserId() {
 
-        return Integer.parseInt(response.get("user").get("id"));
+        return (Integer) response.get("user").get("id");
+
+    }
+
+    public Integer getCode() {
+
+        return meta.get("code");
 
     }
 

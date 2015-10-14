@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.viableindustries.waterreporter.data.AuthResponse;
 import com.viableindustries.waterreporter.data.LogInBody;
@@ -35,6 +36,8 @@ public class SignInActivity extends Activity {
 
     @Bind(R.id.email) EditText email_text;
 
+    @Bind(R.id.error_message) LinearLayout error_message;
+
     private static final String EMAIL_PATTERN =
             "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                     + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
@@ -45,8 +48,6 @@ public class SignInActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
-//        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 
         setContentView(R.layout.activity_sign_in);
 
@@ -69,8 +70,6 @@ public class SignInActivity extends Activity {
             }
         }
 
-        //set custom title layout for window
-//        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.custom_title);
         //prevent sign-in window from being closed by clicking outside of it
         //this forces the user to actually sign-in
         this.setFinishOnTouchOutside(false);
@@ -152,6 +151,16 @@ public class SignInActivity extends Activity {
                         @Override
                         public void failure(RetrofitError error) {
 
+                            Response response = error.getResponse();
+
+                            int status = response.getStatus();
+
+                            if (status == 403) {
+
+                                error_message.setVisibility(View.VISIBLE);
+
+                            }
+
                         }
                     });
 
@@ -162,6 +171,14 @@ public class SignInActivity extends Activity {
             email_text.setHint("Enter a valid email address");
 
         }
+
+    }
+
+    public void toReset (View v) {
+
+        startActivity(new Intent(this, PasswordResetActivity.class));
+
+        finish();
 
     }
 

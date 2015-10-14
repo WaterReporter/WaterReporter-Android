@@ -61,6 +61,13 @@
     <string name="scope">user</string>
     <string name="state">json</string>
 
+    <!-- Invalid credentials -->
+
+    <string name="invalid_credentials">We couldn\'t identify you. Please double-check your email and password.</string>
+    <string name="reset_instructions">Enter the email address that you used to register with Water Reporter. If we find a match, you\'ll receive an email with instructions for resetting your password.</string>
+    <string name="reset_success">We sent you an email with a password reset link. Please come back and log in after you change your password.</string>
+    <string name="reset_error">We couldn\'t find you in Water Reporter. Please double-check the email that you entered and make sure that it\'s the same one you used to register.</string>
+
     <!-- Camera -->
     <string name="picture">Picture</string>
     <string name="description_info">Info</string>
@@ -78,5 +85,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_profile_basic">ProfileBasicActivity</string>
+    <string name="title_activity_registration_fork">RegistrationForkActivity</string>
+    <string name="title_activity_password_reset">PasswordResetActivity</string>
 
 </resources>

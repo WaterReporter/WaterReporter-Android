@@ -8,12 +8,4 @@ public class ReportPostResponse {
 
     public Report report;
 
-//    public String code;
-//
-//    public String message;
-//
-//    public int resource_id;
-//
-//    public String status;
-
 }
