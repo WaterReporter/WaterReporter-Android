@@ -27,7 +27,7 @@ public interface ImageService {
     public void postImage
             (@Header("Authorization") String authorization,
              @Part("image") TypedFile photo,
-             Callback<ReportPhoto> cb);
+             Callback<ImageProperties> imagePropertiesCallback);
 
 //    @Multipart
 //    @POST("/media/image")

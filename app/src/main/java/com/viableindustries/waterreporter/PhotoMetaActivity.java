@@ -44,8 +44,7 @@ import butterknife.ButterKnife;
  * Created by Ryan Hamley on 10/28/14.
  * This activity handles all of the report functionality.
  */
-public class PhotoMetaActivity extends AppCompatActivity
-        implements PhotoPickerDialogFragment.PhotoPickerDialogListener {
+public class PhotoMetaActivity extends AppCompatActivity {
 
     @Bind(R.id.date)
     EditText dateField;
@@ -66,7 +65,9 @@ public class PhotoMetaActivity extends AppCompatActivity
     private static final int ACTION_TAKE_PHOTO = 1;
     private static final int ACTION_SELECT_PHOTO = 2;
 
-    private String mCurrentPhotoPath;
+    private String mGalleryPath;
+
+    private String mTempImagePath;
 
     private int mImageId;
 
@@ -101,18 +102,22 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         if (extras != null) {
 
-            mCurrentPhotoPath = extras.getString("image_path", "");
+            mTempImagePath = extras.getString("image_path", "");
+
+            mGalleryPath = extras.getString("gallery_path", "");
+
+            Log.d("galleryPath", mGalleryPath);
 
             mImageId = extras.getInt("image_id", 0);
 
-            Log.d("image_path", mCurrentPhotoPath);
+            Log.d("image_path", mTempImagePath);
 
             Log.d("image_id", mImageId + "");
 
             //Picasso.with(this).load(new File(mCurrentPhotoPath)).into(mImageView);
 
             Picasso.with(this)
-                    .load(new File(mCurrentPhotoPath))
+                    .load(new File(mTempImagePath))
                     .placeholder(R.drawable.square_placeholder)
                     .into(mImageView);
 
@@ -122,18 +127,22 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         if (savedInstanceState != null) {
 
-            mCurrentPhotoPath = savedInstanceState.getString("image_path", "");
+            mTempImagePath = savedInstanceState.getString("image_path", "");
+
+            mGalleryPath = savedInstanceState.getString("gallery_path", "");
+
+            Log.d("galleryPath", mGalleryPath);
 
             mImageId = savedInstanceState.getInt("image_id", 0);
 
-            Log.d("image_path", mCurrentPhotoPath);
+            Log.d("image_path", mTempImagePath);
 
             Log.d("image_id", mImageId + "");
 
             //Picasso.with(this).load(new File(mCurrentPhotoPath)).into(mImageView);
 
             Picasso.with(this)
-                    .load(new File(mCurrentPhotoPath))
+                    .load(new File(mTempImagePath))
                     .placeholder(R.drawable.square_placeholder)
                     .into(mImageView);
 
@@ -208,7 +217,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                 if (latitude == 0 || longitude == 0) {
 
-                    CharSequence text = "Please update your location.";
+                    CharSequence text = "Please verify your location.";
                     Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
                     toast.show();
 
@@ -227,7 +236,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                 if (latitude == 0 || longitude == 0) {
 
-                    CharSequence text = "Please update your location.";
+                    CharSequence text = "Please verify your location.";
                     Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
                     toast.show();
 
@@ -238,7 +247,7 @@ public class PhotoMetaActivity extends AppCompatActivity
             }
 
             Submission submission = new Submission(dateText,
-                    commentsText, latitude, longitude, mCurrentPhotoPath, mImageId);
+                    commentsText, latitude, longitude, mTempImagePath, mGalleryPath, mImageId);
 
             submission.save();
 
@@ -405,104 +414,104 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
-    private void galleryAddPic() {
-
-        Intent mediaScanIntent = new Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE");
-
-        File f = new File(mCurrentPhotoPath);
-
-        Uri contentUri = Uri.fromFile(f);
-
-        mediaScanIntent.setData(contentUri);
-
-        this.sendBroadcast(mediaScanIntent);
-
-    }
-
-    private void handleBigCameraPhoto() {
-
-        if (mCurrentPhotoPath != null) {
-            setPic(mCurrentPhotoPath);
-            galleryAddPic();
-        }
-
-    }
-
-    private void processGalleryPhoto(Intent returnedImageIntent) {
-
-        Uri selectedImage = returnedImageIntent.getData();
-
-        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-
-        Cursor cursor = getContentResolver().query(
-                selectedImage, filePathColumn, null, null, null);
-        cursor.moveToFirst();
-
-        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-
-        mCurrentPhotoPath = cursor.getString(columnIndex);
-
-        cursor.close();
-
-        setPic(mCurrentPhotoPath);
-
-        /* Decode the JPEG file into a Bitmap */
-//        mImageBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+//    private void galleryAddPic() {
 //
-//		/* Associate the Bitmap to the ImageView */
-//        mImageView.setImageBitmap(mImageBitmap);
+//        Intent mediaScanIntent = new Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE");
 //
-//        mImageView.setVisibility(View.VISIBLE);
+//        File f = new File(mCurrentPhotoPath);
+//
+//        Uri contentUri = Uri.fromFile(f);
+//
+//        mediaScanIntent.setData(contentUri);
+//
+//        this.sendBroadcast(mediaScanIntent);
+//
+//    }
+//
+//    private void handleBigCameraPhoto() {
+//
+//        if (mCurrentPhotoPath != null) {
+//            setPic(mCurrentPhotoPath);
+//            galleryAddPic();
+//        }
+//
+//    }
 
-    }
+//    private void processGalleryPhoto(Intent returnedImageIntent) {
+//
+//        Uri selectedImage = returnedImageIntent.getData();
+//
+//        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+//
+//        Cursor cursor = getContentResolver().query(
+//                selectedImage, filePathColumn, null, null, null);
+//        cursor.moveToFirst();
+//
+//        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+//
+//        mCurrentPhotoPath = cursor.getString(columnIndex);
+//
+//        cursor.close();
+//
+//        setPic(mCurrentPhotoPath);
+//
+//        /* Decode the JPEG file into a Bitmap */
+////        mImageBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+////
+////		/* Associate the Bitmap to the ImageView */
+////        mImageView.setImageBitmap(mImageBitmap);
+////
+////        mImageView.setVisibility(View.VISIBLE);
+//
+//    }
 
-    private android.hardware.Camera.Size getSupportedSize() {
-
-        Camera camera = android.hardware.Camera.open();
-
-//        android.hardware.Camera.Parameters cameraParams = new android.hardware.Camera.Parameters();
-
-//        android.hardware.Camera.Parameters cameraParams = camera.getParameters();
-
-        List<Camera.Size> supportedSizes = camera.getParameters().getSupportedPictureSizes();
-
-        List<android.hardware.Camera.Size> targetSizes = new ArrayList<Camera.Size>();
-
-        for (android.hardware.Camera.Size size : supportedSizes) {
-
-            Log.d("supported size", size.height + "x" + size.width);
-
-            if ((size.height >= 1280) && (size.width != size.height)) {
-
-                targetSizes.add(size);
-
-            }
-
-        }
-
-        Collections.sort(targetSizes, new Comparator<Camera.Size>() {
-
-            public int compare(android.hardware.Camera.Size size1, android.hardware.Camera.Size size2) {
-
-                return Double.compare(size1.width, size2.width);
-
-            }
-
-        });
-
-        camera.release();
-
-        if (!targetSizes.isEmpty()) {
-
-            return targetSizes.get(0);
-
-        } else {
-
-            return supportedSizes.get(supportedSizes.size() - 1);
-
-        }
-
-    }
+//    private android.hardware.Camera.Size getSupportedSize() {
+//
+//        Camera camera = android.hardware.Camera.open();
+//
+////        android.hardware.Camera.Parameters cameraParams = new android.hardware.Camera.Parameters();
+//
+////        android.hardware.Camera.Parameters cameraParams = camera.getParameters();
+//
+//        List<Camera.Size> supportedSizes = camera.getParameters().getSupportedPictureSizes();
+//
+//        List<android.hardware.Camera.Size> targetSizes = new ArrayList<Camera.Size>();
+//
+//        for (android.hardware.Camera.Size size : supportedSizes) {
+//
+//            Log.d("supported size", size.height + "x" + size.width);
+//
+//            if ((size.height >= 1280) && (size.width != size.height)) {
+//
+//                targetSizes.add(size);
+//
+//            }
+//
+//        }
+//
+//        Collections.sort(targetSizes, new Comparator<Camera.Size>() {
+//
+//            public int compare(android.hardware.Camera.Size size1, android.hardware.Camera.Size size2) {
+//
+//                return Double.compare(size1.width, size2.width);
+//
+//            }
+//
+//        });
+//
+//        camera.release();
+//
+//        if (!targetSizes.isEmpty()) {
+//
+//            return targetSizes.get(0);
+//
+//        } else {
+//
+//            return supportedSizes.get(supportedSizes.size() - 1);
+//
+//        }
+//
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -510,12 +519,12 @@ public class PhotoMetaActivity extends AppCompatActivity
         switch (requestCode) {
             case ACTION_TAKE_PHOTO:
                 if (resultCode == RESULT_OK) {
-                    handleBigCameraPhoto();
+                    //handleBigCameraPhoto();
                 }
                 break;
             case ACTION_SELECT_PHOTO:
                 if (resultCode == RESULT_OK) {
-                    processGalleryPhoto(data);
+                    //processGalleryPhoto(data);
                 }
                 break;
             case ACTION_SET_LOCATION:
@@ -526,9 +535,9 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                     location = bundle.getParcelable("latLng");
 
-                    Log.d("location", location.getLatitude() + "");
-
                     if (location != null) {
+
+                        Log.d("location", location.getLatitude() + "");
 
                         staticMap.setVisibility(View.VISIBLE);
 
@@ -586,46 +595,46 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
-    @Override
-    public void onDialogPositiveClick(DialogFragment dialog) {
+//    @Override
+//    public void onDialogPositiveClick(DialogFragment dialog) {
+//
+//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//
+//        android.hardware.Camera.Size size = getSupportedSize();
+//
+//        Log.d("size", size.height + "x" + size.width);
+//
+//        try {
+//
+//            File f = createImageFile();
+//
+//            mCurrentPhotoPath = f.getAbsolutePath();
+//
+//            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+//
+//        } catch (IOException e) {
+//
+//            e.printStackTrace();
+//
+//            mCurrentPhotoPath = null;
+//
+//        }
+//
+//        startActivityForResult(takePictureIntent, ACTION_TAKE_PHOTO);
+//        ;
+//
+//    }
 
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        android.hardware.Camera.Size size = getSupportedSize();
-
-        Log.d("size", size.height + "x" + size.width);
-
-        try {
-
-            File f = createImageFile();
-
-            mCurrentPhotoPath = f.getAbsolutePath();
-
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-
-            mCurrentPhotoPath = null;
-
-        }
-
-        startActivityForResult(takePictureIntent, ACTION_TAKE_PHOTO);
-        ;
-
-    }
-
-    @Override
-    public void onDialogNegativeClick(DialogFragment dialog) {
-
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-
-        photoPickerIntent.setType("image/*");
-
-        startActivityForResult(photoPickerIntent, ACTION_SELECT_PHOTO);
-
-    }
+//    @Override
+//    public void onDialogNegativeClick(DialogFragment dialog) {
+//
+//        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+//
+//        photoPickerIntent.setType("image/*");
+//
+//        startActivityForResult(photoPickerIntent, ACTION_SELECT_PHOTO);
+//
+//    }
 
 
     @Override
@@ -640,7 +649,9 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         outState.putDouble("latitude", longitude);
 
-        outState.putString("image_path", mCurrentPhotoPath);
+        outState.putString("image_path", mTempImagePath);
+
+        outState.putString("gallery_path", mGalleryPath);
 
         outState.putInt("image_id", mImageId);
 

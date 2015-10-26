@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -39,6 +40,9 @@ public class RegistrationActivity extends Activity {
 
     @Bind(R.id.email)
     EditText email_text;
+
+    @Bind(R.id.error_message)
+    LinearLayout error_message;
 
     @Bind(R.id.register)
     Button registrationButton;
@@ -133,44 +137,58 @@ public class RegistrationActivity extends Activity {
                         public void success(RegistrationResponse registrationResponse,
                                             Response response) {
 
-                            // Store user id
-                            prefs.edit()
-                                    .putInt("user_id", registrationResponse.getUserId())
-                                    .apply();
+                            int responseCode = registrationResponse.getCode();
 
-                            // Silently log-in with new credentials
-                            LogInBody logInBody = new LogInBody(email, password, getString(R.string.response_type),
-                                    getString(R.string.client_id), getString(R.string.redirect_uri),
-                                    getString(R.string.scope), getString(R.string.state));
+                            if (responseCode == 400) {
 
-                            securityService.save(logInBody,
-                                    new Callback<AuthResponse>() {
-                                        @Override
-                                        public void success(AuthResponse authResponse,
-                                                            Response response) {
+                                error_message.setVisibility(View.VISIBLE);
 
-                                            progressBar.setVisibility(View.GONE);
+                                progressBar.setVisibility(View.GONE);
 
-                                            registrationButton.setVisibility(View.VISIBLE);
+                                registrationButton.setVisibility(View.VISIBLE);
 
-                                            // Store API access token
-                                            prefs.edit().putString("access_token", "Bearer " + authResponse.getAccessToken()).apply();
+                            } else {
 
-                                            startActivity(new Intent(RegistrationActivity.this, ProfileBasicActivity.class));
+                                // Store user id
+                                prefs.edit()
+                                        .putInt("user_id", registrationResponse.getUserId())
+                                        .apply();
 
-                                            finish();
+                                // Silently log-in with new credentials
+                                LogInBody logInBody = new LogInBody(email, password, getString(R.string.response_type),
+                                        getString(R.string.client_id), getString(R.string.redirect_uri),
+                                        getString(R.string.scope), getString(R.string.state));
 
-                                        }
+                                securityService.save(logInBody,
+                                        new Callback<AuthResponse>() {
+                                            @Override
+                                            public void success(AuthResponse authResponse,
+                                                                Response response) {
 
-                                        @Override
-                                        public void failure(RetrofitError error) {
+                                                progressBar.setVisibility(View.GONE);
 
-                                            progressBar.setVisibility(View.GONE);
+                                                registrationButton.setVisibility(View.VISIBLE);
 
-                                            registrationButton.setVisibility(View.VISIBLE);
+                                                // Store API access token
+                                                prefs.edit().putString("access_token", "Bearer " + authResponse.getAccessToken()).apply();
 
-                                        }
-                                    });
+                                                startActivity(new Intent(RegistrationActivity.this, ProfileBasicActivity.class));
+
+                                                finish();
+
+                                            }
+
+                                            @Override
+                                            public void failure(RetrofitError error) {
+
+                                                progressBar.setVisibility(View.GONE);
+
+                                                registrationButton.setVisibility(View.VISIBLE);
+
+                                            }
+                                        });
+
+                            }
 
 
                         }
@@ -299,6 +317,14 @@ public class RegistrationActivity extends Activity {
             email_text.setHint("Enter a valid email address");
 
         }
+
+    }
+
+    public void toLogIn(View v) {
+
+        startActivity(new Intent(this, SignInActivity.class));
+
+        finish();
 
     }
 

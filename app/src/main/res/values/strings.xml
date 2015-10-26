@@ -61,6 +61,10 @@
     <string name="scope">user</string>
     <string name="state">json</string>
 
+    <!-- Existing email -->
+
+    <string name="existing_email">The email you provided is already associated with an account. If you\'re already a member, please try logging in.</string>
+
     <!-- Invalid credentials -->
 
     <string name="invalid_credentials">We couldn\'t identify you. Please double-check your email and password.</string>

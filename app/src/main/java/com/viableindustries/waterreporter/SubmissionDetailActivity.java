@@ -8,6 +8,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.ShareActionProvider;
@@ -29,11 +30,14 @@ import butterknife.ButterKnife;
  */
 public class SubmissionDetailActivity extends AppCompatActivity {
 
-    @Bind(R.id.date_label) TextView dateText;
+    @Bind(R.id.date_label)
+    TextView dateText;
 
-    @Bind(R.id.comments_label) TextView commentsText;
+    @Bind(R.id.comments_label)
+    TextView commentsText;
 
-    @Bind(R.id.submission_image) ImageView imageView;
+    @Bind(R.id.submission_image)
+    ImageView imageView;
 
     private Submission submission;
 
@@ -61,7 +65,7 @@ public class SubmissionDetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        if(intent != null && intent.hasExtra("SubmissionId")){
+        if (intent != null && intent.hasExtra("SubmissionId")) {
 
             long id = intent.getLongExtra("SubmissionId", 0);
 
@@ -73,9 +77,14 @@ public class SubmissionDetailActivity extends AppCompatActivity {
 
             commentsText.setText(submission.report_description);
 
-            if(submission.photoPath != null) {
+            if (submission.galleryPath != null) {
 
-                Picasso.with(this).load(new File(submission.photoPath)).into(imageView);
+                Log.d("remote", submission.galleryPath);
+
+                Picasso.with(this)
+                        .load(submission.galleryPath)
+                        .placeholder(R.drawable.square_placeholder)
+                        .into(imageView);
 
             }
         }
@@ -91,7 +100,7 @@ public class SubmissionDetailActivity extends AppCompatActivity {
 
         ShareActionProvider mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
 
-        if(mShareActionProvider != null){
+        if (mShareActionProvider != null) {
 
             mShareActionProvider.setShareIntent(createShareSubmissionIntent());
 
@@ -100,11 +109,11 @@ public class SubmissionDetailActivity extends AppCompatActivity {
         return true;
     }
 
-    private Intent createShareSubmissionIntent(){
+    private Intent createShareSubmissionIntent() {
 
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
 
-        if(Build.VERSION.SDK_INT == 21){
+        if (Build.VERSION.SDK_INT == 21) {
 
             shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
 

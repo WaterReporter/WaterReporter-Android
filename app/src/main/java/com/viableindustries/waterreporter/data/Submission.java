@@ -14,6 +14,8 @@ public class Submission extends SugarRecord<Submission> {
 
     public String photoPath;
 
+    public String galleryPath;
+
     public int photoId;
 
     public double latitude;
@@ -27,7 +29,7 @@ public class Submission extends SugarRecord<Submission> {
     }
 
     public Submission(String aDate, String aDescription, double aLatitude,
-                      double aLongitude, String aPhotoPath, int aPhotoId){
+                      double aLongitude, String aPhotoPath, String aGalleryPath, int aPhotoId){
 
         this.report_date = aDate;
 
@@ -38,6 +40,8 @@ public class Submission extends SugarRecord<Submission> {
         this.longitude = aLongitude;
 
         this.photoPath = aPhotoPath;
+
+        this.galleryPath = aGalleryPath;
 
         this.photoId = aPhotoId;
 

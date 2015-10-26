@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
+import android.media.ExifInterface;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -80,6 +81,7 @@ public class PhotoActivity extends AppCompatActivity
     protected boolean photoCaptured = false;
 
     private String mCurrentPhotoPath;
+    private String newFilePath;
 
     private Bitmap mImageBitmap;
 
@@ -109,7 +111,7 @@ public class PhotoActivity extends AppCompatActivity
 
         if (savedInstanceState != null) {
 
-            mCurrentPhotoPath = savedInstanceState.getString("image_path");
+            mCurrentPhotoPath = savedInstanceState.getString("gallery_path");
 
             if (mCurrentPhotoPath != null && !mCurrentPhotoPath.isEmpty()) photoCaptured = true;
 
@@ -208,15 +210,32 @@ public class PhotoActivity extends AppCompatActivity
 
     }
 
-    private File createImageFile() throws IOException {
+    private File createImageFile(boolean temp) throws IOException {
+
+        File outputDir = null;
+
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
         String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
 
-        File albumF = getAlbumDir();
+        //File outputDir = this.getCacheDir(); // context being the Activity pointer
 
-        return File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, albumF);
+        //File outputFile = File.createTempFile("prefix", "extension", outputDir);
+
+        if (temp) {
+
+            outputDir = this.getCacheDir();
+
+        } else {
+
+            outputDir = getAlbumDir();
+
+        }
+
+        //File albumF = getAlbumDir();
+
+        return File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, outputDir);
 
     }
 
@@ -298,7 +317,11 @@ public class PhotoActivity extends AppCompatActivity
 
         try {
 
-            File file = new File(filePath);
+            // Create new image file and path reference
+
+            File file = createImageFile(true);
+
+            newFilePath = file.getAbsolutePath();
 
             FileOutputStream fOut = new FileOutputStream(file);
 
@@ -308,21 +331,94 @@ public class PhotoActivity extends AppCompatActivity
 
             fOut.close();
 
+            // Create instances of ExifInterface for new and existing image files
+
+            ExifInterface oldExif = new ExifInterface(filePath);
+
+            ExifInterface newExif = new ExifInterface(newFilePath);
+
+            String exifOrientation = oldExif.getAttribute(ExifInterface.TAG_ORIENTATION);
+
+            if (exifOrientation != null) {
+
+                Log.d("orientation", exifOrientation);
+                newExif.setAttribute(ExifInterface.TAG_ORIENTATION, exifOrientation);
+                newExif.saveAttributes();
+
+            }
+
+            String exifDateTime = oldExif.getAttribute(ExifInterface.TAG_DATETIME);
+
+            if (exifDateTime != null) {
+
+                Log.d("iso", exifDateTime);
+                newExif.setAttribute(ExifInterface.TAG_DATETIME, exifDateTime);
+                newExif.saveAttributes();
+
+            }
+
+            String exifMake = oldExif.getAttribute(ExifInterface.TAG_MAKE);
+
+            if (exifMake != null) {
+
+                Log.d("make", exifMake);
+                newExif.setAttribute(ExifInterface.TAG_MAKE, exifMake);
+                newExif.saveAttributes();
+
+            }
+
+            String exifModel = oldExif.getAttribute(ExifInterface.TAG_MODEL);
+
+            if (exifModel != null) {
+
+                Log.d("model", exifModel);
+                newExif.setAttribute(ExifInterface.TAG_MODEL, exifModel);
+                newExif.saveAttributes();
+
+            }
+
+            String exifLatitude = oldExif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
+
+            if (exifLatitude != null) {
+
+                Log.d("lat", exifLatitude);
+                newExif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, exifLatitude);
+                newExif.saveAttributes();
+
+            }
+
+            String exifLongitude = oldExif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
+
+            if (exifLongitude != null) {
+
+                Log.d("long", exifLongitude);
+                newExif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, exifLongitude);
+                newExif.saveAttributes();
+
+            }
+
+            //galleryAddPic(newFilePath);
+
         } catch (Exception e) {
 
             e.printStackTrace();
 
             Log.d(null, "Save file error!");
 
+            newFilePath = null;
+
+            return;
+
 //            return false;
 
         }
 
-        galleryAddPic();
+        //galleryAddPic(newFilePath);
 
 //        savePhoto();
 
-        Picasso.with(this).load(new File(filePath)).into(mImageView);
+        //Picasso.with(this).load(new File(newFilePath)).into(mImageView);
+        mImageView.setImageBitmap(bitmap);
 
         mImageView.setVisibility(View.VISIBLE);
 
@@ -330,11 +426,11 @@ public class PhotoActivity extends AppCompatActivity
 
     }
 
-    private void galleryAddPic() {
+    private void galleryAddPic(String filePath) {
 
         Intent mediaScanIntent = new Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE");
 
-        File f = new File(mCurrentPhotoPath);
+        File f = new File(filePath);
 
         Uri contentUri = Uri.fromFile(f);
 
@@ -348,7 +444,7 @@ public class PhotoActivity extends AppCompatActivity
 
         if (mCurrentPhotoPath != null) {
             setPic(mCurrentPhotoPath);
-//            galleryAddPic();
+            //galleryAddPic(mCurrentPhotoPath);
         }
 
     }
@@ -438,7 +534,16 @@ public class PhotoActivity extends AppCompatActivity
 //                    mPhotoBar.setVisibility(View.VISIBLE);
 //                    captureButton.setVisibility(View.GONE);
 //                    saveButton.setVisibility(View.VISIBLE);
-                    handleBigCameraPhoto();
+                    //if (data != null) {
+
+                        captureButton.setText("Change photo");
+                        handleBigCameraPhoto();
+
+                    //} else {
+
+                        //Log.d("camera", "problem taking photo");
+
+                    //}
                 }
                 break;
             case ACTION_SELECT_PHOTO:
@@ -446,6 +551,7 @@ public class PhotoActivity extends AppCompatActivity
 //                    mPhotoBar.setVisibility(View.VISIBLE);
 //                    captureButton.setVisibility(View.GONE);
 //                    saveButton.setVisibility(View.VISIBLE);
+                    captureButton.setText("Change photo");
                     processGalleryPhoto(data);
                 }
                 break;
@@ -501,9 +607,11 @@ public class PhotoActivity extends AppCompatActivity
 
         try {
 
-            File f = createImageFile();
+            File f = createImageFile(false);
 
             mCurrentPhotoPath = f.getAbsolutePath();
+
+            Log.d("filepath", mCurrentPhotoPath);
 
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
 
@@ -545,7 +653,7 @@ public class PhotoActivity extends AppCompatActivity
             // Pass the on-device file path and API image id with the intent
             intent
 //                .putExtra("image_id", mImageId)
-                    .putExtra("image_path", mCurrentPhotoPath);
+                    .putExtra("image_path", newFilePath);
 
             startActivity(intent);
 
@@ -641,7 +749,7 @@ public class PhotoActivity extends AppCompatActivity
             // Pass the on-device file path and API image id with the intent
             intent
                     .putExtra("image_id", mImageId)
-                    .putExtra("image_path", mCurrentPhotoPath);
+                    .putExtra("image_path", newFilePath);
 
             startActivity(intent);
 
@@ -688,7 +796,9 @@ public class PhotoActivity extends AppCompatActivity
 //
         outState.putInt("image_id", mImageId);
 
-        outState.putString("image_path", mCurrentPhotoPath);
+        outState.putString("image_path", newFilePath);
+
+        outState.putString("gallery_path", mCurrentPhotoPath);
 
     }
 
@@ -706,7 +816,7 @@ public class PhotoActivity extends AppCompatActivity
 
         //mCurrentPhotoPath = savedInstanceState.getString("image_path");
 
-        if (mCurrentPhotoPath != null && !mCurrentPhotoPath.isEmpty()) photoCaptured = true;
+        if (newFilePath != null && !newFilePath.isEmpty()) photoCaptured = true;
 
 
     }

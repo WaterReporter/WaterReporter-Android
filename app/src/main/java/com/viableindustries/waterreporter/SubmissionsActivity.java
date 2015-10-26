@@ -24,6 +24,7 @@ import com.google.gson.Gson;
 import com.orm.query.Select;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.Geometry;
+import com.viableindustries.waterreporter.data.ImageProperties;
 import com.viableindustries.waterreporter.data.ImageService;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportPhoto;
@@ -223,7 +224,10 @@ public class SubmissionsActivity extends AppCompatActivity
 
         for (final Submission submission : submissions) {
 
+            //final long submissionId = submission.getId();
+
             if (submission.feature_id == 0) {
+
                 coordinates.clear();
                 geometryList.clear();
 
@@ -246,14 +250,26 @@ public class SubmissionsActivity extends AppCompatActivity
                     TypedFile typedPhoto = new TypedFile(mimeType, photo);
 
                     imageService.postImage(access_token, typedPhoto,
-                            new Callback<ReportPhoto>() {
+                            new Callback<ImageProperties>() {
                                 @Override
-                                public void success(ReportPhoto reportPhoto,
+                                public void success(ImageProperties imageProperties,
                                                     Response response) {
+
+                                    // Update the on-device record with the new remote image location
+
+                                    Log.d("properties-gallery-path", imageProperties.square_retina);
+
+                                    //Submission submission = Submission.findById(Submission.class, submissionId);
+
+                                    submission.galleryPath = imageProperties.square_retina;
+
+                                    submission.save();
+
+                                    // Retrieve the image id and create a new report
 
                                     Map<String, Integer> image_id = new HashMap<String, Integer>();
 
-                                    image_id.put("id", reportPhoto.id);
+                                    image_id.put("id", imageProperties.id);
 
                                     List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
 

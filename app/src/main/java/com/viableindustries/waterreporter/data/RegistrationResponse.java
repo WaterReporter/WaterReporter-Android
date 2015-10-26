@@ -23,7 +23,7 @@ public class RegistrationResponse {
 
     public Integer getUserId() {
 
-        return (Integer) response.get("user").get("id");
+        return Integer.parseInt(response.get("user").get("id").toString());
 
     }
 
