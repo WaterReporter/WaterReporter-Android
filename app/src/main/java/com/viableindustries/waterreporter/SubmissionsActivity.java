@@ -224,7 +224,7 @@ public class SubmissionsActivity extends AppCompatActivity
 
         for (final Submission submission : submissions) {
 
-            //final long submissionId = submission.getId();
+            if (submission.galleryPath != null && submission.galleryPath.length() > 0) Log.d("migrate", submission.galleryPath);
 
             if (submission.feature_id == 0) {
 
@@ -258,8 +258,6 @@ public class SubmissionsActivity extends AppCompatActivity
                                     // Update the on-device record with the new remote image location
 
                                     Log.d("properties-gallery-path", imageProperties.square_retina);
-
-                                    //Submission submission = Submission.findById(Submission.class, submissionId);
 
                                     submission.galleryPath = imageProperties.square_retina;
 

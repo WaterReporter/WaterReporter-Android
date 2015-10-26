@@ -77,7 +77,7 @@ public class SubmissionDetailActivity extends AppCompatActivity {
 
             commentsText.setText(submission.report_description);
 
-            if (submission.galleryPath != null) {
+            if (submission.galleryPath != null && submission.galleryPath.length() > 0) {
 
                 Log.d("remote", submission.galleryPath);
 

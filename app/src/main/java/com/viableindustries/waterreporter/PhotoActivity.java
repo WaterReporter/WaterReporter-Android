@@ -477,54 +477,6 @@ public class PhotoActivity extends AppCompatActivity
 
     }
 
-    private android.hardware.Camera.Size getSupportedSize() {
-
-        Camera camera = android.hardware.Camera.open();
-
-//        android.hardware.Camera.Parameters cameraParams = new android.hardware.Camera.Parameters();
-
-//        android.hardware.Camera.Parameters cameraParams = camera.getParameters();
-
-        List<Camera.Size> supportedSizes = camera.getParameters().getSupportedPictureSizes();
-
-        List<android.hardware.Camera.Size> targetSizes = new ArrayList<Camera.Size>();
-
-        for (android.hardware.Camera.Size size : supportedSizes) {
-
-            Log.d("supported size", size.height + "x" + size.width);
-
-            if ((size.height >= 1280) && (size.width != size.height)) {
-
-                targetSizes.add(size);
-
-            }
-
-        }
-
-        Collections.sort(targetSizes, new Comparator<Camera.Size>() {
-
-            public int compare(android.hardware.Camera.Size size1, android.hardware.Camera.Size size2) {
-
-                return Double.compare(size1.width, size2.width);
-
-            }
-
-        });
-
-        camera.release();
-
-        if (!targetSizes.isEmpty()) {
-
-            return targetSizes.get(0);
-
-        } else {
-
-            return supportedSizes.get(supportedSizes.size() - 1);
-
-        }
-
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -587,23 +539,10 @@ public class PhotoActivity extends AppCompatActivity
         startActivityForResult(new Intent(this, LocationActivity.class), ACTION_SET_LOCATION);
     }
 
-    /**
-     * onClick event to launch a date picker from Report view
-     **/
-    public void showDatePickerDialog(View v) {
-        DialogFragment newFragment = new DatePickerFragment();
-        FragmentManager fragmentManager = getFragmentManager();
-        newFragment.show(fragmentManager, "datePicker");
-    }
-
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
 
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        android.hardware.Camera.Size size = getSupportedSize();
-
-        Log.d("size", size.height + "x" + size.width);
 
         try {
 

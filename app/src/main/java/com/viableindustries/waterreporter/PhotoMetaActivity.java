@@ -14,6 +14,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -164,7 +165,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                 Picasso.with(this)
                         .load(url)
-                        //.placeholder(R.drawable.square_placeholder)
+                                //.placeholder(R.drawable.square_placeholder)
                         .fit()
                         .centerCrop()
                         .into(staticMap);
@@ -176,6 +177,26 @@ public class PhotoMetaActivity extends AppCompatActivity {
             mImageId = savedInstanceState.getInt("image_id", 0);
 
         }
+
+        // Add click listener to date field (EditText)
+
+        dateField.setInputType(InputType.TYPE_NULL);
+
+        dateField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog(v);
+            }
+        });
+
+        dateField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    showDatePickerDialog(v);
+                }
+            }
+        });
 
     }
 
@@ -247,7 +268,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
             }
 
             Submission submission = new Submission(dateText,
-                    commentsText, latitude, longitude, mTempImagePath, mGalleryPath, mImageId);
+                    commentsText, latitude, longitude, mTempImagePath, mImageId, mGalleryPath);
 
             submission.save();
 
@@ -553,7 +574,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                         Picasso.with(this)
                                 .load(url)
-                                //.placeholder(R.drawable.square_placeholder)
+                                        //.placeholder(R.drawable.square_placeholder)
                                 .fit()
                                 .centerCrop()
                                 .into(staticMap);
