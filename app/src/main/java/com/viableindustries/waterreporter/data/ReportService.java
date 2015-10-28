@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 import retrofit.Callback;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.client.Response;
 import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Headers;
@@ -49,5 +51,10 @@ public interface ReportService {
              @Header("Content-Type") String contentType,
              @Body ReportPostBody reportPostBody,
              Callback<Report> cb);
+
+    @DELETE("/data/report/{report}")
+    public void deleteSingleReport(@Header("Authorization") String authorization,
+                                @Path("report") int reportId,
+                                Callback<Response> responseCallback);
 
 }

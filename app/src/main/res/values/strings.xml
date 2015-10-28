@@ -72,6 +72,11 @@
     <string name="reset_success">We sent you an email with a password reset link. Please come back and log in after you change your password.</string>
     <string name="reset_error">We couldn\'t find you in Water Reporter. Please double-check the email that you entered and make sure that it\'s the same one you used to register.</string>
 
+    <!-- Report save -->
+
+    <string name="saving">Please sit tight while we save your report...</string>
+    <string name="report_received">Great! Your report was successfully broadcast on Water Reporter.</string>
+
     <!-- Camera -->
     <string name="picture">Picture</string>
     <string name="description_info">Info</string>

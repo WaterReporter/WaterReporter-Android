@@ -1,7 +1,10 @@
 package com.viableindustries.waterreporter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -23,6 +26,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.orm.query.Select;
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.ImageProperties;
 import com.viableindustries.waterreporter.data.ImageService;
@@ -70,7 +74,7 @@ public class SubmissionsActivity extends AppCompatActivity
     @Bind(R.id.listview_submissions)
     ListView submissionsListView;
 
-    private List<Submission> submissions;
+    private List<Report> submissions;
     private SubmittedAdapter adapter;
     private boolean postFailed = false;
     private static final String onResume = "onResume";
@@ -79,16 +83,41 @@ public class SubmissionsActivity extends AppCompatActivity
     private static final String EMAIL_KEY = "user_email";
     private static final String TITLE_KEY = "user_title";
 
+    // Check for a data connection!
+
+    protected void connectionActive() {
+
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+
+            submissionsListView.setVisibility(View.VISIBLE);
+
+            fetchRemoteReports();
+
+        } else {
+
+            submissionsListView.setVisibility(View.GONE);
+
+            CharSequence text = "Looks like you're not connected to the internet, so we couldn't retrieve your reports. Please connect to a network and try again.";
+            int duration = Toast.LENGTH_LONG;
+
+            Toast toast = Toast.makeText(getBaseContext(), text, duration);
+            toast.show();
+
+        }
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_submissions);
-
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.wr_toolbar);
-//
-//        setSupportActionBar(toolbar);
 
         ButterKnife.bind(this);
 
@@ -97,7 +126,8 @@ public class SubmissionsActivity extends AppCompatActivity
         swipeRefreshLayout.setColorSchemeResources(R.color.waterreporter_blue,
                 R.color.waterreporter_dark);
 
-        createListElements();
+        connectionActive();
+
     }
 
     @Override
@@ -107,7 +137,7 @@ public class SubmissionsActivity extends AppCompatActivity
 
         if (!swipeRefreshLayout.isRefreshing()) {
 
-            submitNewReports(onResume);
+            connectionActive();
 
         }
 
@@ -118,9 +148,16 @@ public class SubmissionsActivity extends AppCompatActivity
 
         super.onRestart();
 
-        submissions.clear();
+        if (submissions != null) submissions.clear();
 
-        createListElements();
+        connectionActive();
+
+    }
+
+    @Override
+    protected void onPause() {
+
+        super.onPause();
 
     }
 
@@ -133,12 +170,12 @@ public class SubmissionsActivity extends AppCompatActivity
 
     @Override
     public void onRefresh() {
-        submitNewReports(onRefresh);
+
+        connectionActive();
+
     }
 
     protected void createListElements() {
-
-        submissions = Select.from(Submission.class).orderBy("id DESC").list();
 
         adapter = new SubmittedAdapter();
 
@@ -148,12 +185,12 @@ public class SubmissionsActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                Submission submission = submissions.get(i);
+                Report report = submissions.get(i);
 
-                Long id = submission.getId();
+                int id = report.id;
 
                 Intent intent = new Intent(getBaseContext(), SubmissionDetailActivity.class)
-                        .putExtra("SubmissionId", id);
+                        .putExtra("SUBMISSION_ID", id);
 
                 startActivity(intent);
 
@@ -162,19 +199,13 @@ public class SubmissionsActivity extends AppCompatActivity
 
     }
 
-    protected void onPostSuccess(Submission submission, Report report) {
+    protected void onFetchSuccess(List<Report> reports) {
 
-        submission.feature_id = report.id;
+        submissions = reports;
 
-        submission.save();
+        if (adapter == null) createListElements();
 
         adapter.notifyDataSetChanged();
-
-        if (postFailed) {
-
-            postFailed = false;
-
-        }
 
         submissionsListView.invalidateViews();
 
@@ -182,152 +213,112 @@ public class SubmissionsActivity extends AppCompatActivity
 
     }
 
-    protected void onPostError() {
+    protected void onFetchError() {
 
         swipeRefreshLayout.setRefreshing(false);
-
-        postFailed = true;
 
         submissionsListView.invalidateViews();
 
         CharSequence text =
-                "Error posting reports. Try again later.";
+                "Error fetching reports. Please try again later.";
 
         Toast toast = Toast.makeText(getBaseContext(), text,
                 Toast.LENGTH_SHORT);
+
         toast.show();
 
     }
 
-    protected void submitNewReports(String method) {
+    protected void fetchRemoteReports() {
 
-        final ReportService reportService = ReportService.restAdapter.create(ReportService.class);
+        //swipeRefreshLayout.setRefreshing(true);
 
-        final ImageService imageService = ImageService.restAdapter.create(ImageService.class);
+        // Retrieve feature IDs from the local database and use them in a
 
         SharedPreferences prefs =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         final String access_token = prefs.getString("access_token", "");
 
-        ArrayList<Float> coordinates = new ArrayList<Float>(2);
+        Log.d("", access_token);
 
-        String point = "Point";
+        // Retrieve the user id
 
-        String type = "GeometryCollection";
+        int user_id = prefs.getInt("user_id", 0);
 
-        List<Geometry> geometryList = new ArrayList<Geometry>(1);
+        // Add query filters to match user ID and feature IDs not in the local database
 
-        FileNameMap fileNameMap = URLConnection.getFileNameMap();
+        String query = "{\"filters\":[{\"name\":\"owner_id\",\"op\":\"eq\",\"val\":" + user_id + "}],\"order_by\":[{\"field\":\"created\",\"direction\":\"desc\"}]}";
 
-        int count = 0;
+        ReportService service = ReportService.restAdapter.create(ReportService.class);
 
-        for (final Submission submission : submissions) {
+        service.getReports(access_token, "application/json", 100, query, new Callback<FeatureCollection>() {
 
-            if (submission.galleryPath != null && submission.galleryPath.length() > 0) Log.d("migrate", submission.galleryPath);
+            @Override
+            public void success(FeatureCollection featureCollection, Response response) {
 
-            if (submission.feature_id == 0) {
+                List<Report> reports = featureCollection.getFeatures();
 
-                coordinates.clear();
-                geometryList.clear();
+                Log.v("list", reports.toString());
 
-                coordinates.add((float) submission.longitude);
-                coordinates.add((float) submission.latitude);
-                Geometry geometry = new Geometry(coordinates, point);
-                geometryList.add(geometry);
+                if (!reports.isEmpty()) {
 
-                final GeometryResponse geometryResponse = new GeometryResponse(geometryList, type);
+                    onFetchSuccess(reports);
 
-                if (submission.photoPath != null) {
+                } else {
 
-                    //savePhoto(submission.photoPath);
-                    Log.d("filepath", submission.photoPath);
+                    // If the user somehow ends up in a situation where they have zero reports
+                    // and still found themselves in this activity (maybe after deleting their
+                    // one and only report), send them to the main activity so they can start
+                    // building up their report collection again
 
-                    File photo = new File(submission.photoPath);
-
-                    String mimeType = fileNameMap.getContentTypeFor(submission.photoPath);
-
-                    TypedFile typedPhoto = new TypedFile(mimeType, photo);
-
-                    imageService.postImage(access_token, typedPhoto,
-                            new Callback<ImageProperties>() {
-                                @Override
-                                public void success(ImageProperties imageProperties,
-                                                    Response response) {
-
-                                    // Update the on-device record with the new remote image location
-
-                                    Log.d("properties-gallery-path", imageProperties.square_retina);
-
-                                    submission.galleryPath = imageProperties.square_retina;
-
-                                    submission.save();
-
-                                    // Retrieve the image id and create a new report
-
-                                    Map<String, Integer> image_id = new HashMap<String, Integer>();
-
-                                    image_id.put("id", imageProperties.id);
-
-                                    List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
-
-                                    images.add(image_id);
-
-                                    ReportPostBody reportPostBody = new ReportPostBody(geometryResponse,
-                                            images, true, submission.report_date, submission.report_description, "public");
-
-                                    reportService.postReport(access_token, "application/json", reportPostBody,
-                                            new Callback<Report>() {
-                                                @Override
-                                                public void success(Report report,
-                                                                    Response response) {
-                                                    onPostSuccess(submission, report);
-                                                }
-
-                                                @Override
-                                                public void failure(RetrofitError error) {
-                                                    onPostError();
-                                                }
-                                            });
-
-                                }
-
-                                @Override
-                                public void failure(RetrofitError error) {
-                                    onPostError();
-                                }
-                            });
+                    startActivity(new Intent(getBaseContext(), MainActivity.class));
 
                 }
 
-            } else {
-                count++;
             }
 
-            if (count == submissions.size() && method.equals(onRefresh)) {
-                swipeRefreshLayout.setRefreshing(false);
-                CharSequence text = "All reports submitted!";
-                Toast toast = Toast.makeText(getBaseContext(), text, Toast.LENGTH_SHORT);
-                toast.show();
+            @Override
+            public void failure(RetrofitError error) {
+
+                Response response = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (response != null) {
+
+                    int status = response.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(SubmissionsActivity.this, MainActivity.class));
+
+                    }
+
+                }
+
             }
-        }
+
+        });
+
     }
 
     private static class SubmittedViewHolder {
-        public ImageView checkMark;
+        //public ImageView checkMark;
         public TextView text;
-        public ProgressBar progressBar;
+        //public ProgressBar progressBar;
         public View saved;
     }
 
     private class SubmittedAdapter extends BaseAdapter {
+
         @Override
         public int getCount() {
             return submissions.size();
         }
 
         @Override
-        public Submission getItem(int position) {
+        public Report getItem(int position) {
             return submissions.get(position);
         }
 
@@ -342,149 +333,32 @@ public class SubmissionsActivity extends AppCompatActivity
             SubmittedViewHolder holder;
 
             if (convertView == null) {
+
                 convertView = getLayoutInflater()
                         .inflate(R.layout.list_item_submission, parent, false);
+
                 holder = new SubmittedViewHolder();
+
                 holder.text = (TextView)
                         convertView.findViewById(R.id.list_item_submission_textview);
-                holder.text.setText("Submitted on " + getItem(position).report_date);
+
+                holder.text.setText("Submitted on " + getItem(position).properties.getFormattedDateString());
+
                 convertView.setTag(holder);
+
             } else {
+
                 holder = (SubmittedViewHolder) convertView.getTag();
+
             }
 
-            holder.checkMark = (ImageView) convertView.findViewById(R.id.ok_image);
+            holder.saved = convertView.findViewById(R.id.saved);
 
-            holder.progressBar = (ProgressBar) convertView.findViewById(R.id.report_spinner);
-
-            holder.progressBar.getIndeterminateDrawable().setColorFilter(
-                    getResources().getColor(R.color.base_blue),
-                    android.graphics.PorterDuff.Mode.SRC_IN);
-
-            if (getItem(position).feature_id != 0) {
-//                holder.checkMark = (ImageView) convertView.findViewById(R.id.ok_image);
-                holder.progressBar.setVisibility(View.GONE);
-
-                holder.saved = (View) convertView.findViewById(R.id.saved);
-
-                holder.saved.setVisibility(View.VISIBLE);
-//                Picasso.with(getBaseContext()).load(R.drawable.ic_done_grey600_24dp)
-//                        .into(holder.checkMark);
-            } else if (getItem(position).feature_id == 0 && !postFailed) {
-                Log.d(null, "save in progress");
-//                holder.checkMark = (ImageView) convertView.findViewById(R.id.ok_image);
-//                Picasso.with(getBaseContext()).load(R.drawable.upload).resize(75, 75)
-//                        .into(holder.checkMark);
-//                holder.progressBar.setVisibility(View.VISIBLE);
-            } else if (getItem(position).feature_id == 0 && postFailed) {
-//                holder.checkMark = (ImageView) convertView.findViewById(R.id.ok_image);
-                Picasso.with(getBaseContext()).load(R.drawable.warning).resize(75, 75)
-                        .into(holder.checkMark);
-            }
+            holder.saved.setVisibility(View.VISIBLE);
 
             return convertView;
+
         }
     }
-
-//    private class SendFileTask extends AsyncTask<String, Integer, ReportPhoto> {
-//
-//        private ProgressListener listener;
-//
-//        private String filePath;
-//
-//        private String mimeType;
-//
-//        private SharedPreferences prefs =
-//                getSharedPreferences(getPackageName(), MODE_PRIVATE);
-//
-//        private final String access_token = prefs.getString("access_token", "");
-//
-//        public SendFileTask(String filePath, String mimeType) {
-//
-//            this.filePath = filePath;
-//
-//            this.mimeType = mimeType;
-//
-//        }
-//
-//        @Override
-//        protected ReportPhoto doInBackground(String... params) {
-//
-//            File file = new File(filePath);
-//
-//            final long totalSize = file.length();
-//
-//            Log.d("Upload FileSize[%d]", totalSize + "");
-//
-//            listener = new ProgressListener() {
-//
-//                @Override
-//                public void transferred(long num) {
-//
-//                    publishProgress((int) ((num / (float) totalSize) * 100));
-//
-//                }
-//
-//            };
-//
-////            String _fileType = mimeType.equals(fileType) ? "video/mp4" : (FileType.IMAGE.equals(fileType) ? "image/jpeg" : "*/*");
-//
-//            CountingTypedFile typedPhoto = new CountingTypedFile(mimeType, file, listener);
-//
-//            return ImageService.restAdapter.create(ImageService.class).postImage(access_token, typedPhoto);
-//
-//        }
-//
-//        @Override
-//        protected void onPostExecute(ReportPhoto reportPhoto) {
-//
-//            // Retrieve image id to associate with report
-//            mImageId = reportPhoto.id;
-//
-//            Intent intent = new Intent(PhotoActivity.this, PhotoMetaActivity.class);
-//
-//            // Pass the on-device file path and API image id with the intent
-//            intent
-//                    .putExtra("image_id", mImageId)
-//                    .putExtra("image_path", mCurrentPhotoPath);
-//
-//            startActivity(intent);
-//
-//        }
-//
-//        @Override
-//        protected void onProgressUpdate(Integer... values) {
-//            Log.d(null, String.format("progress[%d]", values[0]));
-//            //do something with values[0], its the percentage so you can easily do
-//
-//            // Set progress
-//            //mPhotoBar.setProgress(values[0]);
-//
-//        }
-//
-//    }
-
-//    protected void savePhoto(String filePath) {
-//
-//        RestAdapter restAdapter = ReportService.restAdapter;
-//
-//        ImageService imageService = restAdapter.create(ImageService.class);
-//
-//        SharedPreferences prefs =
-//                getSharedPreferences(getPackageName(), MODE_PRIVATE);
-//
-//        final String access_token = prefs.getString("access_token", "");
-//
-//        FileNameMap fileNameMap = URLConnection.getFileNameMap();
-//
-//        File photo = new File(filePath);
-//
-//        String mimeType = fileNameMap.getContentTypeFor(filePath);
-//
-//        SendFileTask sendFileTask = new SendFileTask(filePath, mimeType);
-//
-//        sendFileTask.execute("");
-//
-//    }
 
 }

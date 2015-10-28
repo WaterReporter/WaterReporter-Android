@@ -27,10 +27,10 @@
         tools:replace="android:icon">
         <meta-data
             android:name="DATABASE"
-            android:value="reports.db" />
+            android:value="reports_001.db" />
         <meta-data
             android:name="VERSION"
-            android:value="3" />
+            android:value="2" />
         <meta-data
             android:name="QUERY_LOG"
             android:value="true" />

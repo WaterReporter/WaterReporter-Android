@@ -1,27 +1,43 @@
 package com.viableindustries.waterreporter;
 
 import android.app.ActionBar;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.v4.app.NavUtils;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.ShareActionProvider;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.Report;
+import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.Submission;
 
 import java.io.File;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by Ryan Hamley on 10/28/14.
@@ -29,6 +45,15 @@ import butterknife.ButterKnife;
  * one in the submissions list.
  */
 public class SubmissionDetailActivity extends AppCompatActivity {
+
+    @Bind(R.id.detail_container)
+    LinearLayout detailContainer;
+
+    @Bind(R.id.report_content)
+    LinearLayout reportContent;
+
+    @Bind(R.id.loading_spinner)
+    ProgressBar progressBar;
 
     @Bind(R.id.date_label)
     TextView dateText;
@@ -39,7 +64,7 @@ public class SubmissionDetailActivity extends AppCompatActivity {
     @Bind(R.id.submission_image)
     ImageView imageView;
 
-    private Submission submission;
+    protected int reportId;
 
     private String mDateStr;
 
@@ -63,31 +88,180 @@ public class SubmissionDetailActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        detailContainer.setGravity(Gravity.CENTER);
+
         Intent intent = getIntent();
 
-        if (intent != null && intent.hasExtra("SubmissionId")) {
+        if (intent != null && intent.hasExtra("SUBMISSION_ID")) {
 
-            long id = intent.getLongExtra("SubmissionId", 0);
+            reportId = intent.getIntExtra("SUBMISSION_ID", 0);
 
-            submission = Submission.findById(Submission.class, id);
+        }
 
-            mDateStr = submission.report_date;
+        connectionActive();
 
-            dateText.setText("Submitted on " + mDateStr);
+    }
 
-            commentsText.setText(submission.report_description);
+    // Check for a data connection!
 
-            if (submission.galleryPath != null && submission.galleryPath.length() > 0) {
+    protected void connectionActive() {
 
-                Log.d("remote", submission.galleryPath);
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
 
-                Picasso.with(this)
-                        .load(submission.galleryPath)
-                        .placeholder(R.drawable.square_placeholder)
-                        .into(imageView);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        if (networkInfo != null && networkInfo.isConnected() && reportId > 0) {
+
+            requestData(reportId);
+
+        } else {
+
+            CharSequence text = "Looks like you're not connected to the internet, so we couldn't start your report. Please connect to a network and try again.";
+            int duration = Toast.LENGTH_LONG;
+
+            Toast toast = Toast.makeText(getBaseContext(), text, duration);
+            toast.show();
+
+        }
+
+    }
+
+    protected void requestData(int id){
+
+        progressBar.getIndeterminateDrawable().setColorFilter(
+                getResources().getColor(R.color.base_blue),
+                android.graphics.PorterDuff.Mode.SRC_IN);
+
+        SharedPreferences prefs =
+                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        final String access_token = prefs.getString("access_token", "");
+
+        RestAdapter restAdapter = ReportService.restAdapter;
+
+        ReportService service = restAdapter.create(ReportService.class);
+
+        service.getSingleReport(access_token, "application/json", id, new Callback<Report>() {
+
+            @Override
+            public void success(Report report, Response response) {
+
+                progressBar.setVisibility(View.GONE);
+
+                detailContainer.setGravity(Gravity.TOP);
+
+                reportContent.setVisibility(View.VISIBLE);
+
+                if(report.properties.images.size() != 0){
+
+                    String filePath = report.properties.images.get(0).properties.square_retina;
+
+                    Picasso.with(getBaseContext())
+                            .load(filePath)
+                            .placeholder(R.drawable.square_placeholder)
+                            .into(imageView);
+
+                }
+
+                mDateStr = report.properties.getFormattedDateString();
+
+                dateText.setText("Submitted on " + mDateStr);
+
+                commentsText.setText(report.properties.report_description);
 
             }
-        }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                progressBar.setVisibility(View.GONE);
+
+                Response response = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (response != null) {
+
+                    int status = response.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(SubmissionDetailActivity.this, MainActivity.class));
+
+                    } else {
+
+                        CharSequence text = "Something went wrong and we couldn't retrieve this report.";
+                        int duration = Toast.LENGTH_LONG;
+
+                        Toast toast = Toast.makeText(getBaseContext(), text, duration);
+                        toast.show();
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+    protected void deleteReport(int id){
+
+        SharedPreferences prefs =
+                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        final String access_token = prefs.getString("access_token", "");
+
+        RestAdapter restAdapter = ReportService.restAdapter;
+
+        ReportService service = restAdapter.create(ReportService.class);
+
+        service.deleteSingleReport(access_token, id, new Callback<Response>() {
+
+            @Override
+            public void success(Response response, Response responseCallBack) {
+
+                if (response != null) {
+
+                    CharSequence text = "Report deleted!";
+                    int duration = Toast.LENGTH_LONG;
+
+                    Toast toast = Toast.makeText(getBaseContext(), text, duration);
+                    toast.show();
+
+                    startActivity(new Intent(SubmissionDetailActivity.this, SubmissionsActivity.class));
+
+                    finish();
+
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                Response response = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (response != null) {
+
+                    int status = response.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(SubmissionDetailActivity.this, MainActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
+
     }
 
 
@@ -129,6 +303,7 @@ public class SubmissionDetailActivity extends AppCompatActivity {
         shareIntent.putExtra(Intent.EXTRA_TEXT, mDateStr);
 
         return shareIntent;
+
     }
 
     @Override
@@ -140,12 +315,40 @@ public class SubmissionDetailActivity extends AppCompatActivity {
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
             case R.id.action_delete:
-                submission.delete();
-                finish();
+                deleteReport(reportId);
+                //finish();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
 
     }
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+
+        // Check for a data connection!
+
+        connectionActive();
+
+    }
+
+    @Override
+    protected void onPause() {
+
+        super.onPause();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+
+        ButterKnife.unbind(this);
+
+    }
+
 }

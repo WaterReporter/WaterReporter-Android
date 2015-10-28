@@ -2,6 +2,7 @@ package com.viableindustries.waterreporter;
 
 import android.app.DialogFragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -10,6 +11,8 @@ import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.media.ExifInterface;
 import android.media.ThumbnailUtils;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -68,13 +71,9 @@ public class PhotoActivity extends AppCompatActivity
     @Bind(R.id.preview)
     ImageView mImageView;
 
-//    @Bind(R.id.photo_bar)
-//    ProgressBar mPhotoBar;
-
     @Bind(R.id.photo_progress)
     RelativeLayout mPhotoProgress;
 
-    private static final int ACTION_SET_LOCATION = 0;
     private static final int ACTION_TAKE_PHOTO = 1;
     private static final int ACTION_SELECT_PHOTO = 2;
 
@@ -83,7 +82,7 @@ public class PhotoActivity extends AppCompatActivity
     private String mCurrentPhotoPath;
     private String newFilePath;
 
-    private Bitmap mImageBitmap;
+    protected Bitmap mImageBitmap;
 
     private static final String CAMERA_DIR = "/dcim/";
     private static final String JPEG_FILE_PREFIX = "IMG_";
@@ -91,9 +90,6 @@ public class PhotoActivity extends AppCompatActivity
 
     private LatLng location;
 
-    //    private String dateText;
-//
-//    private String commentsText;
     private int mImageId;
 
     double latitude;
@@ -121,19 +117,7 @@ public class PhotoActivity extends AppCompatActivity
 
             mImageView.setVisibility(View.VISIBLE);
 
-            latitude = savedInstanceState.getDouble("latitude");
-
-            longitude = savedInstanceState.getDouble("longitude");
-
         }
-
-//        progressBar = (ProgressBar) findViewById(R.id.timeline_spinner);
-
-//        mPhotoBar.getIndeterminateDrawable().setColorFilter(
-//                getResources().getColor(R.color.base_blue),
-//                android.graphics.PorterDuff.Mode.SRC_IN);
-
-//        launchCamera();
 
     }
 
@@ -174,16 +158,23 @@ public class PhotoActivity extends AppCompatActivity
 
             }
 
-//            Submission submission = new Submission(dateText,
-//                    commentsText, latitude, longitude, mCurrentPhotoPath);
-
-
-//            submission.save();
-
             startActivity(new Intent(this, SubmissionsActivity.class));
+
         }
 
         return super.onOptionsItemSelected(item);
+
+    }
+
+    protected boolean connectionActive() {
+
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        return networkInfo != null && networkInfo.isConnected();
+
     }
 
     private File getAlbumDir() {
@@ -219,10 +210,6 @@ public class PhotoActivity extends AppCompatActivity
 
         String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
 
-        //File outputDir = this.getCacheDir(); // context being the Activity pointer
-
-        //File outputFile = File.createTempFile("prefix", "extension", outputDir);
-
         if (temp) {
 
             outputDir = this.getCacheDir();
@@ -233,13 +220,12 @@ public class PhotoActivity extends AppCompatActivity
 
         }
 
-        //File albumF = getAlbumDir();
-
         return File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, outputDir);
 
     }
 
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+
         // Raw height and width of image
         final int height = options.outHeight;
 
@@ -387,6 +373,20 @@ public class PhotoActivity extends AppCompatActivity
 
             }
 
+            // Don't forget to check for and retrieve the latitude ref ("S", "N")
+
+            String exifLatitudeRef = oldExif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF);
+
+            if (exifLatitudeRef != null) {
+
+                Log.d("latRef", exifLatitudeRef);
+                newExif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, exifLatitudeRef);
+                newExif.saveAttributes();
+
+            }
+
+            // Don't forget to check for and retrieve the longitude ref ("E", "W")
+
             String exifLongitude = oldExif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
 
             if (exifLongitude != null) {
@@ -397,7 +397,15 @@ public class PhotoActivity extends AppCompatActivity
 
             }
 
-            //galleryAddPic(newFilePath);
+            String exifLongitudeRef = oldExif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF);
+
+            if (exifLongitudeRef != null) {
+
+                Log.d("longRef", exifLongitudeRef);
+                newExif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, exifLongitude);
+                newExif.saveAttributes();
+
+            }
 
         } catch (Exception e) {
 
@@ -409,15 +417,8 @@ public class PhotoActivity extends AppCompatActivity
 
             return;
 
-//            return false;
-
         }
 
-        //galleryAddPic(newFilePath);
-
-//        savePhoto();
-
-        //Picasso.with(this).load(new File(newFilePath)).into(mImageView);
         mImageView.setImageBitmap(bitmap);
 
         mImageView.setVisibility(View.VISIBLE);
@@ -443,8 +444,9 @@ public class PhotoActivity extends AppCompatActivity
     private void handleBigCameraPhoto() {
 
         if (mCurrentPhotoPath != null) {
+
             setPic(mCurrentPhotoPath);
-            //galleryAddPic(mCurrentPhotoPath);
+
         }
 
     }
@@ -467,55 +469,37 @@ public class PhotoActivity extends AppCompatActivity
 
         setPic(mCurrentPhotoPath);
 
-        /* Decode the JPEG file into a Bitmap */
-//        mImageBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
-//
-//		/* Associate the Bitmap to the ImageView */
-//        mImageView.setImageBitmap(mImageBitmap);
-//
-//        mImageView.setVisibility(View.VISIBLE);
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         switch (requestCode) {
+
             case ACTION_TAKE_PHOTO:
+
                 if (resultCode == RESULT_OK) {
-//                    mPhotoBar.setVisibility(View.VISIBLE);
-//                    captureButton.setVisibility(View.GONE);
-//                    saveButton.setVisibility(View.VISIBLE);
-                    //if (data != null) {
 
-                        captureButton.setText("Change photo");
-                        handleBigCameraPhoto();
-
-                    //} else {
-
-                        //Log.d("camera", "problem taking photo");
-
-                    //}
-                }
-                break;
-            case ACTION_SELECT_PHOTO:
-                if (resultCode == RESULT_OK) {
-//                    mPhotoBar.setVisibility(View.VISIBLE);
-//                    captureButton.setVisibility(View.GONE);
-//                    saveButton.setVisibility(View.VISIBLE);
                     captureButton.setText("Change photo");
-                    processGalleryPhoto(data);
+
+                    handleBigCameraPhoto();
+
                 }
+
                 break;
-            case ACTION_SET_LOCATION:
+
+            case ACTION_SELECT_PHOTO:
+
                 if (resultCode == RESULT_OK) {
-                    Bundle bundle = data.getParcelableExtra("bundle");
-                    location = bundle.getParcelable("latLng");
-                    CharSequence text = "Location saved successfully";
-                    Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-                    toast.show();
+
+                    captureButton.setText("Change photo");
+
+                    processGalleryPhoto(data);
+
                 }
+
                 break;
+
         }
     }
 
@@ -530,13 +514,6 @@ public class PhotoActivity extends AppCompatActivity
 
         newFragment.show(fragmentManager, "photoPickerDialog");
 
-    }
-
-    /**
-     * onClick event to launch a map from Report view
-     **/
-    public void updateLocation(View v) {
-        startActivityForResult(new Intent(this, LocationActivity.class), ACTION_SET_LOCATION);
     }
 
     @Override
@@ -566,33 +543,30 @@ public class PhotoActivity extends AppCompatActivity
 
     }
 
-    protected void onPostError() {
-
-//        swipeRefreshLayout.setRefreshing(false);
-//
-//        postFailed = true;
-//
-//        submissionsListView.invalidateViews();
-
-        CharSequence text =
-                "Error posting reports. Try again later.";
-
-        Toast toast = Toast.makeText(getBaseContext(), text,
-                Toast.LENGTH_SHORT);
-        toast.show();
-
-    }
-
     public void savePhoto(View v) {
+
+        // If we don't have a data connection, abort and send the user back to the main activity
+
+        if (!connectionActive()) {
+
+            CharSequence text = "Looks like you're not connected to the internet, so we couldn't start your report. Please connect to a network and try again.";
+            int duration = Toast.LENGTH_LONG;
+
+            Toast toast = Toast.makeText(getBaseContext(), text, duration);
+            toast.show();
+
+            startActivity(new Intent(this, MainActivity.class));
+
+            return;
+
+        }
 
         if (photoCaptured) {
 
             Intent intent = new Intent(PhotoActivity.this, PhotoMetaActivity.class);
 
-            // Pass the on-device file path and API image id with the intent
-            intent
-//                .putExtra("image_id", mImageId)
-                    .putExtra("image_path", newFilePath);
+            // Pass the on-device file path with the intent
+            intent.putExtra("image_path", newFilePath);
 
             startActivity(intent);
 
@@ -605,25 +579,6 @@ public class PhotoActivity extends AppCompatActivity
             toast.show();
 
         }
-
-//        RestAdapter restAdapter = ReportService.restAdapter;
-//
-//        ImageService imageService = restAdapter.create(ImageService.class);
-//
-//        SharedPreferences prefs =
-//                getSharedPreferences(getPackageName(), MODE_PRIVATE);
-//
-//        final String access_token = prefs.getString("access_token", "");
-//
-//        FileNameMap fileNameMap = URLConnection.getFileNameMap();
-//
-//        File photo = new File(mCurrentPhotoPath);
-//
-//        String mimeType = fileNameMap.getContentTypeFor(mCurrentPhotoPath);
-//
-//        SendFileTask sendFileTask = new SendFileTask(mCurrentPhotoPath, mimeType);
-//
-//        sendFileTask.execute("");
 
     }
 
@@ -668,11 +623,8 @@ public class PhotoActivity extends AppCompatActivity
 
             };
 
-//            String _fileType = mimeType.equals(fileType) ? "video/mp4" : (FileType.IMAGE.equals(fileType) ? "image/jpeg" : "*/*");
-
             CountingTypedFile typedPhoto = new CountingTypedFile(mimeType, file, listener);
 
-            //return ImageService.restAdapter.create(ImageService.class).postImage(access_token, typedPhoto);
             return null;
 
         }
@@ -696,11 +648,9 @@ public class PhotoActivity extends AppCompatActivity
 
         @Override
         protected void onProgressUpdate(Integer... values) {
-            Log.d(null, String.format("progress[%d]", values[0]));
-            //do something with values[0], its the percentage so you can easily do
 
-            // Set progress
-            // mPhotoBar.setProgress(values[0]);
+            Log.d(null, String.format("progress[%d]", values[0]));
+
         }
 
     }
@@ -727,12 +677,6 @@ public class PhotoActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-//        outState.putString("report_date", dateText);
-//
-//        outState.putString("report_description", commentsText);
-//
-//        outState.putDouble("latitude", latitude);
-//
         outState.putInt("image_id", mImageId);
 
         outState.putString("image_path", newFilePath);
@@ -743,20 +687,10 @@ public class PhotoActivity extends AppCompatActivity
 
     @Override
     public void onResume() {
+
         super.onResume();
-        // Within {@code onPause()}, we pause location updates, but leave the
-        // connection to GoogleApiClient intact.  Here, we resume receiving
-        // location updates if the user has requested them.
-//        if (mGoogleApiClient != null && mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
-//            startLocationUpdates();
-//        }
-
-//        mLocationOverlay.enableMyLocation();
-
-        //mCurrentPhotoPath = savedInstanceState.getString("image_path");
 
         if (newFilePath != null && !newFilePath.isEmpty()) photoCaptured = true;
-
 
     }
 

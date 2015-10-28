@@ -153,11 +153,15 @@ public class SignInActivity extends Activity {
 
                             Response response = error.getResponse();
 
-                            int status = response.getStatus();
+                            if (response != null) {
 
-                            if (status == 403) {
+                                int status = response.getStatus();
 
-                                error_message.setVisibility(View.VISIBLE);
+                                if (status == 403) {
+
+                                    error_message.setVisibility(View.VISIBLE);
+
+                                }
 
                             }
 

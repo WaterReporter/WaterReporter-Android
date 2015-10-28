@@ -93,10 +93,6 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
                 }
 
-//                tvDate.setText(report.properties.owner.properties.first_name + " " +
-//                        report.properties.owner.properties.last_name + " \u00B7 " +
-//                        report.properties.getFormattedDateString());
-
                 tvDate.setText(String.format("%s %s \u00B7 %s",
                                 report.properties.owner.properties.first_name,
                                 report.properties.owner.properties.last_name,

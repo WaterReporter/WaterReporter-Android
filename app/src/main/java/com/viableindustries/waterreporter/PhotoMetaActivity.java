@@ -2,17 +2,15 @@ package com.viableindustries.waterreporter;
 
 import android.app.DialogFragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.hardware.Camera;
-import android.media.ThumbnailUtils;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
@@ -22,30 +20,54 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.Geometry;
+import com.viableindustries.waterreporter.data.GeometryResponse;
+import com.viableindustries.waterreporter.data.ImageProperties;
+import com.viableindustries.waterreporter.data.ImageService;
+import com.viableindustries.waterreporter.data.Report;
+import com.viableindustries.waterreporter.data.ReportPostBody;
+import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.Submission;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.net.FileNameMap;
+import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import retrofit.mime.TypedFile;
 
 /**
  * Created by Ryan Hamley on 10/28/14.
  * This activity handles all of the report functionality.
  */
 public class PhotoMetaActivity extends AppCompatActivity {
+
+    @Bind(R.id.save_message)
+    RelativeLayout saveMessage;
+
+    @Bind(R.id.save_status)
+    TextView saveStatus;
+
+    @Bind(R.id.loading_spinner)
+    ProgressBar progressBar;
 
     @Bind(R.id.date)
     EditText dateField;
@@ -63,20 +85,12 @@ public class PhotoMetaActivity extends AppCompatActivity {
     Button locationButton;
 
     private static final int ACTION_SET_LOCATION = 0;
-    private static final int ACTION_TAKE_PHOTO = 1;
-    private static final int ACTION_SELECT_PHOTO = 2;
 
     private String mGalleryPath;
 
     private String mTempImagePath;
 
     private int mImageId;
-
-    private Bitmap mImageBitmap;
-
-    private static final String CAMERA_DIR = "/dcim/";
-    private static final String JPEG_FILE_PREFIX = "IMG_";
-    private static final String JPEG_FILE_SUFFIX = ".jpg";
 
     private LatLng location;
 
@@ -88,6 +102,19 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
     protected double longitude;
 
+    // Check for a data connection!
+
+    protected boolean connectionActive() {
+
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        return networkInfo != null && networkInfo.isConnected();
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -96,6 +123,24 @@ public class PhotoMetaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_photo_metadata);
 
         ButterKnife.bind(this);
+
+        progressBar.getIndeterminateDrawable().setColorFilter(
+                getResources().getColor(R.color.base_blue),
+                android.graphics.PorterDuff.Mode.SRC_IN);
+
+        if (!connectionActive()) {
+
+            CharSequence text = "Looks like you're not connected to the internet, so we couldn't submit your report. Please connect to a network and try again.";
+            int duration = Toast.LENGTH_LONG;
+
+            Toast toast = Toast.makeText(getBaseContext(), text, duration);
+            toast.show();
+
+            startActivity(new Intent(this, MainActivity.class));
+
+            return;
+
+        }
 
         initializeDateField();
 
@@ -114,8 +159,6 @@ public class PhotoMetaActivity extends AppCompatActivity {
             Log.d("image_path", mTempImagePath);
 
             Log.d("image_id", mImageId + "");
-
-            //Picasso.with(this).load(new File(mCurrentPhotoPath)).into(mImageView);
 
             Picasso.with(this)
                     .load(new File(mTempImagePath))
@@ -139,8 +182,6 @@ public class PhotoMetaActivity extends AppCompatActivity {
             Log.d("image_path", mTempImagePath);
 
             Log.d("image_id", mImageId + "");
-
-            //Picasso.with(this).load(new File(mCurrentPhotoPath)).into(mImageView);
 
             Picasso.with(this)
                     .load(new File(mTempImagePath))
@@ -197,6 +238,254 @@ public class PhotoMetaActivity extends AppCompatActivity {
                 }
             }
         });
+
+    }
+
+    protected void initializeDateField() {
+
+        UtilityMethods utilityMethods = new UtilityMethods();
+
+        int day = utilityMethods.getCurrentDay();
+        int month = utilityMethods.getCurrentMonth();
+        int year = utilityMethods.getCurrentYear();
+
+        dateField.setText(utilityMethods.getDateString(month, day, year));
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        switch (requestCode) {
+
+            case ACTION_SET_LOCATION:
+
+                if (resultCode == RESULT_OK) {
+
+                    Bundle bundle = data.getParcelableExtra("bundle");
+
+                    location = bundle.getParcelable("latLng");
+
+                    if (location != null) {
+
+                        Log.d("location", location.getLatitude() + "");
+
+                        staticMap.setVisibility(View.VISIBLE);
+
+                        longitude = location.getLongitude();
+
+                        latitude = location.getLatitude();
+
+                        Log.d("position", longitude + latitude + "");
+
+                        String url = "http://api.tiles.mapbox.com/v4/bmcintyre.ibo4mn2f/" + "pin-m+0094d6(" + longitude + "," + latitude + ",14)/" + longitude + ',' + latitude + ",14/640x640@2x.png?access_token=pk.eyJ1IjoiYm1jaW50eXJlIiwiYSI6IjdST3dWNVEifQ.ACCd6caINa_d4EdEZB_dJw";
+
+                        Log.d("url", url);
+
+                        Picasso.with(this)
+                                .load(url)
+                                        //.placeholder(R.drawable.square_placeholder)
+                                .fit()
+                                .centerCrop()
+                                .into(staticMap);
+
+                        locationButton.setText("Edit location");
+
+                        CharSequence text = "Location saved successfully";
+
+                        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+
+                        toast.show();
+
+                    }
+
+                }
+
+                break;
+
+        }
+
+    }
+
+    /**
+     * onClick event to launch a map from Report view
+     **/
+    public void updateLocation(View v) {
+
+        startActivityForResult(new Intent(this, LocationActivity.class), ACTION_SET_LOCATION);
+
+    }
+
+    /**
+     * onClick event to launch a date picker from Report view
+     **/
+    public void showDatePickerDialog(View v) {
+
+        DialogFragment newFragment = new DatePickerFragment();
+
+        FragmentManager fragmentManager = getFragmentManager();
+
+        newFragment.show(fragmentManager, "datePicker");
+
+    }
+
+    protected void onPostError() {
+
+        saveMessage.setVisibility(View.GONE);
+
+        CharSequence text =
+                "Error posting report. Please try again later.";
+
+        Toast toast = Toast.makeText(getBaseContext(), text,
+                Toast.LENGTH_SHORT);
+
+        toast.show();
+
+    }
+
+    // Send POST request
+
+    protected void submitReport() {
+
+        if (!connectionActive()) {
+
+            CharSequence text = "Looks like you're not connected to the internet, so we couldn't capture your report. Please connect to a network and try again.";
+            int duration = Toast.LENGTH_LONG;
+
+            Toast toast = Toast.makeText(getBaseContext(), text, duration);
+            toast.show();
+
+            startActivity(new Intent(this, MainActivity.class));
+
+            finish();
+
+        }
+
+        saveMessage.setVisibility(View.VISIBLE);
+
+        final ReportService reportService = ReportService.restAdapter.create(ReportService.class);
+
+        final ImageService imageService = ImageService.restAdapter.create(ImageService.class);
+
+        SharedPreferences prefs =
+                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        final String access_token = prefs.getString("access_token", "");
+
+        ArrayList<Float> coordinates = new ArrayList<Float>(2);
+
+        String point = "Point";
+
+        String type = "GeometryCollection";
+
+        List<Geometry> geometryList = new ArrayList<Geometry>(1);
+
+        FileNameMap fileNameMap = URLConnection.getFileNameMap();
+
+        coordinates.clear();
+        geometryList.clear();
+
+        coordinates.add((float) longitude);
+        coordinates.add((float) latitude);
+        Geometry geometry = new Geometry(coordinates, point);
+        geometryList.add(geometry);
+
+        final GeometryResponse geometryResponse = new GeometryResponse(geometryList, type);
+
+        Log.d("filepath", mTempImagePath);
+
+        File photo = new File(mTempImagePath);
+
+        String mimeType = fileNameMap.getContentTypeFor(mTempImagePath);
+
+        TypedFile typedPhoto = new TypedFile(mimeType, photo);
+
+        imageService.postImage(access_token, typedPhoto,
+                new Callback<ImageProperties>() {
+                    @Override
+                    public void success(ImageProperties imageProperties,
+                                        Response response) {
+
+                        // Retrieve the image id and create a new report
+
+                        final Map<String, Integer> image_id = new HashMap<String, Integer>();
+
+                        image_id.put("id", imageProperties.id);
+
+                        List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
+
+                        images.add(image_id);
+
+                        ReportPostBody reportPostBody = new ReportPostBody(geometryResponse,
+                                images, true, dateText, commentsText, "public");
+
+                        reportService.postReport(access_token, "application/json", reportPostBody,
+                                new Callback<Report>() {
+                                    @Override
+                                    public void success(Report report,
+                                                        Response response) {
+
+                                        // Immediately delete the cached image file now that we no longer need it
+
+                                        File tempFile = new File(mTempImagePath);
+
+                                        boolean imageDeleted = tempFile.delete();
+
+                                        Log.w("Delete Check", "File deleted: " + tempFile + imageDeleted);
+
+                                        progressBar.setVisibility(View.GONE);
+
+                                        saveStatus.setText(getResources().getString(R.string.report_received));
+
+                                        final Handler handler = new Handler();
+
+                                        handler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+
+                                                startActivity(new Intent(PhotoMetaActivity.this, SubmissionsActivity.class));
+
+                                            }
+
+                                        }, 2000);
+
+                                    }
+
+                                    @Override
+                                    public void failure(RetrofitError error) {
+                                        onPostError();
+                                    }
+
+                                });
+
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        onPostError();
+                    }
+
+                });
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString("report_date", dateText);
+
+        outState.putString("report_description", commentsText);
+
+        outState.putDouble("latitude", latitude);
+
+        outState.putDouble("latitude", longitude);
+
+        outState.putString("image_path", mTempImagePath);
+
+        outState.putString("gallery_path", mGalleryPath);
+
+        outState.putInt("image_id", mImageId);
 
     }
 
@@ -267,14 +556,9 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
             }
 
-            Submission submission = new Submission(dateText,
-                    commentsText, latitude, longitude, mTempImagePath, mImageId, mGalleryPath);
+            submitReport();
 
-            submission.save();
-
-            startActivity(new Intent(this, SubmissionsActivity.class));
-
-            return false;
+            return true;
 
         }
 
@@ -282,399 +566,43 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
     }
 
-    protected void initializeDateField() {
+    @Override
+    protected void onResume() {
 
-        UtilityMethods utilityMethods = new UtilityMethods();
+        super.onResume();
 
-        int day = utilityMethods.getCurrentDay();
-        int month = utilityMethods.getCurrentMonth();
-        int year = utilityMethods.getCurrentYear();
+        // Check for a data connection!
 
-        dateField.setText(utilityMethods.getDateString(month, day, year));
+        if (!connectionActive()) {
 
-    }
+            CharSequence text = "Looks like you're not connected to the internet, so we couldn't capture your report. Please connect to a network and try again.";
+            int duration = Toast.LENGTH_LONG;
 
-    private File getAlbumDir() {
+            Toast toast = Toast.makeText(getBaseContext(), text, duration);
+            toast.show();
 
-        File storageDir = null;
+            startActivity(new Intent(this, MainActivity.class));
 
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-
-            storageDir = new File(
-                    Environment.getExternalStorageDirectory()
-                            + CAMERA_DIR
-                            + getString(R.string.album_name)
-            );
-
-
-            if (!storageDir.mkdirs()) {
-                if (!storageDir.exists()) {
-                    return null;
-                }
-            }
-        }
-
-        return storageDir;
-
-    }
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-
-        String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
-
-        File albumF = getAlbumDir();
-
-        return File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, albumF);
-
-    }
-
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-
-        final int width = options.outWidth;
-
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-    }
-
-    public int getSquareCropDimensionForBitmap(Bitmap bitmap) {
-
-        int dimension;
-
-        //If the bitmap is wider than it is tall
-        //use the height as the square crop dimension
-        if (bitmap.getWidth() >= bitmap.getHeight()) {
-
-            dimension = (1280 <= bitmap.getHeight()) ? 1280 : bitmap.getHeight();
-
-        }
-        //If the bitmap is taller than it is wide
-        //use the width as the square crop dimension
-        else {
-
-            dimension = (1280 <= bitmap.getWidth()) ? 1280 : bitmap.getWidth();
+            finish();
 
         }
 
-        return dimension;
-
     }
-
-    public static Bitmap decodeSampledBitmapFromResource(String filePath, int reqWidth, int reqHeight) {
-
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-
-        options.inJustDecodeBounds = true;
-
-        BitmapFactory.decodeFile(filePath, options);
-
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-
-        return BitmapFactory.decodeFile(filePath, options);
-
-    }
-
-    private void setPic(String filePath) {
-
-        Bitmap bitmap = decodeSampledBitmapFromResource(filePath, 1280, 1280);
-
-        Log.d(null, filePath + " " + bitmap.getWidth() + " " + bitmap.getHeight());
-
-        int dimension = getSquareCropDimensionForBitmap(bitmap);
-
-        bitmap = ThumbnailUtils.extractThumbnail(bitmap, dimension, dimension);
-
-        try {
-
-            File file = new File(filePath);
-
-            FileOutputStream fOut = new FileOutputStream(file);
-
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
-
-            fOut.flush();
-
-            fOut.close();
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-
-            Log.d(null, "Save file error!");
-
-//            return false;
-
-        }
-
-
-        Picasso.with(this).load(new File(filePath)).into(mImageView);
-
-        mImageView.setVisibility(View.VISIBLE);
-
-    }
-
-//    private void galleryAddPic() {
-//
-//        Intent mediaScanIntent = new Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE");
-//
-//        File f = new File(mCurrentPhotoPath);
-//
-//        Uri contentUri = Uri.fromFile(f);
-//
-//        mediaScanIntent.setData(contentUri);
-//
-//        this.sendBroadcast(mediaScanIntent);
-//
-//    }
-//
-//    private void handleBigCameraPhoto() {
-//
-//        if (mCurrentPhotoPath != null) {
-//            setPic(mCurrentPhotoPath);
-//            galleryAddPic();
-//        }
-//
-//    }
-
-//    private void processGalleryPhoto(Intent returnedImageIntent) {
-//
-//        Uri selectedImage = returnedImageIntent.getData();
-//
-//        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-//
-//        Cursor cursor = getContentResolver().query(
-//                selectedImage, filePathColumn, null, null, null);
-//        cursor.moveToFirst();
-//
-//        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//
-//        mCurrentPhotoPath = cursor.getString(columnIndex);
-//
-//        cursor.close();
-//
-//        setPic(mCurrentPhotoPath);
-//
-//        /* Decode the JPEG file into a Bitmap */
-////        mImageBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
-////
-////		/* Associate the Bitmap to the ImageView */
-////        mImageView.setImageBitmap(mImageBitmap);
-////
-////        mImageView.setVisibility(View.VISIBLE);
-//
-//    }
-
-//    private android.hardware.Camera.Size getSupportedSize() {
-//
-//        Camera camera = android.hardware.Camera.open();
-//
-////        android.hardware.Camera.Parameters cameraParams = new android.hardware.Camera.Parameters();
-//
-////        android.hardware.Camera.Parameters cameraParams = camera.getParameters();
-//
-//        List<Camera.Size> supportedSizes = camera.getParameters().getSupportedPictureSizes();
-//
-//        List<android.hardware.Camera.Size> targetSizes = new ArrayList<Camera.Size>();
-//
-//        for (android.hardware.Camera.Size size : supportedSizes) {
-//
-//            Log.d("supported size", size.height + "x" + size.width);
-//
-//            if ((size.height >= 1280) && (size.width != size.height)) {
-//
-//                targetSizes.add(size);
-//
-//            }
-//
-//        }
-//
-//        Collections.sort(targetSizes, new Comparator<Camera.Size>() {
-//
-//            public int compare(android.hardware.Camera.Size size1, android.hardware.Camera.Size size2) {
-//
-//                return Double.compare(size1.width, size2.width);
-//
-//            }
-//
-//        });
-//
-//        camera.release();
-//
-//        if (!targetSizes.isEmpty()) {
-//
-//            return targetSizes.get(0);
-//
-//        } else {
-//
-//            return supportedSizes.get(supportedSizes.size() - 1);
-//
-//        }
-//
-//    }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onPause() {
 
-        switch (requestCode) {
-            case ACTION_TAKE_PHOTO:
-                if (resultCode == RESULT_OK) {
-                    //handleBigCameraPhoto();
-                }
-                break;
-            case ACTION_SELECT_PHOTO:
-                if (resultCode == RESULT_OK) {
-                    //processGalleryPhoto(data);
-                }
-                break;
-            case ACTION_SET_LOCATION:
-
-                if (resultCode == RESULT_OK) {
-
-                    Bundle bundle = data.getParcelableExtra("bundle");
-
-                    location = bundle.getParcelable("latLng");
-
-                    if (location != null) {
-
-                        Log.d("location", location.getLatitude() + "");
-
-                        staticMap.setVisibility(View.VISIBLE);
-
-                        longitude = location.getLongitude();
-
-                        latitude = location.getLatitude();
-
-                        Log.d("position", longitude + latitude + "");
-
-                        String url = "http://api.tiles.mapbox.com/v4/bmcintyre.ibo4mn2f/" + "pin-m+0094d6(" + longitude + "," + latitude + ",14)/" + longitude + ',' + latitude + ",14/640x640@2x.png?access_token=pk.eyJ1IjoiYm1jaW50eXJlIiwiYSI6IjdST3dWNVEifQ.ACCd6caINa_d4EdEZB_dJw";
-
-                        Log.d("url", url);
-
-                        Picasso.with(this)
-                                .load(url)
-                                        //.placeholder(R.drawable.square_placeholder)
-                                .fit()
-                                .centerCrop()
-                                .into(staticMap);
-
-                        locationButton.setText("Edit location");
-
-                        CharSequence text = "Location saved successfully";
-
-                        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-
-                        toast.show();
-
-                    }
-
-                }
-                break;
-        }
-    }
-
-    /**
-     * onClick event to launch a map from Report view
-     **/
-    public void updateLocation(View v) {
-
-        startActivityForResult(new Intent(this, LocationActivity.class), ACTION_SET_LOCATION);
+        super.onPause();
 
     }
-
-    /**
-     * onClick event to launch a date picker from Report view
-     **/
-    public void showDatePickerDialog(View v) {
-
-        DialogFragment newFragment = new DatePickerFragment();
-
-        FragmentManager fragmentManager = getFragmentManager();
-
-        newFragment.show(fragmentManager, "datePicker");
-
-    }
-
-//    @Override
-//    public void onDialogPositiveClick(DialogFragment dialog) {
-//
-//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//
-//        android.hardware.Camera.Size size = getSupportedSize();
-//
-//        Log.d("size", size.height + "x" + size.width);
-//
-//        try {
-//
-//            File f = createImageFile();
-//
-//            mCurrentPhotoPath = f.getAbsolutePath();
-//
-//            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-//
-//        } catch (IOException e) {
-//
-//            e.printStackTrace();
-//
-//            mCurrentPhotoPath = null;
-//
-//        }
-//
-//        startActivityForResult(takePictureIntent, ACTION_TAKE_PHOTO);
-//        ;
-//
-//    }
-
-//    @Override
-//    public void onDialogNegativeClick(DialogFragment dialog) {
-//
-//        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-//
-//        photoPickerIntent.setType("image/*");
-//
-//        startActivityForResult(photoPickerIntent, ACTION_SELECT_PHOTO);
-//
-//    }
-
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+    protected void onDestroy() {
 
-        outState.putString("report_date", dateText);
+        super.onDestroy();
 
-        outState.putString("report_description", commentsText);
-
-        outState.putDouble("latitude", latitude);
-
-        outState.putDouble("latitude", longitude);
-
-        outState.putString("image_path", mTempImagePath);
-
-        outState.putString("gallery_path", mGalleryPath);
-
-        outState.putInt("image_id", mImageId);
+        ButterKnife.unbind(this);
 
     }
+
 }

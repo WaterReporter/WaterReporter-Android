@@ -9,42 +9,59 @@
     tools:context="com.viableindustries.waterreporter.SubmissionDetailActivity">
 
     <LinearLayout
+        android:id="@+id/detail_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/date_label"
+        <LinearLayout
+            android:id="@+id/report_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="Submitted on Dec 11, 2014"
-            android:textSize="@dimen/base_text" />
+            android:orientation="vertical"
+            android:visibility="gone">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:background="@color/gray_224" />
+            <TextView
+                android:id="@+id/date_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="Submitted on Dec 11, 2014"
+                android:textSize="@dimen/base_text" />
 
-        <TextView
-            android:id="@+id/comments_label"
-            android:layout_width="match_parent"
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@color/gray_224" />
+
+            <TextView
+                android:id="@+id/comments_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="BBBBBBBB"
+                android:textSize="@dimen/base_text" />
+
+            <ImageView
+                android:id="@+id/submission_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="0dp"
+                android:adjustViewBounds="true" />
+
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/loading_spinner"
+            style="@android:style/Widget.Holo.ProgressBar.Large"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="BBBBBBBB"
-            android:textSize="@dimen/base_text" />
-
-        <ImageView
-            android:id="@+id/submission_image"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="0dp"
-            android:adjustViewBounds="true" />
+            android:layout_gravity="center_horizontal" />
 
     </LinearLayout>
 

@@ -1,7 +1,10 @@
 package com.viableindustries.waterreporter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -10,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -53,6 +57,55 @@ public class MainActivity extends AppCompatActivity {
     protected LatLng defaultCenter = new LatLng(39.828175, -98.5795);
 
     protected List<LatLng> markers = new ArrayList<LatLng>();
+
+    protected boolean connectionActive = false;
+
+    protected Response errorResponse;
+
+    protected void connectionStatus() {
+
+        final Context context = getApplicationContext();
+
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+
+            connectionActive = true;
+
+            String access_token = prefs.getString("access_token", "");
+
+            user_id = prefs.getInt("user_id", 0);
+
+            if (user_id == 0) {
+
+                startActivityForResult(new Intent(this, RegistrationForkActivity.class), REGISTRATION_REQUEST);
+
+            } else if (access_token.equals("")) {
+
+                startActivityForResult(new Intent(this, SignInActivity.class), LOGIN_REQUEST);
+
+            } else {
+
+                requestData(500, false);
+
+            }
+
+        } else {
+
+            connectionActive = false;
+
+            CharSequence text = "Looks like you're not connected to the internet, so we couldn't retrieve your reports.";
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+
+        }
+
+    }
 
     protected void addMarkers(Report report) {
 
@@ -134,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    protected void requestData() {
+    protected void requestData(int limit, final boolean transition) {
 
         SharedPreferences prefs =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
@@ -148,9 +201,7 @@ public class MainActivity extends AppCompatActivity {
 
         String query = "{\"filters\":[{\"name\":\"owner_id\",\"op\":\"eq\",\"val\":" + user_id + "}],\"order_by\":[{\"field\":\"created\",\"direction\":\"desc\"}]}";
 
-        //String query = "{\"filters\":[],\"order_by\":[{\"field\":\"created\",\"direction\":\"desc\"}]}";
-
-        service.getReports(access_token, "application/json", 500, query, new Callback<FeatureCollection>() {
+        service.getReports(access_token, "application/json", limit, query, new Callback<FeatureCollection>() {
 
             @Override
             public void success(FeatureCollection featureCollection, Response response) {
@@ -161,13 +212,34 @@ public class MainActivity extends AppCompatActivity {
 
                 if (!reports.isEmpty()) {
 
+                    // If the submission view was requested
+
+                    if (transition) {
+
+                        startActivity(new Intent(MainActivity.this, SubmissionsActivity.class));
+
+                    }
+
+                    // Iterate the user's report collection and add markers to the map
+
                     for (Report report : reports) {
 
                         addMarkers(report);
 
                     }
 
+                    // Zoom the map to a bounding box defined by the geographic distribution
+                    // of the user's report collection
+
                     setBounds();
+
+                } else {
+
+                    CharSequence text = "Your report collection is empty. Tap on the plus sign in the menu bar to start a new report.";
+                    int duration = Toast.LENGTH_LONG;
+
+                    Toast toast = Toast.makeText(getBaseContext(), text, duration);
+                    toast.show();
 
                 }
 
@@ -176,13 +248,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void failure(RetrofitError error) {
 
-                Response response = error.getResponse();
+                if (error == null) return;
 
-                int status = response.getStatus();
+                errorResponse = error.getResponse();
 
-                if (status == 403) {
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
 
-                    startActivity(new Intent(MainActivity.this, SignInActivity.class));
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(MainActivity.this, SignInActivity.class));
+
+                    }
 
                 }
 
@@ -215,47 +295,34 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+
         super.onResume();
 
-        String access_token = prefs.getString("access_token", "");
+        // Check for a data connection!
 
-        user_id = prefs.getInt("user_id", 0);
-
-        if (user_id == 0) {
-
-            startActivityForResult(new Intent(this, RegistrationForkActivity.class), REGISTRATION_REQUEST);
-
-        } else if (access_token.equals("")) {
-
-            startActivityForResult(new Intent(this, SignInActivity.class), LOGIN_REQUEST);
-
-        } else {
-
-            requestData();
-
-        }
+        connectionStatus();
 
     }
 
     @Override
     protected void onPause() {
+
         super.onPause();
 
-        // Disable for now
-        // myLocationOverlay.disableMyLocation();
-
-        // locationManager.removeUpdates(locationListener);
     }
 
     @Override
     protected void onDestroy() {
+
         super.onDestroy();
 
         ButterKnife.unbind(this);
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         MenuInflater menuInflater = getMenuInflater();
 
         menuInflater.inflate(R.menu.main, menu);
@@ -266,11 +333,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (!connectionActive) return false;
+
         int id = item.getItemId();
 
         if (id == R.id.action_submissions) {
 
-            startActivity(new Intent(this, SubmissionsActivity.class));
+            requestData(1, true);
+
+            return false;
 
         }
 
@@ -303,7 +375,7 @@ public class MainActivity extends AppCompatActivity {
                 // The user is logged in and may already have reports in the system.
                 // Let's attempt to fetch the user's report collection and, if none exist,
                 // direct the user to submit their first report.
-                requestData();
+                requestData(500, false);
 
             }
 
