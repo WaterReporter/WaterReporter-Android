@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.User;
+import com.viableindustries.waterreporter.data.UserOrgPatch;
 import com.viableindustries.waterreporter.data.UserService;
 
 import java.util.ArrayList;
@@ -32,9 +33,9 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
     private final Context context;
 
-    private String name;
+    protected String name;
 
-    private int id;
+    protected int id;
 
     private ArrayList<Organization> sourceList;
 
@@ -66,12 +67,6 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
     }
 
-//    public int getItemId(int position) {
-//
-//        return position;
-//
-//    }
-
     public Filter getFilter() {
 
         // TODO Auto-generated method stub
@@ -88,42 +83,22 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
     private void changeOrgStatus(final Organization organization, boolean selected) {
 
-        SharedPreferences prefs =
+        final SharedPreferences prefs =
                 context.getSharedPreferences(context.getPackageName(), 0);
 
-        String op = "add";
-
-        // Build wrapper for the operation object
-
-        Map<String, List<Map>> opListWrapper = new HashMap<String, List<Map>>();
-
-        List<Map> opList = new ArrayList<>();
-
-        Map<String, Integer> opObj = new HashMap<String, Integer>();
+        // Retrieve API token
 
         final String access_token = prefs.getString("access_token", "");
 
-        UserService service = UserService.restAdapter.create(UserService.class);
+        // Retrieve user ID
 
         int id = prefs.getInt("user_id", 0);
 
-        String token = prefs.getString("access_token", "");
+        // Build request object
 
-        if (selected) {
+        Map<String, Map> userPatch = UserOrgPatch.buildRequest(organization.id, false);
 
-            op = "remove";
-
-        }
-
-        opObj.put("id", organization.id);
-
-        opList.add(opObj);
-
-        opListWrapper.put(op, opList);
-
-        Map<String, Map> userPatch = new HashMap<String, Map>();
-
-        userPatch.put("organization", opListWrapper);
+        UserService service = UserService.restAdapter.create(UserService.class);
 
         service.updateUserOrganization(access_token, "application/json", id, userPatch, new Callback<User>() {
 
@@ -197,27 +172,12 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
             FilterResults results = new FilterResults();
 
-            // Implement filter logic
-
-//            if (constraint == null || constraint.length() == 0) {
-//
-//                // No filter in place, return complete list
-//
-//                results.values = orgList;
-//
-//                results.count = orgList.size();
-//
-//            } else {
-
             // Perform filtering operation
-
-//                final ArrayList<Organization> baseList = sourceList;
+            // May need to implement partial/fuzzy matching as the number of organizations grows
 
             ArrayList<Organization> nOrgList = new ArrayList<>();
 
             for (Organization org : sourceList) {
-
-                //Log.d("name", org.properties.name);
 
                 if (org.properties.name.toUpperCase().startsWith(constraint.toString().toUpperCase())) {
 
@@ -232,8 +192,6 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
             results.values = nOrgList;
 
             results.count = nOrgList.size();
-
-//            }
 
             return results;
 

@@ -157,91 +157,9 @@ public class OrganizationListActivity extends AppCompatActivity {
 
     }
 
-    private void changeOrgStatus(final Organization organization, boolean selected) {
-
-        SharedPreferences prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
-
-        String op = "add";
-
-        // Build wrapper for the operation object
-
-        Map<String, List<Map>> opListWrapper = new HashMap<String, List<Map>>();
-
-        List<Map> opList = new ArrayList<>();
-
-        Map<String, Integer> opObj = new HashMap<String, Integer>();
-
-        final String access_token = prefs.getString("access_token", "");
-
-        UserService service = UserService.restAdapter.create(UserService.class);
-
-        int id = prefs.getInt("user_id", 0);
-
-        String token = prefs.getString("access_token", "");
-
-        if (selected) {
-
-            op = "remove";
-
-        }
-
-        opObj.put("id", organization.id);
-
-        opList.add(opObj);
-
-        opListWrapper.put(op, opList);
-
-        Map<String, Map> userPatch = new HashMap<String, Map>();
-
-        userPatch.put("organization", opListWrapper);
-
-        service.updateUserOrganization(access_token, "application/json", id, userPatch, new Callback<User>() {
-
-            @Override
-            public void success(User user, Response response) {
-
-                CharSequence text = String.format("Successfully joined %s", organization.properties.name);
-                int duration = Toast.LENGTH_LONG;
-
-                Toast toast = Toast.makeText(getBaseContext(), text, duration);
-                toast.show();
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-                Response response = error.getResponse();
-
-                int status = response.getStatus();
-
-                error.printStackTrace();
-
-            }
-
-        });
-
-    }
-
-
     private void populateOrganizations(ArrayList<Organization> orgs) {
 
-        final ArrayList<Organization> orgCollection = orgs;
-
-        final OrganizationListAdapter adapter = new OrganizationListAdapter(this, orgCollection);
-
-//        AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-////                intent = new Intent(ProfileActivity.this, SiteDetailActivity.class);
-////                LinearLayout v = (LinearLayout) view.findViewById(R.id.site_card);
-////                int featureId = Integer.parseInt(view.getTag().toString());
-////                intent.putExtra("site_id", featureId);
-////                startActivity(intent);
-//                changeOrgStatus(orgCollection.get(position), false);
-//            }
-//        };
+        final OrganizationListAdapter adapter = new OrganizationListAdapter(this, orgs);
 
         listFilter.addTextChangedListener(new TextWatcher() {
 
@@ -266,8 +184,6 @@ public class OrganizationListActivity extends AppCompatActivity {
         // Enable ListView filtering
 
         listView.setTextFilterEnabled(true);
-
-//        listView.setOnItemClickListener(listener);
 
     }
 

@@ -17,6 +17,7 @@ import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.User;
+import com.viableindustries.waterreporter.data.UserOrgPatch;
 import com.viableindustries.waterreporter.data.UserService;
 
 import java.util.ArrayList;
@@ -106,39 +107,19 @@ public class MarkerDetailActivity extends AppCompatActivity {
         SharedPreferences prefs =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        String op = "add";
-
-        // Build wrapper for the operation object
-
-        Map<String, List<Map>> opListWrapper = new HashMap<String, List<Map>>();
-
-        List<Map> opList = new ArrayList<>();
-
-        Map<String, Integer> opObj = new HashMap<String, Integer>();
+        // Retrieve API token
 
         final String access_token = prefs.getString("access_token", "");
 
-        UserService service = UserService.restAdapter.create(UserService.class);
+        // Retrieve user ID
 
         int id = prefs.getInt("user_id", 0);
 
-        String token = prefs.getString("access_token", "");
+        // Build request object
 
-//        if (selected) {
-//
-//            op = "remove";
-//
-//        }
+        Map<String, Map> userPatch = UserOrgPatch.buildRequest(report.properties.groups.get(0).id, false);
 
-        opObj.put("id", report.properties.groups.get(0).id);
-
-        opList.add(opObj);
-
-        opListWrapper.put(op, opList);
-
-        Map<String, Map> userPatch = new HashMap<String, Map>();
-
-        userPatch.put("organization", opListWrapper);
+        UserService service = UserService.restAdapter.create(UserService.class);
 
         service.updateUserOrganization(access_token, "application/json", id, userPatch, new Callback<User>() {
 

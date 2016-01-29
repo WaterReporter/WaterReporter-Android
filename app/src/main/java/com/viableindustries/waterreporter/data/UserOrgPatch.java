@@ -2,51 +2,41 @@ package com.viableindustries.waterreporter.data;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by brendanmcintyre on 1/28/16.
  */
-public class UserOrgPatch {
+public final class UserOrgPatch {
 
-    @SerializedName("organization")
-    private Map<String, Map> organization;
+    private UserOrgPatch() {
+    }
 
-//        @SerializedName("password")
-//        private String password;
-//
-//        @SerializedName("response_type")
-//        public String response_type;
-//
-//        @SerializedName("client_id")
-//        public String client_id;
-//
-//        @SerializedName("redirect_uri")
-//        public String redirect_uri;
-//
-//        @SerializedName("scope")
-//        public String scope;
-//
-//        @SerializedName("state")
-//        public String state;
-//
-//        public LogInBody (String aEmail, String aPassword, String aResponseType, String aClientId,
-//                          String aRedirectUri, String aScope, String aState) {
-//
-//            this.email = aEmail;
-//
-//            this.password = aPassword;
-//
-//            this.response_type = aResponseType;
-//
-//            this.client_id = aClientId;
-//
-//            this.redirect_uri = aRedirectUri;
-//
-//            this.scope = aScope;
-//
-//            this.state = aState;
-//
-//        }
+    public static Map<String, Map> buildRequest (int orgId, boolean selected) {
+
+        String op = selected ? "remove" : "add";
+
+        Map<String, List<Map>> opListWrapper = new HashMap<String, List<Map>>();
+
+        List<Map> opList = new ArrayList<>();
+
+        Map<String, Integer> opObj = new HashMap<String, Integer>();
+
+        opObj.put("id", orgId);
+
+        opList.add(opObj);
+
+        opListWrapper.put(op, opList);
+
+        Map<String, Map> map = new HashMap<String, Map>();
+
+        map.put("organization", opListWrapper);
+
+        return map;
+
+    }
 
 }
