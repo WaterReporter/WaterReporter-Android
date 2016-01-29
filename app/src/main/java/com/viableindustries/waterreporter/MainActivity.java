@@ -23,8 +23,11 @@ import com.mapbox.mapboxsdk.views.InfoWindow;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Geometry;
+import com.viableindustries.waterreporter.data.Organization;
+import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportService;
+import com.viableindustries.waterreporter.data.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
             } else {
 
                 requestData(500, false);
+
+                fetchUserGroups();
 
             }
 
@@ -201,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
 
         String query = "{\"filters\":[{\"name\":\"owner_id\",\"op\":\"eq\",\"val\":" + user_id + "}],\"order_by\":[{\"field\":\"created\",\"direction\":\"desc\"}]}";
 
-        service.getReports(access_token, "application/json", limit, query, new Callback<FeatureCollection>() {
+        service.getReports(access_token, "application/json", limit, null, new Callback<FeatureCollection>() {
 
             @Override
             public void success(FeatureCollection featureCollection, Response response) {
@@ -269,6 +274,82 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+
+    }
+
+    protected void fetchUserGroups() {
+
+        final SharedPreferences prefs =
+                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        final String access_token = prefs.getString("access_token", "");
+
+        Log.d("", access_token);
+
+        // We shouldn't need to retrieve this value again, but we'll deal with that issue later
+        user_id = prefs.getInt("user_id", 0);
+
+        UserService service = UserService.restAdapter.create(UserService.class);
+
+        service.getUserOrganization(access_token, "application/json", user_id, new Callback<OrganizationFeatureCollection>() {
+
+            @Override
+            public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
+
+                List<Organization> organizations = organizationCollectionResponse.getFeatures();
+
+                String orgIds = "";
+
+                if (!organizations.isEmpty()) {
+
+                    for (Organization organization : organizations) {
+
+                        orgIds += String.format(",%s", organization.id);
+
+                    }
+
+                    //prefs.edit().putString("user_groups", organizations.toString()).apply();
+
+                    prefs.edit().putString("user_groups", orgIds).apply();
+
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                if (error == null) return;
+
+                errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(MainActivity.this, SignInActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+    // Transition to the organization list view
+
+    public void viewGroups(View v) {
+
+        startActivity(new Intent(this, OrganizationListActivity.class));
+
+        finish();
 
     }
 
@@ -342,6 +423,8 @@ public class MainActivity extends AppCompatActivity {
 
             requestData(1, true);
 
+            fetchUserGroups();
+
             return false;
 
         }
@@ -376,6 +459,8 @@ public class MainActivity extends AppCompatActivity {
                 // Let's attempt to fetch the user's report collection and, if none exist,
                 // direct the user to submit their first report.
                 requestData(500, false);
+
+                fetchUserGroups();
 
             }
 

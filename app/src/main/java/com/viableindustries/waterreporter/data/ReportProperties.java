@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -25,6 +26,9 @@ public class ReportProperties implements Serializable {
 
     @SerializedName("created")
     public String created;
+
+    @SerializedName("groups")
+    public ArrayList<Organization> groups;
 
     @SerializedName("id")
     public int id;

@@ -1,5 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
@@ -52,6 +50,49 @@
             android:layout_marginRight="16dp"
             android:background="@color/gray_224" />
 
+        <LinearLayout
+            android:id="@+id/groups"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="16dp"
+                android:paddingTop="0dp"
+                android:text="This report is affiliated with:"
+                android:textSize="@dimen/small_text"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/organization_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Upper Potomac Watershed"
+                android:textSize="@dimen/small_text" />
+
+            <Button
+                android:id="@+id/join_group"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="0dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/green_button"
+                android:gravity="center"
+                android:text="@string/join_button"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/small_text"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
         <TextView
             android:id="@+id/marker_caption"
             android:layout_width="match_parent"
@@ -77,6 +118,31 @@
             android:text="Upper Potomac Watershed"
             android:textSize="@dimen/small_text"
             android:visibility="gone" />
+
+        <!--<LinearLayout-->
+        <!--android:id="@+id/groups"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="vertical"-->
+        <!--android:visibility="gone">-->
+
+        <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:padding="16dp"-->
+        <!--android:text="This report is affiliated with:"-->
+        <!--android:textSize="@dimen/medium_text"-->
+        <!--android:textStyle="bold" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/organization_name"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:padding="16dp"-->
+        <!--android:text="Upper Potomac Watershed"-->
+        <!--android:textSize="@dimen/small_text" />-->
+
+        <!--</LinearLayout>-->
 
     </LinearLayout>
 

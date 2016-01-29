@@ -15,7 +15,7 @@ import retrofit.http.Path;
  */
 public interface UserService {
 
-    final String ENDPOINT = "http://api.waterreporter.org";
+    final String ENDPOINT = "http://stg.api.waterreporter.org";
 
     public static RestAdapter restAdapter = new RestAdapter.Builder()
             .setLogLevel(RestAdapter.LogLevel.FULL)
@@ -34,6 +34,18 @@ public interface UserService {
                            @Body Map<String, String> userPatch,
                            Callback<User> userResponseCallback);
 
+    @PATCH("/v1/data/user/{user}")
+    public void updateUserOrganization(@Header("Authorization") String authorization,
+                                       @Header("Content-Type") String contentType,
+                                       @Path("user") int user_id,
+                                       @Body Map<String, Map> userPatch,
+                                       Callback<User> userResponseCallback);
+
+    @GET("/v1/data/user/{user}/organization")
+    public void getUserOrganization(@Header("Authorization") String authorization,
+                                    @Header("Content-Type") String contentType,
+                                    @Path("user") int user_id,
+                                    Callback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
 
 }
 

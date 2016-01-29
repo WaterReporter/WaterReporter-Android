@@ -5,10 +5,9 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 /**
- * Created by Ryan Hamley on 10/9/14.
- * ReportPhoto is the photo information returned with a report by the stg.api.
+ * Created by brendanmcintyre on 1/28/16.
  */
-public class ReportPhoto implements Serializable {
+public class Organization implements Serializable {
 
     @SerializedName("geometry")
     public GeometryResponse geometry;
@@ -17,7 +16,7 @@ public class ReportPhoto implements Serializable {
     public int id;
 
     @SerializedName("properties")
-    public ImageProperties properties;
+    public OrganizationProperties properties;
 
     @SerializedName("type")
     public String type;

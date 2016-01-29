@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <!--<View-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="1dp"-->
+    <!--android:background="@color/gray_224" />-->
+
+    <TextView
+        android:id="@+id/organization_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="0dp"
+        android:background="@color/white"
+        android:padding="16sp"
+        android:textSize="16sp"
+        android:typeface="sans" />
+
+    <Button
+        android:id="@+id/join_group"
+        android:layout_width="112dp"
+        android:layout_height="32dp"
+        android:layout_gravity="end"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/green_button"
+        android:gravity="center"
+        android:text="@string/join_button"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/small_text"
+        android:textStyle="bold" />
+
+    <!--<View-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="1dp"-->
+    <!--android:background="@color/gray_224" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/obs_value"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:padding="16sp"-->
+    <!--android:textColor="@color/base_slate"-->
+    <!--android:textSize="@dimen/text_1.25" />-->
+
+</LinearLayout>

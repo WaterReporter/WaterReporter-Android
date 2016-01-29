@@ -9,7 +9,7 @@ import java.util.Map;
  * Created by brendanmcintyre on 9/2/15.
  */
 
-// Response to successful requests for http://api.waterreporter.org/v1/data/me
+// Response to successful requests for http://stg.stg.api.waterreporter.org/v1/data/me
 
 public class UserBasicResponse {
 

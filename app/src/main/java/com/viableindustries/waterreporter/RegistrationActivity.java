@@ -156,7 +156,7 @@ public class RegistrationActivity extends Activity {
 
                                 // Silently log-in with new credentials
                                 LogInBody logInBody = new LogInBody(email, password, getString(R.string.response_type),
-                                        getString(R.string.client_id), getString(R.string.redirect_uri),
+                                        "Ru8hamw7ixuCtsHs23Twf4UB12fyIijdQcLssqpd", "http://stg.waterreporter.org/authorize",
                                         getString(R.string.scope), getString(R.string.state));
 
                                 securityService.save(logInBody,

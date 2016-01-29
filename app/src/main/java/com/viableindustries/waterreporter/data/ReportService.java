@@ -25,7 +25,7 @@ import retrofit.http.Query;
  */
 public interface ReportService {
 
-    final String ENDPOINT = "http://api.waterreporter.org/v1";
+    final String ENDPOINT = "http://stg.api.waterreporter.org/v1";
 
     public static RestAdapter restAdapter = new RestAdapter.Builder()
             .setLogLevel(RestAdapter.LogLevel.BASIC)
@@ -45,6 +45,12 @@ public interface ReportService {
                                 @Path("report") int reportId,
                                 Callback<Report> report);
 
+    @GET("/data/report/{report}/groups")
+    public void getReportGroups(@Header("Authorization") String authorization,
+                                @Header("Content-Type") String contentType,
+                                @Path("report") int reportId,
+                                Callback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
+
     @POST("/data/report")
     public void postReport
             (@Header("Authorization") String authorization,
@@ -54,7 +60,7 @@ public interface ReportService {
 
     @DELETE("/data/report/{report}")
     public void deleteSingleReport(@Header("Authorization") String authorization,
-                                @Path("report") int reportId,
-                                Callback<Response> responseCallback);
+                                   @Path("report") int reportId,
+                                   Callback<Response> responseCallback);
 
 }

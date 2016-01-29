@@ -9,6 +9,9 @@ import java.io.Serializable;
  */
 public class UserProperties implements Serializable {
 
+    @SerializedName("active")
+    public Boolean active;
+
     @SerializedName("description")
     public String description;
 
@@ -32,6 +35,9 @@ public class UserProperties implements Serializable {
 
     @SerializedName("picture")
     public String picture;
+
+    @SerializedName("public_email")
+    public String public_email;
 
     @SerializedName("title")
     public String title;

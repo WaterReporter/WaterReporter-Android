@@ -6,12 +6,24 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.Report;
+import com.viableindustries.waterreporter.data.User;
+import com.viableindustries.waterreporter.data.UserService;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -26,13 +38,28 @@ import retrofit.client.Response;
  */
 public class MarkerDetailActivity extends AppCompatActivity {
 
-    @Bind(R.id.marker_date) TextView tvDate;
+    @Bind(R.id.marker_date)
+    TextView tvDate;
 
-    @Bind(R.id.marker_caption) TextView tvCaption;
+    @Bind(R.id.marker_caption)
+    TextView tvCaption;
 
-    @Bind(R.id.marker_watershed) TextView tvWatershed;
+    @Bind(R.id.marker_watershed)
+    TextView tvWatershed;
 
-    @Bind(R.id.marker_image) ImageView iv;
+    @Bind(R.id.marker_image)
+    ImageView iv;
+
+    @Bind(R.id.groups)
+    LinearLayout groupList;
+
+    @Bind(R.id.organization_name)
+    TextView tvOrgName;
+
+    @Bind(R.id.join_group)
+    Button joinButton;
+
+    Report report;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +70,17 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        joinButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                joinGroup();
+            }
+        });
+
         int reportId = getIntent().getExtras().getInt("REPORT_ID");
 
         requestData(reportId);
+
     }
 
     @Override
@@ -66,9 +101,82 @@ public class MarkerDetailActivity extends AppCompatActivity {
         ButterKnife.unbind(this);
     }
 
-    protected void requestData(int id){
+    private void joinGroup() {
 
         SharedPreferences prefs =
+                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        String op = "add";
+
+        // Build wrapper for the operation object
+
+        Map<String, List<Map>> opListWrapper = new HashMap<String, List<Map>>();
+
+        List<Map> opList = new ArrayList<>();
+
+        Map<String, Integer> opObj = new HashMap<String, Integer>();
+
+        final String access_token = prefs.getString("access_token", "");
+
+        UserService service = UserService.restAdapter.create(UserService.class);
+
+        int id = prefs.getInt("user_id", 0);
+
+        String token = prefs.getString("access_token", "");
+
+//        if (selected) {
+//
+//            op = "remove";
+//
+//        }
+
+        opObj.put("id", report.properties.groups.get(0).id);
+
+        opList.add(opObj);
+
+        opListWrapper.put(op, opList);
+
+        Map<String, Map> userPatch = new HashMap<String, Map>();
+
+        userPatch.put("organization", opListWrapper);
+
+        service.updateUserOrganization(access_token, "application/json", id, userPatch, new Callback<User>() {
+
+            @Override
+            public void success(User user, Response response) {
+
+                CharSequence text = String.format("Successfully joined %s", report.properties.groups.get(0).properties.name);
+                int duration = Toast.LENGTH_LONG;
+
+                Toast toast = Toast.makeText(getBaseContext(), text, duration);
+                toast.show();
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                Response response = error.getResponse();
+
+                int status = response.getStatus();
+
+                error.printStackTrace();
+
+                CharSequence text = "Sorry, something went wrong and we couldn\'t complete your request.";
+                int duration = Toast.LENGTH_LONG;
+
+                Toast toast = Toast.makeText(getBaseContext(), text, duration);
+                toast.show();
+
+            }
+
+        });
+
+    }
+
+    protected void requestData(int id) {
+
+        final SharedPreferences prefs =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         final String access_token = prefs.getString("access_token", "");
@@ -80,9 +188,11 @@ public class MarkerDetailActivity extends AppCompatActivity {
         service.getSingleReport(access_token, "application/json", id, new Callback<Report>() {
 
             @Override
-            public void success(Report report, Response response) {
+            public void success(Report reportResponse, Response response) {
 
-                if(report.properties.images.size() != 0){
+                report = reportResponse;
+
+                if (report.properties.images.size() != 0) {
 
                     String filePath = report.properties.images.get(0).properties.square_retina;
 
@@ -93,16 +203,50 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
                 }
 
+                if (report.properties.groups.size() != 0) {
+
+                    String userGroups = prefs.getString("user_groups", "");
+
+                    if (userGroups.length() > 0) {
+
+                        String[] orgIds = userGroups.split(",");
+
+                        for (Organization organization : report.properties.groups) {
+
+                            if (Arrays.asList(orgIds).contains(String.valueOf(organization.id))) {
+
+                                joinButton.setVisibility(View.GONE);
+
+                            }
+
+                        }
+
+                    }
+
+                    groupList.setVisibility(View.VISIBLE);
+
+                    tvOrgName.setText(report.properties.groups.get(0).properties.name);
+
+                }
+
                 tvDate.setText(String.format("%s %s \u00B7 %s",
-                                report.properties.owner.properties.first_name,
-                                report.properties.owner.properties.last_name,
-                                report.properties.getFormattedDateString()));
+                        report.properties.owner.properties.first_name,
+                        report.properties.owner.properties.last_name,
+                        report.properties.getFormattedDateString()));
 
                 tvCaption.setText(report.properties.report_description);
 
                 tvWatershed.setVisibility(View.VISIBLE);
 
-                tvWatershed.setText(String.format("%s Watershed", report.properties.territory.properties.huc_6_name));
+                try {
+
+                    tvWatershed.setText(String.format("%s Watershed", report.properties.territory.properties.huc_6_name));
+
+                } catch (NullPointerException ne) {
+
+                    tvWatershed.setText(String.format("%s Watershed", "none found"));
+
+                }
 
             }
 

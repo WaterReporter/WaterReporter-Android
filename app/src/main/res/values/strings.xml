@@ -96,5 +96,10 @@
     <string name="title_activity_profile_basic">ProfileBasicActivity</string>
     <string name="title_activity_registration_fork">RegistrationForkActivity</string>
     <string name="title_activity_password_reset">PasswordResetActivity</string>
+    <string name="title_activity_organization_list">Organizations</string>
+
+    <!-- Join a group -->
+    <string name="join_button">Join Group</string>
+    <string name="join_group">New Feature! You can now join a group on Water Reporter. Tap here to find groups.</string>
 
 </resources>

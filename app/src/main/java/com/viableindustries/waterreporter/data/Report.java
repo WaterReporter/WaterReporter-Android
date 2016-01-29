@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 /**
  * Created by Ryan Hamley on 10/6/14.
- * Report class used to accept JSON responses from API. A List of Reports is accepted
+ * Report class used to accept JSON responses from stg.api. A List of Reports is accepted
  * by FeaturesResponse.
  */
 public class Report implements Serializable {

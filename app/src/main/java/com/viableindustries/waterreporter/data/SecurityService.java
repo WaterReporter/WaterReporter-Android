@@ -13,7 +13,7 @@ import retrofit.http.POST;
  */
 public interface SecurityService {
 
-    final String ENDPOINT = "http://api.waterreporter.org";
+    final String ENDPOINT = "http://stg.stg.api.waterreporter.org";
 
     public static RestAdapter restAdapter = new RestAdapter.Builder()
             .setLogLevel(RestAdapter.LogLevel.FULL)

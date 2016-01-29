@@ -3,8 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/gray_f5f7f9"
+    android:background="@color/white"
     tools:context="com.viableindustries.waterreporter.RegistrationForkActivity">
+
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:background="@drawable/water_reporter_logo"
+        android:contentDescription="Water Reporter logo"
+        android:scaleType="fitXY" />
 
     <Button
         android:id="@+id/register"
@@ -43,7 +51,7 @@
             android:layout_gravity="center|center_vertical"
             android:layout_marginBottom="0dp"
             android:layout_marginTop="0dp"
-            android:background="@color/gray_f5f7f9"
+            android:background="@color/white"
             android:gravity="center|center_vertical"
             android:padding="8dp"
             android:text="OR"
