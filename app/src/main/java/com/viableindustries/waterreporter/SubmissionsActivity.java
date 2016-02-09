@@ -1,6 +1,7 @@
 package com.viableindustries.waterreporter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -9,10 +10,12 @@ import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -83,6 +86,8 @@ public class SubmissionsActivity extends AppCompatActivity
     private static final String EMAIL_KEY = "user_email";
     private static final String TITLE_KEY = "user_title";
 
+    protected SharedPreferences prefs;
+
     // Check for a data connection!
 
     protected void connectionActive() {
@@ -125,6 +130,8 @@ public class SubmissionsActivity extends AppCompatActivity
 
         swipeRefreshLayout.setColorSchemeResources(R.color.waterreporter_blue,
                 R.color.waterreporter_dark);
+
+        showGroupDialog();
 
         connectionActive();
 
@@ -169,9 +176,77 @@ public class SubmissionsActivity extends AppCompatActivity
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.groups) {
+
+            startActivity(new Intent(this, OrganizationListActivity.class));
+
+        } else {
+
+            startActivity(new Intent(this, MainActivity.class));
+
+        }
+
+        return true;
+
+    }
+
+    @Override
     public void onRefresh() {
 
         connectionActive();
+
+    }
+
+    protected void showGroupDialog() {
+
+        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        String userGroupString = prefs.getString("user_groups", "");
+
+        boolean showGroupDialog = prefs.getBoolean("show_group_dialog", true);
+
+        if (userGroupString.length() < 1 && showGroupDialog) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            // Add the buttons
+            builder.setPositiveButton(R.string.group_dialog_affirm, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+
+                    // User clicked OK button
+
+                    startActivity(new Intent(SubmissionsActivity.this, OrganizationListActivity.class));
+
+                }
+            });
+            builder.setNegativeButton(R.string.group_dialog_dismiss, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+
+                    // User cancelled the dialog
+
+                    prefs.edit().putBoolean("show_group_dialog", false).apply();
+
+                    dialog.dismiss();
+
+                }
+            });
+
+            // Set other dialog properties
+            //...
+            builder.setMessage(R.string.group_dialog_message)
+                    .setTitle(R.string.group_dialog_title);
+
+            builder.show();
+
+        }
+
+
+        // Create the AlertDialog
+//        AlertDialog dialog = builder.create();
 
     }
 
@@ -235,8 +310,7 @@ public class SubmissionsActivity extends AppCompatActivity
 
         // Retrieve feature IDs from the local database and use them in a
 
-        SharedPreferences prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         final String access_token = prefs.getString("access_token", "");
 
@@ -265,16 +339,20 @@ public class SubmissionsActivity extends AppCompatActivity
 
                     onFetchSuccess(reports);
 
-                } else {
+                } //else {
 
                     // If the user somehow ends up in a situation where they have zero reports
                     // and still found themselves in this activity (maybe after deleting their
                     // one and only report), send them to the main activity so they can start
-                    // building up their report collection again
+                    // building up their report collection again.
 
-                    startActivity(new Intent(getBaseContext(), MainActivity.class));
+                    // Note that this doesn't work with the pattern we adopted wherein all reports
+                    // are loaded onto the main map. Leave this conditional in place though because
+                    // it will become relevant again when we upgrade profiles.
 
-                }
+                    // startActivity(new Intent(getBaseContext(), MainActivity.class));
+
+                //}
 
             }
 

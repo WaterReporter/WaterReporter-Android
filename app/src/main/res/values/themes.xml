@@ -2,7 +2,7 @@
 
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="@style/Theme.AppCompat.Light">
+    <style name="AppTheme" parent="@style/ThemeOverlay.AppCompat.Light">
 
         <item name="colorPrimary">@color/base_blue</item>
 
@@ -24,7 +24,11 @@
 
     </style>
 
-    <style name="MyActionBar" parent="@style/Widget.AppCompat.ActionBar">
+    <style name="MyActionBar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back_white</item>
+
+        <item name="actionModeShareDrawable">@drawable/ic_action_share</item>
 
         <item name="android:titleTextStyle">@style/TitleBarTextColor</item>
 
@@ -51,7 +55,7 @@
     <style name="TitleBarTextColor" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textColor">@color/white</item>
         <item name="android:textAllCaps">true</item>
-        <item name="android:textSize">@dimen/small_text</item>
+        <item name="android:textSize">@dimen/medium_text</item>
         <item name="android:textStyle">bold</item>
     </style>
 

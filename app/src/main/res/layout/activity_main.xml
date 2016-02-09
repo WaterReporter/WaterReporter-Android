@@ -11,19 +11,19 @@
         <!--android:background="?attr/colorPrimary"-->
         <!--android:minHeight="?attr/actionBarSize"-->
         <!--android:titleTextAppearance="@color/white" />-->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="0dp"
-        android:background="@color/white"
-        android:onClick="viewGroups"
-        android:padding="10dp"
-        android:text="@string/join_group"
-        android:textSize="@dimen/base_text" />
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:layout_marginBottom="0dp"-->
+        <!--android:layout_marginLeft="0dp"-->
+        <!--android:layout_marginRight="0dp"-->
+        <!--android:layout_marginTop="0dp"-->
+        <!--android:background="@color/white"-->
+        <!--android:onClick="viewGroups"-->
+        <!--android:padding="10dp"-->
+        <!--android:text="@string/join_group"-->
+        <!--android:textSize="@dimen/base_text" />-->
 
     <com.mapbox.mapboxsdk.views.MapView
         android:id="@+id/mapview"

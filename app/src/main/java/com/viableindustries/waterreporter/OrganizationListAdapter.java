@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import com.viableindustries.waterreporter.data.UserOrgPatch;
 import com.viableindustries.waterreporter.data.UserService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -43,6 +45,18 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
     private OrganizationFilter mFilter;
 
+    protected SharedPreferences prefs;
+
+    protected String[] userGroups;
+
+//    protected LinearLayout joinGroup;
+
+    protected Button joinGroupButton;
+
+//    protected LinearLayout leaveGroup;
+
+    protected Button leaveGroupButton;
+
     public OrganizationListAdapter(Context context, ArrayList<Organization> features) {
 
         super(context, 0, features);
@@ -52,6 +66,8 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
         this.filteredList = features;
 
         this.context = context;
+
+        prefs = context.getSharedPreferences(context.getPackageName(), 0);
 
     }
 
@@ -81,10 +97,51 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
     }
 
-    private void changeOrgStatus(final Organization organization, boolean selected) {
+    protected void toggleLayout(View view, boolean selected) {
 
-        final SharedPreferences prefs =
-                context.getSharedPreferences(context.getPackageName(), 0);
+        // If selected is true, the user is LEAVING a group. (The group was PREVIOUSLY selected.)
+        // If selected is false, the user is JOINING a group. (The group was NOT PREVIOUSLY selected.)
+
+//        if (selected) {
+//
+//            jG.setVisibility(View.VISIBLE);
+//
+//            lG.setVisibility(View.GONE);
+//
+//        } else {
+//
+//            jG.setVisibility(View.GONE);
+//
+//            lG.setVisibility(View.VISIBLE);
+//
+//        }
+
+    }
+
+    protected void upDatePrefs(User user) {
+
+        List<Organization> organizations = user.properties.organizations;
+
+        String orgIds = "";
+
+        if (!organizations.isEmpty()) {
+
+            for (Organization organization : organizations) {
+
+                orgIds += String.format(",%s", organization.id);
+
+            }
+
+        }
+
+        prefs.edit().putString("user_groups", orgIds).apply();
+
+    }
+
+    private void changeOrgStatus(final Organization organization, final boolean selected) {
+
+//        final SharedPreferences prefs =
+//                context.getSharedPreferences(context.getPackageName(), 0);
 
         // Retrieve API token
 
@@ -96,7 +153,7 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
         // Build request object
 
-        Map<String, Map> userPatch = UserOrgPatch.buildRequest(organization.id, false);
+        Map<String, Map> userPatch = UserOrgPatch.buildRequest(organization.id, selected);
 
         UserService service = UserService.restAdapter.create(UserService.class);
 
@@ -105,11 +162,35 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
             @Override
             public void success(User user, Response response) {
 
-                CharSequence text = String.format("Successfully joined %s", organization.properties.name);
+//                toggleLayout(view, selected);
+                // If selected is true, the user is LEAVING a group. (The group was PREVIOUSLY selected.)
+                // If selected is false, the user is JOINING a group. (The group was NOT PREVIOUSLY selected.)
+
+//                if (selected) {
+//
+//                    join.setVisibility(View.VISIBLE);
+//
+//                    leave.setVisibility(View.GONE);
+//
+//                } else {
+//
+//                    join.setVisibility(View.GONE);
+//
+//                    leave.setVisibility(View.VISIBLE);
+//
+//                }
+
+                upDatePrefs(user);
+
+                String action = selected ? "left" : "joined";
+
+                CharSequence text = String.format("Successfully %s %s", action, organization.properties.name);
                 int duration = Toast.LENGTH_LONG;
 
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
+
+                notifyDataSetChanged();
 
             }
 
@@ -145,6 +226,38 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.organization_list_item, parent, false);
         }
 
+        // Layout elements
+
+//        joinGroup = (LinearLayout) convertView.findViewById(R.id.join_group);
+
+        joinGroupButton = (Button) convertView.findViewById(R.id.join_group_button);
+
+//        leaveGroup = (LinearLayout) convertView.findViewById(R.id.leave_group);
+
+        leaveGroupButton = (Button) convertView.findViewById(R.id.leave_group_button);
+
+        // Check for stored group IDs and compare to the global list
+
+        String userGroupString = prefs.getString("user_groups", "");
+
+        joinGroupButton.setVisibility(View.VISIBLE);
+
+        leaveGroupButton.setVisibility(View.GONE);
+
+        if (userGroupString.length() > 0) {
+
+            userGroups = userGroupString.split(",");
+
+            if (Arrays.asList(userGroups).contains(String.valueOf(id))) {
+
+                joinGroupButton.setVisibility(View.GONE);
+
+                leaveGroupButton.setVisibility(View.VISIBLE);
+
+            }
+
+        }
+
         // Lookup view for data population
         TextView siteName = (TextView) convertView.findViewById(R.id.organization_name);
 
@@ -152,12 +265,19 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
         siteName.setText(name);
 
-        Button joinGroup = (Button) convertView.findViewById(R.id.join_group);
+//        Button joinGroup = (Button) convertView.findViewById(R.id.join_group);
 
-        joinGroup.setOnClickListener(new View.OnClickListener() {
+        joinGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 changeOrgStatus(feature, false);
+            }
+        });
+
+        leaveGroupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeOrgStatus(feature, true);
             }
         });
 
@@ -197,6 +317,7 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
         }
 
+        // Probably not the best idea, need to find a better solution
         @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint,

@@ -98,7 +98,7 @@ public class ProfileBasicActivity extends Activity {
                     public void success(User user,
                                         Response response) {
 
-                        startActivity(new Intent(ProfileBasicActivity.this, OrganizationListActivity.class));
+                        startActivity(new Intent(ProfileBasicActivity.this, RegistrationGroupsActivity.class));
 
                         finish();
 

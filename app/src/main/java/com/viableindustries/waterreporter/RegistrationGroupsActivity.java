@@ -21,13 +21,8 @@ import android.widget.Toast;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.data.OrganizationService;
-import com.viableindustries.waterreporter.data.User;
-import com.viableindustries.waterreporter.data.UserService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -35,7 +30,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class OrganizationListActivity extends AppCompatActivity {
+public class RegistrationGroupsActivity extends AppCompatActivity {
 
     @Bind(R.id.search_box)
     EditText listFilter;
@@ -62,7 +57,7 @@ public class OrganizationListActivity extends AppCompatActivity {
 
         MenuInflater menuInflater = getMenuInflater();
 
-        menuInflater.inflate(R.menu.organization_list, menu);
+        menuInflater.inflate(R.menu.registration_groups, menu);
 
         return super.onCreateOptionsMenu(menu);
 
@@ -75,7 +70,7 @@ public class OrganizationListActivity extends AppCompatActivity {
 
         if (id == R.id.skip) {
 
-            startActivity(new Intent(this, SubmissionsActivity.class));
+            startActivity(new Intent(this, MainActivity.class));
 
         }
 

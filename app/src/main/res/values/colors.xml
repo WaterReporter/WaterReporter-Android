@@ -16,6 +16,8 @@
     <color name="base_blue">#14ABE0</color>
     <color name="dark_blue">#1087b1</color>
 
+    <color name="orange">#ea5805</color>
+
     <!-- Grays -->
     <color name="gray_224">#e0e0e0</color>
     <color name="gray_f5f7f9">#f5f7f9</color>

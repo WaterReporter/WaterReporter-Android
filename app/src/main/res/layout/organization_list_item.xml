@@ -4,51 +4,81 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:orientation="vertical">
-
-    <!--<View-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="1dp"-->
-    <!--android:background="@color/gray_224" />-->
+    android:orientation="horizontal"
+    android:weightSum="5">
 
     <TextView
         android:id="@+id/organization_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_margin="0dp"
+        android:layout_weight="4"
         android:background="@color/white"
-        android:padding="16sp"
+        android:gravity="center_vertical"
+        android:paddingLeft="16sp"
+        android:paddingRight="0dp"
         android:textSize="16sp"
         android:typeface="sans" />
 
-    <Button
-        android:id="@+id/join_group"
-        android:layout_width="112dp"
-        android:layout_height="32dp"
-        android:layout_gravity="end"
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="16dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/green_button"
-        android:gravity="center"
-        android:text="@string/join_button"
-        android:textAllCaps="true"
-        android:textColor="@color/white"
-        android:textSize="@dimen/small_text"
-        android:textStyle="bold" />
+        android:layout_weight="1"
+        android:visibility="visible">
 
-    <!--<View-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="1dp"-->
-    <!--android:background="@color/gray_224" />-->
+        <Button
+            android:id="@+id/join_group_button"
+            android:layout_width="64dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/green_button"
+            android:gravity="center"
+            android:text="@string/join_button"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/small_text"
+            android:textStyle="bold" />
 
-    <!--<TextView-->
-    <!--android:id="@+id/obs_value"-->
-    <!--android:layout_width="match_parent"-->
+        <Button
+            android:id="@+id/leave_group_button"
+            android:layout_width="64dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/orange_button"
+            android:gravity="center"
+            android:text="@string/leave_button"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/small_text"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <!--<LinearLayout-->
+    <!--android:id="@+id/leave_group"-->
+    <!--android:layout_width="0dp"-->
     <!--android:layout_height="wrap_content"-->
-    <!--android:padding="16sp"-->
-    <!--android:textColor="@color/base_slate"-->
-    <!--android:textSize="@dimen/text_1.25" />-->
+    <!--android:layout_marginBottom="16dp"-->
+    <!--android:layout_marginTop="16dp"-->
+    <!--android:layout_weight="1"-->
+    <!--android:visibility="gone">-->
+
+    <!--<Button-->
+    <!--android:id="@+id/leave_group_button"-->
+    <!--android:layout_width="64dp"-->
+    <!--android:layout_height="32dp"-->
+    <!--android:layout_gravity="center_vertical"-->
+    <!--android:background="@drawable/orange_button"-->
+    <!--android:gravity="center"-->
+    <!--android:text="@string/leave_button"-->
+    <!--android:textAllCaps="true"-->
+    <!--android:textColor="@color/white"-->
+    <!--android:textSize="@dimen/small_text"-->
+    <!--android:textStyle="bold" />-->
+
+    <!--</LinearLayout>-->
 
 </LinearLayout>

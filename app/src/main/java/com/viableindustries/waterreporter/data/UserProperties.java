@@ -3,6 +3,7 @@ package com.viableindustries.waterreporter.data;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by brendanmcintyre on 8/27/15.
@@ -29,6 +30,9 @@ public class UserProperties implements Serializable {
 
     @SerializedName("login_count")
     public int login_count;
+
+    @SerializedName("organization")
+    public ArrayList<Organization> organizations;
 
     @SerializedName("organization_name")
     public String organization_name;

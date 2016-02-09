@@ -17,10 +17,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,10 +35,13 @@ import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.GeometryResponse;
 import com.viableindustries.waterreporter.data.ImageProperties;
 import com.viableindustries.waterreporter.data.ImageService;
+import com.viableindustries.waterreporter.data.Organization;
+import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportPostBody;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.Submission;
+import com.viableindustries.waterreporter.data.UserService;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -84,6 +90,12 @@ public class PhotoMetaActivity extends AppCompatActivity {
     @Bind(R.id.location_button)
     Button locationButton;
 
+    @Bind(R.id.groups)
+    LinearLayout groupList;
+
+    @Bind(R.id.list)
+    ListView listView;
+
     private static final int ACTION_SET_LOCATION = 0;
 
     private String mGalleryPath;
@@ -101,6 +113,8 @@ public class PhotoMetaActivity extends AppCompatActivity {
     protected double latitude;
 
     protected double longitude;
+
+    protected Map<String, Integer> groupMap = new HashMap<>();
 
     // Check for a data connection!
 
@@ -238,6 +252,10 @@ public class PhotoMetaActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // Retrieve the user's group collection
+
+        fetchUserGroups();
 
     }
 
@@ -416,8 +434,30 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                         images.add(image_id);
 
-                        ReportPostBody reportPostBody = new ReportPostBody(geometryResponse,
+                        List<Map<String, Integer>> groups = new ArrayList<Map<String, Integer>>();
+
+                        for (Map.Entry<String, Integer> entry : groupMap.entrySet()) {
+
+                            String key = entry.getKey();
+
+                            Integer value = entry.getValue();
+
+                            if (value > 0) {
+
+                                Map<String, Integer> groupId = new HashMap<String, Integer>();
+
+                                groupId.put("id", value);
+
+                                groups.add(groupId);
+
+                            }
+
+                        }
+
+                        ReportPostBody reportPostBody = new ReportPostBody(geometryResponse, groups,
                                 images, true, dateText, commentsText, "public");
+
+                        Log.d("groups", groups.toString());
 
                         reportService.postReport(access_token, "application/json", reportPostBody,
                                 new Callback<Report>() {
@@ -466,6 +506,112 @@ public class PhotoMetaActivity extends AppCompatActivity {
                     }
 
                 });
+
+    }
+
+    protected void fetchUserGroups() {
+
+        final SharedPreferences prefs =
+                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        final String access_token = prefs.getString("access_token", "");
+
+        Log.d("", access_token);
+
+        // We shouldn't need to retrieve this value again, but we'll deal with that issue later
+        int user_id = prefs.getInt("user_id", 0);
+
+        UserService service = UserService.restAdapter.create(UserService.class);
+
+        service.getUserOrganization(access_token, "application/json", user_id, new Callback<OrganizationFeatureCollection>() {
+
+            @Override
+            public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
+
+                ArrayList<Organization> organizations = organizationCollectionResponse.getFeatures();
+
+                populateOrganizations(organizations);
+
+//                String orgIds = "";
+//
+//                if (!organizations.isEmpty()) {
+//
+//                    for (Organization organization : organizations) {
+//
+//                        orgIds += String.format(",%s", organization.id);
+//
+//                    }
+//
+//                }
+//
+//                // Reset the user's stored group IDs.
+//
+//                prefs.edit().putString("user_groups", orgIds).apply();
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+//                if (errorResponse != null) {
+//
+//                    int status = errorResponse.getStatus();
+//
+//                    if (status == 403) {
+//
+//                        startActivity(new Intent(MainActivity.this, SignInActivity.class));
+//
+//                    }
+//
+//                }
+
+            }
+
+        });
+
+    }
+
+    private void populateOrganizations(ArrayList<Organization> orgs) {
+
+        groupList.setVisibility(View.VISIBLE);
+
+        final OrganizationCheckListAdapter adapter = new OrganizationCheckListAdapter(this, orgs);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                CheckBox checkBox = (CheckBox) view.findViewById(R.id.check_box);
+
+                TextView siteName = (TextView) view.findViewById(R.id.organization_name);
+
+                String groupName = (String) siteName.getText();
+
+                if (checkBox.isChecked()) {
+
+                    groupMap.put(groupName, 0);
+
+                } else {
+
+                    int groupId = (Integer) view.getTag();
+
+                    groupMap.put(groupName, groupId);
+
+                }
+
+                checkBox.toggle();
+
+            }
+
+        });
+
+        listView.setAdapter(adapter);
 
     }
 

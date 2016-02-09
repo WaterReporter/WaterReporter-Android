@@ -4,11 +4,15 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,11 +58,14 @@ public class MarkerDetailActivity extends AppCompatActivity {
     @Bind(R.id.groups)
     LinearLayout groupList;
 
-    @Bind(R.id.organization_name)
-    TextView tvOrgName;
+    @Bind(R.id.list)
+    ListView listView;
 
-    @Bind(R.id.join_group)
-    Button joinButton;
+//    @Bind(R.id.organization_name)
+//    TextView tvOrgName;
+//
+//    @Bind(R.id.join_group)
+//    Button joinButton;
 
     Report report;
 
@@ -71,12 +78,12 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        joinButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                joinGroup();
-            }
-        });
+//        joinButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                joinGroup();
+//            }
+//        });
 
         int reportId = getIntent().getExtras().getInt("REPORT_ID");
 
@@ -186,27 +193,29 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
                 if (report.properties.groups.size() != 0) {
 
-                    String userGroups = prefs.getString("user_groups", "");
+                    populateOrganizations(report.properties.groups);
 
-                    if (userGroups.length() > 0) {
-
-                        String[] orgIds = userGroups.split(",");
-
-                        for (Organization organization : report.properties.groups) {
-
-                            if (Arrays.asList(orgIds).contains(String.valueOf(organization.id))) {
-
-                                joinButton.setVisibility(View.GONE);
-
-                            }
-
-                        }
-
-                    }
-
-                    groupList.setVisibility(View.VISIBLE);
-
-                    tvOrgName.setText(report.properties.groups.get(0).properties.name);
+//                    String userGroups = prefs.getString("user_groups", "");
+//
+//                    if (userGroups.length() > 0) {
+//
+//                        String[] orgIds = userGroups.split(",");
+//
+//                        for (Organization organization : report.properties.groups) {
+//
+//                            if (Arrays.asList(orgIds).contains(String.valueOf(organization.id))) {
+//
+//                                joinButton.setVisibility(View.GONE);
+//
+//                            }
+//
+//                        }
+//
+//                    }
+//
+//                    groupList.setVisibility(View.VISIBLE);
+//
+//                    tvOrgName.setText(report.properties.groups.get(0).properties.name);
 
                 }
 
@@ -236,6 +245,34 @@ public class MarkerDetailActivity extends AppCompatActivity {
             }
 
         });
+
+    }
+
+    private void populateOrganizations(ArrayList<Organization> orgs) {
+
+        groupList.setVisibility(View.VISIBLE);
+
+        final OrganizationListAdapter adapter = new OrganizationListAdapter(this, orgs);
+
+//        listFilter.addTextChangedListener(new TextWatcher() {
+//
+//            public void afterTextChanged(Editable s) {
+//            }
+//
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//            }
+//
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//                Log.d("filter", s.toString());
+//
+//                adapter.getFilter().filter(s.toString());
+//
+//            }
+//
+//        });
+
+        listView.setAdapter(adapter);
 
     }
 

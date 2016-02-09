@@ -6,11 +6,11 @@
     <item android:id="@+id/action_report"
         android:icon="@drawable/ic_action_new"
         android:title="@string/action_report"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
     <item android:id="@+id/action_submissions"
         android:icon="@drawable/ic_action_view_as_list"
         android:title="@string/action_submissions"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
 </menu>

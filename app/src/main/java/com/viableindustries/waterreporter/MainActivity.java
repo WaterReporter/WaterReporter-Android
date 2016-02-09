@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
         // We shouldn't need to retrieve this value again, but we'll deal with that issue later
         user_id = prefs.getInt("user_id", 0);
 
-        String query = "{\"filters\":[{\"name\":\"owner_id\",\"op\":\"eq\",\"val\":" + user_id + "}],\"order_by\":[{\"field\":\"created\",\"direction\":\"desc\"}]}";
+        // String query = "{\"filters\":[{\"name\":\"owner_id\",\"op\":\"eq\",\"val\":" + user_id + "}],\"order_by\":[{\"field\":\"created\",\"direction\":\"desc\"}]}";
 
         service.getReports(access_token, "application/json", limit, null, new Callback<FeatureCollection>() {
 
@@ -308,11 +308,11 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
-                    //prefs.edit().putString("user_groups", organizations.toString()).apply();
-
-                    prefs.edit().putString("user_groups", orgIds).apply();
-
                 }
+
+                // Reset the user's stored group IDs.
+
+                prefs.edit().putString("user_groups", orgIds).apply();
 
             }
 
