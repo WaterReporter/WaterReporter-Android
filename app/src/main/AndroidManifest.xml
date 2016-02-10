@@ -167,7 +167,12 @@
         </activity>
         <activity
             android:name=".OrganizationListActivity"
-            android:label="@string/title_activity_organization_list"></activity>
+            android:label="@string/title_activity_organization_list"
+            android:parentActivityName=".SubmissionsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.viableindustries.waterreporter.SubmissionsActivity" />
+        </activity>
         <activity
             android:name=".RegistrationGroupsActivity"
             android:label="@string/title_activity_registration_groups"

@@ -154,7 +154,7 @@ public class RegistrationGroupsActivity extends AppCompatActivity {
 
     private void populateOrganizations(ArrayList<Organization> orgs) {
 
-        final OrganizationListAdapter adapter = new OrganizationListAdapter(this, orgs);
+        final OrganizationListAdapter adapter = new OrganizationListAdapter(this, orgs, true);
 
         listFilter.addTextChangedListener(new TextWatcher() {
 

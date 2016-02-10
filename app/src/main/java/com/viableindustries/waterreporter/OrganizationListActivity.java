@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.app.Activity;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -52,6 +53,9 @@ public class OrganizationListActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        assert getSupportActionBar() != null;
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         connectionStatus();
 
 
@@ -70,17 +74,13 @@ public class OrganizationListActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        if (id == R.id.skip) {
-
-            startActivity(new Intent(this, SubmissionsActivity.class));
-
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
         }
-
-        return true;
-
+        return super.onOptionsItemSelected(item);
     }
 
     // This needs to be in its own utility service
@@ -159,7 +159,7 @@ public class OrganizationListActivity extends AppCompatActivity {
 
     private void populateOrganizations(ArrayList<Organization> orgs) {
 
-        final OrganizationListAdapter adapter = new OrganizationListAdapter(this, orgs);
+        final OrganizationListAdapter adapter = new OrganizationListAdapter(this, orgs, true);
 
         listFilter.addTextChangedListener(new TextWatcher() {
 

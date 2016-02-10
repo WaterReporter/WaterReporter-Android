@@ -4,7 +4,6 @@
     android:id="@+id/group_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     android:orientation="horizontal"
     android:weightSum="5">
 
@@ -14,10 +13,8 @@
         android:layout_height="match_parent"
         android:layout_margin="0dp"
         android:layout_weight="4"
-        android:background="@color/white"
         android:gravity="center_vertical"
-        android:paddingLeft="16sp"
-        android:paddingRight="0dp"
+        android:text="This is a long group name"
         android:textSize="16sp"
         android:typeface="sans" />
 
@@ -27,12 +24,14 @@
         android:layout_marginBottom="16dp"
         android:layout_marginTop="16dp"
         android:layout_weight="1"
-        android:visibility="visible">
+        android:visibility="visible"
+        android:layout_gravity="center_vertical"
+        android:gravity="center">
 
         <CheckBox
             android:id="@+id/check_box"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:focusable="false" />
 
     </LinearLayout>

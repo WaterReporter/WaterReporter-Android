@@ -49,15 +49,13 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
     protected String[] userGroups;
 
-//    protected LinearLayout joinGroup;
-
     protected Button joinGroupButton;
-
-//    protected LinearLayout leaveGroup;
 
     protected Button leaveGroupButton;
 
-    public OrganizationListAdapter(Context context, ArrayList<Organization> features) {
+    protected boolean showLeaveButton;
+
+    public OrganizationListAdapter(Context context, ArrayList<Organization> features, boolean aShowLeaveButton) {
 
         super(context, 0, features);
 
@@ -68,6 +66,8 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
         this.context = context;
 
         prefs = context.getSharedPreferences(context.getPackageName(), 0);
+
+        showLeaveButton = aShowLeaveButton;
 
     }
 
@@ -97,27 +97,6 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
     }
 
-    protected void toggleLayout(View view, boolean selected) {
-
-        // If selected is true, the user is LEAVING a group. (The group was PREVIOUSLY selected.)
-        // If selected is false, the user is JOINING a group. (The group was NOT PREVIOUSLY selected.)
-
-//        if (selected) {
-//
-//            jG.setVisibility(View.VISIBLE);
-//
-//            lG.setVisibility(View.GONE);
-//
-//        } else {
-//
-//            jG.setVisibility(View.GONE);
-//
-//            lG.setVisibility(View.VISIBLE);
-//
-//        }
-
-    }
-
     protected void upDatePrefs(User user) {
 
         List<Organization> organizations = user.properties.organizations;
@@ -140,9 +119,6 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
     private void changeOrgStatus(final Organization organization, final boolean selected) {
 
-//        final SharedPreferences prefs =
-//                context.getSharedPreferences(context.getPackageName(), 0);
-
         // Retrieve API token
 
         final String access_token = prefs.getString("access_token", "");
@@ -161,24 +137,6 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
             @Override
             public void success(User user, Response response) {
-
-//                toggleLayout(view, selected);
-                // If selected is true, the user is LEAVING a group. (The group was PREVIOUSLY selected.)
-                // If selected is false, the user is JOINING a group. (The group was NOT PREVIOUSLY selected.)
-
-//                if (selected) {
-//
-//                    join.setVisibility(View.VISIBLE);
-//
-//                    leave.setVisibility(View.GONE);
-//
-//                } else {
-//
-//                    join.setVisibility(View.GONE);
-//
-//                    leave.setVisibility(View.VISIBLE);
-//
-//                }
 
                 upDatePrefs(user);
 
@@ -228,11 +186,7 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
         // Layout elements
 
-//        joinGroup = (LinearLayout) convertView.findViewById(R.id.join_group);
-
         joinGroupButton = (Button) convertView.findViewById(R.id.join_group_button);
-
-//        leaveGroup = (LinearLayout) convertView.findViewById(R.id.leave_group);
 
         leaveGroupButton = (Button) convertView.findViewById(R.id.leave_group_button);
 
@@ -252,7 +206,11 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
                 joinGroupButton.setVisibility(View.GONE);
 
-                leaveGroupButton.setVisibility(View.VISIBLE);
+                if (showLeaveButton) {
+
+                    leaveGroupButton.setVisibility(View.VISIBLE);
+
+                }
 
             }
 
@@ -265,12 +223,18 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
         siteName.setText(name);
 
-//        Button joinGroup = (Button) convertView.findViewById(R.id.join_group);
-
         joinGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 changeOrgStatus(feature, false);
+
+                if (!showLeaveButton) {
+
+                    v.setVisibility(View.GONE);
+
+                }
+
             }
         });
 

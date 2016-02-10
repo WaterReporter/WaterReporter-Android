@@ -5,6 +5,7 @@
 
     <item
         android:id="@+id/skip"
+        android:icon="@drawable/ic_arrow_forward"
         android:title="Done"
         app:showAsAction="always" />
 

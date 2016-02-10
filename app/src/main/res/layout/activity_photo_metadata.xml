@@ -101,12 +101,6 @@
                     android:textSize="@dimen/small_text"
                     android:textStyle="bold" />
 
-                <ListView
-                    android:id="@+id/list"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dip"
-                    android:layout_weight="1" />
-
             </LinearLayout>
 
         </LinearLayout>

@@ -1,10 +1,12 @@
 package com.viableindustries.waterreporter;
 
+import android.Manifest;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +20,9 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -76,6 +81,8 @@ public class PhotoActivity extends AppCompatActivity
 
     private static final int ACTION_TAKE_PHOTO = 1;
     private static final int ACTION_SELECT_PHOTO = 2;
+
+    private static final int PERMISSIONS_REQUEST_USE_CAMERA = 1;
 
     protected boolean photoCaptured = false;
 
@@ -516,6 +523,56 @@ public class PhotoActivity extends AppCompatActivity
 
     }
 
+    // Handle the permissions request response for Camera
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+
+            case PERMISSIONS_REQUEST_USE_CAMERA: {
+
+                // If request is cancelled, the result arrays are empty.
+
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // Permission granted.
+
+                    try {
+
+                        startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), ACTION_TAKE_PHOTO);
+
+                    } catch (Exception e) {
+
+                        Toast.makeText(PhotoActivity.this, "Can\'t connect to the camera. Please select an image from your photo gallery instead.", Toast.LENGTH_LONG).show();
+
+                    }
+
+                    // Continued problems and possible solutions - - permission is granted but still can't connect to camera
+
+                    // https://code.google.com/p/android/issues/detail?id=192357
+                    // E/Surface: getSlotFromBufferLocked: unknown buffer: 0xa00d04a0
+                    // https://github.com/journeyapps/zxing-android-embedded/issues/89
+
+                    // https://android.googlesource.com/platform/tools/emulator/+/android-6.0.1_r7
+
+                } else {
+
+                    // Permission denied. Disable the functionality that depends on this permission.
+
+                    Toast.makeText(PhotoActivity.this, "Camera access denied. Please select an image from your photo gallery instead.", Toast.LENGTH_LONG).show();
+
+                }
+
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+
+        }
+
+    }
+
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
 
@@ -539,7 +596,28 @@ public class PhotoActivity extends AppCompatActivity
 
         }
 
-        startActivityForResult(takePictureIntent, ACTION_TAKE_PHOTO);
+        // For compatibility with Android 6.0 (Marshmallow, API 23), we need to check permissions before
+        // dispatching takePictureIntent, otherwise the app will crash.
+
+        if (ContextCompat.checkSelfPermission(PhotoActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+
+            startActivityForResult(takePictureIntent, ACTION_TAKE_PHOTO);
+
+        } else {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(PhotoActivity.this, Manifest.permission.CAMERA)) {
+
+                Toast.makeText(PhotoActivity.this, "Water Reporter needs to access your camera.", Toast.LENGTH_LONG).show();
+
+            }
+
+            //REQUEST PERMISSION
+
+            ActivityCompat.requestPermissions(PhotoActivity.this, new String[]{Manifest.permission.CAMERA}, PERMISSIONS_REQUEST_USE_CAMERA);
+
+        }
+
+        //startActivityForResult(takePictureIntent, ACTION_TAKE_PHOTO);
 
     }
 

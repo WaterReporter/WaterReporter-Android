@@ -33,6 +33,7 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.GeometryResponse;
+import com.viableindustries.waterreporter.data.GroupNameComparator;
 import com.viableindustries.waterreporter.data.ImageProperties;
 import com.viableindustries.waterreporter.data.ImageService;
 import com.viableindustries.waterreporter.data.Organization;
@@ -49,6 +50,8 @@ import java.io.IOException;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,8 +96,8 @@ public class PhotoMetaActivity extends AppCompatActivity {
     @Bind(R.id.groups)
     LinearLayout groupList;
 
-    @Bind(R.id.list)
-    ListView listView;
+//    @Bind(R.id.list)
+//    ListView listView;
 
     private static final int ACTION_SET_LOCATION = 0;
 
@@ -530,23 +533,9 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                 ArrayList<Organization> organizations = organizationCollectionResponse.getFeatures();
 
-                populateOrganizations(organizations);
+                Collections.sort(organizations, new GroupNameComparator());
 
-//                String orgIds = "";
-//
-//                if (!organizations.isEmpty()) {
-//
-//                    for (Organization organization : organizations) {
-//
-//                        orgIds += String.format(",%s", organization.id);
-//
-//                    }
-//
-//                }
-//
-//                // Reset the user's stored group IDs.
-//
-//                prefs.edit().putString("user_groups", orgIds).apply();
+                populateOrganizations(organizations);
 
             }
 
@@ -581,37 +570,48 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
         groupList.setVisibility(View.VISIBLE);
 
+        // Populating a LinearLayout here rather than a ListView
+
         final OrganizationCheckListAdapter adapter = new OrganizationCheckListAdapter(this, orgs);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        final int adapterCount = adapter.getCount();
 
-                CheckBox checkBox = (CheckBox) view.findViewById(R.id.check_box);
+        for (int i = 0; i < adapterCount; i++) {
 
-                TextView siteName = (TextView) view.findViewById(R.id.organization_name);
+            View item = adapter.getView(i, null, null);
 
-                String groupName = (String) siteName.getText();
+            item.setOnClickListener(new View.OnClickListener() {
 
-                if (checkBox.isChecked()) {
+                @Override
+                public void onClick(View view) {
 
-                    groupMap.put(groupName, 0);
+                    CheckBox checkBox = (CheckBox) view.findViewById(R.id.check_box);
 
-                } else {
+                    TextView siteName = (TextView) view.findViewById(R.id.organization_name);
 
-                    int groupId = (Integer) view.getTag();
+                    String groupName = (String) siteName.getText();
 
-                    groupMap.put(groupName, groupId);
+                    if (checkBox.isChecked()) {
+
+                        groupMap.put(groupName, 0);
+
+                    } else {
+
+                        int groupId = (Integer) view.getTag();
+
+                        groupMap.put(groupName, groupId);
+
+                    }
+
+                    checkBox.toggle();
 
                 }
 
-                checkBox.toggle();
+            });
 
-            }
+            groupList.addView(item);
 
-        });
-
-        listView.setAdapter(adapter);
+        }
 
     }
 

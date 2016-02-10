@@ -4,12 +4,12 @@
     tools:context=".MainActivity" >
 
     <item android:id="@+id/action_report"
-        android:icon="@drawable/ic_action_new"
+        android:icon="@drawable/ic_action_add"
         android:title="@string/action_report"
         app:showAsAction="ifRoom" />
 
     <item android:id="@+id/action_submissions"
-        android:icon="@drawable/ic_action_view_as_list"
+        android:icon="@drawable/ic_account_box"
         android:title="@string/action_submissions"
         app:showAsAction="ifRoom" />
 

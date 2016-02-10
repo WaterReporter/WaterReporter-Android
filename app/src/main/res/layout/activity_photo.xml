@@ -28,7 +28,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="0dp"
             android:layout_marginTop="16dp"
-            android:background="@drawable/cancel_photo"
+            android:background="@drawable/ic_cancel"
             android:clickable="true"
             android:onClick="cancel"
             android:scaleType="fitXY" />
@@ -42,7 +42,7 @@
             android:layout_marginLeft="0dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
-            android:background="@drawable/advance"
+            android:background="@drawable/ic_arrow_forward"
             android:clickable="true"
             android:onClick="savePhoto"
             android:scaleType="fitXY" />
