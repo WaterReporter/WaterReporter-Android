@@ -640,7 +640,7 @@ public class LocationActivity extends AppCompatActivity implements
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    public void getMapCenter(View view) {
+    protected void getMapCenter() {
 
         photoLocation = mv.getCenter();
 
@@ -658,21 +658,23 @@ public class LocationActivity extends AppCompatActivity implements
 
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu)
-//    {
-//        MenuInflater menuInflater = getMenuInflater();
-//        menuInflater.inflate(R.menu.map, menu);
-//        return super.onCreateOptionsMenu(menu);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//
-//        int id = item.getItemId();
-//
-//        if(id == R.id.action_save_location){
-//
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.map, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if(id == R.id.action_save_location){
+
+            getMapCenter();
+
 //            Bundle args = new Bundle();
 //
 //            args.putParcelable("latLng", photoLocation);
@@ -684,11 +686,11 @@ public class LocationActivity extends AppCompatActivity implements
 //            setResult(RESULT_OK, intent);
 //
 //            finish();
-//
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//
-//    }
+
+        }
+
+        return super.onOptionsItemSelected(item);
+
+    }
 
 }

@@ -26,6 +26,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -70,14 +71,14 @@ public class PhotoActivity extends AppCompatActivity
     @Bind(R.id.button_capture)
     Button captureButton;
 
-    @Bind(R.id.button_save)
-    ImageButton saveButton;
+//    @Bind(R.id.button_save)
+//    ImageButton saveButton;
 
     @Bind(R.id.preview)
     ImageView mImageView;
 
-    @Bind(R.id.photo_progress)
-    RelativeLayout mPhotoProgress;
+//    @Bind(R.id.photo_progress)
+//    RelativeLayout mPhotoProgress;
 
     private static final int ACTION_TAKE_PHOTO = 1;
     private static final int ACTION_SELECT_PHOTO = 2;
@@ -130,42 +131,28 @@ public class PhotoActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.report, menu);
-        return true;
+        MenuInflater menuInflater = getMenuInflater();
+
+        menuInflater.inflate(R.menu.photo, menu);
+
+        return super.onCreateOptionsMenu(menu);
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        long activity;
-
-        String activityText;
-
-        String reportType;
-
         int id = item.getItemId();
 
         if (id == R.id.action_save) {
 
-            if (location != null) {
+            savePhoto();
 
-                latitude = location.getLatitude();
+        } else {
 
-                longitude = location.getLongitude();
-
-            } else {
-
-                SharedPreferences prefs =
-                        getSharedPreferences(getPackageName(), MODE_PRIVATE);
-
-                latitude = prefs.getFloat("latitude", 0);
-
-                longitude = prefs.getFloat("longitude", 0);
-
-            }
-
-            startActivity(new Intent(this, SubmissionsActivity.class));
+            startActivity(new Intent(this, MainActivity.class));
 
         }
 
@@ -621,7 +608,7 @@ public class PhotoActivity extends AppCompatActivity
 
     }
 
-    public void savePhoto(View v) {
+    protected void savePhoto() {
 
         // If we don't have a data connection, abort and send the user back to the main activity
 

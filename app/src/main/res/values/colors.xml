@@ -25,4 +25,7 @@
     <!-- Camera -->
     <color name="control_background">#cc4285f4</color>
 
+    <!-- Material -->
+    <color name="material_blue_grey950">#ff21272b</color>
+
 </resources>

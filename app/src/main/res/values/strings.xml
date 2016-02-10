@@ -29,6 +29,7 @@
     <string name="title_activity_map">Set Your Location</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_photo_preview">PhotoPreview</string>
+    <string name="title_activity_photo">Add photo</string>
     <string name="title_activity_sign_in">Sign In</string>
     <string name="email_hint">Email</string>
     <string name="first_name">First Name</string>

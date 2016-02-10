@@ -117,10 +117,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".PhotoActivity"
-            android:label="@string/title_activity_sign_in"
+            android:label="@string/title_activity_photo"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.viableindustries.waterreporter.MainActivity" />
@@ -175,11 +174,10 @@
         </activity>
         <activity
             android:name=".RegistrationGroupsActivity"
-            android:label="@string/title_activity_registration_groups"
-            android:parentActivityName=".ProfileBasicActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.viableindustries.waterreporter.ProfileBasicActivity" />
+            android:label="@string/title_activity_registration_groups">
+            <!--<meta-data-->
+                <!--android:name="android.support.PARENT_ACTIVITY"-->
+                <!--android:value="com.viableindustries.waterreporter.ProfileBasicActivity" />-->
         </activity>
     </application>
 

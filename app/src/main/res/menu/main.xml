@@ -9,7 +9,7 @@
         app:showAsAction="ifRoom" />
 
     <item android:id="@+id/action_submissions"
-        android:icon="@drawable/ic_account_box"
+        android:icon="@drawable/ic_person_white_24dp"
         android:title="@string/action_submissions"
         app:showAsAction="ifRoom" />
 

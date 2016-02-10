@@ -19,20 +19,20 @@
         android:layout_centerInParent="true"
         android:background="@drawable/floating_action_blue" />
 
-    <Button
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/blue_button"
-        android:gravity="center"
-        android:onClick="getMapCenter"
-        android:text="@string/save"
-        android:textAllCaps="true"
-        android:textColor="@color/white"
-        android:textStyle="bold" />
+    <!--<Button-->
+        <!--android:layout_width="80dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_marginBottom="0dp"-->
+        <!--android:layout_marginLeft="0dp"-->
+        <!--android:layout_marginRight="16dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:background="@drawable/blue_button"-->
+        <!--android:gravity="center"-->
+        <!--android:onClick="getMapCenter"-->
+        <!--android:text="@string/save"-->
+        <!--android:textAllCaps="true"-->
+        <!--android:textColor="@color/white"-->
+        <!--android:textStyle="bold" />-->
 
 </RelativeLayout>

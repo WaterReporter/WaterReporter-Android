@@ -4,6 +4,8 @@
     tools:context="com.viableindustries.waterreporter.PhotoMetaActivity" >
 
     <item android:id="@+id/action_save"
+        android:icon="@drawable/ic_done_white_24dp"
         android:title="@string/save"
         app:showAsAction="always" />
+
 </menu>

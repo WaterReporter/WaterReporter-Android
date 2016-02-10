@@ -96,9 +96,6 @@ public class PhotoMetaActivity extends AppCompatActivity {
     @Bind(R.id.groups)
     LinearLayout groupList;
 
-//    @Bind(R.id.list)
-//    ListView listView;
-
     private static final int ACTION_SET_LOCATION = 0;
 
     private String mGalleryPath;
@@ -533,9 +530,13 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                 ArrayList<Organization> organizations = organizationCollectionResponse.getFeatures();
 
-                Collections.sort(organizations, new GroupNameComparator());
+                if (organizations.size() > 0) {
 
-                populateOrganizations(organizations);
+                    Collections.sort(organizations, new GroupNameComparator());
+
+                    populateOrganizations(organizations);
+
+                }
 
             }
 
