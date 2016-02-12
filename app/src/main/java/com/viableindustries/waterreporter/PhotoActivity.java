@@ -3,13 +3,16 @@ package com.viableindustries.waterreporter;
 import android.Manifest;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.media.ExifInterface;
 import android.media.ThumbnailUtils;
@@ -17,12 +20,15 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.CursorLoader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -68,22 +74,21 @@ import retrofit.RestAdapter;
 public class PhotoActivity extends AppCompatActivity
         implements PhotoPickerDialogFragment.PhotoPickerDialogListener {
 
-    @Bind(R.id.button_capture)
-    Button captureButton;
+    @Bind(R.id.parent_layout)
+    RelativeLayout parentLayout;
 
-//    @Bind(R.id.button_save)
-//    ImageButton saveButton;
+    @Bind(R.id.button_capture)
+    ImageButton captureButton;
 
     @Bind(R.id.preview)
     ImageView mImageView;
-
-//    @Bind(R.id.photo_progress)
-//    RelativeLayout mPhotoProgress;
 
     private static final int ACTION_TAKE_PHOTO = 1;
     private static final int ACTION_SELECT_PHOTO = 2;
 
     private static final int PERMISSIONS_REQUEST_USE_CAMERA = 1;
+
+    private static final int PERMISSIONS_REQUEST_USE_STORAGE = 2;
 
     protected boolean photoCaptured = false;
 
@@ -95,14 +100,6 @@ public class PhotoActivity extends AppCompatActivity
     private static final String CAMERA_DIR = "/dcim/";
     private static final String JPEG_FILE_PREFIX = "IMG_";
     private static final String JPEG_FILE_SUFFIX = ".jpg";
-
-    private LatLng location;
-
-    private int mImageId;
-
-    double latitude;
-
-    double longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -197,7 +194,7 @@ public class PhotoActivity extends AppCompatActivity
 
     private File createImageFile(boolean temp) throws IOException {
 
-        File outputDir = null;
+        File outputDir;
 
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -291,9 +288,24 @@ public class PhotoActivity extends AppCompatActivity
 
         Log.d(null, filePath + " " + bitmap.getWidth() + " " + bitmap.getHeight());
 
+        //Log.d(null, bitmap.getWidth() + " " + bitmap.getHeight());
+
         int dimension = getSquareCropDimensionForBitmap(bitmap);
 
-        bitmap = ThumbnailUtils.extractThumbnail(bitmap, dimension, dimension);
+        Bitmap scaledBitmap = ThumbnailUtils.extractThumbnail(bitmap, dimension, dimension);
+
+//        int maxHeight = (1280 <= bitmap.getHeight()) ? 1280 : bitmap.getHeight();
+//        int maxWidth = (1280 <= bitmap.getWidth()) ? 1280 : bitmap.getWidth();
+//
+//        float scale = Math.min(((float) maxHeight / bitmap.getWidth()), ((float) maxWidth / bitmap.getHeight()));
+//
+//        Matrix matrix = new Matrix();
+//        matrix.postScale(scale, scale);
+//
+//        Bitmap scaledBitmap = Bitmap.createBitmap(bitmap,
+//                0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+
+        bitmap.recycle();
 
         try {
 
@@ -305,7 +317,7 @@ public class PhotoActivity extends AppCompatActivity
 
             FileOutputStream fOut = new FileOutputStream(file);
 
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
 
             fOut.flush();
 
@@ -413,7 +425,7 @@ public class PhotoActivity extends AppCompatActivity
 
         }
 
-        mImageView.setImageBitmap(bitmap);
+        mImageView.setImageBitmap(scaledBitmap);
 
         mImageView.setVisibility(View.VISIBLE);
 
@@ -445,23 +457,97 @@ public class PhotoActivity extends AppCompatActivity
 
     }
 
-    private void processGalleryPhoto(Intent returnedImageIntent) {
+    private String getRealPathFromURI(Uri contentUri) {
 
-        Uri selectedImage = returnedImageIntent.getData();
+        String[] proj = {MediaStore.Images.Media.DATA};
 
-        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+        CursorLoader loader = new CursorLoader(this, contentUri, proj, null, null, null);
 
-        Cursor cursor = getContentResolver().query(
-                selectedImage, filePathColumn, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
         cursor.moveToFirst();
 
-        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-
-        mCurrentPhotoPath = cursor.getString(columnIndex);
+        String result = cursor.getString(column_index);
 
         cursor.close();
 
-        setPic(mCurrentPhotoPath);
+        return result;
+
+    }
+
+//    private void processGalleryPhoto(Intent returnedImageIntent) {
+//
+//        Uri selectedImage = returnedImageIntent.getData();
+//
+//        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+//
+//        try {
+//
+//            ContentResolver contentResolver = getApplicationContext().getContentResolver();
+//
+//            Cursor cursor = contentResolver.query(
+//                    selectedImage, filePathColumn, null, null, null);
+//
+//            cursor.moveToFirst();
+//
+//            if (cursor.moveToFirst()) {
+//
+//                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+//
+//                mCurrentPhotoPath = cursor.getString(columnIndex);
+//
+//                cursor.close();
+//
+//                setPic(mCurrentPhotoPath);
+//
+//            }
+//
+//        } catch (NullPointerException ne) {
+//
+//            Snackbar.make(parentLayout, "Unable to open image.",
+//                    Snackbar.LENGTH_SHORT)
+//                    .show();
+//
+//        }
+//
+//    }
+
+    protected static int getImageProperty(Context context, Uri photoUri, String column) {
+    /* it's on the external media. */
+//        Cursor cursor = context.getContentResolver().query(photoUri,
+//                new
+
+        String[] proj = {MediaStore.Images.ImageColumns.ORIENTATION};
+
+//        if (cursor.getCount() != 1) {
+//            return -1;
+//        }
+//
+//        cursor.moveToFirst();
+//
+//        return cursor.getInt(0);
+
+        CursorLoader loader = new CursorLoader(context, photoUri, proj, null, null, null);
+
+        Cursor cursor = loader.loadInBackground();
+
+        if (cursor.getCount() != 1) {
+
+            return -1;
+
+        }
+
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.ORIENTATION);
+
+        cursor.moveToFirst();
+
+        //String result = cursor.getString(column_index);
+
+        cursor.close();
+
+        return cursor.getInt(0);
 
     }
 
@@ -474,9 +560,19 @@ public class PhotoActivity extends AppCompatActivity
 
                 if (resultCode == RESULT_OK) {
 
-                    captureButton.setText("Change photo");
+                    //if (data != null) {
+
+                    captureButton.setImageResource(R.drawable.ic_edit_white_24dp);
 
                     handleBigCameraPhoto();
+
+                    //Uri selectedImageUri = data.getData();
+
+                    //String filestring = selectedImageUri.getPath();
+
+                    //setPic(filestring);
+
+                    //}
 
                 }
 
@@ -486,9 +582,118 @@ public class PhotoActivity extends AppCompatActivity
 
                 if (resultCode == RESULT_OK) {
 
-                    captureButton.setText("Change photo");
+                    if (data != null) {
 
-                    processGalleryPhoto(data);
+                        captureButton.setImageResource(R.drawable.ic_edit_white_24dp);
+
+                        Uri selectedImageUri = data.getData();
+
+                        try {
+
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+
+                            int maxHeight = (1280 <= bitmap.getHeight()) ? 1280 : bitmap.getHeight();
+                            int maxWidth = (1280 <= bitmap.getWidth()) ? 1280 : bitmap.getWidth();
+
+                            float scale = Math.min(((float) maxHeight / bitmap.getWidth()), ((float) maxWidth / bitmap.getHeight()));
+
+                            Matrix matrix = new Matrix();
+                            matrix.postScale(scale, scale);
+
+                            Bitmap scaledBitmap = Bitmap.createBitmap(bitmap,
+                                    0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+
+                            int dimension = getSquareCropDimensionForBitmap(scaledBitmap);
+
+                            //Bitmap resizedBitmap = ThumbnailUtils.extractThumbnail(scaledBitmap, dimension, dimension);
+
+//                            Bitmap resizedBitmap = Bitmap.createScaledBitmap(
+//                                    bitmap, 1280, 1280, false);
+
+                            bitmap.recycle();
+
+                            try {
+
+                                // Create new image file and path reference
+
+                                File file = createImageFile(true);
+
+                                newFilePath = file.getAbsolutePath();
+
+                                FileOutputStream fOut = new FileOutputStream(file);
+
+                                scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+
+                                fOut.flush();
+
+                                fOut.close();
+
+                                // Create instances of ExifInterface for new and existing image files
+
+                                ExifInterface oldExif = new ExifInterface(selectedImageUri.getPath());
+//
+                                ExifInterface newExif = new ExifInterface(newFilePath);
+//
+//                                int exifOrientation = getImageProperty(this, selectedImageUri, "orientation");
+//
+//                                if (exifOrientation > -1) {
+//
+//                                    Log.d("orientation", String.valueOf(exifOrientation));
+//                                    newExif.setAttribute(ExifInterface.TAG_ORIENTATION, String.valueOf(exifOrientation));
+//                                    newExif.saveAttributes();
+//
+//                                }
+
+                                String exifOrientation = oldExif.getAttribute(ExifInterface.TAG_ORIENTATION);
+
+                                if (exifOrientation != null) {
+
+                                    Log.d("orientation", exifOrientation);
+                                    newExif.setAttribute(ExifInterface.TAG_ORIENTATION, exifOrientation);
+                                    newExif.saveAttributes();
+
+                                }
+
+                            } catch (Exception e) {
+
+                                e.printStackTrace();
+
+                                Log.d(null, "Save file error!");
+
+                                newFilePath = null;
+
+                                return;
+
+                            }
+
+                            mImageView.setImageBitmap(scaledBitmap);
+
+//                            Picasso.with(this)
+//                                    .load(new File (newFilePath))
+//                                    .fit()
+//                                    //.resize(50, 50)
+//                                    //.centerCrop()
+//                                    .into(mImageView);
+
+                            mImageView.setVisibility(View.VISIBLE);
+
+                            photoCaptured = true;
+
+                        } catch (Exception e) {
+
+                            Snackbar.make(parentLayout, "Unable to read image.",
+                                    Snackbar.LENGTH_SHORT)
+                                    .show();
+
+                        }
+
+                        //String fileString = getRealPathFromURI(selectedImageUri);
+
+                        //Log.d("path", fileString);
+
+                        //setPic(fileString);
+
+                    }
 
                 }
 
@@ -497,10 +702,48 @@ public class PhotoActivity extends AppCompatActivity
         }
     }
 
-    /**
-     * onClick event to launch a device's camera from Report view
-     **/
-    public void launchCamera(View v) {
+    // Check storage permissions. If present, launch the photo picker dialog.
+
+    public void checkStoragePermission(View v) {
+
+        if (ContextCompat.checkSelfPermission(PhotoActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(PhotoActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(PhotoActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    || ActivityCompat.shouldShowRequestPermissionRationale(PhotoActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                //Toast.makeText(PhotoActivity.this, "Water Reporter needs to read and write .", Toast.LENGTH_LONG).show();
+                Snackbar.make(parentLayout, "Storage permission is needed to create and retrieve images.",
+                        Snackbar.LENGTH_INDEFINITE)
+                        .setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                ActivityCompat.requestPermissions(PhotoActivity.this,
+                                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                                                Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                        PERMISSIONS_REQUEST_USE_STORAGE);
+                            }
+                        })
+                        .show();
+
+            } else {
+
+                //REQUEST PERMISSION
+
+                ActivityCompat.requestPermissions(PhotoActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_USE_STORAGE);
+
+            }
+
+        } else {
+
+            showPhotoPickerDialog();
+
+        }
+
+    }
+
+    protected void showPhotoPickerDialog() {
 
         DialogFragment newFragment = new PhotoPickerDialogFragment();
 
@@ -531,7 +774,10 @@ public class PhotoActivity extends AppCompatActivity
 
                     } catch (Exception e) {
 
-                        Toast.makeText(PhotoActivity.this, "Can\'t connect to the camera. Please select an image from your photo gallery instead.", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(PhotoActivity.this, "Can\'t connect to the camera. Please select an image from your photo gallery instead.", Toast.LENGTH_LONG).show();
+                        Snackbar.make(parentLayout, "Can\'t connect to the camera. Please select an image from your photo gallery instead.",
+                                Snackbar.LENGTH_SHORT)
+                                .show();
 
                     }
 
@@ -547,14 +793,37 @@ public class PhotoActivity extends AppCompatActivity
 
                     // Permission denied. Disable the functionality that depends on this permission.
 
-                    Toast.makeText(PhotoActivity.this, "Camera access denied. Please select an image from your photo gallery instead.", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(PhotoActivity.this, "Camera access denied. Please select an image from your photo gallery instead.", Toast.LENGTH_LONG).show();
+                    Snackbar.make(parentLayout, "Camera access denied. Please select an image from your photo gallery instead.",
+                            Snackbar.LENGTH_SHORT)
+                            .show();
 
                 }
 
             }
 
-            // other 'case' lines to check for other
-            // permissions this app might request
+            case PERMISSIONS_REQUEST_USE_STORAGE: {
+
+                // If request is cancelled, the result arrays are empty.
+
+                if (PermissionUtil.verifyPermissions(grantResults)) {
+
+                    // Permission granted.
+
+                    showPhotoPickerDialog();
+
+                } else {
+
+                    // Permission denied. Disable the functionality that depends on this permission.
+
+                    //Toast.makeText(PhotoActivity.this, "Camera access denied. Please select an image from your photo gallery instead.", Toast.LENGTH_LONG).show();
+                    Snackbar.make(parentLayout, "Storage access denied. Please enable this feature to submit reports.",
+                            Snackbar.LENGTH_SHORT)
+                            .show();
+
+                }
+
+            }
 
         }
 
@@ -594,17 +863,28 @@ public class PhotoActivity extends AppCompatActivity
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(PhotoActivity.this, Manifest.permission.CAMERA)) {
 
-                Toast.makeText(PhotoActivity.this, "Water Reporter needs to access your camera.", Toast.LENGTH_LONG).show();
+                //Toast.makeText(PhotoActivity.this, "Water Reporter needs to access your camera.", Toast.LENGTH_LONG).show();
+                Snackbar.make(parentLayout, "Camera permission is need to capture an image for your report.",
+                        Snackbar.LENGTH_INDEFINITE)
+                        .setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                ActivityCompat.requestPermissions(PhotoActivity.this,
+                                        new String[]{Manifest.permission.CAMERA},
+                                        PERMISSIONS_REQUEST_USE_CAMERA);
+                            }
+                        })
+                        .show();
+
+            } else {
+
+                //REQUEST PERMISSION
+
+                ActivityCompat.requestPermissions(PhotoActivity.this, new String[]{Manifest.permission.CAMERA}, PERMISSIONS_REQUEST_USE_CAMERA);
 
             }
 
-            //REQUEST PERMISSION
-
-            ActivityCompat.requestPermissions(PhotoActivity.this, new String[]{Manifest.permission.CAMERA}, PERMISSIONS_REQUEST_USE_CAMERA);
-
         }
-
-        //startActivityForResult(takePictureIntent, ACTION_TAKE_PHOTO);
 
     }
 
@@ -647,93 +927,18 @@ public class PhotoActivity extends AppCompatActivity
 
     }
 
-    private class SendFileTask extends AsyncTask<String, Integer, ReportPhoto> {
-
-        private ProgressListener listener;
-
-        private String filePath;
-
-        private String mimeType;
-
-        private SharedPreferences prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
-
-        private final String access_token = prefs.getString("access_token", "");
-
-        public SendFileTask(String filePath, String mimeType) {
-
-            this.filePath = filePath;
-
-            this.mimeType = mimeType;
-
-        }
-
-        @Override
-        protected ReportPhoto doInBackground(String... params) {
-
-            File file = new File(filePath);
-
-            final long totalSize = file.length();
-
-            Log.d("Upload FileSize[%d]", totalSize + "");
-
-            listener = new ProgressListener() {
-
-                @Override
-                public void transferred(long num) {
-
-                    publishProgress((int) ((num / (float) totalSize) * 100));
-
-                }
-
-            };
-
-            CountingTypedFile typedPhoto = new CountingTypedFile(mimeType, file, listener);
-
-            return null;
-
-        }
-
-        @Override
-        protected void onPostExecute(ReportPhoto reportPhoto) {
-
-            // Retrieve image id to associate with report
-            mImageId = reportPhoto.id;
-
-            Intent intent = new Intent(PhotoActivity.this, PhotoMetaActivity.class);
-
-            // Pass the on-device file path and API image id with the intent
-            intent
-                    .putExtra("image_id", mImageId)
-                    .putExtra("image_path", newFilePath);
-
-            startActivity(intent);
-
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-
-            Log.d(null, String.format("progress[%d]", values[0]));
-
-        }
-
-    }
-
-    public void cancel(View v) {
-
-        startActivity(new Intent(this, MainActivity.class));
-
-    }
-
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
 
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        Intent photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
 
         photoPickerIntent.setType("image/*");
 
-        startActivityForResult(photoPickerIntent, ACTION_SELECT_PHOTO);
+        if (photoPickerIntent.resolveActivity(getPackageManager()) != null) {
+
+            startActivityForResult(photoPickerIntent, ACTION_SELECT_PHOTO);
+
+        }
 
     }
 
@@ -741,8 +946,6 @@ public class PhotoActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
-        outState.putInt("image_id", mImageId);
 
         outState.putString("image_path", newFilePath);
 

@@ -58,8 +58,11 @@ public class MarkerDetailActivity extends AppCompatActivity {
     @Bind(R.id.marker_image)
     ImageView iv;
 
-    @Bind(R.id.groups)
-    LinearLayout groupList;
+    @Bind(R.id.report_detail)
+    LinearLayout reportDetail;
+
+    @Bind(R.id.group_affiliation)
+    TextView groupAffiliation;
 
     Report report;
 
@@ -219,7 +222,7 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
     private void populateOrganizations(ArrayList<Organization> orgs) {
 
-        groupList.setVisibility(View.VISIBLE);
+        groupAffiliation.setVisibility(View.VISIBLE);
 
         final OrganizationListAdapter adapter = new OrganizationListAdapter(this, orgs, false);
 
@@ -229,7 +232,7 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
             View item = adapter.getView(i, null, null);
 
-            groupList.addView(item);
+            reportDetail.addView(item);
 
         }
 

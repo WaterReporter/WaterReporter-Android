@@ -2,6 +2,7 @@ package com.viableindustries.waterreporter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -143,7 +144,7 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
                 String action = selected ? "left" : "joined";
 
                 CharSequence text = String.format("Successfully %s %s", action, organization.properties.name);
-                int duration = Toast.LENGTH_LONG;
+                int duration = Toast.LENGTH_SHORT;
 
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();

@@ -174,12 +174,21 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
             Log.d("image_id", mImageId + "");
 
-            Picasso.with(this)
-                    .load(new File(mTempImagePath))
-                    .placeholder(R.drawable.square_placeholder)
-                    .into(mImageView);
+            try {
 
-            mImageView.setVisibility(View.VISIBLE);
+                Picasso.with(this)
+                        .load(new File(mTempImagePath))
+                        .placeholder(R.drawable.square_placeholder)
+                        .into(mImageView);
+
+                mImageView.setVisibility(View.VISIBLE);
+
+            } catch (OutOfMemoryError om) {
+
+                //
+                Log.d("memory", "too heavy");
+
+            }
 
         }
 

@@ -63,28 +63,11 @@ public class RegistrationActivity extends Activity {
 
         super.onCreate(savedInstanceState);
 
-//        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-
         setContentView(R.layout.activity_registration);
 
         ButterKnife.bind(this);
 
-        // Check to see if we can populate the email field with an account on device
-
         emailPattern = android.util.Patterns.EMAIL_ADDRESS;
-
-        Account[] accounts = AccountManager.get(this).getAccounts();
-
-        for (Account account : accounts) {
-
-            if (emailPattern.matcher(account.name).matches()) {
-
-                String possibleEmail = account.name;
-
-                email_text.setText(possibleEmail);
-
-            }
-        }
 
         //set custom title layout for window
 //        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.custom_title);

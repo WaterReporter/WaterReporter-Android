@@ -4,7 +4,7 @@
     tools:context=".MainActivity" >
 
     <item android:id="@+id/action_report"
-        android:icon="@drawable/ic_action_add"
+        android:icon="@drawable/ic_add_white_24dp"
         android:title="@string/action_report"
         app:showAsAction="ifRoom" />
 

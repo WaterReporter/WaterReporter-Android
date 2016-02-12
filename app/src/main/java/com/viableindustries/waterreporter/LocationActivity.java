@@ -1,13 +1,20 @@
 package com.viableindustries.waterreporter;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -83,6 +90,8 @@ public class LocationActivity extends AppCompatActivity implements
      * Constant used in the location settings dialog.
      */
     protected static final int REQUEST_CHECK_SETTINGS = 0x1;
+
+    protected static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
@@ -203,9 +212,6 @@ public class LocationActivity extends AppCompatActivity implements
 
     protected void setBounds(Location location) {
 
-        float latitude = (float) location.getLatitude();
-        float longitude = (float) location.getLongitude();
-
         LatLng northeast = new LatLng(location.getLatitude() + 0.02, location.getLongitude() + 0.02);
 
         LatLng southwest = new LatLng(location.getLatitude() - 0.02, location.getLongitude() - 0.02);
@@ -276,13 +282,6 @@ public class LocationActivity extends AppCompatActivity implements
             }
 
         }
-
-//        Log.i(TAG, "Building GoogleApiClient");
-//        mGoogleApiClient = new GoogleApiClient.Builder(this)
-//                .addConnectionCallbacks(this)
-//                .addOnConnectionFailedListener(this)
-//                .addApi(LocationServices.API)
-//                .build();
     }
 
     /**
@@ -376,12 +375,12 @@ public class LocationActivity extends AppCompatActivity implements
      * settings dialog to the user.
      */
     @Override
-    public void onResult(LocationSettingsResult locationSettingsResult) {
+    public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
         final Status status = locationSettingsResult.getStatus();
         switch (status.getStatusCode()) {
             case LocationSettingsStatusCodes.SUCCESS:
                 Log.i(TAG, "All location settings are satisfied.");
-                startLocationUpdates();
+                hasPermission();
                 break;
             case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                 Log.i(TAG, "Location settings are not satisfied. Show the user a dialog to" +
@@ -410,7 +409,7 @@ public class LocationActivity extends AppCompatActivity implements
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         Log.i(TAG, "User agreed to make required location settings changes.");
-                        startLocationUpdates();
+                        hasPermission();
                         break;
                     case Activity.RESULT_CANCELED:
                         Log.i(TAG, "User chose not to make required location settings changes.");
@@ -420,39 +419,104 @@ public class LocationActivity extends AppCompatActivity implements
         }
     }
 
-    /**
-     * Handles the Start Updates button and requests start of location updates. Does nothing if
-     * updates have already been requested.
-     */
-    public void startUpdatesButtonHandler(View view) {
-        checkLocationSettings();
+    // Handle the permissions request response
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+
+            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+
+                // If request is cancelled, the result arrays are empty.
+
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // Permission granted.
+
+                    startLocationUpdates();
+
+                } else {
+
+                    // Permission denied. Disable the functionality that depends on this permission.
+
+                    //Toast.makeText(LocationActivity.this, "Location access denied. You will not be able to submit any reports with this setting disabled.", Toast.LENGTH_LONG).show();
+                    Snackbar.make(mv, "Location access denied. You will not be able to submit any reports with this setting disabled.",
+                            Snackbar.LENGTH_SHORT)
+                            .show();
+
+                }
+
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+
+        }
+
     }
 
-    /**
-     * Handles the Stop Updates button, and requests removal of location updates.
-     */
-    public void stopUpdatesButtonHandler(View view) {
-        // It is a good practice to remove location requests when the activity is in a paused or
-        // stopped state. Doing so helps battery performance and is especially
-        // recommended in applications that request frequent location updates.
-        stopLocationUpdates();
+    // Check for location permission
+
+    protected void hasPermission() {
+
+        if (ContextCompat.checkSelfPermission(LocationActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            startLocationUpdates();
+
+        } else {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(LocationActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                //Toast.makeText(LocationActivity.this, "Water Reporter needs to access your location.", Toast.LENGTH_LONG).show();
+                Snackbar.make(mv, "Water Reporter needs access your location in order to set geographic coordinates for this report.",
+                        Snackbar.LENGTH_INDEFINITE)
+                        .setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                ActivityCompat.requestPermissions(LocationActivity.this,
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                        PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+                            }
+                        })
+                        .show();
+
+            } else {
+
+                //REQUEST PERMISSION
+
+                ActivityCompat.requestPermissions(LocationActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+
+            }
+
+        }
+
     }
 
     /**
      * Requests location updates from the FusedLocationApi.
      */
     protected void startLocationUpdates() {
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient,
-                mLocationRequest,
-                this
-        ).setResultCallback(new ResultCallback<Status>() {
-            @Override
-            public void onResult(Status status) {
-                mRequestingLocationUpdates = true;
-                setButtonsEnabledState();
-            }
-        });
+
+        try {
+
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient,
+                    mLocationRequest,
+                    this
+            ).setResultCallback(new ResultCallback<Status>() {
+                @Override
+                public void onResult(@NonNull Status status) {
+                    mRequestingLocationUpdates = true;
+                    setButtonsEnabledState();
+                }
+            });
+
+        } catch (SecurityException se) {
+
+            hasPermission();
+
+        }
 
     }
 
@@ -503,7 +567,7 @@ public class LocationActivity extends AppCompatActivity implements
                 this
         ).setResultCallback(new ResultCallback<Status>() {
             @Override
-            public void onResult(Status status) {
+            public void onResult(@NonNull Status status) {
                 mRequestingLocationUpdates = false;
                 setButtonsEnabledState();
             }
@@ -526,7 +590,7 @@ public class LocationActivity extends AppCompatActivity implements
         // connection to GoogleApiClient intact.  Here, we resume receiving
         // location updates if the user has requested them.
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
-            startLocationUpdates();
+            hasPermission();
         }
 
         mLocationOverlay.enableMyLocation();
@@ -572,23 +636,37 @@ public class LocationActivity extends AppCompatActivity implements
         // moves to a new location, and then changes the device orientation, the original location
         // is displayed as the activity is re-created.
         if (mCurrentLocation == null) {
-            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-            Log.d("time", mLastUpdateTime);
-            if (mCurrentLocation != null) {
 
-                Log.d("existing latitude", String.format("%.2f", mCurrentLocation.getLatitude()));
+            try {
 
-                if (!isZoomed) {
+                mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
-                    setBounds(mCurrentLocation);
+                mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
 
-                    isZoomed = true;
+                Log.d("time", mLastUpdateTime);
+
+                if (mCurrentLocation != null) {
+
+                    Log.d("existing latitude", String.format("%.2f", mCurrentLocation.getLatitude()));
+
+                    if (!isZoomed) {
+
+                        setBounds(mCurrentLocation);
+
+                        isZoomed = true;
+
+                    }
 
                 }
 
+                updateLocationUI();
+
+            } catch (SecurityException se) {
+
+                hasPermission();
+
             }
-            updateLocationUI();
+
         }
     }
 
@@ -624,7 +702,7 @@ public class LocationActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult result) {
+    public void onConnectionFailed(@NonNull ConnectionResult result) {
         // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
         // onConnectionFailed.
         Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
@@ -659,8 +737,7 @@ public class LocationActivity extends AppCompatActivity implements
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.map, menu);
         return super.onCreateOptionsMenu(menu);
@@ -671,7 +748,7 @@ public class LocationActivity extends AppCompatActivity implements
 
         int id = item.getItemId();
 
-        if(id == R.id.action_save_location){
+        if (id == R.id.action_save_location) {
 
             getMapCenter();
 

@@ -226,7 +226,7 @@ public class SubmissionDetailActivity extends AppCompatActivity {
                 if (response != null) {
 
                     CharSequence text = "Report deleted!";
-                    int duration = Toast.LENGTH_LONG;
+                    int duration = Toast.LENGTH_SHORT;
 
                     Toast toast = Toast.makeText(getBaseContext(), text, duration);
                     toast.show();

@@ -53,22 +53,7 @@ public class SignInActivity extends Activity {
 
         ButterKnife.bind(this);
 
-        // Check to see if we can populate the email field with an account on device
-
         emailPattern = android.util.Patterns.EMAIL_ADDRESS;
-
-        Account[] accounts = AccountManager.get(this).getAccounts();
-
-        for (Account account : accounts) {
-
-            if (emailPattern.matcher(account.name).matches()) {
-
-                String possibleEmail = account.name;
-
-                email_text.setText(possibleEmail);
-
-            }
-        }
 
         //prevent sign-in window from being closed by clicking outside of it
         //this forces the user to actually sign-in
