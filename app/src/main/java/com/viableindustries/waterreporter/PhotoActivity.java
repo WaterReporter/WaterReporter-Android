@@ -22,6 +22,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -51,8 +52,10 @@ import com.viableindustries.waterreporter.progress.CountingTypedFile;
 import com.viableindustries.waterreporter.progress.ProgressListener;
 
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
@@ -233,11 +236,17 @@ public class PhotoActivity extends AppCompatActivity
             // height and width larger than the requested height and width.
             while ((halfHeight / inSampleSize) > reqHeight
                     && (halfWidth / inSampleSize) > reqWidth) {
+
                 inSampleSize *= 2;
+
             }
+
         }
 
+        Log.d("sampleSize", String.valueOf(inSampleSize));
+
         return inSampleSize;
+
     }
 
     public int getSquareCropDimensionForBitmap(Bitmap bitmap) {
@@ -282,17 +291,94 @@ public class PhotoActivity extends AppCompatActivity
 
     }
 
+    protected Bitmap decodeSampledBitmapFromStream(Uri uri, int reqWidth, int reqHeight) {
+
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+
+        Bitmap bitmap = null;
+
+        ParcelFileDescriptor parcelFD = null;
+
+        InputStream inputStream;
+
+        try {
+
+            parcelFD = getContentResolver().openFileDescriptor(uri, "r");
+
+            if (parcelFD != null) {
+
+                FileDescriptor imageSource = parcelFD.getFileDescriptor();
+
+                options.inJustDecodeBounds = true;
+
+                BitmapFactory.decodeFileDescriptor(imageSource, null, options);
+
+                // Calculate inSampleSize
+                options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+                // Decode bitmap with inSampleSize set
+                options.inJustDecodeBounds = false;
+
+                bitmap = BitmapFactory.decodeFileDescriptor(imageSource, null, options);
+
+                //inputStream = this.getContentResolver().openInputStream(uri);
+
+            }
+
+        } catch (Exception e) {
+
+            return null;
+
+        } finally {
+
+            if (parcelFD != null) {
+
+                try {
+
+                    parcelFD.close();
+
+                    //return bitmap;
+
+                } catch (IOException e) {
+
+                    // ignored
+
+                }
+
+            }
+
+        }
+
+        return bitmap;
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        //final BitmapFactory.Options options = new BitmapFactory.Options();
+
+//        options.inJustDecodeBounds = true;
+//
+//        BitmapFactory.decodeFileDescriptor(inputStream, null, options);
+//
+//        // Calculate inSampleSize
+//        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+//
+//        // Decode bitmap with inSampleSize set
+//        options.inJustDecodeBounds = false;
+//
+//        return BitmapFactory.decodeStream(inputStream, null, options);
+
+    }
+
     private void setPic(String filePath) {
 
-        Bitmap bitmap = decodeSampledBitmapFromResource(filePath, 1280, 1280);
+        Bitmap scaledBitmap = decodeSampledBitmapFromResource(filePath, 1080, 1080);
 
-        Log.d(null, filePath + " " + bitmap.getWidth() + " " + bitmap.getHeight());
+        //Log.d(null, filePath + " " + bitmap.getWidth() + " " + bitmap.getHeight());
 
         //Log.d(null, bitmap.getWidth() + " " + bitmap.getHeight());
 
-        int dimension = getSquareCropDimensionForBitmap(bitmap);
+        //int dimension = getSquareCropDimensionForBitmap(bitmap);
 
-        Bitmap scaledBitmap = ThumbnailUtils.extractThumbnail(bitmap, dimension, dimension);
+        //Bitmap scaledBitmap = ThumbnailUtils.extractThumbnail(bitmap, dimension, dimension);
 
 //        int maxHeight = (1280 <= bitmap.getHeight()) ? 1280 : bitmap.getHeight();
 //        int maxWidth = (1280 <= bitmap.getWidth()) ? 1280 : bitmap.getWidth();
@@ -305,7 +391,7 @@ public class PhotoActivity extends AppCompatActivity
 //        Bitmap scaledBitmap = Bitmap.createBitmap(bitmap,
 //                0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
-        bitmap.recycle();
+        //bitmap.recycle();
 
         try {
 
@@ -590,27 +676,35 @@ public class PhotoActivity extends AppCompatActivity
 
                         try {
 
-                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                            Bitmap scaledBitmap = decodeSampledBitmapFromStream(selectedImageUri, 1080, 1080);
 
-                            int maxHeight = (1280 <= bitmap.getHeight()) ? 1280 : bitmap.getHeight();
-                            int maxWidth = (1280 <= bitmap.getWidth()) ? 1280 : bitmap.getWidth();
-
-                            float scale = Math.min(((float) maxHeight / bitmap.getWidth()), ((float) maxWidth / bitmap.getHeight()));
-
-                            Matrix matrix = new Matrix();
-                            matrix.postScale(scale, scale);
-
-                            Bitmap scaledBitmap = Bitmap.createBitmap(bitmap,
-                                    0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-
-                            int dimension = getSquareCropDimensionForBitmap(scaledBitmap);
+//                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+//
+//                            int maxHeight = (1280 <= bitmap.getHeight()) ? 1280 : bitmap.getHeight();
+//                            int maxWidth = (1280 <= bitmap.getWidth()) ? 1280 : bitmap.getWidth();
+//
+//                            float scale = 1;
+//
+//                            if (maxHeight >= 1280 && maxWidth >= 1280) {
+//
+//                                scale = Math.min(((float) maxHeight / bitmap.getWidth()), ((float) maxWidth / bitmap.getHeight()));
+//
+//                            }
+//
+//                            Matrix matrix = new Matrix();
+//                            matrix.postScale(scale, scale);
+//
+//                            Bitmap scaledBitmap = Bitmap.createBitmap(bitmap,
+//                                    0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+//
+//                            int dimension = getSquareCropDimensionForBitmap(scaledBitmap);
 
                             //Bitmap resizedBitmap = ThumbnailUtils.extractThumbnail(scaledBitmap, dimension, dimension);
 
 //                            Bitmap resizedBitmap = Bitmap.createScaledBitmap(
 //                                    bitmap, 1280, 1280, false);
 
-                            bitmap.recycle();
+                            //bitmap.recycle();
 
                             try {
 
@@ -719,8 +813,7 @@ public class PhotoActivity extends AppCompatActivity
                             @Override
                             public void onClick(View view) {
                                 ActivityCompat.requestPermissions(PhotoActivity.this,
-                                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
-                                                Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                                         PERMISSIONS_REQUEST_USE_STORAGE);
                             }
                         })
@@ -728,10 +821,11 @@ public class PhotoActivity extends AppCompatActivity
 
             } else {
 
-                //REQUEST PERMISSION
+                // REQUEST PERMISSION
+                // See: https://developer.android.com/reference/android/Manifest.permission.html#READ_EXTERNAL_STORAGE
+                // Any app that declares the WRITE_EXTERNAL_STORAGE permission is implicitly granted permission to READ_EXTERNAL_STORAGE.
 
-                ActivityCompat.requestPermissions(PhotoActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_USE_STORAGE);
+                ActivityCompat.requestPermissions(PhotoActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_USE_STORAGE);
 
             }
 
