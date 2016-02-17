@@ -96,7 +96,9 @@ public class MarkerDetailActivity extends AppCompatActivity {
         super.onDestroy();
 
         Picasso.with(this).cancelRequest(iv);
+
         ButterKnife.unbind(this);
+
     }
 
 //    private void joinGroup() {

@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
@@ -26,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,6 +70,9 @@ import retrofit.mime.TypedFile;
  * This activity handles all of the report functionality.
  */
 public class PhotoMetaActivity extends AppCompatActivity {
+
+    @Bind(R.id.scrollView)
+    ScrollView scrollView;
 
     @Bind(R.id.save_message)
     RelativeLayout saveMessage;
@@ -139,7 +144,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         progressBar.getIndeterminateDrawable().setColorFilter(
-                getResources().getColor(R.color.base_blue),
+                ContextCompat.getColor(this, R.color.base_blue),
                 android.graphics.PorterDuff.Mode.SRC_IN);
 
         if (!connectionActive()) {
@@ -388,6 +393,9 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
         }
 
+        //scrollView.fullScroll(ScrollView.FOCUS_UP);
+        scrollView.smoothScrollTo(0, 0);
+
         saveMessage.setVisibility(View.VISIBLE);
 
         final ReportService reportService = ReportService.restAdapter.create(ReportService.class);
@@ -482,7 +490,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                                         Log.w("Delete Check", "File deleted: " + tempFile + imageDeleted);
 
-                                        progressBar.setVisibility(View.GONE);
+                                        //progressBar.setVisibility(View.GONE);
 
                                         saveStatus.setText(getResources().getString(R.string.report_received));
 

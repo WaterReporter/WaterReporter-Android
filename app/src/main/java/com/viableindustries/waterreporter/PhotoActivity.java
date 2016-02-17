@@ -403,7 +403,7 @@ public class PhotoActivity extends AppCompatActivity
 
             FileOutputStream fOut = new FileOutputStream(file);
 
-            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
 
             fOut.flush();
 
@@ -716,7 +716,7 @@ public class PhotoActivity extends AppCompatActivity
 
                                 FileOutputStream fOut = new FileOutputStream(file);
 
-                                scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                                scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
 
                                 fOut.flush();
 

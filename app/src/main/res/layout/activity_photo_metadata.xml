@@ -1,5 +1,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fadingEdge="none"
@@ -9,9 +10,48 @@
     android:scrollbars="none"
     tools:context="com.viableindustries.waterreporter.PhotoMetaActivity">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/save_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:id="@+id/loading_spinner"
+                style="@android:style/Widget.Holo.ProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="16dp"
+                android:indeterminate="true" />
+
+            <TextView
+                android:id="@+id/save_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/loading_spinner"
+                android:layout_gravity="center"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="0dp"
+                android:text="@string/saving"
+                android:textSize="@dimen/base_text" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/save_status"
+                android:background="@color/gray_224" />
+
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -51,6 +91,7 @@
                 android:background="@drawable/white_canvas"
                 android:clickable="true"
                 android:hint="@string/date_hint"
+                android:inputType="date"
                 android:padding="16dp"
                 android:textSize="@dimen/base_text" />
 
@@ -106,37 +147,37 @@
 
         </LinearLayout>
 
-        <RelativeLayout
-            android:id="@+id/save_message"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/gray_f5f7f9"
-            android:gravity="center"
-            android:visibility="gone">
+        <!--<RelativeLayout-->
+        <!--android:id="@+id/save_message"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:background="@color/gray_f5f7f9"-->
+        <!--android:gravity="center"-->
+        <!--android:visibility="gone">-->
 
-            <ProgressBar
-                android:id="@+id/loading_spinner"
-                style="@android:style/Widget.Holo.ProgressBar.Large"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true" />
+        <!--<ProgressBar-->
+        <!--android:id="@+id/loading_spinner"-->
+        <!--style="@android:style/Widget.Holo.ProgressBar.Large"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_centerHorizontal="true" />-->
 
-            <TextView
-                android:id="@+id/save_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/loading_spinner"
-                android:layout_gravity="center"
-                android:layout_marginBottom="0dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="20dp"
-                android:text="@string/saving"
-                android:textColor="@color/base_blue"
-                android:textSize="@dimen/base_text" />
+        <!--<TextView-->
+        <!--android:id="@+id/save_status"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/loading_spinner"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:layout_marginBottom="0dp"-->
+        <!--android:layout_marginLeft="20dp"-->
+        <!--android:layout_marginRight="20dp"-->
+        <!--android:layout_marginTop="20dp"-->
+        <!--android:text="@string/saving"-->
+        <!--android:textColor="@color/base_blue"-->
+        <!--android:textSize="@dimen/base_text" />-->
 
-        </RelativeLayout>
+        <!--</RelativeLayout>-->
 
-    </FrameLayout>
+    </LinearLayout>
 
 </ScrollView>

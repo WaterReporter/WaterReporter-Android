@@ -8,6 +8,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
@@ -26,11 +27,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.GroupNameComparator;
+import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.Submission;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -63,6 +68,9 @@ public class SubmissionDetailActivity extends AppCompatActivity {
 
     @Bind(R.id.submission_image)
     ImageView imageView;
+
+    @Bind(R.id.group_affiliation)
+    TextView groupAffiliation;
 
     protected int reportId;
 
@@ -130,7 +138,7 @@ public class SubmissionDetailActivity extends AppCompatActivity {
     protected void requestData(int id){
 
         progressBar.getIndeterminateDrawable().setColorFilter(
-                getResources().getColor(R.color.base_blue),
+                ContextCompat.getColor(SubmissionDetailActivity.this, R.color.base_blue),
                 android.graphics.PorterDuff.Mode.SRC_IN);
 
         SharedPreferences prefs =
@@ -161,6 +169,16 @@ public class SubmissionDetailActivity extends AppCompatActivity {
                             .load(filePath)
                             .placeholder(R.drawable.square_placeholder)
                             .into(imageView);
+
+                }
+
+                if (report.properties.groups.size() != 0) {
+
+                    ArrayList<Organization> organizations = report.properties.groups;
+
+                    Collections.sort(organizations, new GroupNameComparator());
+
+                    populateOrganizations(organizations);
 
                 }
 
@@ -204,6 +222,26 @@ public class SubmissionDetailActivity extends AppCompatActivity {
             }
 
         });
+
+    }
+
+    private void populateOrganizations(ArrayList<Organization> orgs) {
+
+        groupAffiliation.setVisibility(View.VISIBLE);
+
+        final OrganizationListAdapter adapter = new OrganizationListAdapter(SubmissionDetailActivity.this, orgs, false);
+
+        final int adapterCount = adapter.getCount();
+
+        Log.d("count", String.valueOf(adapterCount));
+
+        for (int i = 0; i < adapterCount; i++) {
+
+            View item = adapter.getView(i, null, null);
+
+            reportContent.addView(item);
+
+        }
 
     }
 
@@ -331,7 +369,7 @@ public class SubmissionDetailActivity extends AppCompatActivity {
 
         // Check for a data connection!
 
-        connectionActive();
+        //connectionActive();
 
     }
 
@@ -346,6 +384,8 @@ public class SubmissionDetailActivity extends AppCompatActivity {
     protected void onDestroy() {
 
         super.onDestroy();
+
+        Picasso.with(this).cancelRequest(imageView);
 
         ButterKnife.unbind(this);
 
