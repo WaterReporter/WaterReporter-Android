@@ -455,7 +455,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                         for (Map.Entry<String, Integer> entry : groupMap.entrySet()) {
 
-                            String key = entry.getKey();
+                            //String key = entry.getKey();
 
                             Integer value = entry.getValue();
 
@@ -584,6 +584,34 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
     }
 
+    private View.OnClickListener handleCheckListClick(final View view)  {
+        return new View.OnClickListener() {
+            public void onClick(View v) {
+
+                CheckBox checkBox = (CheckBox) view.findViewById(R.id.check_box);
+
+                TextView siteName = (TextView) view.findViewById(R.id.organization_name);
+
+                String groupName = (String) siteName.getText();
+
+                if (checkBox.isChecked()) {
+
+                    groupMap.put(groupName, 0);
+
+                } else {
+
+                    int groupId = (Integer) view.getTag();
+
+                    groupMap.put(groupName, groupId);
+
+                }
+
+                checkBox.toggle();
+
+            }
+        };
+    }
+
     private void populateOrganizations(ArrayList<Organization> orgs) {
 
         groupList.setVisibility(View.VISIBLE);
@@ -598,34 +626,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
             View item = adapter.getView(i, null, null);
 
-            item.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View view) {
-
-                    CheckBox checkBox = (CheckBox) view.findViewById(R.id.check_box);
-
-                    TextView siteName = (TextView) view.findViewById(R.id.organization_name);
-
-                    String groupName = (String) siteName.getText();
-
-                    if (checkBox.isChecked()) {
-
-                        groupMap.put(groupName, 0);
-
-                    } else {
-
-                        int groupId = (Integer) view.getTag();
-
-                        groupMap.put(groupName, groupId);
-
-                    }
-
-                    checkBox.toggle();
-
-                }
-
-            });
+            item.setOnClickListener(handleCheckListClick(item));
 
             groupList.addView(item);
 
