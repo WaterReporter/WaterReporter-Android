@@ -11,6 +11,7 @@
     tools:context="com.viableindustries.waterreporter.PhotoMetaActivity">
 
     <LinearLayout
+        android:id="@+id/report_submission_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -112,71 +113,61 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
+                android:layout_marginTop="0dp"
                 android:background="@drawable/blue_button"
+                android:drawableLeft="@drawable/ic_add_white_24dp"
                 android:onClick="updateLocation"
-                android:text="Add a location"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="Add location"
                 android:textColor="@color/white" />
 
-            <ImageView
-                android:id="@+id/static_map"
-                android:layout_width="match_parent"
-                android:layout_height="240dp"
-                android:adjustViewBounds="true"
-                android:background="@drawable/white_canvas"
-                android:visibility="gone" />
-
-            <LinearLayout
-                android:id="@+id/groups"
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/groups_button"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_marginTop="16dp"
-                android:orientation="vertical"
-                android:visibility="gone">
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="0dp"
+                android:background="@drawable/blue_button"
+                android:drawableLeft="@drawable/ic_add_white_24dp"
+                android:onClick="associateGroups"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="Add groups"
+                android:textColor="@color/white" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="16dp"
-                    android:paddingTop="0dp"
-                    android:text="Associate this report with one or more groups."
-                    android:textSize="@dimen/small_text"
-                    android:textStyle="bold" />
+            <!--<ImageView-->
+            <!--android:id="@+id/static_map"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="240dp"-->
+            <!--android:adjustViewBounds="true"-->
+            <!--android:background="@drawable/white_canvas"-->
+            <!--android:visibility="gone" />-->
 
-            </LinearLayout>
+            <!--<LinearLayout-->
+            <!--android:id="@+id/groups"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:layout_marginBottom="16dp"-->
+            <!--android:layout_marginTop="16dp"-->
+            <!--android:orientation="vertical">-->
+
+            <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:paddingBottom="16dp"-->
+            <!--android:paddingTop="0dp"-->
+            <!--android:text="Associate this report with one or more of your groups."-->
+            <!--android:textSize="@dimen/base_text" />-->
+
+            <!--<ListView-->
+            <!--android:id="@+id/list"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0dp" />-->
+
+            <!--</LinearLayout>-->
 
         </LinearLayout>
-
-        <!--<RelativeLayout-->
-        <!--android:id="@+id/save_message"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:background="@color/gray_f5f7f9"-->
-        <!--android:gravity="center"-->
-        <!--android:visibility="gone">-->
-
-        <!--<ProgressBar-->
-        <!--android:id="@+id/loading_spinner"-->
-        <!--style="@android:style/Widget.Holo.ProgressBar.Large"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_centerHorizontal="true" />-->
-
-        <!--<TextView-->
-        <!--android:id="@+id/save_status"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/loading_spinner"-->
-        <!--android:layout_gravity="center"-->
-        <!--android:layout_marginBottom="0dp"-->
-        <!--android:layout_marginLeft="20dp"-->
-        <!--android:layout_marginRight="20dp"-->
-        <!--android:layout_marginTop="20dp"-->
-        <!--android:text="@string/saving"-->
-        <!--android:textColor="@color/base_blue"-->
-        <!--android:textSize="@dimen/base_text" />-->
-
-        <!--</RelativeLayout>-->
 
     </LinearLayout>
 

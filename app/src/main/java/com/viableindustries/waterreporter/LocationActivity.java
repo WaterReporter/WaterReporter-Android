@@ -748,21 +748,23 @@ public class LocationActivity extends AppCompatActivity implements
 
         int id = item.getItemId();
 
-        if (id == R.id.action_save_location) {
+        switch (id) {
 
-            getMapCenter();
+            case android.R.id.home:
 
-//            Bundle args = new Bundle();
-//
-//            args.putParcelable("latLng", photoLocation);
-//
-//            Intent intent = new Intent();
-//
-//            intent.putExtra("bundle", args);
-//
-//            setResult(RESULT_OK, intent);
-//
-//            finish();
+                Intent intent = new Intent();
+
+                setResult(RESULT_CANCELED, intent);
+
+                finish();
+
+                return true;
+
+            case R.id.action_save_location:
+
+                getMapCenter();
+
+                return true;
 
         }
 

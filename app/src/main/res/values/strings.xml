@@ -106,5 +106,9 @@
     <string name="group_dialog_affirm">Yes</string>
     <string name="group_dialog_dismiss">Maybe later</string>
     <string name="title_activity_registration_groups">Groups</string>
+    <string name="title_activity_group_checklist">Add groups</string>
+
+    <!-- Shared preference key for groups associated with a report -->
+    <string name="associated_group_key">com.viableindustries.waterreporter.ASSOCIATED_GROUPS</string>
 
 </resources>

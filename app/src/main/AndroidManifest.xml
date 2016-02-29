@@ -15,7 +15,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <!--<uses-permission android:name="android.permission.GET_ACCOUNTS" />-->
+    <!-- <uses-permission android:name="android.permission.GET_ACCOUNTS" /> -->
 
     <uses-feature
         android:name="android.hardware.Camera"
@@ -179,9 +179,18 @@
         <activity
             android:name=".RegistrationGroupsActivity"
             android:label="@string/title_activity_registration_groups">
-            <!--<meta-data-->
-                <!--android:name="android.support.PARENT_ACTIVITY"-->
-                <!--android:value="com.viableindustries.waterreporter.ProfileBasicActivity" />-->
+
+            <!-- <meta-data -->
+            <!-- android:name="android.support.PARENT_ACTIVITY" -->
+            <!-- android:value="com.viableindustries.waterreporter.ProfileBasicActivity" /> -->
+        </activity>
+        <activity
+            android:name=".GroupChecklistActivity"
+            android:label="@string/title_activity_group_checklist"
+            android:parentActivityName=".PhotoMetaActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.viableindustries.waterreporter.PhotoMetaActivity" />
         </activity>
     </application>
 
