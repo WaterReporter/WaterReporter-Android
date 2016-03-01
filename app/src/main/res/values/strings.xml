@@ -108,6 +108,9 @@
     <string name="title_activity_registration_groups">Groups</string>
     <string name="title_activity_group_checklist">Add groups</string>
 
+    <string name="add_group">Add</string>
+    <string name="remove_group">Remove</string>
+
     <!-- Shared preference key for groups associated with a report -->
     <string name="associated_group_key">com.viableindustries.waterreporter.ASSOCIATED_GROUPS</string>
 

@@ -2,15 +2,19 @@ package com.viableindustries.waterreporter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +46,8 @@ public class OrganizationCheckListAdapter extends ArrayAdapter<Organization> {
 
     private ArrayList<Organization> sourceList;
 
+    protected Button associateGroup;
+
     protected SharedPreferences prefs;
 
     protected SharedPreferences groupPrefs;
@@ -72,8 +78,26 @@ public class OrganizationCheckListAdapter extends ArrayAdapter<Organization> {
 
     }
 
+    private void updateGroupSelection(final Organization organization) {
+
+        int selected = groupPrefs.getInt(organization.properties.name, 0);
+
+        if (selected > 0) {
+
+            groupPrefs.edit().putInt(organization.properties.name, 0).apply();
+
+        } else {
+
+            groupPrefs.edit().putInt(organization.properties.name, organization.properties.id).apply();
+
+        }
+
+        notifyDataSetChanged();
+
+    }
+
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         final Organization feature = sourceList.get(position);
 
@@ -86,25 +110,50 @@ public class OrganizationCheckListAdapter extends ArrayAdapter<Organization> {
         // Check if an existing view is being reused, otherwise inflate the view
 
         if (convertView == null) {
+
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.organization_checklist_item, parent, false);
-        }
-
-        CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.check_box);
-
-        int selected = groupPrefs.getInt(name, 0);
-
-        Log.d("orgid_s", String.valueOf(selected) + name);
-
-        if (selected > 0) {
-
-            checkBox.setChecked(true);
 
         }
+
+        // Layout elements
+
+        associateGroup = (Button) convertView.findViewById(R.id.associate_group);
+
+        // Set click listener
+
+        associateGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.d("Button Event", "Clicked the associate group button.");
+
+                Button button = (Button) v;
+
+                int selected = groupPrefs.getInt(feature.properties.name, 0);
+
+                if (selected > 0) {
+
+                    groupPrefs.edit().putInt(feature.properties.name, 0).apply();
+
+                    button.setBackgroundResource(R.drawable.green_button);
+
+                    button.setText(R.string.add_group);
+
+                } else {
+
+                    groupPrefs.edit().putInt(feature.properties.name, feature.properties.id).apply();
+
+                    button.setBackgroundResource(R.drawable.orange_button);
+
+                    button.setText(R.string.remove_group);
+
+                }
+
+            }
+        });
 
         // Lookup view for data population
         TextView siteName = (TextView) convertView.findViewById(R.id.organization_name);
-
-        convertView.setTag(id);
 
         siteName.setText(name);
 

@@ -13,17 +13,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -95,24 +93,13 @@ public class PhotoMetaActivity extends AppCompatActivity {
     @Bind(R.id.preview)
     ImageView mImageView;
 
-//    @Bind(R.id.static_map)
-//    ImageView staticMap;
-
     @Bind(R.id.location_button)
     Button locationButton;
 
-    @Bind(R.id.groups_button)
-    Button groupsButton;
-
-//    @Bind(R.id.groups)
-//    LinearLayout groupList;
-//
-//    @Bind(R.id.list)
-//    ListView listView;
+    @Bind(R.id.groups)
+    LinearLayout groupList;
 
     private static final int ACTION_SET_LOCATION = 0;
-
-    private static final int ACTION_SET_GROUPS = 1;
 
     private String mGalleryPath;
 
@@ -237,22 +224,11 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
             longitude = savedInstanceState.getDouble("longitude", 0);
 
-//            if (longitude > 0 && latitude > 0) {
-//
-//                staticMap.setVisibility(View.VISIBLE);
-//
-//                String url = "http://api.tiles.mapbox.com/v4/bmcintyre.ibo4mn2f/" + "pin-m+0094d6(" + longitude + "," + latitude + ",14)/" + longitude + ',' + latitude + ",14/640x640@2x.png?access_token=pk.eyJ1IjoiYm1jaW50eXJlIiwiYSI6IjdST3dWNVEifQ.ACCd6caINa_d4EdEZB_dJw";
-//
-//                Picasso.with(this)
-//                        .load(url)
-//                                //.placeholder(R.drawable.square_placeholder)
-//                        .fit()
-//                        .centerCrop()
-//                        .into(staticMap);
-//
-//                locationButton.setText("Edit location");
-//
-//            }
+            if (longitude > 0 && latitude > 0) {
+
+                locationButton.setText("Edit location");
+
+            }
 
             mImageId = savedInstanceState.getInt("image_id", 0);
 
@@ -277,6 +253,10 @@ public class PhotoMetaActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // Retrieve the user's group collection
+
+        fetchUserGroups();
 
     }
 
@@ -309,8 +289,6 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                         Log.d("location", location.getLatitude() + "");
 
-                        //staticMap.setVisibility(View.VISIBLE);
-
                         longitude = location.getLongitude();
 
                         latitude = location.getLatitude();
@@ -318,8 +296,6 @@ public class PhotoMetaActivity extends AppCompatActivity {
                         Log.d("position", longitude + latitude + "");
 
                         locationButton.setText("Edit location");
-
-                        //locationButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_edit_white_24dp, 0, 0, 0);
 
                         locationButton.setBackgroundResource(R.drawable.green_button);
 
@@ -335,26 +311,6 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                 break;
 
-            case ACTION_SET_GROUPS:
-
-                if (resultCode == RESULT_OK) {
-
-                    groupsButton.setText("Edit groups");
-
-                    //groupsButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_edit_white_24dp, 0, 0, 0);
-
-                    groupsButton.setBackgroundResource(R.drawable.green_button);
-
-                    CharSequence text = "Groups saved successfully";
-
-                    Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-
-                    toast.show();
-
-                }
-
-                break;
-
         }
 
     }
@@ -365,14 +321,6 @@ public class PhotoMetaActivity extends AppCompatActivity {
     public void updateLocation(View v) {
 
         startActivityForResult(new Intent(this, LocationActivity.class), ACTION_SET_LOCATION);
-
-    }
-
-    // Launch the user's group checklist
-
-    public void associateGroups(View v) {
-
-        startActivityForResult(new Intent(this, GroupChecklistActivity.class), ACTION_SET_GROUPS);
 
     }
 
@@ -421,7 +369,6 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
         }
 
-        //scrollView.fullScroll(ScrollView.FOCUS_UP);
         scrollView.smoothScrollTo(0, 0);
 
         saveMessage.setVisibility(View.VISIBLE);
@@ -483,16 +430,29 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                         List<Map<String, Integer>> groups = new ArrayList<Map<String, Integer>>();
 
+                        /*for (Map.Entry<String, Integer> entry : groupMap.entrySet()) {
+
+                            Integer value = entry.getValue();
+
+                            if (value > 0) {
+
+                                Map<String, Integer> groupId = new HashMap<String, Integer>();
+
+                                groupId.put("id", value);
+
+                                groups.add(groupId);
+
+                            }
+
+                        }*/
+
                         try {
 
                             Map<String, ?> groupKeys = groupPrefs.getAll();
 
                             for (Map.Entry<String, ?> entry : groupKeys.entrySet()) {
 
-                                //String key = entry.getKey();
-
                                 Integer value = (Integer) entry.getValue();
-//                                int value  = groupPrefs.getInt()
 
                                 if (value > 0) {
 
@@ -571,32 +531,82 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
     }
 
-    private View.OnClickListener handleCheckListClick(final View view) {
-        return new View.OnClickListener() {
-            public void onClick(View v) {
+    protected void fetchUserGroups() {
 
-                CheckBox checkBox = (CheckBox) view.findViewById(R.id.check_box);
+        final SharedPreferences prefs =
+                getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-                TextView siteName = (TextView) view.findViewById(R.id.organization_name);
+        final String access_token = prefs.getString("access_token", "");
 
-                String groupName = (String) siteName.getText();
+        Log.d("", access_token);
 
-                if (checkBox.isChecked()) {
+        // We shouldn't need to retrieve this value again, but we'll deal with that issue later
+        int user_id = prefs.getInt("user_id", 0);
 
-                    groupMap.put(groupName, 0);
+        UserService service = UserService.restAdapter.create(UserService.class);
 
-                } else {
+        service.getUserOrganization(access_token, "application/json", user_id, new Callback<OrganizationFeatureCollection>() {
 
-                    int groupId = (Integer) view.getTag();
+            @Override
+            public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
 
-                    groupMap.put(groupName, groupId);
+                ArrayList<Organization> organizations = organizationCollectionResponse.getFeatures();
+
+                if (organizations.size() > 0) {
+
+                    Collections.sort(organizations, new GroupNameComparator());
+
+                    populateOrganizations(organizations);
 
                 }
 
-                checkBox.toggle();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+//                if (errorResponse != null) {
+//
+//                    int status = errorResponse.getStatus();
+//
+//                    if (status == 403) {
+//
+//                        startActivity(new Intent(MainActivity.this, SignInActivity.class));
+//
+//                    }
+//
+//                }
 
             }
-        };
+
+        });
+
+    }
+
+    private void populateOrganizations(ArrayList<Organization> orgs) {
+
+        groupList.setVisibility(View.VISIBLE);
+
+        // Populating a LinearLayout here rather than a ListView
+
+        final OrganizationCheckListAdapter adapter = new OrganizationCheckListAdapter(this, orgs);
+
+        final int adapterCount = adapter.getCount();
+
+        for (int i = 0; i < adapterCount; i++) {
+
+            View item = adapter.getView(i, null, null);
+
+            groupList.addView(item);
+
+        }
+
     }
 
     @Override

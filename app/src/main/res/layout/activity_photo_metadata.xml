@@ -119,47 +119,23 @@
                 android:text="Add location"
                 android:textColor="@color/white" />
 
-            <Button
-                android:id="@+id/groups_button"
-                android:layout_width="fill_parent"
+            <LinearLayout
+                android:id="@+id/groups"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="0dp"
-                android:background="@drawable/blue_button"
-                android:onClick="associateGroups"
-                android:text="Add groups"
-                android:textColor="@color/white" />
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
 
-            <!--<ImageView-->
-            <!--android:id="@+id/static_map"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="240dp"-->
-            <!--android:adjustViewBounds="true"-->
-            <!--android:background="@drawable/white_canvas"-->
-            <!--android:visibility="gone" />-->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="16dp"
+                    android:paddingTop="0dp"
+                    android:text="Associate this report with one or more of your groups."
+                    android:textSize="@dimen/base_text" />
 
-            <!--<LinearLayout-->
-            <!--android:id="@+id/groups"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="0dp"-->
-            <!--android:layout_marginBottom="16dp"-->
-            <!--android:layout_marginTop="16dp"-->
-            <!--android:orientation="vertical">-->
-
-            <!--<TextView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:paddingBottom="16dp"-->
-            <!--android:paddingTop="0dp"-->
-            <!--android:text="Associate this report with one or more of your groups."-->
-            <!--android:textSize="@dimen/base_text" />-->
-
-            <!--<ListView-->
-            <!--android:id="@+id/list"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="0dp" />-->
-
-            <!--</LinearLayout>-->
+            </LinearLayout>
 
         </LinearLayout>
 
