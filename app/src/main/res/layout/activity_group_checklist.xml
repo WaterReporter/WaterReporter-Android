@@ -19,17 +19,25 @@
             android:text="Associate this report with one or more of your groups."
             android:textSize="@dimen/base_text" />
 
+        <ProgressBar
+            android:id="@+id/loading_spinner"
+            style="@android:style/Widget.Holo.ProgressBar.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="16dp" />
+
         <!-- Pretty hint text, and maxLines -->
         <!--<EditText-->
-            <!--android:id="@+id/search_box"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_margin="16dp"-->
-            <!--android:layout_marginBottom="16dp"-->
-            <!--android:layout_marginTop="0dp"-->
-            <!--android:hint="Type to search"-->
-            <!--android:inputType="text"-->
-            <!--android:maxLines="1" />-->
+        <!--android:id="@+id/search_box"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="16dp"-->
+        <!--android:layout_marginBottom="16dp"-->
+        <!--android:layout_marginTop="0dp"-->
+        <!--android:hint="Type to search"-->
+        <!--android:inputType="text"-->
+        <!--android:maxLines="1" />-->
 
         <!-- Set height to 0, and let the weight param expand it -->
         <!-- Note the use of the default ID! This lets us use a

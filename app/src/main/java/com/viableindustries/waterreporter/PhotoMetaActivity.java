@@ -278,10 +278,6 @@ public class PhotoMetaActivity extends AppCompatActivity {
             }
         });
 
-        // Retrieve the user's group collection
-
-        fetchUserGroups();
-
     }
 
     protected void initializeDateField() {
@@ -321,20 +317,9 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                         Log.d("position", longitude + latitude + "");
 
-                        String url = "http://api.tiles.mapbox.com/v4/bmcintyre.ibo4mn2f/" + "pin-m+0094d6(" + longitude + "," + latitude + ",14)/" + longitude + ',' + latitude + ",14/640x640@2x.png?access_token=pk.eyJ1IjoiYm1jaW50eXJlIiwiYSI6IjdST3dWNVEifQ.ACCd6caINa_d4EdEZB_dJw";
-
-                        Log.d("url", url);
-
-//                        Picasso.with(this)
-//                                .load(url)
-//                                        //.placeholder(R.drawable.square_placeholder)
-//                                .fit()
-//                                .centerCrop()
-//                                .into(staticMap);
-
                         locationButton.setText("Edit location");
 
-                        locationButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_edit_white_24dp, 0, 0, 0);
+                        //locationButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_edit_white_24dp, 0, 0, 0);
 
                         locationButton.setBackgroundResource(R.drawable.green_button);
 
@@ -356,7 +341,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                     groupsButton.setText("Edit groups");
 
-                    groupsButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_edit_white_24dp, 0, 0, 0);
+                    //groupsButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_edit_white_24dp, 0, 0, 0);
 
                     groupsButton.setBackgroundResource(R.drawable.green_button);
 
@@ -586,64 +571,6 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
     }
 
-    protected void fetchUserGroups() {
-
-        final SharedPreferences prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
-
-        final String access_token = prefs.getString("access_token", "");
-
-        Log.d("", access_token);
-
-        // We shouldn't need to retrieve this value again, but we'll deal with that issue later
-        int user_id = prefs.getInt("user_id", 0);
-
-        UserService service = UserService.restAdapter.create(UserService.class);
-
-        service.getUserOrganization(access_token, "application/json", user_id, new Callback<OrganizationFeatureCollection>() {
-
-            @Override
-            public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
-
-                ArrayList<Organization> organizations = organizationCollectionResponse.getFeatures();
-
-                if (organizations.size() > 0) {
-
-                    Collections.sort(organizations, new GroupNameComparator());
-
-                    //populateOrganizations(organizations);
-
-                }
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-                if (error == null) return;
-
-                Response errorResponse = error.getResponse();
-
-                // If we have a valid response object, check the status code and redirect to log in view if necessary
-
-//                if (errorResponse != null) {
-//
-//                    int status = errorResponse.getStatus();
-//
-//                    if (status == 403) {
-//
-//                        startActivity(new Intent(MainActivity.this, SignInActivity.class));
-//
-//                    }
-//
-//                }
-
-            }
-
-        });
-
-    }
-
     private View.OnClickListener handleCheckListClick(final View view) {
         return new View.OnClickListener() {
             public void onClick(View v) {
@@ -670,81 +597,6 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
             }
         };
-    }
-
-    private void populateOrganizations(ArrayList<Organization> orgs) {
-
-//        groupList.setVisibility(View.VISIBLE);
-
-        // Populating a LinearLayout here rather than a ListView
-
-//        final OrganizationCheckListAdapter adapter = new OrganizationCheckListAdapter(this, orgs);
-//
-//        final int adapterCount = adapter.getCount();
-//
-//        for (int i = 0; i < adapterCount; i++) {
-//
-//            View item = adapter.getView(i, null, null);
-//
-//            item.setOnClickListener(handleCheckListClick(item));
-//
-//            groupList.addView(item);
-//
-//        }
-
-        final OrganizationCheckListAdapter adapter = new OrganizationCheckListAdapter(this, orgs);
-
-        final int adapterCount = adapter.getCount();
-
-//        int groupListHeight = (adapterCount * 56) + 72;
-
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (adapterCount * 56) + 72);
-
-//        groupList.setLayoutParams(layoutParams);
-//
-//        groupList.requestLayout();
-//
-////        groupList.getLayoutParams().height = (adapterCount * 56) + 72;
-//
-//        Log.d("height", String.valueOf(groupList.getLayoutParams().height));
-//
-////        groupList.requestLayout();
-//
-////        listView.setVisibility(View.VISIBLE);
-//        listView.setLayoutParams(layoutParams);
-//
-//        listView.requestLayout();
-//
-//        listView.setAdapter(adapter);
-//
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view,
-//                                    int position, long id) {
-//
-//                CheckBox checkBox = (CheckBox) view.findViewById(R.id.check_box);
-//
-//                TextView siteName = (TextView) view.findViewById(R.id.organization_name);
-//
-//                String groupName = (String) siteName.getText();
-//
-//                if (checkBox.isChecked()) {
-//
-//                    groupMap.put(groupName, 0);
-//
-//                } else {
-//
-//                    int groupId = (Integer) view.getTag();
-//
-//                    groupMap.put(groupName, groupId);
-//
-//                }
-//
-//                checkBox.toggle();
-//
-//            }
-//        });
-
     }
 
     @Override

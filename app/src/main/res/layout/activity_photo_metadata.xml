@@ -115,10 +115,7 @@
                 android:layout_marginBottom="20dp"
                 android:layout_marginTop="0dp"
                 android:background="@drawable/blue_button"
-                android:drawableLeft="@drawable/ic_add_white_24dp"
                 android:onClick="updateLocation"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
                 android:text="Add location"
                 android:textColor="@color/white" />
 
@@ -129,10 +126,7 @@
                 android:layout_marginBottom="20dp"
                 android:layout_marginTop="0dp"
                 android:background="@drawable/blue_button"
-                android:drawableLeft="@drawable/ic_add_white_24dp"
                 android:onClick="associateGroups"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
                 android:text="Add groups"
                 android:textColor="@color/white" />
 

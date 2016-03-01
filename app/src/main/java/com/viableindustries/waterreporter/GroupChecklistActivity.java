@@ -64,8 +64,8 @@ import retrofit.mime.TypedFile;
 
 public class GroupChecklistActivity extends AppCompatActivity {
 
-//    @Bind(R.id.search_box)
-//    EditText listFilter;
+    @Bind(R.id.loading_spinner)
+    ProgressBar progressBar;
 
     @Bind(R.id.list)
     ListView listView;
@@ -94,11 +94,13 @@ public class GroupChecklistActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_group_checklist);
 
-//        assert getSupportActionBar() != null;
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         groupPrefs = getSharedPreferences(getString(R.string.associated_group_key), MODE_PRIVATE);
 
         ButterKnife.bind(this);
+
+        progressBar.getIndeterminateDrawable().setColorFilter(
+                ContextCompat.getColor(this, R.color.base_blue),
+                android.graphics.PorterDuff.Mode.SRC_IN);
 
         if (!connectionActive()) {
 
@@ -153,6 +155,8 @@ public class GroupChecklistActivity extends AppCompatActivity {
             @Override
             public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
 
+                progressBar.setVisibility(View.GONE);
+
                 ArrayList<Organization> organizations = organizationCollectionResponse.getFeatures();
 
                 if (organizations.size() > 0) {
@@ -171,6 +175,8 @@ public class GroupChecklistActivity extends AppCompatActivity {
                 if (error == null) return;
 
                 Response errorResponse = error.getResponse();
+
+                progressBar.setVisibility(View.GONE);
 
                 // If we have a valid response object, check the status code and redirect to log in view if necessary
 
