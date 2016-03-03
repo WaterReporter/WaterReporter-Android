@@ -37,7 +37,7 @@ public interface ReportService {
 
     @GET("/data/report")
     public void getReports(@Header("Authorization") String authorization,
-                           //@Header("Content-Type") String contentType,
+                           @Header("Content-Type") String contentType,
                            @Query("results_per_page") int numResults,
                            @Query("q") String q,
                            Callback<FeatureCollection> featureCollectionCallback);

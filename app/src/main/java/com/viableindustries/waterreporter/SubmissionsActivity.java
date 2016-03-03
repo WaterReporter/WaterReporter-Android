@@ -346,7 +346,7 @@ public class SubmissionsActivity extends AppCompatActivity
 
         ReportService service = ReportService.restAdapter.create(ReportService.class);
 
-        service.getReports(access_token, 500, query, new Callback<FeatureCollection>() {
+        service.getReports(access_token, "application/json", 500, query, new Callback<FeatureCollection>() {
 
             @Override
             public void success(FeatureCollection featureCollection, Response response) {
