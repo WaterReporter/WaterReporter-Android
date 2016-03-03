@@ -11,7 +11,7 @@ import retrofit.http.Query;
  */
 public interface OrganizationService {
 
-    final String ENDPOINT = "http://stg.api.waterreporter.org/v1";
+    final String ENDPOINT = "https://api.waterreporter.org/v2";
 
     public static RestAdapter restAdapter = new RestAdapter.Builder()
             .setLogLevel(RestAdapter.LogLevel.BASIC)

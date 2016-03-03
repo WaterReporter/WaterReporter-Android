@@ -33,6 +33,9 @@ import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.ImageProperties;
 import com.viableindustries.waterreporter.data.ImageService;
+import com.viableindustries.waterreporter.data.QueryFilter;
+import com.viableindustries.waterreporter.data.QueryParams;
+import com.viableindustries.waterreporter.data.QuerySort;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportPhoto;
 import com.viableindustries.waterreporter.data.ReportPostBody;
@@ -48,12 +51,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.FileNameMap;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -320,13 +326,27 @@ public class SubmissionsActivity extends AppCompatActivity
 
         int user_id = prefs.getInt("user_id", 0);
 
-        // Add query filters to match user ID and feature IDs not in the local database
+        // Add query filters to retrieve the user's reports
 
-        String query = "{\"filters\":[{\"name\":\"owner_id\",\"op\":\"eq\",\"val\":" + user_id + "}],\"order_by\":[{\"field\":\"created\",\"direction\":\"desc\"}]}";
+        List<QueryFilter> queryFilters = new ArrayList<QueryFilter>();
+
+        QueryFilter queryFilter = new QueryFilter("owner_id", "eq", user_id);
+
+        queryFilters.add(queryFilter);
+
+        QuerySort querySort = new QuerySort("report_date", "desc");
+
+        List<QuerySort> queryOrder = new ArrayList<QuerySort>();
+
+        queryOrder.add(querySort);
+
+        QueryParams queryParams = new QueryParams(queryFilters, queryOrder);
+
+        String query = new Gson().toJson(queryParams);
 
         ReportService service = ReportService.restAdapter.create(ReportService.class);
 
-        service.getReports(access_token, "application/json", 100, query, new Callback<FeatureCollection>() {
+        service.getReports(access_token, 500, query, new Callback<FeatureCollection>() {
 
             @Override
             public void success(FeatureCollection featureCollection, Response response) {
@@ -341,16 +361,16 @@ public class SubmissionsActivity extends AppCompatActivity
 
                 } //else {
 
-                    // If the user somehow ends up in a situation where they have zero reports
-                    // and still found themselves in this activity (maybe after deleting their
-                    // one and only report), send them to the main activity so they can start
-                    // building up their report collection again.
+                // If the user somehow ends up in a situation where they have zero reports
+                // and still found themselves in this activity (maybe after deleting their
+                // one and only report), send them to the main activity so they can start
+                // building up their report collection again.
 
-                    // Note that this doesn't work with the pattern we adopted wherein all reports
-                    // are loaded onto the main map. Leave this conditional in place though because
-                    // it will become relevant again when we upgrade profiles.
+                // Note that this doesn't work with the pattern we adopted wherein all reports
+                // are loaded onto the main map. Leave this conditional in place though because
+                // it will become relevant again when we upgrade profiles.
 
-                    // startActivity(new Intent(getBaseContext(), MainActivity.class));
+                // startActivity(new Intent(getBaseContext(), MainActivity.class));
 
                 //}
 
@@ -360,6 +380,10 @@ public class SubmissionsActivity extends AppCompatActivity
             public void failure(RetrofitError error) {
 
                 Response response = error.getResponse();
+
+                Log.d("HTTP Error:", response.toString());
+
+                Log.d("HTTP Error:", error.getMessage());
 
                 // If we have a valid response object, check the status code and redirect to log in view if necessary
 

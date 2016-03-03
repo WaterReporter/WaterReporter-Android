@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
 
         // String query = "{\"filters\":[{\"name\":\"owner_id\",\"op\":\"eq\",\"val\":" + user_id + "}],\"order_by\":[{\"field\":\"created\",\"direction\":\"desc\"}]}";
 
-        service.getReports(access_token, "application/json", limit, null, new Callback<FeatureCollection>() {
+        service.getReports(access_token, limit, null, new Callback<FeatureCollection>() {
 
             @Override
             public void success(FeatureCollection featureCollection, Response response) {

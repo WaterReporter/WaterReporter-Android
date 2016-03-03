@@ -2,12 +2,15 @@ package com.viableindustries.waterreporter.data;
 
 import android.content.SharedPreferences;
 
+import java.util.Map;
+
 import retrofit.Callback;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
+import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Headers;
@@ -25,19 +28,26 @@ import retrofit.http.Query;
  */
 public interface ReportService {
 
-    final String ENDPOINT = "http://stg.api.waterreporter.org/v1";
+    final String ENDPOINT = "https://api.waterreporter.org/v2";
 
     public static RestAdapter restAdapter = new RestAdapter.Builder()
-            .setLogLevel(RestAdapter.LogLevel.BASIC)
+            .setLogLevel(RestAdapter.LogLevel.FULL)
             .setEndpoint(ENDPOINT)
             .build();
 
     @GET("/data/report")
     public void getReports(@Header("Authorization") String authorization,
-                           @Header("Content-Type") String contentType,
+                           //@Header("Content-Type") String contentType,
                            @Query("results_per_page") int numResults,
                            @Query("q") String q,
                            Callback<FeatureCollection> featureCollectionCallback);
+
+//    @GET("/data/report")
+//    public void getUserReports(@Header("Authorization") String authorization,
+//                               @Header("Content-Type") String contentType,
+//                               @Query("results_per_page") int numResults,
+//                               @Query(value = "q", encodeName = false, encodeValue = false) String q,
+//                               Callback<FeatureCollection> featureCollectionCallback);
 
     @GET("/data/report/{report}")
     public void getSingleReport(@Header("Authorization") String authorization,

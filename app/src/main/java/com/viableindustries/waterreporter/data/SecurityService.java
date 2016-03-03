@@ -13,7 +13,7 @@ import retrofit.http.POST;
  */
 public interface SecurityService {
 
-    final String ENDPOINT = "http://stg.api.waterreporter.org";
+    final String ENDPOINT = "https://api.waterreporter.org/v2";
 
     public static RestAdapter restAdapter = new RestAdapter.Builder()
             .setLogLevel(RestAdapter.LogLevel.FULL)
@@ -21,12 +21,12 @@ public interface SecurityService {
             .build();
 
     @Headers({"Content-Type: application/json"})
-    @POST("/v1/auth/remote")
+    @POST("/auth/remote")
     public void save(@Body LogInBody logInBody,
                            Callback<AuthResponse> authResponseCallback);
 
     @Headers({"Content-Type: application/json"})
-    @POST("/v1/user/register")
+    @POST("/user/register")
     public void register(@Body RegistrationBody registrationBody,
                          Callback<RegistrationResponse> registrationResponseCallback);
 

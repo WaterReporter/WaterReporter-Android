@@ -229,7 +229,7 @@ public class SubmissionDetailActivity extends AppCompatActivity {
 
         groupAffiliation.setVisibility(View.VISIBLE);
 
-        final OrganizationListAdapter adapter = new OrganizationListAdapter(SubmissionDetailActivity.this, orgs, false);
+        final OrganizationListAdapter adapter = new OrganizationListAdapter(SubmissionDetailActivity.this, orgs, true);
 
         final int adapterCount = adapter.getCount();
 

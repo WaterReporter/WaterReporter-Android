@@ -15,33 +15,33 @@ import retrofit.http.Path;
  */
 public interface UserService {
 
-    final String ENDPOINT = "http://stg.api.waterreporter.org";
+    final String ENDPOINT = "https://api.waterreporter.org/v2";
 
     public static RestAdapter restAdapter = new RestAdapter.Builder()
-            .setLogLevel(RestAdapter.LogLevel.FULL)
+            .setLogLevel(RestAdapter.LogLevel.HEADERS_AND_ARGS)
             .setEndpoint(ENDPOINT)
             .build();
 
-    @GET("/v1/data/me")
+    @GET("/data/me")
     public void getUser(@Header("Authorization") String authorization,
                         @Header("Content-Type") String contentType,
                         Callback<UserBasicResponse> userResponseCallback);
 
-    @PATCH("/v1/data/user/{user}")
+    @PATCH("/data/user/{user}")
     public void updateUser(@Header("Authorization") String authorization,
                            @Header("Content-Type") String contentType,
                            @Path("user") int user_id,
                            @Body Map<String, String> userPatch,
                            Callback<User> userResponseCallback);
 
-    @PATCH("/v1/data/user/{user}")
+    @PATCH("/data/user/{user}")
     public void updateUserOrganization(@Header("Authorization") String authorization,
                                        @Header("Content-Type") String contentType,
                                        @Path("user") int user_id,
                                        @Body Map<String, Map> userPatch,
                                        Callback<User> userResponseCallback);
 
-    @GET("/v1/data/user/{user}/organization")
+    @GET("/data/user/{user}/organization")
     public void getUserOrganization(@Header("Authorization") String authorization,
                                     @Header("Content-Type") String contentType,
                                     @Path("user") int user_id,

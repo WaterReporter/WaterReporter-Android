@@ -56,8 +56,10 @@
     <!-- Security -->
 
     <string name="response_type">token</string>
-    <string name="client_id">SG92Aa2ejWqiYW4kI08r6lhSyKwnK1gDN2xrryku</string>
-    <string name="redirect_uri">http://127.0.0.1:9000/authorize</string>
+    <!--<string name="client_id">SG92Aa2ejWqiYW4kI08r6lhSyKwnK1gDN2xrryku</string>-->
+    <string name="client_id">Ru8hamw7ixuCtsHs23Twf4UB12fyIijdQcLssqpd</string>
+    <!--<string name="redirect_uri">http://127.0.0.1:9000/authorize</string>-->
+    <string name="redirect_uri">http://stg.waterreporter.org/authorize</string>
     <string name="scope">user</string>
     <string name="state">json</string>
 
