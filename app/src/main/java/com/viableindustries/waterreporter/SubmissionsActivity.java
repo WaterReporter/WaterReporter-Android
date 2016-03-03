@@ -312,8 +312,6 @@ public class SubmissionsActivity extends AppCompatActivity
 
     protected void fetchRemoteReports() {
 
-        //swipeRefreshLayout.setRefreshing(true);
-
         // Retrieve feature IDs from the local database and use them in a
 
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
@@ -327,6 +325,7 @@ public class SubmissionsActivity extends AppCompatActivity
         int user_id = prefs.getInt("user_id", 0);
 
         // Add query filters to retrieve the user's reports
+        // Create filters list and add a filter for owner_id
 
         List<QueryFilter> queryFilters = new ArrayList<QueryFilter>();
 
@@ -334,15 +333,21 @@ public class SubmissionsActivity extends AppCompatActivity
 
         queryFilters.add(queryFilter);
 
-        QuerySort querySort = new QuerySort("report_date", "desc");
+        // Create order_by list and add a sort parameter
 
         List<QuerySort> queryOrder = new ArrayList<QuerySort>();
 
+        QuerySort querySort = new QuerySort("created", "desc");
+
         queryOrder.add(querySort);
+
+        // Create query string from new QueryParams
 
         QueryParams queryParams = new QueryParams(queryFilters, queryOrder);
 
         String query = new Gson().toJson(queryParams);
+
+        Log.d("URL", query);
 
         ReportService service = ReportService.restAdapter.create(ReportService.class);
 
@@ -359,20 +364,7 @@ public class SubmissionsActivity extends AppCompatActivity
 
                     onFetchSuccess(reports);
 
-                } //else {
-
-                // If the user somehow ends up in a situation where they have zero reports
-                // and still found themselves in this activity (maybe after deleting their
-                // one and only report), send them to the main activity so they can start
-                // building up their report collection again.
-
-                // Note that this doesn't work with the pattern we adopted wherein all reports
-                // are loaded onto the main map. Leave this conditional in place though because
-                // it will become relevant again when we upgrade profiles.
-
-                // startActivity(new Intent(getBaseContext(), MainActivity.class));
-
-                //}
+                }
 
             }
 
@@ -381,9 +373,11 @@ public class SubmissionsActivity extends AppCompatActivity
 
                 Response response = error.getResponse();
 
+                RetrofitError.Kind r = error.getKind();
+
                 Log.d("HTTP Error:", response.toString());
 
-                Log.d("HTTP Error:", error.getMessage());
+                Log.d("HTTP Error:", error.getMessage() + r);
 
                 // If we have a valid response object, check the status code and redirect to log in view if necessary
 
