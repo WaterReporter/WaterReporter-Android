@@ -116,4 +116,7 @@
     <!-- Shared preference key for groups associated with a report -->
     <string name="associated_group_key">com.viableindustries.waterreporter.ASSOCIATED_GROUPS</string>
 
+    <!-- Shared preference key for groups to which a user belongs -->
+    <string name="group_membership_key">com.viableindustries.waterreporter.GROUP_MEMBERSHIP</string>
+
 </resources>

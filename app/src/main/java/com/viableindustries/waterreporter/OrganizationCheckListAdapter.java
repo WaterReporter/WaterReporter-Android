@@ -123,36 +123,36 @@ public class OrganizationCheckListAdapter extends ArrayAdapter<Organization> {
 
         // Set click listener
 
-//        associateGroup.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                Log.d("Button Event", "Clicked the associate group button.");
-//
-//                Button button = (Button) v;
-//
-//                int selected = groupPrefs.getInt(feature.properties.name, 0);
-//
-//                if (selected > 0) {
-//
-//                    groupPrefs.edit().putInt(feature.properties.name, 0).apply();
-//
-//                    button.setBackgroundResource(R.drawable.green_button);
-//
-//                    button.setText(R.string.add_group);
-//
-//                } else {
-//
-//                    groupPrefs.edit().putInt(feature.properties.name, feature.properties.id).apply();
-//
-//                    button.setBackgroundResource(R.drawable.orange_button);
-//
-//                    button.setText(R.string.remove_group);
-//
-//                }
-//
-//            }
-//        });
+        associateGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.d("Button Event", "Clicked the associate group button.");
+
+                Button button = (Button) v;
+
+                int selected = groupPrefs.getInt(feature.properties.name, 0);
+
+                if (selected > 0) {
+
+                    groupPrefs.edit().putInt(feature.properties.name, 0).apply();
+
+                    button.setBackgroundResource(R.drawable.green_button);
+
+                    button.setText(R.string.add_group);
+
+                } else {
+
+                    groupPrefs.edit().putInt(feature.properties.name, feature.properties.id).apply();
+
+                    button.setBackgroundResource(R.drawable.orange_button);
+
+                    button.setText(R.string.remove_group);
+
+                }
+
+            }
+        });
 
         // Lookup view for data population
         TextView siteName = (TextView) convertView.findViewById(R.id.organization_name);

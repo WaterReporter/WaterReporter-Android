@@ -2,6 +2,7 @@ package com.viableindustries.waterreporter;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -14,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,6 +66,9 @@ public class MarkerDetailActivity extends AppCompatActivity {
     @Bind(R.id.group_affiliation)
     TextView groupAffiliation;
 
+    @Bind(R.id.loading_spinner)
+    ProgressBar progressBar;
+
     Report report;
 
     @Override
@@ -101,60 +106,11 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
     }
 
-//    private void joinGroup() {
-//
-//        SharedPreferences prefs =
-//                getSharedPreferences(getPackageName(), MODE_PRIVATE);
-//
-//        // Retrieve API token
-//
-//        final String access_token = prefs.getString("access_token", "");
-//
-//        // Retrieve user ID
-//
-//        int id = prefs.getInt("user_id", 0);
-//
-//        // Build request object
-//
-//        Map<String, Map> userPatch = UserOrgPatch.buildRequest(report.properties.groups.get(0).id, false);
-//
-//        UserService service = UserService.restAdapter.create(UserService.class);
-//
-//        service.updateUserOrganization(access_token, "application/json", id, userPatch, new Callback<User>() {
-//
-//            @Override
-//            public void success(User user, Response response) {
-//
-//                CharSequence text = String.format("Successfully joined %s", report.properties.groups.get(0).properties.name);
-//                int duration = Toast.LENGTH_LONG;
-//
-//                Toast toast = Toast.makeText(getBaseContext(), text, duration);
-//                toast.show();
-//
-//            }
-//
-//            @Override
-//            public void failure(RetrofitError error) {
-//
-//                Response response = error.getResponse();
-//
-//                int status = response.getStatus();
-//
-//                error.printStackTrace();
-//
-//                CharSequence text = "Sorry, something went wrong and we couldn\'t complete your request.";
-//                int duration = Toast.LENGTH_LONG;
-//
-//                Toast toast = Toast.makeText(getBaseContext(), text, duration);
-//                toast.show();
-//
-//            }
-//
-//        });
-//
-//    }
-
     protected void requestData(int id) {
+
+        progressBar.getIndeterminateDrawable().setColorFilter(
+                ContextCompat.getColor(MarkerDetailActivity.this, R.color.base_blue),
+                android.graphics.PorterDuff.Mode.SRC_IN);
 
         final SharedPreferences prefs =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
@@ -169,6 +125,8 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
             @Override
             public void success(Report reportResponse, Response response) {
+
+                progressBar.setVisibility(View.GONE);
 
                 report = reportResponse;
 
@@ -226,7 +184,7 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
         groupAffiliation.setVisibility(View.VISIBLE);
 
-        final OrganizationListAdapter adapter = new OrganizationListAdapter(this, orgs, false);
+        final OrganizationListAdapter adapter = new OrganizationListAdapter(this, orgs, true);
 
         final int adapterCount = adapter.getCount();
 

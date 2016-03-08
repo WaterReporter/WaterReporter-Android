@@ -15,9 +15,9 @@ public final class UserOrgPatch {
     private UserOrgPatch() {
     }
 
-    public static Map<String, Map> buildRequest (int orgId, boolean selected) {
+    public static Map<String, Map> buildRequest (int orgId, String action) {
 
-        String op = selected ? "remove" : "add";
+        //String op = selected ? "remove" : "add";
 
         Map<String, List<Map>> opListWrapper = new HashMap<String, List<Map>>();
 
@@ -29,7 +29,7 @@ public final class UserOrgPatch {
 
         opList.add(opObj);
 
-        opListWrapper.put(op, opList);
+        opListWrapper.put(action, opList);
 
         Map<String, Map> map = new HashMap<String, Map>();
 

@@ -29,7 +29,7 @@
         android:visibility="visible">
 
         <Button
-            android:id="@+id/join_group_button"
+            android:id="@+id/group_membership_button"
             android:layout_width="64dp"
             android:layout_height="32dp"
             android:layout_gravity="center_vertical"
@@ -41,19 +41,19 @@
             android:textSize="@dimen/small_text"
             android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/leave_group_button"
-            android:layout_width="64dp"
-            android:layout_height="32dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/orange_button"
-            android:gravity="center"
-            android:text="@string/leave_button"
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:textSize="@dimen/small_text"
-            android:textStyle="bold"
-            android:visibility="gone" />
+        <!--<Button-->
+            <!--android:id="@+id/leave_group_button"-->
+            <!--android:layout_width="64dp"-->
+            <!--android:layout_height="32dp"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:background="@drawable/orange_button"-->
+            <!--android:gravity="center"-->
+            <!--android:text="@string/leave_button"-->
+            <!--android:textAllCaps="true"-->
+            <!--android:textColor="@color/white"-->
+            <!--android:textSize="@dimen/small_text"-->
+            <!--android:textStyle="bold"-->
+            <!--android:visibility="gone" />-->
 
     </LinearLayout>
 

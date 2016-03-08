@@ -589,46 +589,6 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
     }
 
-    public void updateGroupAssociation(View view) {
-
-        Log.d("Button Event", "Clicked the associate group button.");
-
-        final SharedPreferences groupPrefs = getSharedPreferences(getString(R.string.associated_group_key), MODE_PRIVATE);
-
-        // Extract the components we need from this view's tag attribute
-
-        String tag = (String) view.getTag();
-
-        String[] tagParts = tag.split("__");
-
-        String groupName = tagParts[0];
-
-        int groupId = Integer.valueOf(tagParts[1]);
-
-        Button button = (Button) view;
-
-        int selected = groupPrefs.getInt(groupName, 0);
-
-        if (selected > 0) {
-
-            groupPrefs.edit().putInt(groupName, 0).apply();
-
-            button.setBackgroundResource(R.drawable.green_button);
-
-            button.setText(R.string.add_group);
-
-        } else {
-
-            groupPrefs.edit().putInt(groupName, groupId).apply();
-
-            button.setBackgroundResource(R.drawable.orange_button);
-
-            button.setText(R.string.remove_group);
-
-        }
-
-    }
-
     private void populateOrganizations(ArrayList<Organization> orgs) {
 
         groupList.setVisibility(View.VISIBLE);

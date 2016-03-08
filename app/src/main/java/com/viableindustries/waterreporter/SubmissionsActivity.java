@@ -250,10 +250,6 @@ public class SubmissionsActivity extends AppCompatActivity
 
         }
 
-
-        // Create the AlertDialog
-//        AlertDialog dialog = builder.create();
-
     }
 
     protected void createListElements() {

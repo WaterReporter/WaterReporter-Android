@@ -48,11 +48,15 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
     protected SharedPreferences prefs;
 
+    //protected SharedPreferences membershipPrefs;
+
     protected String[] userGroups;
 
-    protected Button joinGroupButton;
+    //protected Button joinGroupButton;
 
-    protected Button leaveGroupButton;
+    //protected Button leaveGroupButton;
+
+    protected Button groupMembershipButton;
 
     protected boolean showLeaveButton;
 
@@ -67,6 +71,8 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
         this.context = context;
 
         prefs = context.getSharedPreferences(context.getPackageName(), 0);
+
+        //membershipPrefs = context.getSharedPreferences(context.getString(R.string.group_membership_key), 0);
 
         showLeaveButton = aShowLeaveButton;
 
@@ -118,7 +124,9 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
     }
 
-    private void changeOrgStatus(final Organization organization, final boolean selected) {
+    private void changeOrgStatus(final Organization organization, final View view) {
+
+        final String operation = (view.getTag().equals("join_group")) ? "add" : "remove";
 
         // Retrieve API token
 
@@ -130,7 +138,7 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
         // Build request object
 
-        Map<String, Map> userPatch = UserOrgPatch.buildRequest(organization.id, selected);
+        Map<String, Map> userPatch = UserOrgPatch.buildRequest(organization.id, operation);
 
         UserService service = UserService.restAdapter.create(UserService.class);
 
@@ -141,15 +149,35 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
                 upDatePrefs(user);
 
-                String action = selected ? "left" : "joined";
+                String action;
+
+                if (operation.equals("add")) {
+
+                    action = "joined";
+
+                    ((Button) view).setText(R.string.leave_button);
+
+                    view.setBackgroundResource(R.drawable.orange_button);
+
+                    view.setTag("leave_group");
+
+                } else {
+
+                    action = "left";
+
+                    ((Button) view).setText(R.string.join_button);
+
+                    view.setBackgroundResource(R.drawable.green_button);
+
+                    view.setTag("join_group");
+
+                }
 
                 CharSequence text = String.format("Successfully %s %s", action, organization.properties.name);
                 int duration = Toast.LENGTH_SHORT;
 
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
-
-                notifyDataSetChanged();
 
             }
 
@@ -187,35 +215,40 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
         // Layout elements
 
-        joinGroupButton = (Button) convertView.findViewById(R.id.join_group_button);
+        groupMembershipButton = (Button) convertView.findViewById(R.id.group_membership_button);
 
-        leaveGroupButton = (Button) convertView.findViewById(R.id.leave_group_button);
+        groupMembershipButton.setTag("join_group");
 
         // Check for stored group IDs and compare to the global list
+        // We can't use group names as keys since they are subject to change
 
         String userGroupString = prefs.getString("user_groups", "");
-
-        joinGroupButton.setVisibility(View.VISIBLE);
-
-        leaveGroupButton.setVisibility(View.GONE);
 
         if (userGroupString.length() > 0) {
 
             userGroups = userGroupString.split(",");
 
-            if (Arrays.asList(userGroups).contains(String.valueOf(id))) {
+            if (Arrays.asList(userGroups).contains(String.valueOf(id)) && showLeaveButton) {
 
-                joinGroupButton.setVisibility(View.GONE);
+                groupMembershipButton.setText(R.string.leave_button);
 
-                if (showLeaveButton) {
+                groupMembershipButton.setBackgroundResource(R.drawable.orange_button);
 
-                    leaveGroupButton.setVisibility(View.VISIBLE);
-
-                }
+                groupMembershipButton.setTag("leave_group");
 
             }
 
         }
+
+        // Add click listener to membership button
+        groupMembershipButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                changeOrgStatus(feature, v);
+
+            }
+        });
 
         // Lookup view for data population
         TextView siteName = (TextView) convertView.findViewById(R.id.organization_name);
@@ -223,28 +256,6 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
         siteName.setTag(id);
 
         siteName.setText(name);
-
-        joinGroupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                changeOrgStatus(feature, false);
-
-                if (!showLeaveButton) {
-
-                    v.setVisibility(View.GONE);
-
-                }
-
-            }
-        });
-
-        leaveGroupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeOrgStatus(feature, true);
-            }
-        });
 
         return convertView;
 
