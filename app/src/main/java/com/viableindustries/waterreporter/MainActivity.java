@@ -13,8 +13,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.Icon;
@@ -25,6 +29,8 @@ import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
+import com.viableindustries.waterreporter.data.QueryParams;
+import com.viableindustries.waterreporter.data.QuerySort;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.UserService;
@@ -41,8 +47,11 @@ import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    @Bind(R.id.mapview)
-    MapView mv;
+//    @Bind(R.id.mapview)
+//    MapView mv;
+
+    @Bind(R.id.timeline_items)
+    ListView listView;
 
     static final int REGISTRATION_REQUEST = 1;
 
@@ -55,6 +64,10 @@ public class MainActivity extends AppCompatActivity {
     protected RestAdapter restAdapter = ReportService.restAdapter;
 
     protected ReportService service = restAdapter.create(ReportService.class);
+
+    protected TimelineAdapter timelineAdapter;
+
+    protected List<Report> reportCollection = new ArrayList<Report>();
 
     // Geographic center of contiguous United States
     protected LatLng defaultCenter = new LatLng(39.828175, -98.5795);
@@ -92,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
             } else {
 
-                requestData(500, false);
+                requestData(10, 1, false);
 
                 fetchUserGroups();
 
@@ -112,87 +125,87 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    protected void addMarkers(Report report) {
-
-        //create the marker's LatLng
-        Geometry geometry = report.geometry.geometries.get(0);
-
-        LatLng latLng = geometry.getCoordinates();
-
-        markers.add(latLng);
-
-        String issue, color;
-
-        View view;
-
-        CustomMarker m;
-
-        //create an intent which will open the detailed view when the marker's info button is clicked
-        //include the report id so that the detailed view can get the information for the report
-        final Intent intent = new Intent(this, MarkerDetailActivity.class);
-
-        intent.putExtra("REPORT_ID", report.properties.id);
-
-        //only put markers for Point geometry on the map
-        if (geometry.type.equals("Point")) {
-
-            color = getString(R.string.base_blue);
-
-            String title = report.properties.owner.properties.first_name + " " +
-                    report.properties.owner.properties.last_name + " \u00B7 " +
-                    report.properties.getFormattedDateString();
-
-            m = new CustomMarker(mv, title, report.properties.report_description + " ....", latLng);
-
-            m.setIcon(new Icon(this, Icon.Size.LARGE, "", color));
-            //get the InfoWindow's view so that you can set a touch listener which will switch
-            //to the marker's detailed view when clicked
-            final InfoWindow infoWindow = m.getToolTip(mv);
-            view = infoWindow.getView();
-            view.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    //make sure to choose action down or up, otherwise the intent will launch twice
-                    if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                        startActivity(intent);
-                        //close the InfoWindow so it's not still open when coming back to the map
-                        infoWindow.close();
-                    }
-                    return true;
-                }
-            });
-
-            mv.addMarker(m);
-
-        }
+//    protected void addMarkers(Report report) {
+//
+//        //create the marker's LatLng
+//        Geometry geometry = report.geometry.geometries.get(0);
+//
+//        LatLng latLng = geometry.getCoordinates();
+//
+//        markers.add(latLng);
+//
+//        String issue, color;
+//
+//        View view;
+//
+//        CustomMarker m;
+//
+//        //create an intent which will open the detailed view when the marker's info button is clicked
+//        //include the report id so that the detailed view can get the information for the report
+//        final Intent intent = new Intent(this, MarkerDetailActivity.class);
+//
+//        intent.putExtra("REPORT_ID", report.properties.id);
+//
+//        //only put markers for Point geometry on the map
+//        if (geometry.type.equals("Point")) {
+//
+//            color = getString(R.string.base_blue);
+//
+//            String title = report.properties.owner.properties.first_name + " " +
+//                    report.properties.owner.properties.last_name + " \u00B7 " +
+//                    report.properties.getFormattedDateString();
+//
+//            m = new CustomMarker(mv, title, report.properties.report_description + " ....", latLng);
+//
+//            m.setIcon(new Icon(this, Icon.Size.LARGE, "", color));
+//            //get the InfoWindow's view so that you can set a touch listener which will switch
+//            //to the marker's detailed view when clicked
+//            final InfoWindow infoWindow = m.getToolTip(mv);
+//            view = infoWindow.getView();
+//            view.setOnTouchListener(new View.OnTouchListener() {
+//                @Override
+//                public boolean onTouch(View view, MotionEvent motionEvent) {
+//                    //make sure to choose action down or up, otherwise the intent will launch twice
+//                    if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+//                        startActivity(intent);
+//                        //close the InfoWindow so it's not still open when coming back to the map
+//                        infoWindow.close();
+//                    }
+//                    return true;
+//                }
+//            });
+//
+//            mv.addMarker(m);
+//
+//        }
 
 //        setBounds();
 
-    }
+//    }
 
-    protected void setUpMap() {
+//    protected void setUpMap() {
+//
+//        mv.setCenter(defaultCenter);
+//
+//        mv.setMinZoomLevel(mv.getTileProvider().getMinimumZoomLevel());
+//
+//        mv.setMaxZoomLevel(mv.getTileProvider().getMaximumZoomLevel());
+//
+//        // There are reports from across the nation now, so let's start way out before zooming to
+//        // bounding box
+//        mv.setZoom(4);
+//
+//    }
 
-        mv.setCenter(defaultCenter);
+//    protected void setBounds() {
+//
+//        BoundingBox box = GeoUtils.findBoundingBoxForGivenLocations(markers, 0.5);
+//
+//        mv.zoomToBoundingBox(box, true, true);
+//
+//    }
 
-        mv.setMinZoomLevel(mv.getTileProvider().getMinimumZoomLevel());
-
-        mv.setMaxZoomLevel(mv.getTileProvider().getMaximumZoomLevel());
-
-        // There are reports from across the nation now, so let's start way out before zooming to
-        // bounding box
-        mv.setZoom(4);
-
-    }
-
-    protected void setBounds() {
-
-        BoundingBox box = GeoUtils.findBoundingBoxForGivenLocations(markers, 0.5);
-
-        mv.zoomToBoundingBox(box, true, true);
-
-    }
-
-    protected void requestData(int limit, final boolean transition) {
+    protected void requestData(int limit, int page, final boolean transition) {
 
         SharedPreferences prefs =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
@@ -204,7 +217,23 @@ public class MainActivity extends AppCompatActivity {
         // We shouldn't need to retrieve this value again, but we'll deal with that issue later
         user_id = prefs.getInt("user_id", 0);
 
-        service.getReports(access_token, "application/json", limit, null, new Callback<FeatureCollection>() {
+        // Create order_by list and add a sort parameter
+
+        List<QuerySort> queryOrder = new ArrayList<QuerySort>();
+
+        QuerySort querySort = new QuerySort("created", "desc");
+
+        queryOrder.add(querySort);
+
+        // Create query string from new QueryParams
+
+        QueryParams queryParams = new QueryParams(null, queryOrder);
+
+        String query = new Gson().toJson(queryParams);
+
+        Log.d("URL", query);
+
+        service.getReports(access_token, "application/json", page, limit, query, new Callback<FeatureCollection>() {
 
             @Override
             public void success(FeatureCollection featureCollection, Response response) {
@@ -223,18 +252,20 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
-                    // Iterate the user's report collection and add markers to the map
+                    reportCollection.addAll(reports);
 
-                    for (Report report : reports) {
+                    try {
 
-                        addMarkers(report);
+//                        timelineAdapter.addAll(reports);
+//                        reportCollection.addAll(reports);
+
+                        timelineAdapter.notifyDataSetChanged();
+
+                    } catch (NullPointerException ne) {
+
+                        populateTimeline(reportCollection);
 
                     }
-
-                    // Zoom the map to a bounding box defined by the geographic distribution
-                    // of the user's report collection
-
-                    setBounds();
 
                 } else {
 
@@ -272,6 +303,15 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+
+    }
+
+    private void populateTimeline(List list) {
+
+        timelineAdapter = new TimelineAdapter(this, list);
+
+        // Attach the adapter to a ListView
+        listView.setAdapter(timelineAdapter);
 
     }
 
@@ -362,7 +402,20 @@ public class MainActivity extends AppCompatActivity {
 
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        setUpMap();
+        listView.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to your AdapterView
+//                customLoadMoreDataFromApi(page);
+                requestData(10, page, false);
+                // or customLoadMoreDataFromApi(to
+                // talItemsCount);
+                return true; // ONLY if more data is actually being loaded; false otherwise.
+            }
+        });
+
+//        setUpMap();
 
         // Not sure we should attempt a call unless we pass all checks first
         // Obviously if we're going to redirect then we need to ensure that user id
@@ -419,7 +472,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.action_submissions) {
 
-            requestData(1, true);
+            requestData(1, 1, true);
 
             fetchUserGroups();
 
@@ -456,7 +509,7 @@ public class MainActivity extends AppCompatActivity {
                 // The user is logged in and may already have reports in the system.
                 // Let's attempt to fetch the user's report collection and, if none exist,
                 // direct the user to submit their first report.
-                requestData(500, false);
+                requestData(10, 1, false);
 
                 fetchUserGroups();
 
