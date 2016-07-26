@@ -51,7 +51,7 @@
                 android:paddingRight="0dp"
                 android:paddingTop="0dp"
                 android:text="A name goes here"
-                android:textSize="@dimen/small_text" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/report_watershed"
@@ -90,6 +90,98 @@
         android:layout_height="320dp"
         android:scaleType="fitXY" />
 
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:paddingBottom="0dp"
+        android:paddingLeft="4dp"
+        android:paddingRight="0dp"
+        android:paddingTop="0dp">
+
+        <RelativeLayout
+            android:id="@+id/action_badge"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:visibility="visible">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="fitXY"
+                android:src="@drawable/action_badge_small"
+                android:layout_centerInParent="true" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="fitXY"
+                android:src="@drawable/report_location_icon"
+                android:layout_centerInParent="true" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="fitXY"
+                android:src="@drawable/comment_icon"
+                android:layout_centerInParent="true" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/comment_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:paddingBottom="0dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            android:paddingTop="0dp"
+            android:text="0 comments"
+            android:textColor="@color/gray_186"
+            android:textSize="@dimen/small_text" />
+
+        <RelativeLayout
+            android:id="@+id/action_ellipsis"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:paddingLeft="0dp"
+            android:paddingRight="9dp">
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="24dp"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:scaleType="fitXY"
+                android:src="@drawable/timeline_action_ellipsis" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/report_caption"
         android:layout_width="match_parent"
@@ -97,9 +189,9 @@
         android:paddingBottom="0dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:paddingTop="16dp"
+        android:paddingTop="8dp"
         android:text="A caption goes here"
-        android:textSize="@dimen/small_text" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/report_groups"

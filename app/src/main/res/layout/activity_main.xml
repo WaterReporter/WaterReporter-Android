@@ -4,43 +4,35 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!--<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:id="@+id/wr_toolbar"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:background="?attr/colorPrimary"-->
-    <!--android:minHeight="?attr/actionBarSize"-->
-    <!--android:titleTextAppearance="@color/white" />-->
-    <!--<TextView-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="center"-->
-    <!--android:layout_marginBottom="0dp"-->
-    <!--android:layout_marginLeft="0dp"-->
-    <!--android:layout_marginRight="0dp"-->
-    <!--android:layout_marginTop="0dp"-->
-    <!--android:background="@color/white"-->
-    <!--android:onClick="viewGroups"-->
-    <!--android:padding="10dp"-->
-    <!--android:text="@string/join_group"-->
-    <!--android:textSize="@dimen/base_text" />-->
-
-    <!--<com.mapbox.mapboxsdk.views.MapView-->
-    <!--android:id="@+id/mapview"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--mapbox:accessToken="@string/mapBoxToken"-->
-    <!--mapbox:mapid="@string/terrainMapId" />-->
-
-    <ListView
-        android:id="@+id/timeline_items"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@color/white"
-        android:dividerHeight="0dp"
-        android:fadingEdgeLength="0dp"
-        android:listSelector="@drawable/timeline_selector"
-        android:overScrollMode="never"
-        android:scrollbars="none" />
+        android:layout_height="match_parent">
+
+        <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/timeline"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:id="@+id/timeline_items"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@color/white"
+                android:dividerHeight="0dp"
+                android:fadingEdgeLength="0dp"
+                android:listSelector="@drawable/timeline_selector"
+                android:overScrollMode="never"
+                android:scrollbars="none" />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+        <fragment
+            android:id="@+id/navigationFragment"
+            android:name="com.viableindustries.waterreporter.NavigationFragment"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom" />
+
+    </FrameLayout>
 
 </LinearLayout>

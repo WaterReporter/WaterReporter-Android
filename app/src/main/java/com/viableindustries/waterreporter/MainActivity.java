@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -47,8 +49,8 @@ import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-//    @Bind(R.id.mapview)
-//    MapView mv;
+    @Bind(R.id.timeline)
+    SwipeRefreshLayout timeline;
 
     @Bind(R.id.timeline_items)
     ListView listView;
@@ -105,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
             } else {
 
-                requestData(10, 1, false);
+                requestData(10, 1, false, false);
 
                 fetchUserGroups();
 
@@ -205,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
 //
 //    }
 
-    protected void requestData(int limit, int page, final boolean transition) {
+    protected void requestData(int limit, int page, final boolean transition, final boolean refresh) {
 
         SharedPreferences prefs =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
@@ -277,10 +279,28 @@ public class MainActivity extends AppCompatActivity {
 
                 }
 
+                if (refresh) {
+
+                    reportCollection = reports;
+
+                    populateTimeline(reportCollection);
+
+//                    reportCollection = reports;
+//
+//                    timelineAdapter.notifyDataSetChanged();
+//
+//                    attachScrollListener();
+
+                }
+
+                timeline.setRefreshing(false);
+
             }
 
             @Override
             public void failure(RetrofitError error) {
+
+                timeline.setRefreshing(false);
 
                 if (error == null) return;
 
@@ -312,6 +332,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Attach the adapter to a ListView
         listView.setAdapter(timelineAdapter);
+
+        attachScrollListener();
 
     }
 
@@ -391,6 +413,22 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    protected void attachScrollListener() {
+
+        listView.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+
+                // Triggered only when new data needs to be appended to the list
+                requestData(10, page, false, false);
+
+                return true; // ONLY if more data is actually being loaded; false otherwise.
+
+            }
+        });
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -402,26 +440,21 @@ public class MainActivity extends AppCompatActivity {
 
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        listView.setOnScrollListener(new EndlessScrollListener() {
-            @Override
-            public boolean onLoadMore(int page, int totalItemsCount) {
-                // Triggered only when new data needs to be appended to the list
-                // Add whatever code is needed to append new items to your AdapterView
-//                customLoadMoreDataFromApi(page);
-                requestData(10, page, false);
-                // or customLoadMoreDataFromApi(to
-                // talItemsCount);
-                return true; // ONLY if more data is actually being loaded; false otherwise.
-            }
-        });
+        timeline.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
+                        // This method performs the actual data-refresh operation.
+                        // The method calls setRefreshing(false) when it's finished.
+                        requestData(10, 1, false, true);
+                    }
+                }
+        );
 
-//        setUpMap();
+        // Set color of swipe refresh arrow animation
 
-        // Not sure we should attempt a call unless we pass all checks first
-        // Obviously if we're going to redirect then we need to ensure that user id
-        // and token are present. If we decide not to redirect or prompt (which we should)
-        // then this becomes less of a problem.
-        //requestData();
+        timeline.setColorSchemeResources(R.color.waterreporter_blue);
 
     }
 
@@ -472,7 +505,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.action_submissions) {
 
-            requestData(1, 1, true);
+            requestData(1, 1, true, false);
 
             fetchUserGroups();
 
@@ -509,7 +542,7 @@ public class MainActivity extends AppCompatActivity {
                 // The user is logged in and may already have reports in the system.
                 // Let's attempt to fetch the user's report collection and, if none exist,
                 // direct the user to submit their first report.
-                requestData(10, 1, false);
+                requestData(10, 1, false, false);
 
                 fetchUserGroups();
 
