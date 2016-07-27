@@ -4,6 +4,7 @@
     android:id="@+id/report_stub"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/gray_250.50.52"
     android:orientation="vertical">
 
     <View
@@ -88,6 +89,7 @@
         android:id="@+id/report_thumb"
         android:layout_width="match_parent"
         android:layout_height="320dp"
+        android:background="@color/gray_224"
         android:scaleType="fitXY" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -108,10 +110,10 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+                android:layout_centerInParent="true"
                 android:layout_gravity="center_vertical"
                 android:scaleType="fitXY"
-                android:src="@drawable/action_badge_small"
-                android:layout_centerInParent="true" />
+                android:src="@drawable/action_badge_small" />
 
         </RelativeLayout>
 
@@ -124,10 +126,10 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+                android:layout_centerInParent="true"
                 android:layout_gravity="center_vertical"
                 android:scaleType="fitXY"
-                android:src="@drawable/report_location_icon"
-                android:layout_centerInParent="true" />
+                android:src="@drawable/report_location_icon" />
 
         </RelativeLayout>
 
@@ -140,10 +142,10 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+                android:layout_centerInParent="true"
                 android:layout_gravity="center_vertical"
                 android:scaleType="fitXY"
-                android:src="@drawable/comment_icon"
-                android:layout_centerInParent="true" />
+                android:src="@drawable/comment_icon" />
 
         </RelativeLayout>
 

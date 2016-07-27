@@ -2,70 +2,123 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/gray_250.50.52"
+    android:baselineAligned="false"
     android:orientation="horizontal">
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/feed"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingTop="0dp">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/gray_224" />
 
-        <ImageButton
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_centerInParent="true"
+        <ImageView
+            android:id="@+id/activity_tab_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="6dp"
+            android:alpha="0.7"
             android:background="@android:color/transparent"
             android:gravity="center"
-            android:src="@drawable/activity_feed_icon" />
+            android:scaleType="fitXY"
+            android:src="@drawable/feed_tab_icon" />
 
-    </RelativeLayout>
+        <TextView
+            android:id="@+id/activity_tab_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Activity"
+            android:textColor="@color/gray_186"
+            android:textSize="@dimen/small_text" />
 
-    <RelativeLayout
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/submit"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingTop="0dp">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/gray_224" />
 
-        <ImageButton
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_centerInParent="true"
+        <ImageView
+            android:id="@+id/submit_tab_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="6dp"
+            android:alpha="0.7"
             android:background="@android:color/transparent"
             android:gravity="center"
-            android:src="@drawable/start_report_icon" />
+            android:scaleType="fitXY"
+            android:src="@drawable/submit_tab_icon" />
 
-    </RelativeLayout>
+        <TextView
+            android:id="@+id/submit_tab_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Submit Report"
+            android:textColor="@color/gray_186"
+            android:textSize="@dimen/small_text" />
 
-    <RelativeLayout
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/profile"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingTop="0dp">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/gray_224" />
 
-        <ImageButton
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_centerInParent="true"
+        <ImageView
+            android:id="@+id/profile_tab_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="6dp"
+            android:alpha="0.7"
             android:background="@android:color/transparent"
             android:gravity="center"
-            android:src="@drawable/profile_icon" />
+            android:scaleType="fitXY"
+            android:src="@drawable/profile_tab_icon" />
 
-    </RelativeLayout>
+        <TextView
+            android:id="@+id/profile_tab_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Profile"
+            android:textColor="@color/gray_186"
+            android:textSize="@dimen/small_text" />
+
+
+    </LinearLayout>
 
 </LinearLayout>

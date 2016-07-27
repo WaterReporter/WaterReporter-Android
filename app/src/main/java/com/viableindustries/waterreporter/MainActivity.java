@@ -503,21 +503,21 @@ public class MainActivity extends AppCompatActivity {
 
         int id = item.getItemId();
 
-        if (id == R.id.action_submissions) {
-
-            requestData(1, 1, true, false);
-
-            fetchUserGroups();
-
-            return false;
-
-        }
-
-        if (id == R.id.action_report) {
-
-            startActivity(new Intent(this, PhotoActivity.class));
-
-        }
+//        if (id == R.id.action_submissions) {
+//
+//            requestData(1, 1, true, false);
+//
+//            fetchUserGroups();
+//
+//            return false;
+//
+//        }
+//
+//        if (id == R.id.action_report) {
+//
+//            startActivity(new Intent(this, PhotoActivity.class));
+//
+//        }
 
         return true;
 

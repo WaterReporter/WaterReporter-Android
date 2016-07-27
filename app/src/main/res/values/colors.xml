@@ -22,6 +22,8 @@
     <color name="gray_224">#e0e0e0</color>
     <color name="gray_f5f7f9">#f5f7f9</color>
     <color name="gray_186">#bababa</color>
+    <color name="gray_247">#f7f7f9</color>
+    <color name="gray_250.50.52">#fafafc</color>
 
     <!-- Camera -->
     <color name="control_background">#cc4285f4</color>

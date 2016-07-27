@@ -8,15 +8,15 @@
 
         <item name="actionModeShareDrawable">@drawable/ic_share_white_24dp</item>
 
-        <item name="colorPrimary">@color/base_blue</item>
+        <item name="colorPrimary">@color/white</item>
 
         <item name="android:actionBarStyle">@style/MyActionBar</item>
 
         <item name="android:actionBarTabTextStyle">@style/TabTextStyle</item>
 
-        <item name="android:actionMenuTextColor">@color/white</item>
+        <!--<item name="android:actionMenuTextColor">@color/white</item>-->
 
-        <item name="colorPrimaryDark">@color/dark_blue</item>
+        <item name="colorPrimaryDark">@color/gray_f5f7f9</item>
 
         <!-- Support library compatibility -->
 
@@ -24,7 +24,7 @@
 
         <item name="actionBarTabTextStyle">@style/TabTextStyle</item>
 
-        <item name="actionMenuTextColor">@color/white</item>
+        <!--<item name="actionMenuTextColor">@color/white</item>-->
 
     </style>
 
@@ -32,23 +32,23 @@
 
         <item name="android:titleTextStyle">@style/TitleBarTextColor</item>
 
-        <item name="android:background">@color/base_blue</item>
+        <item name="android:background">@color/white</item>
 
-        <item name="android:backgroundStacked">@color/base_blue</item>
+        <item name="android:backgroundStacked">@color/white</item>
 
-        <item name="android:backgroundSplit">@color/base_blue</item>
+        <item name="android:backgroundSplit">@color/white</item>
 
         <!-- Support library compatibility -->
 
-        <item name="titleTextStyle">@style/TitleBarTextColor</item>
+        <!--<item name="titleTextStyle">@style/TitleBarTextColor</item>-->
 
         <item name="icon">@android:color/transparent</item>
 
-        <item name="background">@color/base_blue</item>
+        <item name="background">@color/white</item>
 
-        <item name="backgroundStacked">@color/base_blue</item>
+        <item name="backgroundStacked">@color/white</item>
 
-        <item name="backgroundSplit">@color/base_blue</item>
+        <item name="backgroundSplit">@color/white</item>
 
     </style>
 

@@ -3,14 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity" >
 
-    <item android:id="@+id/action_report"
-        android:icon="@drawable/ic_add_white_24dp"
-        android:title="@string/action_report"
-        app:showAsAction="ifRoom" />
+    <!--<item android:id="@+id/action_report"-->
+        <!--android:icon="@drawable/ic_add_white_24dp"-->
+        <!--android:title="@string/action_report"-->
+        <!--app:showAsAction="ifRoom" />-->
 
-    <item android:id="@+id/action_submissions"
-        android:icon="@drawable/ic_person_white_24dp"
-        android:title="@string/action_submissions"
-        app:showAsAction="ifRoom" />
+    <!--<item android:id="@+id/action_submissions"-->
+        <!--android:icon="@drawable/ic_person_white_24dp"-->
+        <!--android:title="@string/action_submissions"-->
+        <!--app:showAsAction="ifRoom" />-->
 
 </menu>

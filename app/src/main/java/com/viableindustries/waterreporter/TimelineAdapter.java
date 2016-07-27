@@ -193,7 +193,7 @@ public class TimelineAdapter extends ArrayAdapter {
 
         Log.v("url", imagePath);
 
-        Picasso.with(context).load(feature.properties.owner.properties.picture).transform(new CircleTransform()).into(viewHolder.ownerAvatar);
+        Picasso.with(context).load(feature.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(viewHolder.ownerAvatar);
 
         Picasso.with(context).load(imagePath).fit().centerCrop().into(viewHolder.reportThumb);
 

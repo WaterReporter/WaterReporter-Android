@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 public class NavigationFragment extends Fragment {
@@ -23,9 +24,9 @@ public class NavigationFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         // Setup any handles to view objects here
         // EditText etFoo = (EditText) view.findViewById(R.id.etFoo);
-        RelativeLayout feedTab = (RelativeLayout) view.findViewById(R.id.feed);
-        RelativeLayout submitTab = (RelativeLayout) view.findViewById(R.id.submit);
-        RelativeLayout profileTab = (RelativeLayout) view.findViewById(R.id.profile);
+        LinearLayout feedTab = (LinearLayout) view.findViewById(R.id.feed);
+        LinearLayout submitTab = (LinearLayout) view.findViewById(R.id.submit);
+        LinearLayout profileTab = (LinearLayout) view.findViewById(R.id.profile);
 
         feedTab.setOnClickListener(new View.OnClickListener() {
             @Override
