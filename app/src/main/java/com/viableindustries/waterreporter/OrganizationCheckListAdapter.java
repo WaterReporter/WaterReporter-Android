@@ -22,7 +22,7 @@ import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserOrgPatch;
 import com.viableindustries.waterreporter.data.UserService;
-import com.vividsolutions.jts.awt.ShapeReader;
+//import com.vividsolutions.jts.awt.ShapeReader;
 
 import java.util.ArrayList;
 import java.util.Arrays;

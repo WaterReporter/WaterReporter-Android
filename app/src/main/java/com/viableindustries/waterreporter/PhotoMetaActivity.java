@@ -320,7 +320,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
      **/
     public void updateLocation(View v) {
 
-        startActivityForResult(new Intent(this, LocationActivity.class), ACTION_SET_LOCATION);
+//        startActivityForResult(new Intent(this, LocationActivity.class), ACTION_SET_LOCATION);
 
     }
 
@@ -384,7 +384,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
         final String access_token = prefs.getString("access_token", "");
 
-        ArrayList<Float> coordinates = new ArrayList<Float>(2);
+        ArrayList<Double> coordinates = new ArrayList<Double>(2);
 
         String point = "Point";
 
@@ -397,8 +397,8 @@ public class PhotoMetaActivity extends AppCompatActivity {
         coordinates.clear();
         geometryList.clear();
 
-        coordinates.add((float) longitude);
-        coordinates.add((float) latitude);
+        coordinates.add((double) longitude);
+        coordinates.add((double) latitude);
         Geometry geometry = new Geometry(coordinates, point);
         geometryList.add(geometry);
 

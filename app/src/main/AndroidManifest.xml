@@ -15,7 +15,6 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <!-- <uses-permission android:name="android.permission.GET_ACCOUNTS" /> -->
 
     <uses-feature
         android:name="android.hardware.Camera"
@@ -29,6 +28,8 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
+        <!-- Mapbox telemetry service -->
+        <service android:name="com.mapbox.mapboxsdk.telemetry.TelemetryService"/>
         <meta-data
             android:name="DATABASE"
             android:value="reports_001.db" />

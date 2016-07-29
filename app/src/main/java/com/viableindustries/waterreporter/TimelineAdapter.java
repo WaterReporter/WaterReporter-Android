@@ -1,6 +1,7 @@
 package com.viableindustries.waterreporter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportPhoto;
@@ -55,7 +57,7 @@ public class TimelineAdapter extends ArrayAdapter {
         ImageView reportThumb;
         RelativeLayout actionBadge;
         LinearLayout reportStub;
-//        int position;
+        RelativeLayout locationIcon;
     }
 
     @Override
@@ -79,6 +81,7 @@ public class TimelineAdapter extends ArrayAdapter {
             viewHolder.reportThumb = (ImageView) convertView.findViewById(R.id.report_thumb);
             viewHolder.actionBadge = (RelativeLayout) convertView.findViewById(R.id.action_badge);
             viewHolder.reportStub = (LinearLayout) convertView.findViewById(R.id.report_stub);
+            viewHolder.locationIcon = (RelativeLayout) convertView.findViewById(R.id.location_icon);
 
             convertView.setTag(viewHolder);
 
@@ -89,7 +92,7 @@ public class TimelineAdapter extends ArrayAdapter {
         }
 
         // Get the data item for this position
-        Report feature = (Report) getItem(position);
+        final Report feature = (Report) getItem(position);
 
         Log.d("groups", feature.properties.groups.toString());
 
@@ -142,21 +145,25 @@ public class TimelineAdapter extends ArrayAdapter {
             System.out.println("Parse Exception : " + pe);
         }
 
-        // Check if an existing view is being reused, otherwise inflate the view
-//        if (convertView == null) {
-//            convertView = LayoutInflater.from(getContext()).inflate(R.layout.timeline_item, parent, false);
-//        }
-        // Lookup view for data population
-//        TextView reportDate = (TextView) convertView.findViewById(R.id.report_date);
-//        TextView reportOwner = (TextView) convertView.findViewById(R.id.report_owner);
-//        TextView reportWatershed = (TextView) convertView.findViewById(R.id.report_watershed);
-//        TextView reportComments = (TextView) convertView.findViewById(R.id.comment_count);
-//        TextView reportCaption = (TextView) convertView.findViewById(R.id.report_caption);
-//        TextView reportGroups = (TextView) convertView.findViewById(R.id.report_groups);
-//        ImageView ownerAvatar = (ImageView) convertView.findViewById(R.id.owner_avatar);
-//        ImageView reportThumb = (ImageView) convertView.findViewById(R.id.report_thumb);
-//        RelativeLayout actionBadge = (RelativeLayout) convertView.findViewById(R.id.action_badge);
-//        LinearLayout reportStub = (LinearLayout) convertView.findViewById(R.id.report_stub);
+        // Attach click listeners to active UI components
+
+        viewHolder.locationIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(context, MapDetailActivity.class);
+
+                Geometry geometry = feature.geometry.geometries.get(0);
+
+                Log.d("geometry", geometry.toString());
+
+                intent.putExtra("REPORT_LATITUDE", geometry.coordinates.get(1));
+                intent.putExtra("REPORT_LONGITUDE", geometry.coordinates.get(0));
+
+                context.startActivity(intent);
+
+            }
+        });
 
         // Populate the data into the template view using the data object
         viewHolder.reportDate.setText(creationDate);
