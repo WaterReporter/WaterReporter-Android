@@ -8,9 +8,7 @@
     <com.mapbox.mapboxsdk.views.MapView
         android:id="@+id/mapview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        mapbox:accessToken="@string/mapBoxToken"
-        mapbox:mapid="@string/terrainMapId" />
+        android:layout_height="match_parent" />
 
 
     <View

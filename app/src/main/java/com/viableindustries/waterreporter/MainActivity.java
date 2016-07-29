@@ -21,12 +21,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.mapbox.mapboxsdk.geometry.BoundingBox;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.overlay.Icon;
-import com.mapbox.mapboxsdk.util.GeoUtils;
-import com.mapbox.mapboxsdk.views.InfoWindow;
-import com.mapbox.mapboxsdk.views.MapView;
 import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.Organization;
@@ -70,11 +64,6 @@ public class MainActivity extends AppCompatActivity {
     protected TimelineAdapter timelineAdapter;
 
     protected List<Report> reportCollection = new ArrayList<Report>();
-
-    // Geographic center of contiguous United States
-    protected LatLng defaultCenter = new LatLng(39.828175, -98.5795);
-
-    protected List<LatLng> markers = new ArrayList<LatLng>();
 
     protected boolean connectionActive = false;
 
@@ -127,86 +116,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//    protected void addMarkers(Report report) {
-//
-//        //create the marker's LatLng
-//        Geometry geometry = report.geometry.geometries.get(0);
-//
-//        LatLng latLng = geometry.getCoordinates();
-//
-//        markers.add(latLng);
-//
-//        String issue, color;
-//
-//        View view;
-//
-//        CustomMarker m;
-//
-//        //create an intent which will open the detailed view when the marker's info button is clicked
-//        //include the report id so that the detailed view can get the information for the report
-//        final Intent intent = new Intent(this, MarkerDetailActivity.class);
-//
-//        intent.putExtra("REPORT_ID", report.properties.id);
-//
-//        //only put markers for Point geometry on the map
-//        if (geometry.type.equals("Point")) {
-//
-//            color = getString(R.string.base_blue);
-//
-//            String title = report.properties.owner.properties.first_name + " " +
-//                    report.properties.owner.properties.last_name + " \u00B7 " +
-//                    report.properties.getFormattedDateString();
-//
-//            m = new CustomMarker(mv, title, report.properties.report_description + " ....", latLng);
-//
-//            m.setIcon(new Icon(this, Icon.Size.LARGE, "", color));
-//            //get the InfoWindow's view so that you can set a touch listener which will switch
-//            //to the marker's detailed view when clicked
-//            final InfoWindow infoWindow = m.getToolTip(mv);
-//            view = infoWindow.getView();
-//            view.setOnTouchListener(new View.OnTouchListener() {
-//                @Override
-//                public boolean onTouch(View view, MotionEvent motionEvent) {
-//                    //make sure to choose action down or up, otherwise the intent will launch twice
-//                    if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-//                        startActivity(intent);
-//                        //close the InfoWindow so it's not still open when coming back to the map
-//                        infoWindow.close();
-//                    }
-//                    return true;
-//                }
-//            });
-//
-//            mv.addMarker(m);
-//
-//        }
-
-//        setBounds();
-
-//    }
-
-//    protected void setUpMap() {
-//
-//        mv.setCenter(defaultCenter);
-//
-//        mv.setMinZoomLevel(mv.getTileProvider().getMinimumZoomLevel());
-//
-//        mv.setMaxZoomLevel(mv.getTileProvider().getMaximumZoomLevel());
-//
-//        // There are reports from across the nation now, so let's start way out before zooming to
-//        // bounding box
-//        mv.setZoom(4);
-//
-//    }
-
-//    protected void setBounds() {
-//
-//        BoundingBox box = GeoUtils.findBoundingBoxForGivenLocations(markers, 0.5);
-//
-//        mv.zoomToBoundingBox(box, true, true);
-//
-//    }
-
     protected void requestData(int limit, int page, final boolean transition, final boolean refresh) {
 
         SharedPreferences prefs =
@@ -258,9 +167,6 @@ public class MainActivity extends AppCompatActivity {
 
                     try {
 
-//                        timelineAdapter.addAll(reports);
-//                        reportCollection.addAll(reports);
-
                         timelineAdapter.notifyDataSetChanged();
 
                     } catch (NullPointerException ne) {
@@ -284,12 +190,6 @@ public class MainActivity extends AppCompatActivity {
                     reportCollection = reports;
 
                     populateTimeline(reportCollection);
-
-//                    reportCollection = reports;
-//
-//                    timelineAdapter.notifyDataSetChanged();
-//
-//                    attachScrollListener();
 
                 }
 
@@ -502,22 +402,6 @@ public class MainActivity extends AppCompatActivity {
         if (!connectionActive) return false;
 
         int id = item.getItemId();
-
-//        if (id == R.id.action_submissions) {
-//
-//            requestData(1, 1, true, false);
-//
-//            fetchUserGroups();
-//
-//            return false;
-//
-//        }
-//
-//        if (id == R.id.action_report) {
-//
-//            startActivity(new Intent(this, PhotoActivity.class));
-//
-//        }
 
         return true;
 

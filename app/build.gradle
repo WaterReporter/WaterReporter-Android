@@ -6,12 +6,12 @@ repositories {
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "com.viableindustries.waterreporter"
-        minSdkVersion 14
-        targetSdkVersion 23
+        minSdkVersion 15
+        targetSdkVersion 24
         versionCode 8
         versionName "1.4.3"
         multiDexEnabled true
