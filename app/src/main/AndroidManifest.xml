@@ -85,11 +85,11 @@
         <activity
             android:name=".MarkerDetailActivity"
             android:label="@string/title_activity_marker"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".MapDetailActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.viableindustries.waterreporter.MainActivity" />
+                android:value="com.viableindustries.waterreporter.MapDetailActivity" />
         </activity>
         <activity
             android:name=".LocationActivity"

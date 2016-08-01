@@ -160,6 +160,8 @@ public class TimelineAdapter extends ArrayAdapter {
                 intent.putExtra("REPORT_LATITUDE", geometry.coordinates.get(1));
                 intent.putExtra("REPORT_LONGITUDE", geometry.coordinates.get(0));
 
+                intent.putExtra("REPORT_ID", feature.id);
+
                 context.startActivity(intent);
 
             }

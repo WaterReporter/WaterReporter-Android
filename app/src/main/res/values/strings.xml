@@ -3,7 +3,8 @@
 
     <string name="app_name">Water Reporter</string>
     <string name="terrainMapId">developedsimple.mf7anga9</string>
-    <string name="mapBoxToken">pk.eyJ1IjoiZGV2ZWxvcGVkc2ltcGxlIiwiYSI6Ii1kcy1XUDgifQ.V-tAfiCU6cgMK_BbG5GFgg</string>
+    <string name="mapBoxToken">pk.eyJ1IjoicmRhd2VzMSIsImEiOiJjaXJjZnJiOWIwMWV5Z2FtOW5mMW1wY3R1In0.RPLkxmfkLS4Tt0iiX0MldA</string>
+    <!--pk.eyJ1IjoicmRhd2VzMSIsImEiOiJjaXJjZnJiOWIwMWV5Z2FtOW5mMW1wY3R1In0.RPLkxmfkLS4Tt0iiX0MldA-->
     <string name="title_activity_submissions">My Submissions</string>
     <string name="action_legend">Legend</string>
     <string name="action_submissions">My Submissions</string>

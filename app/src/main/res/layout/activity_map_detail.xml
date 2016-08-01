@@ -12,4 +12,16 @@
         android:layout_height="match_parent"
         mapbox:style_url="mapbox://styles/mapbox/outdoors-v9"/>
 
+    <ImageButton
+        android:id="@+id/button_capture"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="16dp"
+        android:background="@drawable/floating_action_green"
+        android:clickable="true"
+        android:onClick="getDirections"
+        android:src="@drawable/ic_directions_white_48dp" />
+
 </RelativeLayout>
