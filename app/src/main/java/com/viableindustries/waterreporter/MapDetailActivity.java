@@ -98,14 +98,15 @@ public class MapDetailActivity extends AppCompatActivity {
 //                mapboxMap.addMarker(new MarkerOptions()
 //                        .position(new LatLng(latitude, longitude)));
 
+//                float anchorU = 0;
+//                float anchorV = 0;
+
                 // add custom ViewMarker
                 CustomMarkerViewOptions options = new CustomMarkerViewOptions();
-                options.imageUrl(imageUrl);
-                //options.flagRes(R.drawable.floating_action_blue);
-                //options.abbrevName("Mapbox");
-                //options.title("Hello");
                 options.position(new LatLng(latitude, longitude));
                 options.flat(true);
+                options.imageUrl(imageUrl);
+                options.anchor(0.5f, 0.5f);
                 mapboxMap.addMarker(options);
 
                 // if you want to customise a ViewMarker you need to extend ViewMarker and provide an adapter implementation
@@ -208,19 +209,21 @@ public class MapDetailActivity extends AppCompatActivity {
                 viewHolder = new ViewHolder();
                 convertView = inflater.inflate(R.layout.view_custom_marker, parent, false);
                 viewHolder.image = (ImageView) convertView.findViewById(R.id.imageView);
-                //viewHolder.abbrev = (TextView) convertView.findViewById(R.id.textView);
                 convertView.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
-            //viewHolder.flag.setImageResource(marker.getFlagRes());
+
             Picasso.with(getContext()).load(marker.getImageUrl()).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(viewHolder.image);
-            //viewHolder.abbrev.setText(marker.getAbbrevName());
+
             return convertView;
         }
 
         @Override
         public boolean onSelect(@NonNull final CustomMarkerView marker, @NonNull final View convertView, boolean reselectionForViewReuse) {
+
+            Log.d("anchor", String.format("anchorU %s", marker.getAnchorU()));
+            Log.d("anchor", String.format("anchorV %s", marker.getAnchorV()));
 
             Context context = getContext();
 
@@ -263,12 +266,11 @@ public class MapDetailActivity extends AppCompatActivity {
                     convertView.setLayerType(View.LAYER_TYPE_NONE, null);
                 }
             });
-            rotateAnimator.start();
+            //rotateAnimator.start();
         }
 
         private static class ViewHolder {
             ImageView image;
-            //TextView abbrev;
         }
     }
 

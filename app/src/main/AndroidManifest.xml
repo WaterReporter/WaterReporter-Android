@@ -87,7 +87,8 @@
             android:name=".MarkerDetailActivity"
             android:label="@string/title_activity_marker"
             android:parentActivityName=".MapDetailActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.viableindustries.waterreporter.MapDetailActivity" />

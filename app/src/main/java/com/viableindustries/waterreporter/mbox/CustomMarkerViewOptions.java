@@ -15,8 +15,6 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 
 public class CustomMarkerViewOptions extends BaseMarkerViewOptions<CustomMarkerView, CustomMarkerViewOptions> {
 
-    //private String abbrevName;
-    //private int flagRes;
     private String imageUrl;
 
     public CustomMarkerViewOptions() {
@@ -38,7 +36,6 @@ public class CustomMarkerViewOptions extends BaseMarkerViewOptions<CustomMarkerV
             icon(icon);
         }
         imageUrl(in.readString());
-        //flagRes(in.readInt());
     }
 
     @Override
@@ -70,7 +67,6 @@ public class CustomMarkerViewOptions extends BaseMarkerViewOptions<CustomMarkerV
             out.writeParcelable(getIcon().getBitmap(), flags);
         }
         out.writeString(imageUrl);
-        //out.writeInt(flagRes);
     }
 
     @Override
@@ -82,11 +78,6 @@ public class CustomMarkerViewOptions extends BaseMarkerViewOptions<CustomMarkerV
         this.imageUrl = imageUrl;
         return getThis();
     }
-
-//    public CustomMarkerViewOptions flagRes(int flagRes) {
-//        this.flagRes = flagRes;
-//        return getThis();
-//    }
 
     public static final Parcelable.Creator<CustomMarkerViewOptions> CREATOR
             = new Parcelable.Creator<CustomMarkerViewOptions>() {
