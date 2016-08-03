@@ -161,6 +161,7 @@ public class TimelineAdapter extends ArrayAdapter {
                 intent.putExtra("REPORT_LONGITUDE", geometry.coordinates.get(0));
 
                 intent.putExtra("REPORT_ID", feature.id);
+                intent.putExtra("IMAGE_URL", feature.properties.images.get(0).properties.icon_retina);
 
                 context.startActivity(intent);
 

@@ -19,9 +19,9 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
-        android:background="@drawable/floating_action_green"
+        android:background="@drawable/floating_action_blue"
         android:clickable="true"
         android:onClick="getDirections"
-        android:src="@drawable/ic_directions_white_48dp" />
+        android:src="@drawable/ic_directions_white_24dp" />
 
 </RelativeLayout>
