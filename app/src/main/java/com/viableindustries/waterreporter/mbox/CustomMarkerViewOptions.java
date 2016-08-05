@@ -16,6 +16,7 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 public class CustomMarkerViewOptions extends BaseMarkerViewOptions<CustomMarkerView, CustomMarkerViewOptions> {
 
     private String imageUrl;
+    private int reportId;
 
     public CustomMarkerViewOptions() {
     }
@@ -36,6 +37,7 @@ public class CustomMarkerViewOptions extends BaseMarkerViewOptions<CustomMarkerV
             icon(icon);
         }
         imageUrl(in.readString());
+        reportId(in.readInt());
     }
 
     @Override
@@ -67,15 +69,21 @@ public class CustomMarkerViewOptions extends BaseMarkerViewOptions<CustomMarkerV
             out.writeParcelable(getIcon().getBitmap(), flags);
         }
         out.writeString(imageUrl);
+        out.writeInt(reportId);
     }
 
     @Override
     public CustomMarkerView getMarker() {
-        return new CustomMarkerView(this, imageUrl);
+        return new CustomMarkerView(this, imageUrl, reportId);
     }
 
     public CustomMarkerViewOptions imageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+        return getThis();
+    }
+
+    public CustomMarkerViewOptions reportId(int reportId) {
+        this.reportId = reportId;
         return getThis();
     }
 

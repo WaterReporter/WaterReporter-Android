@@ -127,6 +127,18 @@ public class MarkerDetailActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+//        mapView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+//        mapView.onPause();
+    }
+
+    @Override
     protected void onDestroy() {
 
         super.onDestroy();

@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
@@ -23,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.MapboxAccountManager;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
@@ -33,23 +35,36 @@ import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdate;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Geometry;
+import com.viableindustries.waterreporter.data.QueryFilter;
+import com.viableindustries.waterreporter.data.QueryParams;
+import com.viableindustries.waterreporter.data.QuerySort;
+import com.viableindustries.waterreporter.data.Report;
+import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.mbox.CustomMarkerView;
 import com.viableindustries.waterreporter.mbox.CustomMarkerViewOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MapDetailActivity extends AppCompatActivity {
 
     @Bind(R.id.mapview)
     MapView mapView;
+
+    private MapboxMap mMapboxMap;
 
     private double latitude;
     private double longitude;
@@ -82,13 +97,25 @@ public class MapDetailActivity extends AppCompatActivity {
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
-            public void onMapReady(MapboxMap mapboxMap) {
+            public void onMapReady(final MapboxMap mapboxMap) {
+
+                mMapboxMap = mapboxMap;
 
                 final MarkerViewManager markerViewManager = mapboxMap.getMarkerViewManager();
 
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder().target(new LatLng(latitude, longitude)).zoom(14).build());
+                CameraPosition position = new CameraPosition.Builder()
+                        .target(new LatLng(latitude, longitude)) // Sets the new camera position
+                        .zoom(14) // Sets the zoom
+                        //.bearing(180) // Rotate the camera
+                        //.tilt(30) // Set the camera tilt
+                        .build(); // Creates a CameraPosition from the builder
 
-                mapboxMap.moveCamera(cameraUpdate);
+                //CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder().target(new LatLng(latitude, longitude)).zoom(14).build());
+
+                mapboxMap.animateCamera(CameraUpdateFactory
+                        .newCameraPosition(position), 5000);
+
+                //mapboxMap.moveCamera(cameraUpdate);
 
                 // Create an Icon object for the marker to use
                 //IconFactory iconFactory = IconFactory.getInstance(MapDetailActivity.this);
@@ -98,20 +125,61 @@ public class MapDetailActivity extends AppCompatActivity {
 //                mapboxMap.addMarker(new MarkerOptions()
 //                        .position(new LatLng(latitude, longitude)));
 
-//                float anchorU = 0;
-//                float anchorV = 0;
-
                 // add custom ViewMarker
                 CustomMarkerViewOptions options = new CustomMarkerViewOptions();
                 options.position(new LatLng(latitude, longitude));
                 options.flat(true);
                 options.imageUrl(imageUrl);
+                options.reportId(reportId);
                 options.anchor(0.5f, 0.5f);
                 mapboxMap.addMarker(options);
 
                 // if you want to customise a ViewMarker you need to extend ViewMarker and provide an adapter implementation
                 // set adapters for child classes of ViewMarker
                 markerViewManager.addMarkerViewAdapter(new MarkerAdapter(MapDetailActivity.this, mapboxMap));
+
+                mapboxMap.setOnCameraChangeListener(new MapboxMap.OnCameraChangeListener() {
+                    @Override
+                    public void onCameraChange(CameraPosition position) {
+
+                        Log.d("mapPosition", position.toString());
+
+                        if (position.zoom >= 14) {
+
+                            LatLngBounds latLngBounds = mapboxMap.getProjection().getVisibleRegion().latLngBounds;
+
+                            double north = latLngBounds.getLatNorth();
+                            double south = latLngBounds.getLatSouth();
+                            double east = latLngBounds.getLonEast();
+                            double west = latLngBounds.getLonWest();
+
+                            String polygon = String.format("SRID=4326;POLYGON((%s %s,%s %s,%s %s,%s %s,%s %s))", west, north, east, north, east, south, west, south, west, north);
+
+                            Log.d("polygonString", polygon);
+
+                            fetchNearbyReports(polygon, reportId);
+
+                        }
+
+//                        LatLng[] latLngs = latLngBounds.toLatLngs();
+//
+//                        for (LatLng latLng : latLngs) {
+//
+//                            Log.d("point", latLng.toString());
+//
+//                        }
+
+//                        Log.d("northEast", latLngBounds.toLatLngs().toString());
+
+//                        LatLngBounds latLngBounds = new LatLngBounds.Builder()
+//                                .include(new LatLng(36.532128, -93.489121)) // Northeast
+//                                .include(new LatLng(25.837058, -106.646234)) // Southwest
+//                                .build();
+
+                        Log.d("mapPosition", position.toString());
+
+                    }
+                });
 
 //                mapboxMap.setOnMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
 //                    @Override
@@ -227,11 +295,17 @@ public class MapDetailActivity extends AppCompatActivity {
 
             Context context = getContext();
 
-            Intent intent = new Intent(context, MarkerDetailActivity.class);
+            Activity activity = (Activity) context;
 
-            intent.putExtra("REPORT_ID", reportId);
+            Intent intent = new Intent(activity, MarkerDetailActivity.class);
 
-            context.startActivity(intent);
+            intent.putExtra("REPORT_ID", marker.getReportId());
+
+            activity.startActivity(intent);
+
+            //activity.finish();
+
+//            context.
 
             return true;
 
@@ -272,6 +346,116 @@ public class MapDetailActivity extends AppCompatActivity {
         private static class ViewHolder {
             ImageView image;
         }
+    }
+
+    private void onFetchSuccess(List<Report> reports) {
+
+        for (Report report : reports) {
+
+            Geometry geometry = report.geometry.geometries.get(0);
+
+            CustomMarkerViewOptions options = new CustomMarkerViewOptions();
+            options.position(new LatLng(geometry.coordinates.get(1), geometry.coordinates.get(0)));
+            options.flat(true);
+            options.imageUrl(report.properties.images.get(0).properties.icon_retina);
+            options.reportId(report.id);
+            options.anchor(0.5f, 0.5f);
+            mMapboxMap.addMarker(options);
+
+        }
+
+    }
+
+    private void fetchNearbyReports(String polygon, int reportId) {
+
+        // Retrieve feature IDs from the local database and use them in a
+
+        SharedPreferences prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        final String access_token = prefs.getString("access_token", "");
+
+        Log.d("", access_token);
+
+        // Retrieve the user id
+
+        int user_id = prefs.getInt("user_id", 0);
+
+        // Add query filters to retrieve the user's reports
+        // Create filters list and add a filter for owner_id
+
+        List<QueryFilter> queryFilters = new ArrayList<QueryFilter>();
+
+        QueryFilter geometryFilter = new QueryFilter("geometry", "intersects", polygon);
+
+        QueryFilter idFilter = new QueryFilter("id", "neq", reportId);
+
+        queryFilters.add(geometryFilter);
+        queryFilters.add(idFilter);
+
+        // Create order_by list and add a sort parameter
+
+        List<QuerySort> queryOrder = new ArrayList<QuerySort>();
+
+        QuerySort querySort = new QuerySort("created", "desc");
+
+        queryOrder.add(querySort);
+
+        // Create query string from new QueryParams
+
+        QueryParams queryParams = new QueryParams(queryFilters, queryOrder);
+
+        String query = new Gson().toJson(queryParams);
+
+        Log.d("URL", query);
+
+        ReportService service = ReportService.restAdapter.create(ReportService.class);
+
+        service.getReports(access_token, "application/json", 1, 25, query, new Callback<FeatureCollection>() {
+
+            @Override
+            public void success(FeatureCollection featureCollection, Response response) {
+
+                List<Report> reports = featureCollection.getFeatures();
+
+                Log.v("list", reports.toString());
+
+                if (!reports.isEmpty()) {
+
+                    onFetchSuccess(reports);
+
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                Response response = error.getResponse();
+
+                RetrofitError.Kind r = error.getKind();
+
+                Log.d("HTTP Error:", response.toString());
+
+                Log.d("HTTP Error:", error.getMessage() + r);
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (response != null) {
+
+                    int status = response.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(MapDetailActivity.this, MainActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
+
     }
 
 }
