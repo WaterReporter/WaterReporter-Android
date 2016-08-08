@@ -3,6 +3,7 @@ package com.viableindustries.waterreporter;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +15,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -22,9 +24,11 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.mapbox.mapboxsdk.MapboxAccountManager;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
@@ -50,8 +54,10 @@ import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.mbox.CustomMarkerView;
 import com.viableindustries.waterreporter.mbox.CustomMarkerViewOptions;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -64,13 +70,29 @@ public class MapDetailActivity extends AppCompatActivity {
     @Bind(R.id.mapview)
     MapView mapView;
 
+    @Bind(R.id.map_detail)
+    RelativeLayout mapContainer;
+
     private MapboxMap mMapboxMap;
 
     private double latitude;
     private double longitude;
 
     private static int reportId;
-    private static String imageUrl;
+    private static String reportDescription;
+    private static String thumbNail;
+    private static String fullImage;
+    private static String creationDate;
+    private static String watershedName;
+    private static String groupList;
+    private static String commentCount;
+    private static String userName;
+    private static String userAvatar;
+    private static String status;
+
+    private SharedPreferences sharedPreferences;
+
+    private String mappedReports;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,11 +106,24 @@ public class MapDetailActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        // Retrieve report ID
-        reportId = getIntent().getExtras().getInt("REPORT_ID", 0);
+        // Set a reference to SharedPreferences
+        sharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        // Retrieve image icon URL
-        imageUrl = getIntent().getExtras().getString("IMAGE_URL", "");
+        // Reset stored list of mapped reports
+        sharedPreferences.edit().putString("mappedReports", "").apply();
+
+        // Retrieve report attributes
+        reportId = getIntent().getExtras().getInt("REPORT_ID", 0);
+        reportDescription = getIntent().getExtras().getString("REPORT_DESCRIPTION", "");
+        thumbNail = getIntent().getExtras().getString("THUMBNAIL_URL", "");
+        fullImage = getIntent().getExtras().getString("FULL_IMAGE_URL", "");
+        creationDate = getIntent().getExtras().getString("REPORT_CREATED", "");
+        watershedName = getIntent().getExtras().getString("REPORT_WATERSHED", "");
+        groupList = getIntent().getExtras().getString("REPORT_GROUPS", "");
+        commentCount = getIntent().getExtras().getString("COMMENT_COUNT", "");
+        userName = getIntent().getExtras().getString("USER_NAME", "");
+        userAvatar = getIntent().getExtras().getString("USER_AVATAR", "");
+        status = getIntent().getExtras().getString("STATUS", "");
 
         // Retrieve location data from intent
         latitude = getIntent().getExtras().getDouble("REPORT_LATITUDE", 38.904722);
@@ -106,21 +141,10 @@ public class MapDetailActivity extends AppCompatActivity {
                 CameraPosition position = new CameraPosition.Builder()
                         .target(new LatLng(latitude, longitude)) // Sets the new camera position
                         .zoom(14) // Sets the zoom
-                        //.bearing(180) // Rotate the camera
-                        //.tilt(30) // Set the camera tilt
                         .build(); // Creates a CameraPosition from the builder
 
-                //CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder().target(new LatLng(latitude, longitude)).zoom(14).build());
-
                 mapboxMap.animateCamera(CameraUpdateFactory
-                        .newCameraPosition(position), 5000);
-
-                //mapboxMap.moveCamera(cameraUpdate);
-
-                // Create an Icon object for the marker to use
-                //IconFactory iconFactory = IconFactory.getInstance(MapDetailActivity.this);
-                //Drawable iconDrawable = ContextCompat.getDrawable(MapDetailActivity.this, R.drawable.purple_marker);
-                //Icon icon = iconFactory.fromDrawable(iconDrawable);
+                        .newCameraPosition(position), 4000);
 
 //                mapboxMap.addMarker(new MarkerOptions()
 //                        .position(new LatLng(latitude, longitude)));
@@ -129,8 +153,17 @@ public class MapDetailActivity extends AppCompatActivity {
                 CustomMarkerViewOptions options = new CustomMarkerViewOptions();
                 options.position(new LatLng(latitude, longitude));
                 options.flat(true);
-                options.imageUrl(imageUrl);
                 options.reportId(reportId);
+                options.reportDescription(reportDescription);
+                options.thumbNail(thumbNail);
+                options.fullImage(fullImage);
+                options.creationDate(creationDate);
+                options.watershedName(watershedName);
+                options.groupList(groupList);
+                options.commentCount(commentCount);
+                options.userName(userName);
+                options.userAvatar(userAvatar);
+                options.status(status);
                 options.anchor(0.5f, 0.5f);
                 mapboxMap.addMarker(options);
 
@@ -161,41 +194,10 @@ public class MapDetailActivity extends AppCompatActivity {
 
                         }
 
-//                        LatLng[] latLngs = latLngBounds.toLatLngs();
-//
-//                        for (LatLng latLng : latLngs) {
-//
-//                            Log.d("point", latLng.toString());
-//
-//                        }
-
-//                        Log.d("northEast", latLngBounds.toLatLngs().toString());
-
-//                        LatLngBounds latLngBounds = new LatLngBounds.Builder()
-//                                .include(new LatLng(36.532128, -93.489121)) // Northeast
-//                                .include(new LatLng(25.837058, -106.646234)) // Southwest
-//                                .build();
-
                         Log.d("mapPosition", position.toString());
 
                     }
                 });
-
-//                mapboxMap.setOnMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
-//                    @Override
-//                    public boolean onMarkerClick(@NonNull Marker marker) {
-//
-//                        Intent intent = new Intent(MapDetailActivity.this, MarkerDetailActivity.class);
-//
-//                        intent.putExtra("REPORT_ID", reportId);
-//
-//                        startActivity(intent);
-//
-//                        return true;
-//
-//                    }
-//
-//                });
             }
         });
 
@@ -282,7 +284,7 @@ public class MapDetailActivity extends AppCompatActivity {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
-            Picasso.with(getContext()).load(marker.getImageUrl()).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(viewHolder.image);
+            Picasso.with(getContext()).load(marker.getThumbNail()).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(viewHolder.image);
 
             return convertView;
         }
@@ -293,36 +295,41 @@ public class MapDetailActivity extends AppCompatActivity {
             Log.d("anchor", String.format("anchorU %s", marker.getAnchorU()));
             Log.d("anchor", String.format("anchorV %s", marker.getAnchorV()));
 
-            Context context = getContext();
+            CameraPosition position = new CameraPosition.Builder()
+                    .target(marker.getPosition()) // Sets the new camera position
+                    //.zoom(14) // Sets the zoom
+                    .build(); // Creates a CameraPosition from the builder
 
-            Activity activity = (Activity) context;
+            mapboxMap.animateCamera(CameraUpdateFactory
+                    .newCameraPosition(position), 1000);
 
-            Intent intent = new Intent(activity, MarkerDetailActivity.class);
+            // Build new MarkerDetailFragment
+            MarkerDetailFragment markerDetailFragment = new MarkerDetailFragment();
 
-            intent.putExtra("REPORT_ID", marker.getReportId());
+            Bundle markerAttrs = new Bundle();
 
-            activity.startActivity(intent);
+            markerAttrs.putInt("reportId", marker.getReportId());
+            markerAttrs.putString("reportDescription", marker.getReportDescription());
+            markerAttrs.putString("thumbNail", marker.getThumbNail());
+            markerAttrs.putString("fullImage", marker.getFullImage());
+            markerAttrs.putString("creationDate", marker.getCreationDate());
+            markerAttrs.putString("watershedName", marker.getWatershedName());
+            markerAttrs.putString("groupList", marker.getGroupList());
+            markerAttrs.putString("commentCount", marker.getCommentCount());
+            markerAttrs.putString("userName", marker.getUserName());
+            markerAttrs.putString("userAvatar", marker.getUserAvatar());
+            markerAttrs.putString("status", marker.getStatus());
 
-            //activity.finish();
+            markerDetailFragment.setArguments(markerAttrs);
 
-//            context.
+            FragmentTransaction fragmentTransaction = ((FragmentActivity)getContext()).getFragmentManager().beginTransaction();
 
-            return true;
+            fragmentTransaction.replace(R.id.map_detail, markerDetailFragment);
+            fragmentTransaction.addToBackStack(null);
 
-            //mapboxMap.selectMarker(marker);
+            fragmentTransaction.commit();
 
-//            convertView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-//            ObjectAnimator rotateAnimator = ObjectAnimator.ofFloat(convertView, View.ROTATION, 0, 360);
-//            rotateAnimator.setDuration(reselectionForViewReuse ? 0 : 350);
-//            rotateAnimator.addListener(new AnimatorListenerAdapter() {
-//                @Override
-//                public void onAnimationEnd(Animator animation) {
-//                    super.onAnimationEnd(animation);
-//                    convertView.setLayerType(View.LAYER_TYPE_NONE, null);
-//                    mapboxMap.selectMarker(marker);
-//                }
-//            });
-//            rotateAnimator.start();
+            return false;
 
             // false indicates that we are calling selectMarker after our animation ourselves
             // true will let the system call it for you, which will result in showing an InfoWindow instantly
@@ -348,6 +355,32 @@ public class MapDetailActivity extends AppCompatActivity {
         }
     }
 
+    private void trackId(Report report) {
+
+        mappedReports = sharedPreferences.getString("mappedReports", "");
+
+        List<Integer> ids = new ArrayList<Integer>();
+
+        if (!mappedReports.isEmpty()) {
+
+            mappedReports = mappedReports.replaceAll("[\\p{Z}\\s]+", "");
+
+            String[] array = mappedReports.substring(1, mappedReports.length() - 1).split(",");
+
+            for (String id : array) {
+
+                ids.add(Integer.parseInt(id));
+
+            }
+
+        }
+
+        ids.add(report.id);
+
+        sharedPreferences.edit().putString("mappedReports", ids.toString()).apply();
+
+    }
+
     private void onFetchSuccess(List<Report> reports) {
 
         for (Report report : reports) {
@@ -357,10 +390,22 @@ public class MapDetailActivity extends AppCompatActivity {
             CustomMarkerViewOptions options = new CustomMarkerViewOptions();
             options.position(new LatLng(geometry.coordinates.get(1), geometry.coordinates.get(0)));
             options.flat(true);
-            options.imageUrl(report.properties.images.get(0).properties.icon_retina);
             options.reportId(report.id);
+            options.reportDescription(report.properties.report_description.trim());
+            options.thumbNail(report.properties.images.get(0).properties.icon_retina);
+            options.fullImage(report.properties.images.get(0).properties.square_retina);
+            options.creationDate(AttributeTransformUtility.parseDate(new SimpleDateFormat("MMM dd, yyyy", Locale.US), report.properties.created));
+            options.watershedName(AttributeTransformUtility.parseWatershedName(report.properties.territory));
+            options.groupList(AttributeTransformUtility.groupListSize(report.properties.groups));
+            options.commentCount(AttributeTransformUtility.countComments(report.properties.comments));
+            options.userName(String.format("%s %s", report.properties.owner.properties.first_name, report.properties.owner.properties.last_name));
+            options.userAvatar(report.properties.owner.properties.picture);
+            options.status(report.properties.state);
             options.anchor(0.5f, 0.5f);
             mMapboxMap.addMarker(options);
+
+            // Store report id for exclusion from future queries
+            trackId(report);
 
         }
 
@@ -368,17 +413,15 @@ public class MapDetailActivity extends AppCompatActivity {
 
     private void fetchNearbyReports(String polygon, int reportId) {
 
-        // Retrieve feature IDs from the local database and use them in a
+        QueryFilter idFilter;
 
-        SharedPreferences prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
-
-        final String access_token = prefs.getString("access_token", "");
+        final String access_token = sharedPreferences.getString("access_token", "");
 
         Log.d("", access_token);
 
         // Retrieve the user id
 
-        int user_id = prefs.getInt("user_id", 0);
+        int user_id = sharedPreferences.getInt("user_id", 0);
 
         // Add query filters to retrieve the user's reports
         // Create filters list and add a filter for owner_id
@@ -387,7 +430,30 @@ public class MapDetailActivity extends AppCompatActivity {
 
         QueryFilter geometryFilter = new QueryFilter("geometry", "intersects", polygon);
 
-        QueryFilter idFilter = new QueryFilter("id", "neq", reportId);
+        // Exclude mapped reports
+        mappedReports = sharedPreferences.getString("mappedReports", "");
+
+        if (!mappedReports.isEmpty()) {
+
+            List<Integer> ids = new ArrayList<Integer>();
+
+            mappedReports = mappedReports.replaceAll("[\\p{Z}\\s]+", "");
+
+            String[] array = mappedReports.substring(1, mappedReports.length() - 1).split(",");
+
+            for (String id : array) {
+
+                ids.add(Integer.parseInt(id));
+
+            }
+
+            idFilter = new QueryFilter("id", "not_in", ids);
+
+        } else {
+
+            idFilter = new QueryFilter("id", "neq", reportId);
+
+        }
 
         queryFilters.add(geometryFilter);
         queryFilters.add(idFilter);

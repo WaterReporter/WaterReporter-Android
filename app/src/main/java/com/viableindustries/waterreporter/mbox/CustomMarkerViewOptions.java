@@ -15,8 +15,17 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 
 public class CustomMarkerViewOptions extends BaseMarkerViewOptions<CustomMarkerView, CustomMarkerViewOptions> {
 
-    private String imageUrl;
     private int reportId;
+    private String reportDescription;
+    private String thumbNail;
+    private String fullImage;
+    private String creationDate;
+    private String watershedName;
+    private String groupList;
+    private String commentCount;
+    private String userName;
+    private String userAvatar;
+    private String status;
 
     public CustomMarkerViewOptions() {
     }
@@ -36,8 +45,17 @@ public class CustomMarkerViewOptions extends BaseMarkerViewOptions<CustomMarkerV
             Icon icon = IconFactory.recreate(iconId, iconBitmap);
             icon(icon);
         }
-        imageUrl(in.readString());
         reportId(in.readInt());
+        reportDescription(in.readString());
+        thumbNail(in.readString());
+        fullImage(in.readString());
+        creationDate(in.readString());
+        watershedName(in.readString());
+        groupList(in.readString());
+        commentCount(in.readString());
+        userName(in.readString());
+        userAvatar(in.readString());
+        status(in.readString());
     }
 
     @Override
@@ -68,22 +86,76 @@ public class CustomMarkerViewOptions extends BaseMarkerViewOptions<CustomMarkerV
             out.writeString(getIcon().getId());
             out.writeParcelable(getIcon().getBitmap(), flags);
         }
-        out.writeString(imageUrl);
         out.writeInt(reportId);
+        out.writeString(reportDescription);
+        out.writeString(thumbNail);
+        out.writeString(fullImage);
+        out.writeString(creationDate);
+        out.writeString(watershedName);
+        out.writeString(groupList);
+        out.writeString(commentCount);
+        out.writeString(userName);
+        out.writeString(userAvatar);
+        out.writeString(status);
     }
 
     @Override
     public CustomMarkerView getMarker() {
-        return new CustomMarkerView(this, imageUrl, reportId);
-    }
-
-    public CustomMarkerViewOptions imageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-        return getThis();
+        return new CustomMarkerView(this, reportId, reportDescription, thumbNail, fullImage, creationDate, watershedName, groupList, commentCount, userName, userAvatar, status);
     }
 
     public CustomMarkerViewOptions reportId(int reportId) {
         this.reportId = reportId;
+        return getThis();
+    }
+
+    public CustomMarkerViewOptions reportDescription(String reportDescription) {
+        this.reportDescription = reportDescription;
+        return getThis();
+    }
+
+    public CustomMarkerViewOptions thumbNail(String thumbNail) {
+        this.thumbNail = thumbNail;
+        return getThis();
+    }
+
+    public CustomMarkerViewOptions fullImage(String fullImage) {
+        this.fullImage = fullImage;
+        return getThis();
+    }
+
+    public CustomMarkerViewOptions creationDate(String creationDate) {
+        this.creationDate = creationDate;
+        return getThis();
+    }
+
+    public CustomMarkerViewOptions watershedName(String watershedName) {
+        this.watershedName = watershedName;
+        return getThis();
+    }
+
+    public CustomMarkerViewOptions groupList(String groupList) {
+        this.groupList = groupList;
+        return getThis();
+    }
+
+    public CustomMarkerViewOptions commentCount(String commentCount) {
+        this.commentCount = commentCount;
+        return getThis();
+    }
+
+    public CustomMarkerViewOptions userName(String userName) {
+        this.userName = userName;
+        return getThis();
+    }
+
+    public CustomMarkerViewOptions userAvatar(String userAvatar) {
+        this.userAvatar = userAvatar;
+        return getThis();
+    }
+
+    public CustomMarkerViewOptions status(String status) {
+        this.status = status;
         return getThis();
     }
 

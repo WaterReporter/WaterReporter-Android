@@ -22,6 +22,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class TimelineAdapter extends ArrayAdapter {
 
@@ -105,45 +106,13 @@ public class TimelineAdapter extends ArrayAdapter {
         featureId = (Integer) feature.id;
 
         // Extract watershed name, if any
-
-        try {
-
-            watershedName = String.format("%s Watershed", feature.properties.territory.properties.huc_6_name);
-
-        } catch (NullPointerException ne) {
-
-            watershedName = "Watershed not available";
-
-        }
+        watershedName = AttributeTransformUtility.parseWatershedName(feature.properties.territory);
 
         // Extract group names, if any
+        groupList = AttributeTransformUtility.groupListSize(feature.properties.groups);
 
-        if (!feature.properties.groups.isEmpty()) {
-
-            groupList = feature.properties.groups.get(0).properties.name;
-
-        } else {
-
-            groupList = "This report is not affiliated with any groups.";
-
-        }
-
-        try {
-            //create SimpleDateFormat object with source string date format
-            SimpleDateFormat sdfSource = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-
-            //parse the string into Date object
-            Date date = sdfSource.parse(creationDate);
-
-            //create SimpleDateFormat object with desired date format
-            SimpleDateFormat sdfOutput = new SimpleDateFormat("MMM dd, yyyy");
-
-            //parse the date into another format
-            creationDate = sdfOutput.format(date);
-
-        } catch (ParseException pe) {
-            System.out.println("Parse Exception : " + pe);
-        }
+        // Parse creation date
+        creationDate = AttributeTransformUtility.parseDate(new SimpleDateFormat("MMM dd, yyyy", Locale.US), creationDate);
 
         // Attach click listeners to active UI components
 
@@ -161,7 +130,16 @@ public class TimelineAdapter extends ArrayAdapter {
                 intent.putExtra("REPORT_LONGITUDE", geometry.coordinates.get(0));
 
                 intent.putExtra("REPORT_ID", feature.id);
-                intent.putExtra("IMAGE_URL", feature.properties.images.get(0).properties.icon_retina);
+                intent.putExtra("THUMBNAIL_URL", feature.properties.images.get(0).properties.icon_retina);
+                intent.putExtra("FULL_IMAGE_URL", feature.properties.images.get(0).properties.square_retina);
+                intent.putExtra("REPORT_CREATED", creationDate);
+                intent.putExtra("REPORT_DESCRIPTION", feature.properties.report_description.trim());
+                intent.putExtra("REPORT_WATERSHED", watershedName);
+                intent.putExtra("REPORT_GROUPS", groupList);
+                intent.putExtra("COMMENT_COUNT", commentCount);
+                intent.putExtra("USER_NAME", String.format("%s %s", feature.properties.owner.properties.first_name, feature.properties.owner.properties.last_name));
+                intent.putExtra("USER_AVATAR", feature.properties.owner.properties.picture);
+                intent.putExtra("STATUS", feature.properties.state);
 
                 context.startActivity(intent);
 
@@ -187,19 +165,9 @@ public class TimelineAdapter extends ArrayAdapter {
         }
 
         // Set value of comment count string
-        if (feature.properties.comments.size() != 1) {
-
-            commentCount = String.format("%s comments", feature.properties.comments.size());
-
-        } else {
-
-            commentCount = "1 comment";
-
-        }
+        commentCount = AttributeTransformUtility.countComments(feature.properties.comments);
 
         viewHolder.reportComments.setText(commentCount);
-
-//        viewHolder.reportStub.setTag(featureId);
 
         Log.v("url", imagePath);
 
