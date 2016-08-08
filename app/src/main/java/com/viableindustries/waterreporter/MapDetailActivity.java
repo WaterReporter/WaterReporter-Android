@@ -149,6 +149,18 @@ public class MapDetailActivity extends AppCompatActivity {
 //                mapboxMap.addMarker(new MarkerOptions()
 //                        .position(new LatLng(latitude, longitude)));
 
+                // Create an Icon object for the marker to use
+                IconFactory iconFactory = IconFactory.getInstance(MapDetailActivity.this);
+                Drawable iconDrawable = ContextCompat.getDrawable(MapDetailActivity.this, R.drawable.anchor_marker);
+                Icon icon = iconFactory.fromDrawable(iconDrawable);
+
+                // Add the custom icon marker to the map
+                //mapboxMap.addMarker(new MarkerOptions()
+                        //.position(new LatLng(latitude, longitude))
+                        //.title("Cape Town Harbour")
+                        //.snippet("One of the busiest ports in South Africa")
+                        //.icon(icon));
+
                 // add custom ViewMarker
                 CustomMarkerViewOptions options = new CustomMarkerViewOptions();
                 options.position(new LatLng(latitude, longitude));
@@ -279,9 +291,21 @@ public class MapDetailActivity extends AppCompatActivity {
                 viewHolder = new ViewHolder();
                 convertView = inflater.inflate(R.layout.view_custom_marker, parent, false);
                 viewHolder.image = (ImageView) convertView.findViewById(R.id.imageView);
+                viewHolder.actionBadge = (ImageView) convertView.findViewById(R.id.actionBadge);
                 convertView.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
+            }
+
+            // Display badge if report is closed
+            if (marker.getStatus().equals("closed")) {
+
+                viewHolder.actionBadge.setVisibility(View.VISIBLE);
+
+            } else {
+
+                viewHolder.actionBadge.setVisibility(View.GONE);
+
             }
 
             Picasso.with(getContext()).load(marker.getThumbNail()).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(viewHolder.image);
@@ -291,6 +315,10 @@ public class MapDetailActivity extends AppCompatActivity {
 
         @Override
         public boolean onSelect(@NonNull final CustomMarkerView marker, @NonNull final View convertView, boolean reselectionForViewReuse) {
+
+            ImageView image = (ImageView) convertView.findViewById(R.id.imageView);
+
+            image.setBackgroundResource(R.drawable.active_marker_border);
 
             Log.d("anchor", String.format("anchorU %s", marker.getAnchorU()));
             Log.d("anchor", String.format("anchorV %s", marker.getAnchorV()));
@@ -338,20 +366,26 @@ public class MapDetailActivity extends AppCompatActivity {
 
         @Override
         public void onDeselect(@NonNull CustomMarkerView marker, @NonNull final View convertView) {
-            convertView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            ObjectAnimator rotateAnimator = ObjectAnimator.ofFloat(convertView, View.ROTATION, 360, 0);
-            rotateAnimator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                    convertView.setLayerType(View.LAYER_TYPE_NONE, null);
-                }
-            });
+
+            ImageView image = (ImageView) convertView.findViewById(R.id.imageView);
+
+            image.setBackgroundResource(R.drawable.marker_icon_border);
+
+            //convertView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            //ObjectAnimator rotateAnimator = ObjectAnimator.ofFloat(convertView, View.ROTATION, 360, 0);
+            //rotateAnimator.addListener(new AnimatorListenerAdapter() {
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//                    super.onAnimationEnd(animation);
+//                    convertView.setLayerType(View.LAYER_TYPE_NONE, null);
+//                }
+//            });
             //rotateAnimator.start();
         }
 
         private static class ViewHolder {
             ImageView image;
+            ImageView actionBadge;
         }
     }
 

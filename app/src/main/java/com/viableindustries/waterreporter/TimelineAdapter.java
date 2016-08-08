@@ -2,6 +2,7 @@ package com.viableindustries.waterreporter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -120,6 +121,8 @@ public class TimelineAdapter extends ArrayAdapter {
             @Override
             public void onClick(View v) {
 
+//                final int position = getPositionForView(v);
+
                 Intent intent = new Intent(context, MapDetailActivity.class);
 
                 Geometry geometry = feature.geometry.geometries.get(0);
@@ -131,6 +134,7 @@ public class TimelineAdapter extends ArrayAdapter {
 
                 intent.putExtra("REPORT_ID", feature.id);
                 intent.putExtra("THUMBNAIL_URL", feature.properties.images.get(0).properties.icon_retina);
+                //intent.putExtra("THUMBNAIL_URL", ContextCompat.getDrawable(getContext(), R.drawable.anchor_marker));
                 intent.putExtra("FULL_IMAGE_URL", feature.properties.images.get(0).properties.square_retina);
                 intent.putExtra("REPORT_CREATED", creationDate);
                 intent.putExtra("REPORT_DESCRIPTION", feature.properties.report_description.trim());
