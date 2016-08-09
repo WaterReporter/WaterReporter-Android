@@ -155,11 +155,11 @@ public class MapDetailActivity extends AppCompatActivity {
                 Icon icon = iconFactory.fromDrawable(iconDrawable);
 
                 // Add the custom icon marker to the map
-                //mapboxMap.addMarker(new MarkerOptions()
-                        //.position(new LatLng(latitude, longitude))
-                        //.title("Cape Town Harbour")
-                        //.snippet("One of the busiest ports in South Africa")
-                        //.icon(icon));
+//                mapboxMap.addMarker(new MarkerOptions()
+//                        .position(new LatLng(latitude, longitude))
+//                        .title("Cape Town Harbour")
+//                        .snippet("One of the busiest ports in South Africa")
+//                        .icon(icon));
 
                 // add custom ViewMarker
                 CustomMarkerViewOptions options = new CustomMarkerViewOptions();
@@ -176,8 +176,14 @@ public class MapDetailActivity extends AppCompatActivity {
                 options.userName(userName);
                 options.userAvatar(userAvatar);
                 options.status(status);
-                options.anchor(0.5f, 0.5f);
+                options.inFocus(1);
+                //options.anchor(0.5f, 0.5f);
                 mapboxMap.addMarker(options);
+
+                trackId(reportId);
+
+//                mapboxMap.addMarker(new MarkerOptions()
+//                        .position(new LatLng(latitude, longitude)));
 
                 // if you want to customise a ViewMarker you need to extend ViewMarker and provide an adapter implementation
                 // set adapters for child classes of ViewMarker
@@ -292,6 +298,7 @@ public class MapDetailActivity extends AppCompatActivity {
                 convertView = inflater.inflate(R.layout.view_custom_marker, parent, false);
                 viewHolder.image = (ImageView) convertView.findViewById(R.id.imageView);
                 viewHolder.actionBadge = (ImageView) convertView.findViewById(R.id.actionBadge);
+                viewHolder.markerPin = (ImageView) convertView.findViewById(R.id.markerPin);
                 convertView.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
@@ -308,6 +315,29 @@ public class MapDetailActivity extends AppCompatActivity {
 
             }
 
+            // Display active marker pin if report is "source"
+            if (marker.isInFocus() == 1) {
+
+                //viewHolder.actionBadge.setVisibility(View.VISIBLE);
+                //viewHolder.markerPin.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.active_marker_pin));
+
+                //viewHolder.markerPin.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.active_marker_pin));
+
+                viewHolder.markerPin.setBackgroundResource(R.drawable.active_marker_pin);
+
+                viewHolder.image.setBackgroundResource(R.drawable.active_marker_border);
+
+            } else {
+
+                //viewHolder.actionBadge.setVisibility(View.GONE);
+                //viewHolder.markerPin.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.default_marker_pin));
+
+                viewHolder.markerPin.setBackgroundResource(R.drawable.default_marker_pin);
+
+                viewHolder.image.setBackgroundResource(R.drawable.marker_icon_border);
+
+            }
+
             Picasso.with(getContext()).load(marker.getThumbNail()).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(viewHolder.image);
 
             return convertView;
@@ -316,9 +346,9 @@ public class MapDetailActivity extends AppCompatActivity {
         @Override
         public boolean onSelect(@NonNull final CustomMarkerView marker, @NonNull final View convertView, boolean reselectionForViewReuse) {
 
-            ImageView image = (ImageView) convertView.findViewById(R.id.imageView);
+            //ImageView image = (ImageView) convertView.findViewById(R.id.imageView);
 
-            image.setBackgroundResource(R.drawable.active_marker_border);
+            //image.setBackgroundResource(R.drawable.active_marker_border);
 
             Log.d("anchor", String.format("anchorU %s", marker.getAnchorU()));
             Log.d("anchor", String.format("anchorV %s", marker.getAnchorV()));
@@ -347,6 +377,8 @@ public class MapDetailActivity extends AppCompatActivity {
             markerAttrs.putString("userName", marker.getUserName());
             markerAttrs.putString("userAvatar", marker.getUserAvatar());
             markerAttrs.putString("status", marker.getStatus());
+            markerAttrs.putDouble("latitude", marker.getPosition().getLatitude());
+            markerAttrs.putDouble("longitude", marker.getPosition().getLongitude());
 
             markerDetailFragment.setArguments(markerAttrs);
 
@@ -367,9 +399,9 @@ public class MapDetailActivity extends AppCompatActivity {
         @Override
         public void onDeselect(@NonNull CustomMarkerView marker, @NonNull final View convertView) {
 
-            ImageView image = (ImageView) convertView.findViewById(R.id.imageView);
+            //ImageView image = (ImageView) convertView.findViewById(R.id.imageView);
 
-            image.setBackgroundResource(R.drawable.marker_icon_border);
+            //image.setBackgroundResource(R.drawable.marker_icon_border);
 
             //convertView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             //ObjectAnimator rotateAnimator = ObjectAnimator.ofFloat(convertView, View.ROTATION, 360, 0);
@@ -386,10 +418,11 @@ public class MapDetailActivity extends AppCompatActivity {
         private static class ViewHolder {
             ImageView image;
             ImageView actionBadge;
+            ImageView markerPin;
         }
     }
 
-    private void trackId(Report report) {
+    private void trackId(int reportId) {
 
         mappedReports = sharedPreferences.getString("mappedReports", "");
 
@@ -409,7 +442,7 @@ public class MapDetailActivity extends AppCompatActivity {
 
         }
 
-        ids.add(report.id);
+        ids.add(reportId);
 
         sharedPreferences.edit().putString("mappedReports", ids.toString()).apply();
 
@@ -435,11 +468,12 @@ public class MapDetailActivity extends AppCompatActivity {
             options.userName(String.format("%s %s", report.properties.owner.properties.first_name, report.properties.owner.properties.last_name));
             options.userAvatar(report.properties.owner.properties.picture);
             options.status(report.properties.state);
-            options.anchor(0.5f, 0.5f);
+            options.inFocus(0);
+            //options.anchor(0.5f, 0.5f);
             mMapboxMap.addMarker(options);
 
             // Store report id for exclusion from future queries
-            trackId(report);
+            trackId(report.id);
 
         }
 

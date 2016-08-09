@@ -2,6 +2,9 @@ package com.viableindustries.waterreporter;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.Geometry;
 
 import java.util.List;
 
@@ -23,6 +27,21 @@ import butterknife.Bind;
  */
 
 public class MarkerDetailFragment extends Fragment {
+
+//    protected static class ViewHolder {
+//        TextView reportDate;
+//        TextView reportOwner;
+//        TextView reportWatershed;
+//        TextView reportComments;
+//        TextView reportCaption;
+//        TextView reportGroups;
+//        ImageView ownerAvatar;
+//        ImageView reportThumb;
+//        RelativeLayout actionBadge;
+//        LinearLayout reportStub;
+//        RelativeLayout locationIcon;
+//        RelativeLayout directionsIcon;
+//    }
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
@@ -48,6 +67,8 @@ public class MarkerDetailFragment extends Fragment {
         String userName = getArguments().getString("userName", "");
         String userAvatar = getArguments().getString("userAvatar", "");
         String status = getArguments().getString("status", "OPEN");
+        final double latitude = getArguments().getDouble("latitude", 0);
+        final double longitude = getArguments().getDouble("longitude", 0);
 
         // Setup any handles to view objects here
         TextView reportDate = (TextView) view.findViewById(R.id.report_date);
@@ -60,7 +81,17 @@ public class MarkerDetailFragment extends Fragment {
         ImageView reportThumb = (ImageView) view.findViewById(R.id.report_thumb);
         RelativeLayout actionBadge = (RelativeLayout) view.findViewById(R.id.action_badge);
         LinearLayout reportStub = (LinearLayout) view.findViewById(R.id.report_stub);
-        RelativeLayout locationIcon = (RelativeLayout) view.findViewById(R.id.location_icon);
+        final RelativeLayout locationIcon = (RelativeLayout) view.findViewById(R.id.location_icon);
+        RelativeLayout directionsIcon = (RelativeLayout) view.findViewById(R.id.directions_icon);
+
+        directionsIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                getDirections(v, latitude, longitude);
+
+            }
+        });
 
         reportDate.setText("");
         reportOwner.setText("");
@@ -93,6 +124,32 @@ public class MarkerDetailFragment extends Fragment {
 
             actionBadge.setVisibility(View.GONE);
 
+        }
+
+    }
+
+    private void getDirections(View view, double latitude, double longitude) {
+
+        // Build the intent
+        //Uri location = Uri.parse("geo:0,0?q=1600+Amphitheatre+Parkway,+Mountain+View,+California");
+
+        //Uri location = Uri.parse(String.format("geo:%s,%s?z=14", latitude, longitude)); // z param is zoom level
+
+        //Uri location = Uri.parse(String.format("google.navigation:q=%s,%s", 42.677778, -71.820833));
+        Uri location = Uri.parse(String.format("google.navigation:q=%s,%s", latitude, longitude));
+
+        //Uri location = Uri.parse("http://maps.google.com/maps?saddr=20.344,34.34&daddr=20.5666,45.345"));
+
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, location);
+
+        // Verify it resolves
+        PackageManager packageManager = getActivity().getPackageManager();
+        List<ResolveInfo> activities = packageManager.queryIntentActivities(mapIntent, 0);
+        boolean isIntentSafe = activities.size() > 0;
+
+        // Start an activity if it's safe
+        if (isIntentSafe) {
+            startActivity(mapIntent);
         }
 
     }

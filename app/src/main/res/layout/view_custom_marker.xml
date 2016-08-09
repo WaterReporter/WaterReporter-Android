@@ -3,11 +3,23 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:background="@drawable/marker_icon_border" />
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/markerPin"
+            android:layout_width="64dp"
+            android:layout_height="96dp"
+            android:background="@drawable/active_marker_pin" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@drawable/active_marker_border" />
+
+    </FrameLayout>
 
     <ImageView
         android:id="@+id/actionBadge"
