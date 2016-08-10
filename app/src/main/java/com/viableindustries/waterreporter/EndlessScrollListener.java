@@ -1,9 +1,14 @@
 package com.viableindustries.waterreporter;
 
+import android.content.SharedPreferences;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.AbsListView;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public abstract class EndlessScrollListener implements AbsListView.OnScrollListener {
+
     // The minimum number of items to have below your current scroll position
     // before loading more.
     private int visibleThreshold = 5;
@@ -34,6 +39,7 @@ public abstract class EndlessScrollListener implements AbsListView.OnScrollListe
     // but first we check if we are waiting for the previous load to finish.
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
         // If the total item count is zero and the previous isn't, assume the
         // list is invalidated and should be reset back to initial state
         if (totalItemCount < previousTotalItemCount) {

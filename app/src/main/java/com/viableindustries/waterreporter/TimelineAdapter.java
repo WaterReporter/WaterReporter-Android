@@ -1,7 +1,10 @@
 package com.viableindustries.waterreporter;
 
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -121,7 +124,43 @@ public class TimelineAdapter extends ArrayAdapter {
             @Override
             public void onClick(View v) {
 
-//                final int position = getPositionForView(v);
+                // Build new MarkerDetailFragment
+//                LocationDetailFragment locationDetailFragment = new LocationDetailFragment();
+//
+//                Bundle reportAttrs = new Bundle();
+//
+//                Geometry geometry = feature.geometry.geometries.get(0);
+//
+//                Log.d("geometry", geometry.toString());
+//
+//                reportAttrs.putInt("REPORT_ID", feature.id);
+//                reportAttrs.putString("REPORT_DESCRIPTION", feature.properties.report_description.trim());
+//                reportAttrs.putString("THUMBNAIL_URL", feature.properties.images.get(0).properties.icon_retina);
+//                reportAttrs.putString("FULL_IMAGE_URL", feature.properties.images.get(0).properties.square_retina);
+//                reportAttrs.putString("REPORT_CREATED", creationDate);
+//                reportAttrs.putString("REPORT_WATERSHED", watershedName);
+//                reportAttrs.putString("REPORT_GROUPS", groupList);
+//                reportAttrs.putString("COMMENT_COUNT", commentCount);
+//                reportAttrs.putString("USER_NAME", String.format("%s %s", feature.properties.owner.properties.first_name, feature.properties.owner.properties.last_name));
+//                reportAttrs.putString("USER_AVATAR", feature.properties.owner.properties.picture);
+//                reportAttrs.putString("STATUS", feature.properties.state);
+//                reportAttrs.putDouble("REPORT_LONGITUDE", geometry.coordinates.get(0));
+//                reportAttrs.putDouble("REPORT_LATITUDE", geometry.coordinates.get(1));
+//
+//                Log.d("reportAttrs", reportAttrs.toString());
+//
+//                locationDetailFragment.setArguments(reportAttrs);
+//
+//                FragmentTransaction fragmentTransaction = ((FragmentActivity) getContext()).getFragmentManager().beginTransaction();
+//
+////                FragmentTransaction fragmentTransaction1 = ((FragmentActivity) getContext()).getSupportFragmentManager().beginTransaction();
+//
+//                //FragmentTransaction fragmentTransaction1 = ((FragmentActivity) getContext()).getFragmentManager().beginTransaction();
+//
+//                fragmentTransaction.add(R.id.timelineContainer, locationDetailFragment, "com.mapbox.map");
+//                fragmentTransaction.addToBackStack(null);
+//
+//                fragmentTransaction.commit();
 
                 Intent intent = new Intent(context, MapDetailActivity.class);
 

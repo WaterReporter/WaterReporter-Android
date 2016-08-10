@@ -122,7 +122,7 @@ public class MapDetailActivity extends AppCompatActivity {
         groupList = getIntent().getExtras().getString("REPORT_GROUPS", "");
         commentCount = getIntent().getExtras().getString("COMMENT_COUNT", "");
         userName = getIntent().getExtras().getString("USER_NAME", "");
-        userAvatar = getIntent().getExtras().getString("USER_AVATAR", "");
+        userAvatar = getIntent().getExtras().getString("USER_AVATAR", null);
         status = getIntent().getExtras().getString("STATUS", "");
 
         // Retrieve location data from intent

@@ -65,10 +65,17 @@ public class MarkerDetailFragment extends Fragment {
         String commentCount = getArguments().getString("commentCount", "");
         int reportId = getArguments().getInt("reportId", 0);
         String userName = getArguments().getString("userName", "");
-        String userAvatar = getArguments().getString("userAvatar", "");
+        String userAvatar = getArguments().getString("userAvatar", null);
         String status = getArguments().getString("status", "OPEN");
         final double latitude = getArguments().getDouble("latitude", 0);
         final double longitude = getArguments().getDouble("longitude", 0);
+
+        Log.d("reportDescription", reportDescription);
+        Log.d("fullImage", fullImage);
+        Log.d("creationDate", creationDate);
+        Log.d("watershedName", watershedName);
+        Log.d("groupList", groupList);
+        Log.d("commentCount", commentCount);
 
         // Setup any handles to view objects here
         TextView reportDate = (TextView) view.findViewById(R.id.report_date);
@@ -93,11 +100,11 @@ public class MarkerDetailFragment extends Fragment {
             }
         });
 
-        reportDate.setText("");
-        reportOwner.setText("");
-        reportWatershed.setText("");
-        reportCaption.setText("");
-        reportGroups.setText("");
+//        reportDate.setText("");
+//        reportOwner.setText("");
+//        reportWatershed.setText("");
+//        reportCaption.setText("");
+//        reportGroups.setText("");
 
         reportComments.setText(commentCount);
 
@@ -110,6 +117,16 @@ public class MarkerDetailFragment extends Fragment {
         reportComments.setText(commentCount);
 
         Log.v("url", fullImage);
+
+        try {
+
+            Log.v("avatar", userAvatar);
+
+        } catch (NullPointerException ne) {
+
+            Log.v("avatar", "NULL");
+
+        }
 
         Picasso.with(getActivity()).load(userAvatar).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(ownerAvatar);
 

@@ -96,7 +96,11 @@ public class MainActivity extends AppCompatActivity {
 
             } else {
 
-                requestData(10, 1, false, false);
+                if(reportCollection.isEmpty()) {
+
+                    requestData(10, 1, false, false);
+
+                }
 
                 fetchUserGroups();
 
@@ -116,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    protected void requestData(int limit, int page, final boolean transition, final boolean refresh) {
+    private void requestData(int limit, int page, final boolean transition, final boolean refresh) {
 
         SharedPreferences prefs =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
@@ -313,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    protected void attachScrollListener() {
+    private void attachScrollListener() {
 
         listView.setOnScrollListener(new EndlessScrollListener() {
             @Override
