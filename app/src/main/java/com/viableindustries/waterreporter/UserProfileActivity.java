@@ -1,9 +1,15 @@
 package com.viableindustries.waterreporter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Activity;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ImageView;
@@ -40,6 +46,15 @@ public class UserProfileActivity extends AppCompatActivity {
 
     @Bind(R.id.userAvatar)
     ImageView userAvatar;
+
+    // Number of pages in our ViewPager
+    private Integer NUM_PAGES = 3;
+
+    // The pager widget, which handles animation and allows swiping horizontally
+    private ViewPager mPager;
+
+    // The pager adapter, which provides the pages to the view pager widget
+    private PagerAdapter mPagerAdapter;
 
     private String userDescriptionText;
 
@@ -80,6 +95,17 @@ public class UserProfileActivity extends AppCompatActivity {
         //requestData(userId);
 
         fetchUserGroups(userId);
+
+        // Instantiate a ViewPager and a PagerAdapter.
+        //mPager = (ViewPager) findViewById(R.id.attachment_pager);
+        //mPager.setLayoutParams(vp);
+        //mPagerAdapter = new AttachmentPagerAdapter(context, getSupportFragmentManager());
+        //mPager.setAdapter(mPagerAdapter);
+        //mPager.setPageTransformer(true, new DepthPageTransformer());
+
+        // Add tabs to ViewPager
+        //SlidingTabLayout mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.attachment_tabs);
+        //mSlidingTabLayout.setViewPager(mPager);
 
     }
 
@@ -177,6 +203,47 @@ public class UserProfileActivity extends AppCompatActivity {
             }
 
         });
+
+    }
+
+    // A simple pager adapter that represents 4 PhotoFragment objects in sequence.
+    private class AttachmentPagerAdapter extends FragmentPagerAdapter {
+
+        Context ctxt = null;
+
+        public AttachmentPagerAdapter(Context ctxt, FragmentManager fm) {
+            super(fm);
+            this.ctxt = ctxt;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+
+            switch (position) {
+                case 0: // Downstream photo
+                    //return PhotoFragment.newInstance(0, getResources().getString(R.string.downstream_prompt), photoPreviewKey);
+                case 1: // Upstream photo
+                    //return PhotoFragment.newInstance(1, getResources().getString(R.string.upstream_prompt), photoPreviewKey);
+                case 2: // First extra photo
+                    //return PhotoFragment.newInstance(2, getResources().getString(R.string.extra_prompt), photoPreviewKey);
+                //case 3: // Second extra photo
+                    //return PhotoFragment.newInstance(3, getResources().getString(R.string.extra_prompt), photoPreviewKey);
+                default:
+                    return null;
+            }
+
+        }
+
+        @Override
+        public int getCount() {
+            return NUM_PAGES;
+        }
+
+        @Override
+        public String getPageTitle(int position) {
+            //return (PhotoAttachment.getTitle(ctxt, position).toUpperCase());
+            return "TEST";
+        }
 
     }
 

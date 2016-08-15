@@ -1,12 +1,15 @@
 package com.viableindustries.waterreporter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 public class NavigationFragment extends Fragment {
@@ -31,7 +34,23 @@ public class NavigationFragment extends Fragment {
         feedTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), MainActivity.class));
+
+                Context context = getContext();
+
+                Log.d("context", context.toString());
+
+                if (context.toString().contains("MainActivity")) {
+
+                    ListView listView = (ListView) getActivity().findViewById(R.id.timeline_items);
+
+                    listView.smoothScrollToPosition(0);
+
+                } else {
+
+                    startActivity(new Intent(getActivity(), MainActivity.class));
+
+                }
+
             }
         });
 
