@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_user_profile"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.viableindustries.waterreporter.UserProfileActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#FFFFFF">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="88dp"
+            android:layout_height="24dp"
+            android:layout_centerInParent="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/logo_horizontal_lockup" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray_224" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="0dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="0dp"
+        android:paddingTop="16dp">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/userAvatar"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:scaleType="fitXY" />
+
+        </RelativeLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="4"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/userName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="0dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="0dp"
+                android:paddingTop="0dp"
+                android:text="A name goes here"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/userTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="2dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="0dp"
+                android:paddingTop="2dp"
+                android:text="Upper Potomac Watershed"
+                android:textColor="@color/gray_186"
+                android:textSize="@dimen/small_text" />
+
+            <TextView
+                android:id="@+id/userDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:paddingBottom="0dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="2dp"
+                android:text="A description goes here"
+                android:textColor="@color/material_blue_grey950"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

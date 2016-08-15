@@ -120,5 +120,6 @@
     <!-- Shared preference key for groups to which a user belongs -->
     <string name="group_membership_key">com.viableindustries.waterreporter.GROUP_MEMBERSHIP</string>
     <string name="title_activity_map_detail">MapDetailActivity</string>
+    <string name="title_activity_user_profile">UserProfileActivity</string>
 
 </resources>

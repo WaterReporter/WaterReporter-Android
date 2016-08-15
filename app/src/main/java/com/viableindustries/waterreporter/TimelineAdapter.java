@@ -189,6 +189,24 @@ public class TimelineAdapter extends ArrayAdapter {
             }
         });
 
+        viewHolder.ownerAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(context, UserProfileActivity.class);
+
+                intent.putExtra("USER_ID", feature.properties.owner_id);
+                intent.putExtra("USER_TITLE", feature.properties.owner.properties.title);
+                intent.putExtra("USER_DESCRIPTION", feature.properties.owner.properties.description);
+                intent.putExtra("USER_NAME", String.format("%s %s", feature.properties.owner.properties.first_name, feature.properties.owner.properties.last_name));
+                intent.putExtra("USER_ORGANIZATION", feature.properties.owner.properties.organization_name);
+                intent.putExtra("USER_AVATAR", feature.properties.owner.properties.picture);
+
+                context.startActivity(intent);
+
+            }
+        });
+
         // Populate the data into the template view using the data object
         viewHolder.reportDate.setText(creationDate);
         viewHolder.reportOwner.setText(String.format("%s %s", feature.properties.owner.properties.first_name, feature.properties.owner.properties.last_name));

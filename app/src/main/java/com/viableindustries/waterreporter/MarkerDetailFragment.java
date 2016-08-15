@@ -28,21 +28,6 @@ import butterknife.Bind;
 
 public class MarkerDetailFragment extends Fragment {
 
-//    protected static class ViewHolder {
-//        TextView reportDate;
-//        TextView reportOwner;
-//        TextView reportWatershed;
-//        TextView reportComments;
-//        TextView reportCaption;
-//        TextView reportGroups;
-//        ImageView ownerAvatar;
-//        ImageView reportThumb;
-//        RelativeLayout actionBadge;
-//        LinearLayout reportStub;
-//        RelativeLayout locationIcon;
-//        RelativeLayout directionsIcon;
-//    }
-
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
     @Override
@@ -99,12 +84,6 @@ public class MarkerDetailFragment extends Fragment {
 
             }
         });
-
-//        reportDate.setText("");
-//        reportOwner.setText("");
-//        reportWatershed.setText("");
-//        reportCaption.setText("");
-//        reportGroups.setText("");
 
         reportComments.setText(commentCount);
 
