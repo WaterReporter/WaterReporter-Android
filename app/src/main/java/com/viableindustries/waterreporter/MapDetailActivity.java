@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -150,9 +151,9 @@ public class MapDetailActivity extends AppCompatActivity {
 //                        .position(new LatLng(latitude, longitude)));
 
                 // Create an Icon object for the marker to use
-                IconFactory iconFactory = IconFactory.getInstance(MapDetailActivity.this);
-                Drawable iconDrawable = ContextCompat.getDrawable(MapDetailActivity.this, R.drawable.anchor_marker);
-                Icon icon = iconFactory.fromDrawable(iconDrawable);
+                //IconFactory iconFactory = IconFactory.getInstance(MapDetailActivity.this);
+                //Drawable iconDrawable = ContextCompat.getDrawable(MapDetailActivity.this, R.drawable.anchor_marker);
+                //Icon icon = iconFactory.fromDrawable(iconDrawable);
 
                 // Add the custom icon marker to the map
 //                mapboxMap.addMarker(new MarkerOptions()
@@ -162,23 +163,23 @@ public class MapDetailActivity extends AppCompatActivity {
 //                        .icon(icon));
 
                 // add custom ViewMarker
-                CustomMarkerViewOptions options = new CustomMarkerViewOptions();
-                options.position(new LatLng(latitude, longitude));
-                options.flat(true);
-                options.reportId(reportId);
-                options.reportDescription(reportDescription);
-                options.thumbNail(thumbNail);
-                options.fullImage(fullImage);
-                options.creationDate(creationDate);
-                options.watershedName(watershedName);
-                options.groupList(groupList);
-                options.commentCount(commentCount);
-                options.userName(userName);
-                options.userAvatar(userAvatar);
-                options.status(status);
-                options.inFocus(1);
-                //options.anchor(0.5f, 0.5f);
-                mapboxMap.addMarker(options);
+//                CustomMarkerViewOptions options = new CustomMarkerViewOptions();
+//                options.position(new LatLng(latitude, longitude));
+//                options.flat(true);
+//                options.reportId(reportId);
+//                options.reportDescription(reportDescription);
+//                options.thumbNail(thumbNail);
+//                options.fullImage(fullImage);
+//                options.creationDate(creationDate);
+//                options.watershedName(watershedName);
+//                options.groupList(groupList);
+//                options.commentCount(commentCount);
+//                options.userName(userName);
+//                options.userAvatar(userAvatar);
+//                options.status(status);
+//                options.inFocus(1);
+//                //options.anchor(0.5f, 0.5f);
+//                mapboxMap.addMarker(options);
 
                 trackId(reportId);
 
@@ -295,10 +296,22 @@ public class MapDetailActivity extends AppCompatActivity {
             ViewHolder viewHolder;
             if (convertView == null) {
                 viewHolder = new ViewHolder();
-                convertView = inflater.inflate(R.layout.view_custom_marker, parent, false);
+
+                if (marker.isInFocus() == 1) {
+
+                    convertView = inflater.inflate(R.layout.view_origin_marker, parent, false);
+
+                } else {
+
+                    convertView = inflater.inflate(R.layout.view_custom_marker, parent, false);
+
+                }
+
+                //convertView = inflater.inflate(R.layout.view_custom_marker, parent, false);
+                viewHolder.markerContainer = (RelativeLayout) convertView.findViewById(R.id.customMarker);
                 viewHolder.image = (ImageView) convertView.findViewById(R.id.imageView);
                 viewHolder.actionBadge = (ImageView) convertView.findViewById(R.id.actionBadge);
-                viewHolder.markerPin = (ImageView) convertView.findViewById(R.id.markerPin);
+                //viewHolder.markerPin = (ImageView) convertView.findViewById(R.id.markerPin);
                 convertView.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
@@ -315,28 +328,22 @@ public class MapDetailActivity extends AppCompatActivity {
 
             }
 
+            int markerDimension;
+
             // Display active marker pin if report is "source"
             if (marker.isInFocus() == 1) {
 
-                //viewHolder.actionBadge.setVisibility(View.VISIBLE);
-                //viewHolder.markerPin.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.active_marker_pin));
-
-                //viewHolder.markerPin.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.active_marker_pin));
-
-                viewHolder.markerPin.setBackgroundResource(R.drawable.active_marker_pin);
-
-                viewHolder.image.setBackgroundResource(R.drawable.active_marker_border);
+                markerDimension = getContext().getResources().getDimensionPixelSize(R.dimen.origin_marker_size);
 
             } else {
 
-                //viewHolder.actionBadge.setVisibility(View.GONE);
-                //viewHolder.markerPin.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.default_marker_pin));
-
-                viewHolder.markerPin.setBackgroundResource(R.drawable.default_marker_pin);
-
-                viewHolder.image.setBackgroundResource(R.drawable.marker_icon_border);
+                markerDimension = getContext().getResources().getDimensionPixelSize(R.dimen.default_marker_size);
 
             }
+
+            //RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(markerDimension, markerDimension);
+
+            //viewHolder.markerContainer.setLayoutParams(layoutParams);
 
             Picasso.with(getContext()).load(marker.getThumbNail()).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(viewHolder.image);
 
@@ -416,9 +423,10 @@ public class MapDetailActivity extends AppCompatActivity {
         }
 
         private static class ViewHolder {
+            RelativeLayout markerContainer;
             ImageView image;
             ImageView actionBadge;
-            ImageView markerPin;
+            //ImageView markerPin;
         }
     }
 
@@ -476,6 +484,25 @@ public class MapDetailActivity extends AppCompatActivity {
             trackId(report.id);
 
         }
+
+        // Add origin marker last to ensure that it overlays any others
+        CustomMarkerViewOptions options = new CustomMarkerViewOptions();
+        options.position(new LatLng(latitude, longitude));
+        options.flat(true);
+        options.reportId(reportId);
+        options.reportDescription(reportDescription);
+        options.thumbNail(thumbNail);
+        options.fullImage(fullImage);
+        options.creationDate(creationDate);
+        options.watershedName(watershedName);
+        options.groupList(groupList);
+        options.commentCount(commentCount);
+        options.userName(userName);
+        options.userAvatar(userAvatar);
+        options.status(status);
+        options.inFocus(1);
+        //options.anchor(0.5f, 0.5f);
+        mMapboxMap.addMarker(options);
 
     }
 

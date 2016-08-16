@@ -10,7 +10,8 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/gray_224" />
+        android:layout_marginTop="-1dp"
+        android:background="@color/gray_232" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -131,6 +132,24 @@
                 android:layout_gravity="center_vertical"
                 android:scaleType="fitXY"
                 android:src="@drawable/report_location_icon" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/directions_icon"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center_vertical"
+                android:alpha="0.5"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_directions_black_24dp" />
 
         </RelativeLayout>
 

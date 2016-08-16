@@ -3,6 +3,9 @@ package com.viableindustries.waterreporter;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
@@ -63,6 +66,7 @@ public class TimelineAdapter extends ArrayAdapter {
         RelativeLayout actionBadge;
         LinearLayout reportStub;
         RelativeLayout locationIcon;
+        RelativeLayout directionsIcon;
     }
 
     @Override
@@ -87,6 +91,7 @@ public class TimelineAdapter extends ArrayAdapter {
             viewHolder.actionBadge = (RelativeLayout) convertView.findViewById(R.id.action_badge);
             viewHolder.reportStub = (LinearLayout) convertView.findViewById(R.id.report_stub);
             viewHolder.locationIcon = (RelativeLayout) convertView.findViewById(R.id.location_icon);
+            viewHolder.directionsIcon = (RelativeLayout) convertView.findViewById(R.id.directions_icon);
 
             convertView.setTag(viewHolder);
 
@@ -203,6 +208,34 @@ public class TimelineAdapter extends ArrayAdapter {
                 intent.putExtra("USER_AVATAR", feature.properties.owner.properties.picture);
 
                 context.startActivity(intent);
+
+            }
+        });
+
+        viewHolder.directionsIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Geometry geometry = feature.geometry.geometries.get(0);
+
+                Log.d("geometry", geometry.toString());
+
+                // Build the intent
+                Uri location = Uri.parse(String.format("google.navigation:q=%s,%s", geometry.coordinates.get(1), geometry.coordinates.get(0)));
+
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, location);
+
+                // Verify it resolves
+                PackageManager packageManager = getContext().getPackageManager();
+                List<ResolveInfo> activities = packageManager.queryIntentActivities(mapIntent, 0);
+                boolean isIntentSafe = activities.size() > 0;
+
+                // Start an activity if it's safe
+                if (isIntentSafe) {
+                    getContext().startActivity(mapIntent);
+                }
+
+                //getDirections(geometry.coordinates.get(1), geometry.coordinates.get(0));
 
             }
         });

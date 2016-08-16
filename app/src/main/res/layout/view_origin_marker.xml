@@ -16,9 +16,9 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:background="@drawable/marker_icon_border"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/origin_marker_border"
         android:elevation="1dp" />
 
     <!--</FrameLayout>-->
@@ -30,15 +30,5 @@
         android:scaleType="fitXY"
         android:src="@drawable/action_badge_small"
         android:visibility="gone" />
-
-    <!--<TextView-->
-    <!--android:id="@+id/textView"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:textColor="@android:color/white"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:textStyle="bold"-->
-    <!--android:layout_alignBottom="@id/imageView"-->
-    <!--android:layout_centerHorizontal="true"-->
-    <!--android:padding="2dp"/>-->
 
 </RelativeLayout>

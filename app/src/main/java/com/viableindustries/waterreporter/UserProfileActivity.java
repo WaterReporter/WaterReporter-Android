@@ -5,12 +5,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Activity;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -94,18 +97,26 @@ public class UserProfileActivity extends AppCompatActivity {
 
         //requestData(userId);
 
-        fetchUserGroups(userId);
+        //fetchUserGroups(userId);
+
+//        DisplayMetrics metrics = new DisplayMetrics();
+//        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+//
+//        int height = metrics.heightPixels;
+//
+//        LinearLayout.LayoutParams vp = new LinearLayout.LayoutParams(ViewPager.LayoutParams.MATCH_PARENT, height);
 
         // Instantiate a ViewPager and a PagerAdapter.
-        //mPager = (ViewPager) findViewById(R.id.attachment_pager);
+        mPager = (ViewPager) findViewById(R.id.profileViewPager);
         //mPager.setLayoutParams(vp);
-        //mPagerAdapter = new AttachmentPagerAdapter(context, getSupportFragmentManager());
-        //mPager.setAdapter(mPagerAdapter);
-        //mPager.setPageTransformer(true, new DepthPageTransformer());
+        mPagerAdapter = new AttachmentPagerAdapter(this, getSupportFragmentManager());
+        mPager.setAdapter(mPagerAdapter);
+        //Pager.setPageTransformer(true, new DepthPageTransformer());
 
         // Add tabs to ViewPager
-        //SlidingTabLayout mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.attachment_tabs);
-        //mSlidingTabLayout.setViewPager(mPager);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(this, R.color.base_blue));
+        tabLayout.setupWithViewPager(mPager);
 
     }
 
@@ -219,18 +230,20 @@ public class UserProfileActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
 
-            switch (position) {
-                case 0: // Downstream photo
-                    //return PhotoFragment.newInstance(0, getResources().getString(R.string.downstream_prompt), photoPreviewKey);
-                case 1: // Upstream photo
-                    //return PhotoFragment.newInstance(1, getResources().getString(R.string.upstream_prompt), photoPreviewKey);
-                case 2: // First extra photo
-                    //return PhotoFragment.newInstance(2, getResources().getString(R.string.extra_prompt), photoPreviewKey);
-                //case 3: // Second extra photo
-                    //return PhotoFragment.newInstance(3, getResources().getString(R.string.extra_prompt), photoPreviewKey);
-                default:
-                    return null;
-            }
+            return UserGroupsFragment.newInstance(userId);
+
+//            switch (position) {
+//                case 0: // Downstream photo
+//                    return UserGroupsFragment.newInstance(userId);
+//                case 1: // Upstream photo
+//                    //return PhotoFragment.newInstance(1, getResources().getString(R.string.upstream_prompt), photoPreviewKey);
+//                case 2: // First extra photo
+//                    //return PhotoFragment.newInstance(2, getResources().getString(R.string.extra_prompt), photoPreviewKey);
+//                //case 3: // Second extra photo
+//                    //return PhotoFragment.newInstance(3, getResources().getString(R.string.extra_prompt), photoPreviewKey);
+//                default:
+//                    return UserGroupsFragment.newInstance(userId);
+//            }
 
         }
 
@@ -241,8 +254,18 @@ public class UserProfileActivity extends AppCompatActivity {
 
         @Override
         public String getPageTitle(int position) {
-            //return (PhotoAttachment.getTitle(ctxt, position).toUpperCase());
-            return "TEST";
+
+            switch (position) {
+                case 0:
+                    return "Reports";
+                case 1:
+                    return "Actions";
+                case 2:
+                    return "Groups";
+                default:
+                    return "Tab";
+            }
+
         }
 
     }

@@ -127,14 +127,7 @@ public class MarkerDetailFragment extends Fragment {
     private void getDirections(View view, double latitude, double longitude) {
 
         // Build the intent
-        //Uri location = Uri.parse("geo:0,0?q=1600+Amphitheatre+Parkway,+Mountain+View,+California");
-
-        //Uri location = Uri.parse(String.format("geo:%s,%s?z=14", latitude, longitude)); // z param is zoom level
-
-        //Uri location = Uri.parse(String.format("google.navigation:q=%s,%s", 42.677778, -71.820833));
         Uri location = Uri.parse(String.format("google.navigation:q=%s,%s", latitude, longitude));
-
-        //Uri location = Uri.parse("http://maps.google.com/maps?saddr=20.344,34.34&daddr=20.5666,45.345"));
 
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, location);
 
