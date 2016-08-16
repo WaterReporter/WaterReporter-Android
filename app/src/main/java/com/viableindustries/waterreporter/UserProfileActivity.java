@@ -1,5 +1,6 @@
 package com.viableindustries.waterreporter;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,9 +13,14 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
+import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -50,11 +56,17 @@ public class UserProfileActivity extends AppCompatActivity {
     @Bind(R.id.userAvatar)
     ImageView userAvatar;
 
+    @Bind(R.id.profileViewPager)
+    ViewPager viewPager;
+
+    @Bind(R.id.sliding_tabs)
+    TabLayout tabLayout;
+
     // Number of pages in our ViewPager
     private Integer NUM_PAGES = 3;
 
     // The pager widget, which handles animation and allows swiping horizontally
-    private ViewPager mPager;
+    //private ViewPager mPager;
 
     // The pager adapter, which provides the pages to the view pager widget
     private PagerAdapter mPagerAdapter;
@@ -93,30 +105,62 @@ public class UserProfileActivity extends AppCompatActivity {
 
         userDescription.setText(userDescriptionText);
 
+        userDescription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ObjectAnimator animation;
+
+                int duration;
+
+                int maxLines = TextViewCompat.getMaxLines(userDescription);
+
+                if (maxLines == 2) {
+
+                    userDescription.setEllipsize(null);
+
+                    animation = ObjectAnimator.ofInt(
+                            userDescription,
+                            "maxLines",
+                            2,
+                            20);
+
+                    duration = 350;
+
+                } else {
+
+                    userDescription.setEllipsize(TextUtils.TruncateAt.END);
+
+                    animation = ObjectAnimator.ofInt(
+                            userDescription,
+                            "maxLines",
+                            20,
+                            2);
+
+                    duration = 200;
+
+                }
+
+                animation.setDuration(duration);
+                animation.setInterpolator(new LinearOutSlowInInterpolator());
+                animation.start();
+
+            }
+        });
+
         Picasso.with(this).load(userAvatarUrl).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(userAvatar);
 
-        //requestData(userId);
-
-        //fetchUserGroups(userId);
-
-//        DisplayMetrics metrics = new DisplayMetrics();
-//        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-//
-//        int height = metrics.heightPixels;
-//
-//        LinearLayout.LayoutParams vp = new LinearLayout.LayoutParams(ViewPager.LayoutParams.MATCH_PARENT, height);
-
         // Instantiate a ViewPager and a PagerAdapter.
-        mPager = (ViewPager) findViewById(R.id.profileViewPager);
+        //mPager = (ViewPager) findViewById(R.id.profileViewPager);
         //mPager.setLayoutParams(vp);
-        mPagerAdapter = new AttachmentPagerAdapter(this, getSupportFragmentManager());
-        mPager.setAdapter(mPagerAdapter);
+        mPagerAdapter = new ProfilePagerAdapter(this, getSupportFragmentManager());
+        viewPager.setAdapter(mPagerAdapter);
         //Pager.setPageTransformer(true, new DepthPageTransformer());
 
         // Add tabs to ViewPager
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        //TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(this, R.color.base_blue));
-        tabLayout.setupWithViewPager(mPager);
+        tabLayout.setupWithViewPager(viewPager);
 
     }
 
@@ -217,12 +261,12 @@ public class UserProfileActivity extends AppCompatActivity {
 
     }
 
-    // A simple pager adapter that represents 4 PhotoFragment objects in sequence.
-    private class AttachmentPagerAdapter extends FragmentPagerAdapter {
+    // A simple pager adapter that allows users to browse a person's feed and groups.
+    private class ProfilePagerAdapter extends FragmentPagerAdapter {
 
         Context ctxt = null;
 
-        public AttachmentPagerAdapter(Context ctxt, FragmentManager fm) {
+        public ProfilePagerAdapter(Context ctxt, FragmentManager fm) {
             super(fm);
             this.ctxt = ctxt;
         }
@@ -230,20 +274,16 @@ public class UserProfileActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
 
-            return UserGroupsFragment.newInstance(userId);
-
-//            switch (position) {
-//                case 0: // Downstream photo
-//                    return UserGroupsFragment.newInstance(userId);
-//                case 1: // Upstream photo
-//                    //return PhotoFragment.newInstance(1, getResources().getString(R.string.upstream_prompt), photoPreviewKey);
-//                case 2: // First extra photo
-//                    //return PhotoFragment.newInstance(2, getResources().getString(R.string.extra_prompt), photoPreviewKey);
-//                //case 3: // Second extra photo
-//                    //return PhotoFragment.newInstance(3, getResources().getString(R.string.extra_prompt), photoPreviewKey);
-//                default:
-//                    return UserGroupsFragment.newInstance(userId);
-//            }
+            switch (position) {
+                case 0:
+                    return UserFeedFragment.newInstance(userId);
+                case 1:
+                    return UserGroupsFragment.newInstance(userId);
+                case 2:
+                    return UserGroupsFragment.newInstance(userId);
+                default:
+                    return null;
+            }
 
         }
 

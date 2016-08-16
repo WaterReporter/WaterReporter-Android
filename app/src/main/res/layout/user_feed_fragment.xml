@@ -1,0 +1,60 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:mapbox="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/timelineContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="56dp"-->
+    <!--android:background="#FFFFFF">-->
+
+    <!--<ImageView-->
+    <!--android:id="@+id/owner_avatar"-->
+    <!--android:layout_width="88dp"-->
+    <!--android:layout_height="24dp"-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:scaleType="fitXY"-->
+    <!--android:src="@drawable/logo_horizontal_lockup" />-->
+
+    <!--</RelativeLayout>-->
+
+    <!--<View-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="1dp"-->
+    <!--android:layout_marginTop="-1dp"-->
+    <!--android:background="@color/gray_224" />-->
+
+    <!--<FrameLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
+
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/timeline"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/timeline_items"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="#FFFFFF"
+            android:dividerHeight="0dp"
+            android:fadingEdgeLength="0dp"
+            android:listSelector="@drawable/timeline_selector"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <!--<fragment-->
+    <!--android:id="@+id/navigationFragment"-->
+    <!--android:name="com.viableindustries.waterreporter.NavigationFragment"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="bottom" />-->
+
+    <!--</FrameLayout>-->
+
+</LinearLayout>

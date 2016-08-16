@@ -47,16 +47,6 @@ public class UserGroupsFragment extends android.support.v4.app.Fragment {
 
         groupList.setAdapter(adapter);
 
-//        final int adapterCount = adapter.getCount();
-//
-//        for (int i = 0; i < adapterCount; i++) {
-//
-//            View item = adapter.getView(i, null, null);
-//
-//            groupList.addView(item);
-//
-//        }
-
     }
 
     protected void fetchUserGroups(int userId) {

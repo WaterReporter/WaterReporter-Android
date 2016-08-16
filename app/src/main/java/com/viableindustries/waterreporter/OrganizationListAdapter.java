@@ -50,15 +50,15 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
     //protected SharedPreferences membershipPrefs;
 
-    protected String[] userGroups;
+    private String[] userGroups;
 
     //protected Button joinGroupButton;
 
     //protected Button leaveGroupButton;
 
-    protected Button groupMembershipButton;
+    private Button groupMembershipButton;
 
-    protected boolean showLeaveButton;
+    private boolean showLeaveButton;
 
     public OrganizationListAdapter(Context context, ArrayList<Organization> features, boolean aShowLeaveButton) {
 
