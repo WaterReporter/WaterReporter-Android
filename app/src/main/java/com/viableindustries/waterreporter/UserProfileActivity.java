@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -23,16 +24,24 @@ import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
+import com.viableindustries.waterreporter.data.QueryFilter;
+import com.viableindustries.waterreporter.data.QueryParams;
+import com.viableindustries.waterreporter.data.QuerySort;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -41,6 +50,8 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import static java.security.AccessController.getContext;
 
 public class UserProfileActivity extends AppCompatActivity {
 
@@ -56,11 +67,52 @@ public class UserProfileActivity extends AppCompatActivity {
     @Bind(R.id.userAvatar)
     ImageView userAvatar;
 
-    @Bind(R.id.profileViewPager)
-    ViewPager viewPager;
+    @Bind(R.id.reportCount)
+    TextView reportCounter;
 
-    @Bind(R.id.sliding_tabs)
-    TabLayout tabLayout;
+    @Bind(R.id.actionCount)
+    TextView actionCounter;
+
+    @Bind(R.id.groupCount)
+    TextView groupCounter;
+
+    @Bind(R.id.reportCountLabel)
+    TextView reportCountLabel;
+
+    @Bind(R.id.actionCountLabel)
+    TextView actionCountLabel;
+
+    @Bind(R.id.groupCountLabel)
+    TextView groupCountLabel;
+
+    @Bind(R.id.reportStat)
+    LinearLayout reportStat;
+
+    @Bind(R.id.actionStat)
+    LinearLayout actionStat;
+
+    @Bind(R.id.groupStat)
+    LinearLayout groupStat;
+
+//    @Bind(R.id.profileViewPager)
+//    ViewPager viewPager;
+//
+//    @Bind(R.id.sliding_tabs)
+//    TabLayout tabLayout;
+
+//    @Bind(R.id.timeline)
+//    SwipeRefreshLayout swipeRefreshLayout;
+
+    @Bind(R.id.timeline_items)
+    ListView timeLine;
+
+    protected TimelineAdapter timelineAdapter;
+
+    //private SwipeRefreshLayout swipeRefreshLayout;
+
+    //private ListView timeLine;
+
+    protected List<Report> reportCollection = new ArrayList<Report>();
 
     // Number of pages in our ViewPager
     private Integer NUM_PAGES = 3;
@@ -82,6 +134,12 @@ public class UserProfileActivity extends AppCompatActivity {
     private String userOrganization;
 
     private int userId;
+
+    private int actionCount = 0;
+
+    private int reportCount = 0;
+
+    private int groupCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,20 +209,82 @@ public class UserProfileActivity extends AppCompatActivity {
         Picasso.with(this).load(userAvatarUrl).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(userAvatar);
 
         // Instantiate a ViewPager and a PagerAdapter.
-        //mPager = (ViewPager) findViewById(R.id.profileViewPager);
-        //mPager.setLayoutParams(vp);
-        mPagerAdapter = new ProfilePagerAdapter(this, getSupportFragmentManager());
-        viewPager.setAdapter(mPagerAdapter);
-        //Pager.setPageTransformer(true, new DepthPageTransformer());
+        //mPagerAdapter = new ProfilePagerAdapter(this, getSupportFragmentManager());
+        //viewPager.setAdapter(mPagerAdapter);
 
         // Add tabs to ViewPager
-        //TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
-        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(this, R.color.base_blue));
-        tabLayout.setupWithViewPager(viewPager);
+        //tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(this, R.color.base_blue));
+        //tabLayout.setupWithViewPager(viewPager);
+
+        // Create filter list and add a filter parameter
+
+//        List<QueryFilter> queryFilters = new ArrayList<QueryFilter>();
+//
+//        QueryFilter userFilter = new QueryFilter("owner_id", "eq", userId);
+//
+//        queryFilters.add(userFilter);
+//
+//        QueryFilter stateFilter = new QueryFilter("state", "eq", "closed");
+//
+//        queryFilters.add(stateFilter);
+//
+//        // Create query string from new QueryParams
+//
+//        QueryParams queryParams = new QueryParams(queryFilters, null);
+
+//        String[][] filters = {
+//                {"state", "eq", "closed"}
+//        };
+
+//        String query = buildQuery(false, new String[][]{
+//                {"state", "eq", "closed"}
+//        });
+
+        countReports(buildQuery(false, new String[][]{
+                {"state", "eq", "closed"}
+        }), "state");
+
+        //countReports(null, "all");
+
+        // Retrieve the user's groups
+
+        fetchUserGroups(userId);
+
+        // Retrieve first batch of user's reports
+
+        //fetchReports(userId, 10, 1, false);
+
+        if (reportCollection.isEmpty()) {
+
+//            String[][] filters = {
+//                    {"state", "eq", "closed"}
+//            };
+//
+//            String query = buildQuery(false, filters);
+
+            fetchReports(10, 1, buildQuery(true, null), false);
+
+        }
+
+        // Attach click listeners to stat elements
+
+        reportStat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (timeLine != null) {
+
+                    //timeLine.smoothScrollToPosition(0);
+                    timeLine.setSelection(0);
+
+                }
+
+            }
+        });
 
     }
 
-    protected void requestData(int id) {
+    protected void countReports(String query, final String filterName) {
 
         final SharedPreferences prefs =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
@@ -175,62 +295,23 @@ public class UserProfileActivity extends AppCompatActivity {
 
         ReportService service = restAdapter.create(ReportService.class);
 
-        service.getSingleReport(access_token, "application/json", id, new Callback<Report>() {
+        service.getReports(access_token, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
 
             @Override
-            public void success(Report reportResponse, Response response) {
+            public void success(FeatureCollection featureCollection, Response response) {
 
-                final Report report = reportResponse;
+                int count = featureCollection.getProperties().num_results;
 
-                //populateView(report);
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-            }
-
-        });
-
-    }
-
-    protected void fetchUserGroups(int userId) {
-
-        final SharedPreferences prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
-
-        final String access_token = prefs.getString("access_token", "");
-
-        Log.d("", access_token);
-
-        // We shouldn't need to retrieve this value again, but we'll deal with that issue later
-        //user_id = prefs.getInt("user_id", 0);
-
-        UserService service = UserService.restAdapter.create(UserService.class);
-
-        service.getUserOrganization(access_token, "application/json", userId, new Callback<OrganizationFeatureCollection>() {
-
-            @Override
-            public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
-
-                List<Organization> organizations = organizationCollectionResponse.getFeatures();
-
-                //String orgIds = "";
-
-                if (!organizations.isEmpty()) {
-
-                    for (Organization organization : organizations) {
-
-                        //orgIds += String.format(",%s", organization.id);
-                        Log.d("orgName", organization.properties.name);
-
-                    }
-
+                switch (filterName) {
+                    case "state":
+                        actionCount = count;
+                        actionCounter.setText(String.valueOf(actionCount));
+                        break;
+                    default:
+                        reportCount = count;
+                        reportCounter.setText(String.valueOf(reportCount));
+                        break;
                 }
-
-                // Reset the user's stored group IDs.
-
-                //prefs.edit().putString("user_groups", orgIds).apply();
 
             }
 
@@ -258,6 +339,252 @@ public class UserProfileActivity extends AppCompatActivity {
             }
 
         });
+
+    }
+
+    protected void fetchUserGroups(int userId) {
+
+        final SharedPreferences prefs =
+                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        final String access_token = prefs.getString("access_token", "");
+
+        Log.d("", access_token);
+
+        UserService service = UserService.restAdapter.create(UserService.class);
+
+        service.getUserOrganization(access_token, "application/json", userId, new Callback<OrganizationFeatureCollection>() {
+
+            @Override
+            public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
+
+                List<Organization> organizations = organizationCollectionResponse.getFeatures();
+
+                groupCount = organizations.size();
+
+                groupCounter.setText(String.valueOf(groupCount));
+
+                if (!organizations.isEmpty()) {
+
+                    for (Organization organization : organizations) {
+
+                        Log.d("orgName", organization.properties.name);
+
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(UserProfileActivity.this, SignInActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+    private void attachScrollListener() {
+
+        timeLine.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+
+                // Triggered only when new data needs to be appended to the list
+                fetchReports(10, 1, buildQuery(true, null), false);
+
+                return true; // ONLY if more data is actually being loaded; false otherwise.
+
+            }
+        });
+
+    }
+
+    private String buildQuery(boolean order, String[][] optionalFilters) {
+
+        List<QuerySort> queryOrder = null;
+
+        // Create order_by list and add a sort parameter
+
+        if (order) {
+
+            queryOrder = new ArrayList<QuerySort>();
+
+            QuerySort querySort = new QuerySort("created", "desc");
+
+            queryOrder.add(querySort);
+
+        }
+
+        // Create filter list and add a filter parameter
+
+        List<QueryFilter> queryFilters = new ArrayList<QueryFilter>();
+
+        QueryFilter userFilter = new QueryFilter("owner_id", "eq", userId);
+
+        queryFilters.add(userFilter);
+
+        if (optionalFilters != null) {
+
+            for (String[] filterComponents : optionalFilters) {
+
+                QueryFilter optionalFilter = new QueryFilter(filterComponents[0], filterComponents[1], filterComponents[2]);
+
+                queryFilters.add(optionalFilter);
+
+            }
+
+        }
+
+        // Create query string from new QueryParams
+
+        QueryParams queryParams = new QueryParams(queryFilters, queryOrder);
+
+        return new Gson().toJson(queryParams);
+
+    }
+
+    private void fetchReports(int limit, int page, String query, final boolean refresh) {
+
+        SharedPreferences prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        final String access_token = prefs.getString("access_token", "");
+
+        Log.d("", access_token);
+
+//        // Create order_by list and add a sort parameter
+//
+//        List<QuerySort> queryOrder = new ArrayList<QuerySort>();
+//
+//        QuerySort querySort = new QuerySort("created", "desc");
+//
+//        queryOrder.add(querySort);
+//
+//        // Create filter list and add a filter parameter
+//
+//        List<QueryFilter> queryFilters = new ArrayList<QueryFilter>();
+//
+//        QueryFilter queryFilter = new QueryFilter("owner_id", "eq", userId);
+//
+//        queryFilters.add(queryFilter);
+//
+//        // Create query string from new QueryParams
+//
+//        QueryParams queryParams = new QueryParams(queryFilters, queryOrder);
+//
+//        String query = new Gson().toJson(queryParams);
+
+        Log.d("URL", query);
+
+        RestAdapter restAdapter = ReportService.restAdapter;
+
+        ReportService service = restAdapter.create(ReportService.class);
+
+        service.getReports(access_token, "application/json", page, limit, query, new Callback<FeatureCollection>() {
+
+            @Override
+            public void success(FeatureCollection featureCollection, Response response) {
+
+                List<Report> reports = featureCollection.getFeatures();
+
+                Log.v("list", reports.toString());
+
+                reportCount = featureCollection.getProperties().num_results;
+
+                reportCounter.setText(String.valueOf(reportCount));
+
+                if (!reports.isEmpty()) {
+
+                    reportCollection.addAll(reports);
+
+                    try {
+
+                        timelineAdapter.notifyDataSetChanged();
+
+                    } catch (NullPointerException ne) {
+
+                        populateTimeline(reportCollection);
+
+                    }
+
+                } else {
+
+                    CharSequence text = "Your report collection is empty. Tap on the plus sign in the menu bar to start a new report.";
+                    int duration = Toast.LENGTH_LONG;
+
+                    Toast toast = Toast.makeText(UserProfileActivity.this, text, duration);
+                    toast.show();
+
+                }
+
+                if (refresh) {
+
+                    reportCollection = reports;
+
+                    populateTimeline(reportCollection);
+
+                }
+
+                //swipeRefreshLayout.setRefreshing(false);
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                //swipeRefreshLayout.setRefreshing(false);
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(UserProfileActivity.this, SignInActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+    private void populateTimeline(List list) {
+
+        timelineAdapter = new TimelineAdapter(UserProfileActivity.this, list);
+
+        // Attach the adapter to a ListView
+        timeLine.setAdapter(timelineAdapter);
+
+        attachScrollListener();
 
     }
 

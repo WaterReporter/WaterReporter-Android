@@ -30,4 +30,10 @@ public class FeatureCollection implements Serializable {
 
     }
 
+    public CollectionProperties getProperties() {
+
+        return properties;
+
+    }
+
 }

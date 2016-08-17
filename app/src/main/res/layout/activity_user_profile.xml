@@ -5,6 +5,7 @@
     android:id="@+id/activity_user_profile"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FBFBFB"
     android:orientation="vertical"
     tools:context="com.viableindustries.waterreporter.UserProfileActivity">
 
@@ -27,6 +28,11 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/gray_224" />
+
+    <!--<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:id="@+id/timeline"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -103,22 +109,160 @@
 
     </LinearLayout>
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/sliding_tabs"
-        style="@style/ProfileTabLayout"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabMode="fixed"
-        app:tabSelectedTextColor="@color/base_blue" />
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:paddingBottom="16dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:paddingTop="0dp">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/profileViewPager"
+        <LinearLayout
+            android:id="@+id/reportStat"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/reportCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="0dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingTop="0dp"
+                android:text="0"
+                android:textColor="@color/material_blue_grey950"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/reportCountLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:paddingBottom="0dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingTop="2dp"
+                android:text="Reports"
+                android:textColor="@color/material_blue_grey950"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/actionStat"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/actionCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:paddingBottom="0dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingTop="0dp"
+                android:text="0"
+                android:textColor="@color/material_blue_grey950"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/actionCountLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:paddingBottom="0dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingTop="2dp"
+                android:text="Actions"
+                android:textColor="@color/material_blue_grey950"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/groupStat"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/groupCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:paddingBottom="0dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingTop="0dp"
+                android:text="0"
+                android:textColor="@color/material_blue_grey950"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/groupCountLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:paddingBottom="0dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:paddingTop="2dp"
+                android:text="Groups"
+                android:textColor="@color/material_blue_grey950"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/timeline_items"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:layout_height="match_parent"
+        android:divider="#FFFFFF"
+        android:dividerHeight="0dp"
         android:fadingEdgeLength="0dp"
+        android:listSelector="@drawable/timeline_selector"
         android:overScrollMode="never"
         android:scrollbars="none" />
+
+    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
+
+    <!--<android.support.design.widget.TabLayout-->
+    <!--android:id="@+id/sliding_tabs"-->
+    <!--style="@style/ProfileTabLayout"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--app:tabMode="fixed"-->
+    <!--app:tabSelectedTextColor="@color/base_blue" />-->
+
+    <!--<android.support.v4.view.ViewPager-->
+    <!--android:id="@+id/profileViewPager"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@android:color/white"-->
+    <!--android:fadingEdgeLength="0dp"-->
+    <!--android:overScrollMode="never"-->
+    <!--android:scrollbars="none" />-->
 
     <!--<com.chesapeakecommons.stream_mapper.SlidingTabLayout-->
     <!--android:id="@+id/attachment_tabs"-->
