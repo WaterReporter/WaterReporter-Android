@@ -78,4 +78,5 @@ public abstract class EndlessScrollListener implements AbsListView.OnScrollListe
         // Don't take any action on changed
     }
     //public abstract void onScrollStateChanged(AbsListView view, int scrollState);
+
 }

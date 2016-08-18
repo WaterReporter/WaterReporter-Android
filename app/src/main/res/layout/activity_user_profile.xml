@@ -238,18 +238,23 @@
 
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/timeline_items"
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/timeline"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="#FFFFFF"
-        android:dividerHeight="0dp"
-        android:fadingEdgeLength="0dp"
-        android:listSelector="@drawable/timeline_selector"
-        android:overScrollMode="never"
-        android:scrollbars="none" />
+        android:layout_height="match_parent">
 
-    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
+        <ListView
+            android:id="@+id/timeline_items"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="#FFFFFF"
+            android:dividerHeight="0dp"
+            android:fadingEdgeLength="0dp"
+            android:listSelector="@drawable/timeline_selector"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <!--<android.support.design.widget.TabLayout-->
     <!--android:id="@+id/sliding_tabs"-->

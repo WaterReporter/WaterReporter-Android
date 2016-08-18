@@ -22,6 +22,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.AbsListView;
 import android.widget.ImageView;
@@ -105,8 +106,8 @@ public class UserProfileActivity extends AppCompatActivity {
 //    @Bind(R.id.sliding_tabs)
 //    TabLayout tabLayout;
 
-//    @Bind(R.id.timeline)
-//    SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.timeline)
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @Bind(R.id.timeline_items)
     ListView timeLine;
@@ -138,7 +139,9 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private String userOrganization;
 
-    private int bookMark;
+    private String bookMark;
+
+    private float originListHeight;
 
     private int userId;
 
@@ -282,6 +285,56 @@ public class UserProfileActivity extends AppCompatActivity {
 
             }
         });
+
+        swipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
+                        // This method performs the actual data-refresh operation.
+                        // The method calls setRefreshing(false) when it's finished.
+                        swipeRefreshLayout.setRefreshing(false);
+
+                        int headerHeight = profileMeta.getHeight() + profileStats.getHeight();
+
+                        ViewGroup.LayoutParams params = (ViewGroup.LayoutParams) swipeRefreshLayout.getLayoutParams();
+
+                        if (hasScrolled && swipeRefreshLayout.getHeight() > originListHeight) {
+
+                            //originListHeight = swipeRefreshLayout.getHeight();
+
+                            //hasScrolled = true;
+
+                            //params.height = swipeRefreshLayout.getHeight() - headerHeight;
+
+                            //swipeRefreshLayout.animate().translationY(headerHeight / 2);
+
+                            swipeRefreshLayout.animate().translationY(0);
+
+                            params.height = swipeRefreshLayout.getHeight() - headerHeight;
+
+                            hasScrolled = false;
+
+                        }
+
+                        swipeRefreshLayout.setLayoutParams(params);
+
+                        swipeRefreshLayout.requestLayout();
+
+                    }
+                }
+
+        );
+
+        // Set color of swipe refresh arrow animation
+
+        //swipeRefreshLayout.setColorSchemeResources(R.color.waterreporter_blue);
+
+        swipeRefreshLayout.setColorSchemeColors(0,0,0,0);
+
+        //swipeRefreshLayout.setProgressBackgroundColor(android.R.color.transparent);
+
+        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(ContextCompat.getColor(this, android.R.color.transparent));
 
     }
 
@@ -433,11 +486,6 @@ public class UserProfileActivity extends AppCompatActivity {
             public void onScrollStateChanged(AbsListView view, int scrollState) {
 
                 // Don't take any action on changed
-                //Log.d("scrollState", scrollState + "");
-
-                int position = view.getPositionForView(view);
-
-                Log.d("scrollPosition", position + "");
 
             }
 
@@ -447,71 +495,53 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
 
-                float y = motionEvent.getY();
+                float y = timeLine.getY();
 
-                //int position = timeLine.getFirstVisiblePosition();
+                int motionEventAction = motionEvent.getAction();
 
-                //int position = timeLine.getPositionForView(view);
+                Log.d("event", motionEventAction + "");
 
-                //String comment = ((TextView) view.findViewById(R.id.report_caption)).getText().toString();
-
-                //Log.d("comment", comment);
-
-                //LinearLayout reportStub = (LinearLayout) view.findViewById(R.id.report_stub);
-
-                //Log.d("stub", reportStub.toString());
+//                originListHeight = timeLine.getHeight();
 
                 String currentId = ((TextView) view.findViewById(R.id.tracker)).getText().toString();
 
-                //TimelineAdapter.ViewHolder viewHolder = (TimelineAdapter.ViewHolder) view.getTag();
-
-                //int currentId = (int) viewHolder.reportStub.getTag();
-
-//                Report report = timelineAdapter.getItem(view)
-
-                //Log.d("position", position + "");
-
                 Log.d("id", currentId + "");
+
+                Log.d("bookmark", bookMark + "");
+
+                Log.d("offset", y + "");
 
                 int headerHeight = profileMeta.getHeight() + profileStats.getHeight();
 
-                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) timeLine.getLayoutParams();
-
-                //int statHeight = profileStats.getHeight();
-
-                //int distance;
+                ViewGroup.LayoutParams params = (ViewGroup.LayoutParams) swipeRefreshLayout.getLayoutParams();
 
                 if (!hasScrolled) {
 
+                    originListHeight = swipeRefreshLayout.getHeight();
+
                     hasScrolled = true;
 
-                    //distance = 0 - 58 - profileMeta.getHeight();
+                    swipeRefreshLayout.animate().translationY(0 - headerHeight);
 
-                    //profileMeta.animate().translationY(distance);
-
-                    //profileStats.animate().translationY(distance);
-
-                    timeLine.animate().translationY(0 - headerHeight);
-
-                    params.height = timeLine.getHeight() + headerHeight;
-
-                } else {
-
-                    if (bookMark == Integer.valueOf(currentId)) {
-
-                        timeLine.animate().translationY(headerHeight);
-
-                        params.height = timeLine.getHeight() - headerHeight;
-
-                        hasScrolled = false;
-
-                    }
+                    params.height = swipeRefreshLayout.getHeight() + headerHeight;
 
                 }
 
-                timeLine.setLayoutParams(params);
+//                if (bookMark.equals(currentId) && motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+//
+//                    params.height = timeLine.getHeight() - headerHeight;
+//
+//                    timeLine.animate().translationY(headerHeight);
+//
+//                    //params.height = timeLine.getHeight() - headerHeight;
+//
+//                    hasScrolled = false;
+//
+//                }
 
-                timeLine.requestLayout();
+                swipeRefreshLayout.setLayoutParams(params);
+
+                swipeRefreshLayout.requestLayout();
 
                 return false;
 
@@ -597,7 +627,11 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 if (!reports.isEmpty()) {
 
-                    bookMark = reports.get(0).id;
+                    if (bookMark == null) {
+
+                        bookMark = String.valueOf(reports.get(0).id);
+
+                    }
 
                     reportCollection.addAll(reports);
 
