@@ -20,8 +20,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -91,8 +93,11 @@ public class UserProfileActivity extends AppCompatActivity {
     @Bind(R.id.actionStat)
     LinearLayout actionStat;
 
-    @Bind(R.id.groupStat)
-    LinearLayout groupStat;
+    @Bind(R.id.profileMeta)
+    LinearLayout profileMeta;
+
+    @Bind(R.id.profileStats)
+    LinearLayout profileStats;
 
 //    @Bind(R.id.profileViewPager)
 //    ViewPager viewPager;
@@ -133,13 +138,19 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private String userOrganization;
 
+    private int bookMark;
+
     private int userId;
 
     private int actionCount = 0;
 
-    private int reportCount = 0;
+    private int reportCount = 99999999;
 
     private int groupCount = 0;
+
+    private boolean actionFocus = false;
+
+    private boolean hasScrolled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,43 +219,11 @@ public class UserProfileActivity extends AppCompatActivity {
 
         Picasso.with(this).load(userAvatarUrl).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(userAvatar);
 
-        // Instantiate a ViewPager and a PagerAdapter.
-        //mPagerAdapter = new ProfilePagerAdapter(this, getSupportFragmentManager());
-        //viewPager.setAdapter(mPagerAdapter);
-
-        // Add tabs to ViewPager
-        //tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(this, R.color.base_blue));
-        //tabLayout.setupWithViewPager(viewPager);
-
-        // Create filter list and add a filter parameter
-
-//        List<QueryFilter> queryFilters = new ArrayList<QueryFilter>();
-//
-//        QueryFilter userFilter = new QueryFilter("owner_id", "eq", userId);
-//
-//        queryFilters.add(userFilter);
-//
-//        QueryFilter stateFilter = new QueryFilter("state", "eq", "closed");
-//
-//        queryFilters.add(stateFilter);
-//
-//        // Create query string from new QueryParams
-//
-//        QueryParams queryParams = new QueryParams(queryFilters, null);
-
-//        String[][] filters = {
-//                {"state", "eq", "closed"}
-//        };
-
-//        String query = buildQuery(false, new String[][]{
-//                {"state", "eq", "closed"}
-//        });
+        // Count reports with actions
 
         countReports(buildQuery(false, new String[][]{
                 {"state", "eq", "closed"}
         }), "state");
-
-        //countReports(null, "all");
 
         // Retrieve the user's groups
 
@@ -252,17 +231,9 @@ public class UserProfileActivity extends AppCompatActivity {
 
         // Retrieve first batch of user's reports
 
-        //fetchReports(userId, 10, 1, false);
-
         if (reportCollection.isEmpty()) {
 
-//            String[][] filters = {
-//                    {"state", "eq", "closed"}
-//            };
-//
-//            String query = buildQuery(false, filters);
-
-            fetchReports(10, 1, buildQuery(true, null), false);
+            fetchReports(10, 1, buildQuery(true, null), false, false);
 
         }
 
@@ -274,10 +245,40 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 if (timeLine != null) {
 
+                    if (!actionFocus) {
+
+                        //timeLine.smoothScrollToPosition(0);
+                        timeLine.setSelection(0);
+
+                    } else {
+
+                        actionFocus = false;
+
+                        fetchReports(10, 1, buildQuery(true, null), false, true);
+
+                    }
+
+                }
+
+            }
+        });
+
+        actionStat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                actionFocus = true;
+
+                if (timeLine != null) {
+
                     //timeLine.smoothScrollToPosition(0);
                     timeLine.setSelection(0);
 
                 }
+
+                fetchReports(10, 1, buildQuery(true, new String[][]{
+                        {"state", "eq", "closed"}
+                }), false, true);
 
             }
         });
@@ -406,13 +407,113 @@ public class UserProfileActivity extends AppCompatActivity {
     private void attachScrollListener() {
 
         timeLine.setOnScrollListener(new EndlessScrollListener() {
+
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
 
                 // Triggered only when new data needs to be appended to the list
-                fetchReports(10, 1, buildQuery(true, null), false);
+
+                if (actionFocus) {
+
+                    fetchReports(10, page, buildQuery(true, new String[][]{
+                            {"state", "eq", "closed"}
+                    }), false, false);
+
+                } else {
+
+                    fetchReports(10, page, buildQuery(true, null), false, false);
+
+                }
 
                 return true; // ONLY if more data is actually being loaded; false otherwise.
+
+            }
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+                // Don't take any action on changed
+                //Log.d("scrollState", scrollState + "");
+
+                int position = view.getPositionForView(view);
+
+                Log.d("scrollPosition", position + "");
+
+            }
+
+        });
+
+        timeLine.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                float y = motionEvent.getY();
+
+                //int position = timeLine.getFirstVisiblePosition();
+
+                //int position = timeLine.getPositionForView(view);
+
+                //String comment = ((TextView) view.findViewById(R.id.report_caption)).getText().toString();
+
+                //Log.d("comment", comment);
+
+                //LinearLayout reportStub = (LinearLayout) view.findViewById(R.id.report_stub);
+
+                //Log.d("stub", reportStub.toString());
+
+                String currentId = ((TextView) view.findViewById(R.id.tracker)).getText().toString();
+
+                //TimelineAdapter.ViewHolder viewHolder = (TimelineAdapter.ViewHolder) view.getTag();
+
+                //int currentId = (int) viewHolder.reportStub.getTag();
+
+//                Report report = timelineAdapter.getItem(view)
+
+                //Log.d("position", position + "");
+
+                Log.d("id", currentId + "");
+
+                int headerHeight = profileMeta.getHeight() + profileStats.getHeight();
+
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) timeLine.getLayoutParams();
+
+                //int statHeight = profileStats.getHeight();
+
+                //int distance;
+
+                if (!hasScrolled) {
+
+                    hasScrolled = true;
+
+                    //distance = 0 - 58 - profileMeta.getHeight();
+
+                    //profileMeta.animate().translationY(distance);
+
+                    //profileStats.animate().translationY(distance);
+
+                    timeLine.animate().translationY(0 - headerHeight);
+
+                    params.height = timeLine.getHeight() + headerHeight;
+
+                } else {
+
+                    if (bookMark == Integer.valueOf(currentId)) {
+
+                        timeLine.animate().translationY(headerHeight);
+
+                        params.height = timeLine.getHeight() - headerHeight;
+
+                        hasScrolled = false;
+
+                    }
+
+                }
+
+                timeLine.setLayoutParams(params);
+
+                timeLine.requestLayout();
+
+                return false;
 
             }
         });
@@ -463,35 +564,13 @@ public class UserProfileActivity extends AppCompatActivity {
 
     }
 
-    private void fetchReports(int limit, int page, String query, final boolean refresh) {
+    private void fetchReports(int limit, int page, String query, final boolean refresh, final boolean replace) {
 
         SharedPreferences prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         final String access_token = prefs.getString("access_token", "");
 
         Log.d("", access_token);
-
-//        // Create order_by list and add a sort parameter
-//
-//        List<QuerySort> queryOrder = new ArrayList<QuerySort>();
-//
-//        QuerySort querySort = new QuerySort("created", "desc");
-//
-//        queryOrder.add(querySort);
-//
-//        // Create filter list and add a filter parameter
-//
-//        List<QueryFilter> queryFilters = new ArrayList<QueryFilter>();
-//
-//        QueryFilter queryFilter = new QueryFilter("owner_id", "eq", userId);
-//
-//        queryFilters.add(queryFilter);
-//
-//        // Create query string from new QueryParams
-//
-//        QueryParams queryParams = new QueryParams(queryFilters, queryOrder);
-//
-//        String query = new Gson().toJson(queryParams);
 
         Log.d("URL", query);
 
@@ -508,21 +587,37 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 Log.v("list", reports.toString());
 
-                reportCount = featureCollection.getProperties().num_results;
+                if (reportCount == 99999999) {
 
-                reportCounter.setText(String.valueOf(reportCount));
+                    reportCount = featureCollection.getProperties().num_results;
+
+                    reportCounter.setText(String.valueOf(reportCount));
+
+                }
 
                 if (!reports.isEmpty()) {
 
+                    bookMark = reports.get(0).id;
+
                     reportCollection.addAll(reports);
 
-                    try {
+                    if (replace) {
 
-                        timelineAdapter.notifyDataSetChanged();
-
-                    } catch (NullPointerException ne) {
+                        reportCollection = reports;
 
                         populateTimeline(reportCollection);
+
+                    } else {
+
+                        try {
+
+                            timelineAdapter.notifyDataSetChanged();
+
+                        } catch (NullPointerException ne) {
+
+                            populateTimeline(reportCollection);
+
+                        }
 
                     }
 

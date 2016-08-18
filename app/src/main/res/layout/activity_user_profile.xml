@@ -35,8 +35,10 @@
     <!--android:layout_height="match_parent">-->
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/profileMeta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#FBFBFB"
         android:baselineAligned="false"
         android:orientation="horizontal"
         android:paddingBottom="16dp"
@@ -110,8 +112,10 @@
     </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/profileStats"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#FBFBFB"
         android:baselineAligned="false"
         android:orientation="horizontal"
         android:paddingBottom="16dp"

@@ -226,4 +226,10 @@
         android:textColor="@color/gray_186"
         android:textSize="@dimen/small_text" />
 
+    <TextView
+        android:id="@+id/tracker"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone" />
+
 </LinearLayout>
