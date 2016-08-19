@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Activity;
+import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -100,34 +101,12 @@ public class UserProfileActivity extends AppCompatActivity {
     @Bind(R.id.profileStats)
     LinearLayout profileStats;
 
-//    @Bind(R.id.profileViewPager)
-//    ViewPager viewPager;
-//
-//    @Bind(R.id.sliding_tabs)
-//    TabLayout tabLayout;
-
-    @Bind(R.id.timeline)
-    SwipeRefreshLayout swipeRefreshLayout;
-
     @Bind(R.id.timeline_items)
     ListView timeLine;
 
     protected TimelineAdapter timelineAdapter;
 
-    //private SwipeRefreshLayout swipeRefreshLayout;
-
-    //private ListView timeLine;
-
     protected List<Report> reportCollection = new ArrayList<Report>();
-
-    // Number of pages in our ViewPager
-    private Integer NUM_PAGES = 3;
-
-    // The pager widget, which handles animation and allows swiping horizontally
-    //private ViewPager mPager;
-
-    // The pager adapter, which provides the pages to the view pager widget
-    private PagerAdapter mPagerAdapter;
 
     private String userDescriptionText;
 
@@ -141,7 +120,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private String bookMark;
 
-    private float originListHeight;
+    private ViewGroup.LayoutParams listViewParams;
 
     private int userId;
 
@@ -163,6 +142,8 @@ public class UserProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_profile);
 
         ButterKnife.bind(this);
+
+        LinearLayout profileHeader = (LinearLayout) getLayoutInflater().inflate(R.layout.user_profile_header, null);
 
         userId = getIntent().getExtras().getInt("USER_ID");
         userTitleText = getIntent().getExtras().getString("USER_TITLE");
@@ -285,56 +266,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
             }
         });
-
-        swipeRefreshLayout.setOnRefreshListener(
-                new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
-                        // This method performs the actual data-refresh operation.
-                        // The method calls setRefreshing(false) when it's finished.
-                        swipeRefreshLayout.setRefreshing(false);
-
-                        int headerHeight = profileMeta.getHeight() + profileStats.getHeight();
-
-                        ViewGroup.LayoutParams params = (ViewGroup.LayoutParams) swipeRefreshLayout.getLayoutParams();
-
-                        if (hasScrolled && swipeRefreshLayout.getHeight() > originListHeight) {
-
-                            //originListHeight = swipeRefreshLayout.getHeight();
-
-                            //hasScrolled = true;
-
-                            //params.height = swipeRefreshLayout.getHeight() - headerHeight;
-
-                            //swipeRefreshLayout.animate().translationY(headerHeight / 2);
-
-                            swipeRefreshLayout.animate().translationY(0);
-
-                            params.height = swipeRefreshLayout.getHeight() - headerHeight;
-
-                            hasScrolled = false;
-
-                        }
-
-                        swipeRefreshLayout.setLayoutParams(params);
-
-                        swipeRefreshLayout.requestLayout();
-
-                    }
-                }
-
-        );
-
-        // Set color of swipe refresh arrow animation
-
-        //swipeRefreshLayout.setColorSchemeResources(R.color.waterreporter_blue);
-
-        swipeRefreshLayout.setColorSchemeColors(0,0,0,0);
-
-        //swipeRefreshLayout.setProgressBackgroundColor(android.R.color.transparent);
-
-        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(ContextCompat.getColor(this, android.R.color.transparent));
 
     }
 
@@ -482,66 +413,66 @@ public class UserProfileActivity extends AppCompatActivity {
 
             }
 
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-                // Don't take any action on changed
-
-            }
-
         });
 
         timeLine.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
 
-                float y = timeLine.getY();
+                View mView = timeLine.getChildAt(0);
 
-                int motionEventAction = motionEvent.getAction();
+                int top = mView.getTop();
 
-                Log.d("event", motionEventAction + "");
+                switch (motionEvent.getAction()) {
 
-//                originListHeight = timeLine.getHeight();
+                    case MotionEvent.ACTION_MOVE:
 
-                String currentId = ((TextView) view.findViewById(R.id.tracker)).getText().toString();
+                        final Handler h = new Handler();
 
-                Log.d("id", currentId + "");
+                        final Runnable changeHeight = new Runnable() {
 
-                Log.d("bookmark", bookMark + "");
+                            @Override
+                            public void run() {
 
-                Log.d("offset", y + "");
+                                timeLine.setLayoutParams(listViewParams);
 
-                int headerHeight = profileMeta.getHeight() + profileStats.getHeight();
+                                timeLine.requestLayout();
 
-                ViewGroup.LayoutParams params = (ViewGroup.LayoutParams) swipeRefreshLayout.getLayoutParams();
+                            }
+                        };
 
-                if (!hasScrolled) {
+                        int headerHeight = profileMeta.getHeight() + profileStats.getHeight();
 
-                    originListHeight = swipeRefreshLayout.getHeight();
+                        listViewParams = (ViewGroup.LayoutParams) timeLine.getLayoutParams();
 
-                    hasScrolled = true;
+                        // see if top Y is at 0 and first visible position is at 0
+                        if (top == 0 && timeLine.getFirstVisiblePosition() == 0) {
 
-                    swipeRefreshLayout.animate().translationY(0 - headerHeight);
+                            timeLine.animate().translationY(0);
 
-                    params.height = swipeRefreshLayout.getHeight() + headerHeight;
+                            listViewParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+
+                            h.postDelayed(changeHeight, 500);
+
+                            hasScrolled = false;
+
+                        } else {
+
+                            if (!hasScrolled) {
+
+                                timeLine.animate().translationY(0 - headerHeight);
+
+                                listViewParams.height = timeLine.getHeight() + headerHeight;
+
+                                h.postDelayed(changeHeight, 0);
+
+                                hasScrolled = true;
+
+                            }
+
+                        }
 
                 }
-
-//                if (bookMark.equals(currentId) && motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-//
-//                    params.height = timeLine.getHeight() - headerHeight;
-//
-//                    timeLine.animate().translationY(headerHeight);
-//
-//                    //params.height = timeLine.getHeight() - headerHeight;
-//
-//                    hasScrolled = false;
-//
-//                }
-
-                swipeRefreshLayout.setLayoutParams(params);
-
-                swipeRefreshLayout.requestLayout();
 
                 return false;
 
@@ -714,55 +645,6 @@ public class UserProfileActivity extends AppCompatActivity {
         timeLine.setAdapter(timelineAdapter);
 
         attachScrollListener();
-
-    }
-
-    // A simple pager adapter that allows users to browse a person's feed and groups.
-    private class ProfilePagerAdapter extends FragmentPagerAdapter {
-
-        Context ctxt = null;
-
-        public ProfilePagerAdapter(Context ctxt, FragmentManager fm) {
-            super(fm);
-            this.ctxt = ctxt;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-
-            switch (position) {
-                case 0:
-                    return UserFeedFragment.newInstance(userId);
-                case 1:
-                    return UserGroupsFragment.newInstance(userId);
-                case 2:
-                    return UserGroupsFragment.newInstance(userId);
-                default:
-                    return null;
-            }
-
-        }
-
-        @Override
-        public int getCount() {
-            return NUM_PAGES;
-        }
-
-        @Override
-        public String getPageTitle(int position) {
-
-            switch (position) {
-                case 0:
-                    return "Reports";
-                case 1:
-                    return "Actions";
-                case 2:
-                    return "Groups";
-                default:
-                    return "Tab";
-            }
-
-        }
 
     }
 
