@@ -127,6 +127,8 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private String groupList;
 
+    private String complexQuery;
+
     private ViewGroup.LayoutParams listViewParams;
 
     private int userId;
@@ -224,9 +226,13 @@ public class UserProfileActivity extends AppCompatActivity {
 
         // Count reports with actions
 
-        countReports(buildQuery(false, new String[][]{
-                {"state", "eq", "closed"}
-        }), "state");
+        complexQuery = String.format("{\"filters\":[{\"or\":[{\"and\":[{\"name\":\"owner_id\",\"op\":\"eq\",\"val\":%s},{\"name\":\"state\",\"op\":\"eq\",\"val\":\"closed\"}]},{\"name\":\"closed_by\",\"op\":\"has\",\"val\":{\"name\":\"id\",\"op\":\"eq\",\"val\":%s}}]}],\"order_by\":[{\"field\":\"created\",\"direction\":\"desc\"}]}", userId, userId);
+
+//        countReports(buildQuery(false, new String[][]{
+//                {"state", "eq", "closed"}
+//        }), "state");
+
+        countReports(complexQuery, "state");
 
         // Retrieve the user's groups
 
@@ -245,6 +251,12 @@ public class UserProfileActivity extends AppCompatActivity {
         reportStat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                reportCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
+                reportCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
+
+                actionCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
+                actionCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
 
                 if (timeLine != null) {
 
@@ -272,6 +284,12 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 actionFocus = true;
 
+                actionCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
+                actionCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
+
+                reportCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
+                reportCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
+
                 if (timeLine != null) {
 
                     //timeLine.smoothScrollToPosition(0);
@@ -279,9 +297,10 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 }
 
-                fetchReports(10, 1, buildQuery(true, new String[][]{
-                        {"state", "eq", "closed"}
-                }), false, true);
+//                fetchReports(10, 1, buildQuery(true, new String[][]{
+//                        {"state", "eq", "closed"}
+//                }), false, true);
+                fetchReports(10, 1, complexQuery, false, true);
 
             }
         });
@@ -325,8 +344,12 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 switch (filterName) {
                     case "state":
-                        actionCount = count;
-                        actionCounter.setText(String.valueOf(actionCount));
+                        if (count > 0) {
+                            actionStat.setVisibility(View.VISIBLE);
+                            actionCount = count;
+                            actionCounter.setText(String.valueOf(actionCount));
+
+                        }
                         break;
                     default:
                         reportCount = count;
@@ -441,9 +464,10 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 if (actionFocus) {
 
-                    fetchReports(10, page, buildQuery(true, new String[][]{
-                            {"state", "eq", "closed"}
-                    }), false, false);
+//                    fetchReports(10, page, buildQuery(true, new String[][]{
+//                            {"state", "eq", "closed"}
+//                    }), false, false);
+                    fetchReports(10, page, complexQuery, false, false);
 
                 } else {
 

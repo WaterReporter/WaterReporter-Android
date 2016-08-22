@@ -140,7 +140,7 @@
                 android:paddingRight="0dp"
                 android:paddingTop="0dp"
                 android:text="0"
-                android:textColor="@color/material_blue_grey950"
+                android:textColor="@color/base_blue"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -155,7 +155,7 @@
                 android:paddingRight="0dp"
                 android:paddingTop="2dp"
                 android:text="Reports"
-                android:textColor="@color/material_blue_grey950"
+                android:textColor="@color/base_blue"
                 android:textSize="14sp" />
 
         </LinearLayout>
@@ -165,7 +165,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/actionCount"
@@ -239,20 +240,20 @@
     </LinearLayout>
 
     <!--<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--android:id="@+id/timeline"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
+    <!--android:id="@+id/timeline"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
 
-        <ListView
-            android:id="@+id/timeline_items"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="#FFFFFF"
-            android:dividerHeight="0dp"
-            android:fadingEdgeLength="0dp"
-            android:listSelector="@drawable/timeline_selector"
-            android:overScrollMode="never"
-            android:scrollbars="none" />
+    <ListView
+        android:id="@+id/timeline_items"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="#FFFFFF"
+        android:dividerHeight="0dp"
+        android:fadingEdgeLength="0dp"
+        android:listSelector="@drawable/timeline_selector"
+        android:overScrollMode="never"
+        android:scrollbars="none" />
 
     <!--</android.support.v4.widget.SwipeRefreshLayout>-->
 
