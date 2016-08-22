@@ -23,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -308,7 +309,7 @@ public class MapDetailActivity extends AppCompatActivity {
                 }
 
                 //convertView = inflater.inflate(R.layout.view_custom_marker, parent, false);
-                viewHolder.markerContainer = (RelativeLayout) convertView.findViewById(R.id.customMarker);
+                viewHolder.markerContainer = (FrameLayout) convertView.findViewById(R.id.customMarker);
                 viewHolder.image = (ImageView) convertView.findViewById(R.id.imageView);
                 viewHolder.actionBadge = (ImageView) convertView.findViewById(R.id.actionBadge);
                 //viewHolder.markerPin = (ImageView) convertView.findViewById(R.id.markerPin);
@@ -423,7 +424,7 @@ public class MapDetailActivity extends AppCompatActivity {
         }
 
         private static class ViewHolder {
-            RelativeLayout markerContainer;
+            FrameLayout markerContainer;
             ImageView image;
             ImageView actionBadge;
             //ImageView markerPin;
@@ -580,11 +581,11 @@ public class MapDetailActivity extends AppCompatActivity {
 
                 Log.v("list", reports.toString());
 
-                if (!reports.isEmpty()) {
+                //if (!reports.isEmpty()) {
 
                     onFetchSuccess(reports);
 
-                }
+                //}
 
             }
 

@@ -207,6 +207,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.viableindustries.waterreporter.MainActivity" />
         </activity>
+        <activity
+            android:name=".UserGroupsActivity"
+            android:label="@string/title_activity_user_groups"
+            android:parentActivityName=".UserProfileActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.viableindustries.waterreporter.UserProfileActivity" />
+        </activity>
     </application>
 
 </manifest>

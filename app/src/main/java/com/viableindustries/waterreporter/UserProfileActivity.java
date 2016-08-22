@@ -43,6 +43,7 @@ import com.viableindustries.waterreporter.data.QueryParams;
 import com.viableindustries.waterreporter.data.QuerySort;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportService;
+import com.viableindustries.waterreporter.data.UserGroupList;
 import com.viableindustries.waterreporter.data.UserService;
 
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import static java.lang.Boolean.TRUE;
 import static java.security.AccessController.getContext;
 
 public class UserProfileActivity extends AppCompatActivity {
@@ -95,6 +97,9 @@ public class UserProfileActivity extends AppCompatActivity {
     @Bind(R.id.actionStat)
     LinearLayout actionStat;
 
+    @Bind(R.id.groupStat)
+    LinearLayout groupStat;
+
     @Bind(R.id.profileMeta)
     LinearLayout profileMeta;
 
@@ -120,6 +125,8 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private String bookMark;
 
+    private String groupList;
+
     private ViewGroup.LayoutParams listViewParams;
 
     private int userId;
@@ -134,6 +141,8 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private boolean hasScrolled = false;
 
+    private boolean hasGroups = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -143,18 +152,28 @@ public class UserProfileActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        LinearLayout profileHeader = (LinearLayout) getLayoutInflater().inflate(R.layout.user_profile_header, null);
-
         userId = getIntent().getExtras().getInt("USER_ID");
         userTitleText = getIntent().getExtras().getString("USER_TITLE");
         userDescriptionText = getIntent().getExtras().getString("USER_DESCRIPTION");
         userNameText = getIntent().getExtras().getString("USER_NAME");
-        userOrganization = getIntent().getExtras().getString("USER_ORGANIZATION");
+        userOrganization = getIntent().getExtras().getString("USER_ORGANIZATION", "");
         userAvatarUrl = getIntent().getExtras().getString("USER_AVATAR");
+
+        Log.d("userOrg", userOrganization);
 
         userName.setText(userNameText);
 
-        userTitle.setText(userTitleText);
+        //userTitle.setText(userTitleText);
+
+        if (!userOrganization.isEmpty()) {
+
+            userTitle.setText(String.format("%s at %s", userTitleText, userOrganization));
+
+        } else {
+
+            userTitle.setText(userTitleText);
+
+        }
 
         userDescription.setText(userDescriptionText);
 
@@ -267,6 +286,23 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         });
 
+        groupStat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (hasGroups) {
+
+                    Intent intent = new Intent(UserProfileActivity.this, UserGroupsActivity.class);
+
+                    intent.putExtra("GENERIC_USER", TRUE);
+
+                    startActivity(intent);
+
+                }
+
+            }
+        });
+
     }
 
     protected void countReports(String query, final String filterName) {
@@ -343,13 +379,19 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
 
-                List<Organization> organizations = organizationCollectionResponse.getFeatures();
+                ArrayList<Organization> organizations = organizationCollectionResponse.getFeatures();
 
                 groupCount = organizations.size();
 
                 groupCounter.setText(String.valueOf(groupCount));
 
                 if (!organizations.isEmpty()) {
+
+                    hasGroups = true;
+
+                    groupList = organizations.toString();
+
+                    UserGroupList.setList(organizations);
 
                     for (Organization organization : organizations) {
 
@@ -413,71 +455,133 @@ public class UserProfileActivity extends AppCompatActivity {
 
             }
 
-        });
-
-        timeLine.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
 
-                View mView = timeLine.getChildAt(0);
+                if (scrollState == 0) {
 
-                int top = mView.getTop();
+                    View mView = timeLine.getChildAt(0);
 
-                switch (motionEvent.getAction()) {
+                    int top = mView.getTop();
 
-                    case MotionEvent.ACTION_MOVE:
+                    final Handler h = new Handler();
 
-                        final Handler h = new Handler();
+                    final Runnable changeHeight = new Runnable() {
 
-                        final Runnable changeHeight = new Runnable() {
+                        @Override
+                        public void run() {
 
-                            @Override
-                            public void run() {
+                            timeLine.setLayoutParams(listViewParams);
 
-                                timeLine.setLayoutParams(listViewParams);
+                            timeLine.requestLayout();
 
-                                timeLine.requestLayout();
+                        }
+                    };
 
-                            }
-                        };
+                    int headerHeight = profileMeta.getHeight() + profileStats.getHeight();
 
-                        int headerHeight = profileMeta.getHeight() + profileStats.getHeight();
+                    listViewParams = (ViewGroup.LayoutParams) timeLine.getLayoutParams();
 
-                        listViewParams = (ViewGroup.LayoutParams) timeLine.getLayoutParams();
+                    // see if top Y is at 0 and first visible position is at 0
+                    if (top == 0 && timeLine.getFirstVisiblePosition() == 0) {
 
-                        // see if top Y is at 0 and first visible position is at 0
-                        if (top == 0 && timeLine.getFirstVisiblePosition() == 0) {
+                        timeLine.animate().translationY(0);
 
-                            timeLine.animate().translationY(0);
+                        listViewParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
-                            listViewParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                        h.postDelayed(changeHeight, 500);
 
-                            h.postDelayed(changeHeight, 500);
+                        hasScrolled = false;
 
-                            hasScrolled = false;
+                    } else {
 
-                        } else {
+                        if (!hasScrolled) {
 
-                            if (!hasScrolled) {
+                            timeLine.animate().translationY(0 - headerHeight);
 
-                                timeLine.animate().translationY(0 - headerHeight);
+                            listViewParams.height = timeLine.getHeight() + headerHeight;
 
-                                listViewParams.height = timeLine.getHeight() + headerHeight;
+                            //listViewParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
 
-                                h.postDelayed(changeHeight, 0);
+                            h.postDelayed(changeHeight, 0);
 
-                                hasScrolled = true;
-
-                            }
+                            hasScrolled = true;
 
                         }
 
+                    }
+
                 }
 
-                return false;
-
             }
+
         });
+
+//        timeLine.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//
+//                View mView = timeLine.getChildAt(0);
+//
+//                int top = mView.getTop();
+//
+//                switch (motionEvent.getAction()) {
+//
+//                    case MotionEvent.ACTION_MOVE:
+//
+//                        final Handler h = new Handler();
+//
+//                        final Runnable changeHeight = new Runnable() {
+//
+//                            @Override
+//                            public void run() {
+//
+//                                timeLine.setLayoutParams(listViewParams);
+//
+//                                timeLine.requestLayout();
+//
+//                            }
+//                        };
+//
+//                        int headerHeight = profileMeta.getHeight() + profileStats.getHeight();
+//
+//                        listViewParams = (ViewGroup.LayoutParams) timeLine.getLayoutParams();
+//
+//                        // see if top Y is at 0 and first visible position is at 0
+//                        if (top == 0 && timeLine.getFirstVisiblePosition() == 0) {
+//
+//                            timeLine.animate().translationY(0);
+//
+//                            listViewParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+//
+//                            h.postDelayed(changeHeight, 500);
+//
+//                            hasScrolled = false;
+//
+//                        } else {
+//
+//                            if (!hasScrolled) {
+//
+//                                timeLine.animate().translationY(0 - headerHeight);
+//
+//                                listViewParams.height = timeLine.getHeight() + headerHeight;
+//
+//                                //listViewParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+//
+//                                h.postDelayed(changeHeight, 0);
+//
+//                                hasScrolled = true;
+//
+//                            }
+//
+//                        }
+//
+//                }
+//
+//                return false;
+//
+//            }
+//        });
 
     }
 
