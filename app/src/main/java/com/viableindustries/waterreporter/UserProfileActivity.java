@@ -165,8 +165,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
         userName.setText(userNameText);
 
-        //userTitle.setText(userTitleText);
-
         if (!userOrganization.isEmpty()) {
 
             userTitle.setText(String.format("%s at %s", userTitleText, userOrganization));
@@ -226,7 +224,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
         // Count reports with actions
 
-        complexQuery = String.format("{\"filters\":[{\"or\":[{\"and\":[{\"name\":\"owner_id\",\"op\":\"eq\",\"val\":%s},{\"name\":\"state\",\"op\":\"eq\",\"val\":\"closed\"}]},{\"name\":\"closed_by\",\"op\":\"has\",\"val\":{\"name\":\"id\",\"op\":\"eq\",\"val\":%s}}]}],\"order_by\":[{\"field\":\"created\",\"direction\":\"desc\"}]}", userId, userId);
+        complexQuery = String.format(getResources().getString(R.string.complex_actions_query), userId, userId);
 
 //        countReports(buildQuery(false, new String[][]{
 //                {"state", "eq", "closed"}
@@ -292,7 +290,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 if (timeLine != null) {
 
-                    //timeLine.smoothScrollToPosition(0);
                     timeLine.setSelection(0);
 
                 }
@@ -525,8 +522,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
                             listViewParams.height = timeLine.getHeight() + headerHeight;
 
-                            //listViewParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-
                             h.postDelayed(changeHeight, 0);
 
                             hasScrolled = true;
@@ -540,72 +535,6 @@ public class UserProfileActivity extends AppCompatActivity {
             }
 
         });
-
-//        timeLine.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//
-//                View mView = timeLine.getChildAt(0);
-//
-//                int top = mView.getTop();
-//
-//                switch (motionEvent.getAction()) {
-//
-//                    case MotionEvent.ACTION_MOVE:
-//
-//                        final Handler h = new Handler();
-//
-//                        final Runnable changeHeight = new Runnable() {
-//
-//                            @Override
-//                            public void run() {
-//
-//                                timeLine.setLayoutParams(listViewParams);
-//
-//                                timeLine.requestLayout();
-//
-//                            }
-//                        };
-//
-//                        int headerHeight = profileMeta.getHeight() + profileStats.getHeight();
-//
-//                        listViewParams = (ViewGroup.LayoutParams) timeLine.getLayoutParams();
-//
-//                        // see if top Y is at 0 and first visible position is at 0
-//                        if (top == 0 && timeLine.getFirstVisiblePosition() == 0) {
-//
-//                            timeLine.animate().translationY(0);
-//
-//                            listViewParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-//
-//                            h.postDelayed(changeHeight, 500);
-//
-//                            hasScrolled = false;
-//
-//                        } else {
-//
-//                            if (!hasScrolled) {
-//
-//                                timeLine.animate().translationY(0 - headerHeight);
-//
-//                                listViewParams.height = timeLine.getHeight() + headerHeight;
-//
-//                                //listViewParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-//
-//                                h.postDelayed(changeHeight, 0);
-//
-//                                hasScrolled = true;
-//
-//                            }
-//
-//                        }
-//
-//                }
-//
-//                return false;
-//
-//            }
-//        });
 
     }
 
@@ -731,8 +660,6 @@ public class UserProfileActivity extends AppCompatActivity {
                     populateTimeline(reportCollection);
 
                 }
-
-                //swipeRefreshLayout.setRefreshing(false);
 
             }
 
