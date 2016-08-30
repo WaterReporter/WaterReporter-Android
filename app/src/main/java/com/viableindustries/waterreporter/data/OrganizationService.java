@@ -4,6 +4,7 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.http.GET;
 import retrofit.http.Header;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
@@ -24,5 +25,29 @@ public interface OrganizationService {
                                  @Query("results_per_page") int numResults,
                                  @Query("q") String q,
                                  Callback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
+
+    @GET("/data/organization/{organization}")
+    public void getOrganization(@Header("Authorization") String authorization,
+                                @Header("Content-Type") String contentType,
+                                @Path("organization") int organizationId,
+                                @Query("q") String q,
+                                Callback<Organization> organizationCallback);
+
+    @GET("/data/organization/{organization}/reports")
+    public void getOrganizationReports(@Header("Authorization") String authorization,
+                                       @Header("Content-Type") String contentType,
+                                       @Path("organization") int organizationId,
+                                       @Query("page") int page,
+                                       @Query("results_per_page") int numResults,
+                                       @Query("q") String q,
+                                       Callback<FeatureCollection> featureCollectionCallback);
+
+    @GET("/data/organization/{organization}/users")
+    public void getOrganizationMembers(@Header("Authorization") String authorization,
+                                       @Header("Content-Type") String contentType,
+                                       @Path("organization") int organizationId,
+                                       @Query("results_per_page") int numResults,
+                                       @Query("q") String q,
+                                       Callback<UserFeatureCollection> userFeatureCollectionCallback);
 
 }

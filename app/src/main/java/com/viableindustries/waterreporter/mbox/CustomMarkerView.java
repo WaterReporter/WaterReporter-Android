@@ -2,6 +2,7 @@ package com.viableindustries.waterreporter.mbox;
 
 import com.mapbox.mapboxsdk.annotations.BaseMarkerViewOptions;
 import com.mapbox.mapboxsdk.annotations.MarkerView;
+import com.viableindustries.waterreporter.data.Report;
 
 import java.util.List;
 
@@ -10,6 +11,8 @@ import java.util.List;
  */
 
 public class CustomMarkerView extends MarkerView {
+
+//    private Report report;
 
     private int reportId;
     private String reportDescription;
@@ -41,6 +44,7 @@ public class CustomMarkerView extends MarkerView {
         this.userAvatar = userAvatar;
         this.status = status;
         this.inFocus = inFocus;
+//        this.report = report;
     }
 
     public String getThumbNail() {
@@ -86,5 +90,7 @@ public class CustomMarkerView extends MarkerView {
     public String getStatus() { return status; }
 
     public int isInFocus() { return inFocus; }
+
+//    public Report getReport() { return  report; }
 
 }

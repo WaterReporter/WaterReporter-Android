@@ -8,12 +8,15 @@ import com.mapbox.mapboxsdk.annotations.BaseMarkerViewOptions;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.viableindustries.waterreporter.data.Report;
 
 /**
  * Created by brendanmcintyre on 8/3/16.
  */
 
 public class CustomMarkerViewOptions extends BaseMarkerViewOptions<CustomMarkerView, CustomMarkerViewOptions> {
+
+//    private Report report;
 
     private int reportId;
     private String reportDescription;

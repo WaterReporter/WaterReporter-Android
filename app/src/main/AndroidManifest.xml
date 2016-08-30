@@ -216,6 +216,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.viableindustries.waterreporter.UserProfileActivity" />
         </activity>
+        <activity
+            android:name=".OrganizationProfileActivity"
+            android:label="@string/title_activity_organization_profile"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>

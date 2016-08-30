@@ -253,30 +253,30 @@ public class MapDetailActivity extends AppCompatActivity {
         mapView.onDestroy();
     }
 
-    public void getDirections(View view) {
-
-        // Build the intent
-        //Uri location = Uri.parse("geo:0,0?q=1600+Amphitheatre+Parkway,+Mountain+View,+California");
-
-        //Uri location = Uri.parse(String.format("geo:%s,%s?z=14", latitude, longitude)); // z param is zoom level
-
-        Uri location = Uri.parse(String.format("google.navigation:q=%s,%s", latitude, longitude));
-
-        //Uri location = Uri.parse("http://maps.google.com/maps?saddr=20.344,34.34&daddr=20.5666,45.345"));
-
-        Intent mapIntent = new Intent(Intent.ACTION_VIEW, location);
-
-        // Verify it resolves
-        PackageManager packageManager = getPackageManager();
-        List<ResolveInfo> activities = packageManager.queryIntentActivities(mapIntent, 0);
-        boolean isIntentSafe = activities.size() > 0;
-
-        // Start an activity if it's safe
-        if (isIntentSafe) {
-            startActivity(mapIntent);
-        }
-
-    }
+//    public void getDirections(View view) {
+//
+//        // Build the intent
+//        //Uri location = Uri.parse("geo:0,0?q=1600+Amphitheatre+Parkway,+Mountain+View,+California");
+//
+//        //Uri location = Uri.parse(String.format("geo:%s,%s?z=14", latitude, longitude)); // z param is zoom level
+//
+//        Uri location = Uri.parse(String.format("google.navigation:q=%s,%s", latitude, longitude));
+//
+//        //Uri location = Uri.parse("http://maps.google.com/maps?saddr=20.344,34.34&daddr=20.5666,45.345"));
+//
+//        Intent mapIntent = new Intent(Intent.ACTION_VIEW, location);
+//
+//        // Verify it resolves
+//        PackageManager packageManager = getPackageManager();
+//        List<ResolveInfo> activities = packageManager.queryIntentActivities(mapIntent, 0);
+//        boolean isIntentSafe = activities.size() > 0;
+//
+//        // Start an activity if it's safe
+//        if (isIntentSafe) {
+//            startActivity(mapIntent);
+//        }
+//
+//    }
 
     // Adapter for our custom marker view
 

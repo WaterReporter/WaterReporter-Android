@@ -21,9 +21,12 @@ import android.widget.TextView;
 
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.Organization;
+import com.viableindustries.waterreporter.data.OrganizationProfileListener;
 import com.viableindustries.waterreporter.data.Report;
+import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.ReportPhoto;
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.UserProfileListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -60,7 +63,8 @@ public class TimelineAdapter extends ArrayAdapter {
         TextView reportWatershed;
         TextView reportComments;
         TextView reportCaption;
-        TextView reportGroups;
+        //        TextView reportGroups;
+        LinearLayout reportGroups;
         ImageView ownerAvatar;
         ImageView reportThumb;
         RelativeLayout actionBadge;
@@ -69,14 +73,6 @@ public class TimelineAdapter extends ArrayAdapter {
         RelativeLayout directionsIcon;
         TextView tracker;
     }
-
-//    @Override
-//    public long getItemId(int position) {
-//
-//        Report report = (Report) getItem(position);
-//
-//        return report.id;
-//    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -94,8 +90,9 @@ public class TimelineAdapter extends ArrayAdapter {
             viewHolder.reportWatershed = (TextView) convertView.findViewById(R.id.report_watershed);
             viewHolder.reportComments = (TextView) convertView.findViewById(R.id.comment_count);
             viewHolder.reportCaption = (TextView) convertView.findViewById(R.id.report_caption);
-            viewHolder.reportGroups = (TextView) convertView.findViewById(R.id.report_groups);
+//            viewHolder.reportGroups = (TextView) convertView.findViewById(R.id.report_groups);
             viewHolder.ownerAvatar = (ImageView) convertView.findViewById(R.id.owner_avatar);
+            viewHolder.reportGroups = (LinearLayout) convertView.findViewById(R.id.reportGroups);
             viewHolder.reportThumb = (ImageView) convertView.findViewById(R.id.report_thumb);
             viewHolder.actionBadge = (RelativeLayout) convertView.findViewById(R.id.action_badge);
             viewHolder.reportStub = (LinearLayout) convertView.findViewById(R.id.report_stub);
@@ -141,6 +138,8 @@ public class TimelineAdapter extends ArrayAdapter {
             @Override
             public void onClick(View v) {
 
+                ReportHolder.setReport(feature);
+
                 Intent intent = new Intent(context, MapDetailActivity.class);
 
                 Geometry geometry = feature.geometry.geometries.get(0);
@@ -152,7 +151,6 @@ public class TimelineAdapter extends ArrayAdapter {
 
                 intent.putExtra("REPORT_ID", feature.id);
                 intent.putExtra("THUMBNAIL_URL", feature.properties.images.get(0).properties.icon_retina);
-                //intent.putExtra("THUMBNAIL_URL", ContextCompat.getDrawable(getContext(), R.drawable.anchor_marker));
                 intent.putExtra("FULL_IMAGE_URL", feature.properties.images.get(0).properties.square_retina);
                 intent.putExtra("REPORT_CREATED", creationDate);
                 intent.putExtra("REPORT_DESCRIPTION", feature.properties.report_description.trim());
@@ -168,23 +166,9 @@ public class TimelineAdapter extends ArrayAdapter {
             }
         });
 
-        viewHolder.ownerAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        viewHolder.ownerAvatar.setOnClickListener(new UserProfileListener(getContext(), feature.properties.owner));
 
-                Intent intent = new Intent(context, UserProfileActivity.class);
-
-                intent.putExtra("USER_ID", feature.properties.owner_id);
-                intent.putExtra("USER_TITLE", feature.properties.owner.properties.title);
-                intent.putExtra("USER_DESCRIPTION", feature.properties.owner.properties.description);
-                intent.putExtra("USER_NAME", String.format("%s %s", feature.properties.owner.properties.first_name, feature.properties.owner.properties.last_name));
-                intent.putExtra("USER_ORGANIZATION", feature.properties.owner.properties.organization_name);
-                intent.putExtra("USER_AVATAR", feature.properties.owner.properties.picture);
-
-                context.startActivity(intent);
-
-            }
-        });
+        viewHolder.reportOwner.setOnClickListener(new UserProfileListener(getContext(), feature.properties.owner));
 
         viewHolder.directionsIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,8 +193,6 @@ public class TimelineAdapter extends ArrayAdapter {
                     getContext().startActivity(mapIntent);
                 }
 
-                //getDirections(geometry.coordinates.get(1), geometry.coordinates.get(0));
-
             }
         });
 
@@ -219,7 +201,54 @@ public class TimelineAdapter extends ArrayAdapter {
         viewHolder.reportOwner.setText(String.format("%s %s", feature.properties.owner.properties.first_name, feature.properties.owner.properties.last_name));
         viewHolder.reportWatershed.setText(watershedName);
         viewHolder.reportCaption.setText(feature.properties.report_description.trim());
-        viewHolder.reportGroups.setText(groupList);
+//        viewHolder.reportGroups.setText(groupList);
+
+        // Add clickable organization views, if any
+
+        viewHolder.reportGroups.setVisibility(View.VISIBLE);
+
+        viewHolder.reportGroups.removeAllViews();
+
+        if (feature.properties.groups.size() > 0) {
+
+//            viewHolder.reportGroups.removeAllViews();
+
+//            RelatedGroupAdapter adapter = new RelatedGroupAdapter(getContext(), feature.properties.groups);
+//
+//            final int adapterCount = adapter.getCount();
+//
+//            for (int i = 0; i < adapterCount; i++) {
+//
+//                View item = adapter.getView(i, null, null);
+//
+//                viewHolder.reportGroups.addView(item);
+//
+//            }
+//            RelatedGroupAdapter adapter = new RelatedGroupAdapter(getContext(), feature.properties.groups);
+
+//            final int adapterCount = adapter.getCount();
+
+            for (Organization organization : feature.properties.groups) {
+
+//                View item = adapter.getView(i, null, null);
+
+                TextView groupName = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.related_group_item, parent, false);
+
+                groupName.setText(organization.properties.name);
+
+                groupName.setTag(organization);
+
+                groupName.setOnClickListener(new OrganizationProfileListener(getContext(), organization));
+
+                viewHolder.reportGroups.addView(groupName);
+
+            }
+
+        } else {
+
+            viewHolder.reportGroups.setVisibility(View.GONE);
+
+        }
 
         // Display badge if report is closed
         if (feature.properties.state.equals("closed")) {

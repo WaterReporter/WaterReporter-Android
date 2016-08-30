@@ -38,14 +38,17 @@ import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
+import com.viableindustries.waterreporter.data.OrganizationHolder;
+import com.viableindustries.waterreporter.data.OrganizationMemberList;
+import com.viableindustries.waterreporter.data.OrganizationService;
 import com.viableindustries.waterreporter.data.QueryFilter;
 import com.viableindustries.waterreporter.data.QueryParams;
 import com.viableindustries.waterreporter.data.QuerySort;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.User;
+import com.viableindustries.waterreporter.data.UserFeatureCollection;
 import com.viableindustries.waterreporter.data.UserGroupList;
-import com.viableindustries.waterreporter.data.UserHolder;
 import com.viableindustries.waterreporter.data.UserService;
 
 import java.util.ArrayList;
@@ -61,19 +64,16 @@ import retrofit.client.Response;
 import static java.lang.Boolean.TRUE;
 import static java.security.AccessController.getContext;
 
-public class UserProfileActivity extends AppCompatActivity {
+public class OrganizationProfileActivity extends AppCompatActivity {
 
-    @Bind(R.id.userName)
-    TextView userName;
+    @Bind(R.id.organizationName)
+    TextView organizationName;
 
-    @Bind(R.id.userTitle)
-    TextView userTitle;
+    @Bind(R.id.organizationDescription)
+    TextView organizationDescription;
 
-    @Bind(R.id.userDescription)
-    TextView userDescription;
-
-    @Bind(R.id.userAvatar)
-    ImageView userAvatar;
+    @Bind(R.id.organizationLogo)
+    ImageView organizationLogo;
 
     @Bind(R.id.reportCount)
     TextView reportCounter;
@@ -81,8 +81,8 @@ public class UserProfileActivity extends AppCompatActivity {
     @Bind(R.id.actionCount)
     TextView actionCounter;
 
-    @Bind(R.id.groupCount)
-    TextView groupCounter;
+    @Bind(R.id.peopleCount)
+    TextView peopleCounter;
 
     @Bind(R.id.reportCountLabel)
     TextView reportCountLabel;
@@ -90,8 +90,8 @@ public class UserProfileActivity extends AppCompatActivity {
     @Bind(R.id.actionCountLabel)
     TextView actionCountLabel;
 
-    @Bind(R.id.groupCountLabel)
-    TextView groupCountLabel;
+    @Bind(R.id.peopleCountLabel)
+    TextView peopleCountLabel;
 
     @Bind(R.id.reportStat)
     LinearLayout reportStat;
@@ -99,8 +99,8 @@ public class UserProfileActivity extends AppCompatActivity {
     @Bind(R.id.actionStat)
     LinearLayout actionStat;
 
-    @Bind(R.id.groupStat)
-    LinearLayout groupStat;
+    @Bind(R.id.peopleStat)
+    LinearLayout peopleStat;
 
     @Bind(R.id.profileMeta)
     LinearLayout profileMeta;
@@ -115,164 +115,127 @@ public class UserProfileActivity extends AppCompatActivity {
 
     protected List<Report> reportCollection = new ArrayList<Report>();
 
-    private String userDescriptionText;
+    private String organizationDescriptionText;
 
-    private String userTitleText;
+    private String organizationNameText;
 
-    private String userNameText;
-
-    private String userAvatarUrl;
-
-    private String userOrganization;
-
-    private String bookMark;
-
-    private String groupList;
+    private String organizationLogoUrl;
 
     private String complexQuery;
 
     private ViewGroup.LayoutParams listViewParams;
 
-    private int userId;
+    private int organizationId;
 
     private int actionCount = 0;
 
     private int reportCount = 99999999;
 
-    private int groupCount = 0;
+    private int memberCount = 0;
 
     private boolean actionFocus = false;
 
     private boolean hasScrolled = false;
 
-    private boolean hasGroups = false;
+    private boolean hasMembers = false;
+
+    private Context context;
+
+    private Organization organization;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_user_profile);
+        setContentView(R.layout.activity_organization_profile);
 
         ButterKnife.bind(this);
 
-        User user = UserHolder.getUser();
+        context = this;
 
-        userId = user.properties.id;
-        userTitleText = user.properties.title;
-        userDescriptionText = user.properties.description;
-        userNameText = String.format("%s %s", user.properties.first_name, user.properties.last_name);
-        userOrganization = user.properties.organization_name;
-        userAvatarUrl = user.properties.picture;
+        organization = OrganizationHolder.getOrganization();
 
-//        userId = getIntent().getExtras().getInt("USER_ID");
-//        userTitleText = getIntent().getExtras().getString("USER_TITLE");
-//        userDescriptionText = getIntent().getExtras().getString("USER_DESCRIPTION");
-//        userNameText = getIntent().getExtras().getString("USER_NAME");
-//        userOrganization = getIntent().getExtras().getString("USER_ORGANIZATION", "");
-//        userAvatarUrl = getIntent().getExtras().getString("USER_AVATAR");
+//        organizationId = getIntent().getExtras().getInt("ORGANIZATION_ID");
+//        organizationDescriptionText = getIntent().getExtras().getString("USER_DESCRIPTION");
+//        organizationNameText = getIntent().getExtras().getString("USER_NAME");
+//        organizationLogoUrl = getIntent().getExtras().getString("USER_AVATAR");
 
-//        Log.d("userOrg", userOrganization);
+        organizationId = organization.id;
+        organizationDescriptionText = organization.properties.description;
+        organizationNameText = organization.properties.name;
+        organizationLogoUrl = organization.properties.picture;
 
-        userName.setText(userNameText);
-
-//        if (userOrganization) {
-//
-//            userTitle.setText(String.format("%s at %s", userTitleText, userOrganization));
-//
-//        } else {
-//
-//            userTitle.setText(userTitleText);
-//
-//        }
-        try {
-
-            if (!userOrganization.isEmpty()) {
-//
-                userTitle.setText(String.format("%s at %s", userTitleText, userOrganization));
-
-            } else {
-
-                userTitle.setText(userTitleText);
-
-            }
-
-        } catch (NullPointerException ne) {
-
-            userTitle.setVisibility(View.GONE);
-
-        }
+        organizationName.setText(organizationNameText);
 
         try {
 
-            userDescription.setText(userDescriptionText);
+            organizationDescription.setText(organizationDescriptionText);
 
-        } catch (NullPointerException ne) {
+            organizationDescription.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-            userDescription.setVisibility(View.GONE);
+                    ObjectAnimator animation;
 
-        }
+                    int duration;
 
-//        userDescription.setText(userDescriptionText);
+                    int maxLines = TextViewCompat.getMaxLines(organizationDescription);
 
-        userDescription.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                    if (maxLines == 2) {
 
-                ObjectAnimator animation;
+                        organizationDescription.setEllipsize(null);
 
-                int duration;
+                        animation = ObjectAnimator.ofInt(
+                                organizationDescription,
+                                "maxLines",
+                                2,
+                                20);
 
-                int maxLines = TextViewCompat.getMaxLines(userDescription);
+                        duration = 350;
 
-                if (maxLines == 2) {
+                    } else {
 
-                    userDescription.setEllipsize(null);
+                        organizationDescription.setEllipsize(TextUtils.TruncateAt.END);
 
-                    animation = ObjectAnimator.ofInt(
-                            userDescription,
-                            "maxLines",
-                            2,
-                            20);
+                        animation = ObjectAnimator.ofInt(
+                                organizationDescription,
+                                "maxLines",
+                                20,
+                                2);
 
-                    duration = 350;
+                        duration = 200;
 
-                } else {
+                    }
 
-                    userDescription.setEllipsize(TextUtils.TruncateAt.END);
-
-                    animation = ObjectAnimator.ofInt(
-                            userDescription,
-                            "maxLines",
-                            20,
-                            2);
-
-                    duration = 200;
+                    animation.setDuration(duration);
+                    animation.setInterpolator(new LinearOutSlowInInterpolator());
+                    animation.start();
 
                 }
+            });
 
-                animation.setDuration(duration);
-                animation.setInterpolator(new LinearOutSlowInInterpolator());
-                animation.start();
+        } catch (NullPointerException ne) {
 
-            }
-        });
+            organizationDescription.setVisibility(View.GONE);
 
-        Picasso.with(this).load(userAvatarUrl).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(userAvatar);
+        }
+
+        Picasso.with(this).load(organizationLogoUrl).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(organizationLogo);
 
         // Count reports with actions
 
-        complexQuery = String.format(getResources().getString(R.string.complex_actions_query), userId, userId);
+//        complexQuery = String.format(getResources().getString(R.string.complex_actions_query), organizationId, organizationId);
 
-//        countReports(buildQuery(false, new String[][]{
-//                {"state", "eq", "closed"}
-//        }), "state");
+        complexQuery = buildQuery(true, new String[][]{
+                {"state", "eq", "closed"}
+        });
 
         countReports(complexQuery, "state");
 
         // Retrieve the user's groups
 
-        fetchUserGroups(userId);
+        fetchOrganizationMembers(organizationId);
 
         // Retrieve first batch of user's reports
 
@@ -288,17 +251,16 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                reportCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
-                reportCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
+                reportCounter.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
+                reportCountLabel.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
 
-                actionCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
-                actionCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
+                actionCounter.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
+                actionCountLabel.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
 
                 if (timeLine != null) {
 
                     if (!actionFocus) {
 
-                        //timeLine.smoothScrollToPosition(0);
                         timeLine.setSelection(0);
 
                     } else {
@@ -320,11 +282,11 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 actionFocus = true;
 
-                actionCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
-                actionCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
+                actionCounter.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
+                actionCountLabel.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
 
-                reportCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
-                reportCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
+                reportCounter.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
+                reportCountLabel.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
 
                 if (timeLine != null) {
 
@@ -332,30 +294,27 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 }
 
-//                fetchReports(10, 1, buildQuery(true, new String[][]{
-//                        {"state", "eq", "closed"}
-//                }), false, true);
                 fetchReports(10, 1, complexQuery, false, true);
 
             }
         });
 
-        groupStat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (hasGroups) {
-
-                    Intent intent = new Intent(UserProfileActivity.this, UserGroupsActivity.class);
-
-                    intent.putExtra("GENERIC_USER", TRUE);
-
-                    startActivity(intent);
-
-                }
-
-            }
-        });
+//        peopleStat.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                if (hasMembers) {
+//
+//                    Intent intent = new Intent(context, UserGroupsActivity.class);
+//
+//                    intent.putExtra("GENERIC_USER", TRUE);
+//
+//                    startActivity(intent);
+//
+//                }
+//
+//            }
+//        });
 
     }
 
@@ -409,7 +368,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
                     if (status == 403) {
 
-                        startActivity(new Intent(UserProfileActivity.this, SignInActivity.class));
+                        startActivity(new Intent(context, SignInActivity.class));
 
                     }
 
@@ -421,7 +380,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
     }
 
-    protected void fetchUserGroups(int userId) {
+    protected void fetchOrganizationMembers(int organizationId) {
 
         final SharedPreferences prefs =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
@@ -430,32 +389,24 @@ public class UserProfileActivity extends AppCompatActivity {
 
         Log.d("", access_token);
 
-        UserService service = UserService.restAdapter.create(UserService.class);
+        OrganizationService service = OrganizationService.restAdapter.create(OrganizationService.class);
 
-        service.getUserOrganization(access_token, "application/json", userId, new Callback<OrganizationFeatureCollection>() {
+        service.getOrganizationMembers(access_token, "application/json", organizationId, 25, null, new Callback<UserFeatureCollection>() {
 
             @Override
-            public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
+            public void success(UserFeatureCollection userFeatureCollection, Response response) {
 
-                ArrayList<Organization> organizations = organizationCollectionResponse.getFeatures();
+                ArrayList<User> members = userFeatureCollection.getFeatures();
 
-                groupCount = organizations.size();
+                memberCount = members.size();
 
-                groupCounter.setText(String.valueOf(groupCount));
+                peopleCounter.setText(String.valueOf(memberCount));
 
-                if (!organizations.isEmpty()) {
+                if (!members.isEmpty()) {
 
-                    hasGroups = true;
+                    hasMembers = true;
 
-                    groupList = organizations.toString();
-
-                    UserGroupList.setList(organizations);
-
-                    for (Organization organization : organizations) {
-
-                        Log.d("orgName", organization.properties.name);
-
-                    }
+                    OrganizationMemberList.setList(members);
 
                 }
 
@@ -476,7 +427,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
                     if (status == 403) {
 
-                        startActivity(new Intent(UserProfileActivity.this, SignInActivity.class));
+                        startActivity(new Intent(context, SignInActivity.class));
 
                     }
 
@@ -498,10 +449,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 // Triggered only when new data needs to be appended to the list
 
                 if (actionFocus) {
-
-//                    fetchReports(10, page, buildQuery(true, new String[][]{
-//                            {"state", "eq", "closed"}
-//                    }), false, false);
+                    
                     fetchReports(10, page, complexQuery, false, false);
 
                 } else {
@@ -596,7 +544,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
         List<QueryFilter> queryFilters = new ArrayList<QueryFilter>();
 
-        QueryFilter userFilter = new QueryFilter("owner_id", "eq", userId);
+        QueryFilter userFilter = new QueryFilter("groups__id", "any", organizationId);
 
         queryFilters.add(userFilter);
 
@@ -653,12 +601,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 if (!reports.isEmpty()) {
 
-                    if (bookMark == null) {
-
-                        bookMark = String.valueOf(reports.get(0).id);
-
-                    }
-
                     reportCollection.addAll(reports);
 
                     if (replace) {
@@ -683,10 +625,10 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 } else {
 
-                    CharSequence text = "Your report collection is empty. Tap on the plus sign in the menu bar to start a new report.";
+                    CharSequence text = "The organization is not affiliated with any reports.";
                     int duration = Toast.LENGTH_LONG;
 
-                    Toast toast = Toast.makeText(UserProfileActivity.this, text, duration);
+                    Toast toast = Toast.makeText(context, text, duration);
                     toast.show();
 
                 }
@@ -704,8 +646,6 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public void failure(RetrofitError error) {
 
-                //swipeRefreshLayout.setRefreshing(false);
-
                 if (error == null) return;
 
                 Response errorResponse = error.getResponse();
@@ -718,7 +658,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
                     if (status == 403) {
 
-                        startActivity(new Intent(UserProfileActivity.this, SignInActivity.class));
+                        startActivity(new Intent(context, SignInActivity.class));
 
                     }
 
@@ -732,7 +672,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private void populateTimeline(List list) {
 
-        timelineAdapter = new TimelineAdapter(UserProfileActivity.this, list);
+        timelineAdapter = new TimelineAdapter(context, list);
 
         // Attach the adapter to a ListView
         timeLine.setAdapter(timelineAdapter);
@@ -756,7 +696,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
         super.onDestroy();
 
-        Picasso.with(this).cancelRequest(userAvatar);
+        Picasso.with(this).cancelRequest(organizationLogo);
 
         ButterKnife.unbind(this);
 

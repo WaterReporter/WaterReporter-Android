@@ -124,5 +124,6 @@
     <string name="title_activity_user_groups">UserGroupsActivity</string>
 
     <string name="complex_actions_query" formatted="false">{\"filters\":[{\"or\":[{\"and\":[{\"name\":\"owner_id\",\"op\":\"eq\",\"val\":%d},{\"name\":\"state\",\"op\":\"eq\",\"val\":\"closed\"}]},{\"name\":\"closed_by\",\"op\":\"has\",\"val\":{\"name\":\"id\",\"op\":\"eq\",\"val\":%d}}]}],\"order_by\":[{\"field\":\"created\",\"direction\":\"desc\"}]}</string>
+    <string name="title_activity_organization_profile">OrganizationProfileActivity</string>
 
 </resources>
