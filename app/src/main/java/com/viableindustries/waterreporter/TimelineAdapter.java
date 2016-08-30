@@ -63,7 +63,6 @@ public class TimelineAdapter extends ArrayAdapter {
         TextView reportWatershed;
         TextView reportComments;
         TextView reportCaption;
-        //        TextView reportGroups;
         LinearLayout reportGroups;
         ImageView ownerAvatar;
         ImageView reportThumb;
@@ -90,7 +89,6 @@ public class TimelineAdapter extends ArrayAdapter {
             viewHolder.reportWatershed = (TextView) convertView.findViewById(R.id.report_watershed);
             viewHolder.reportComments = (TextView) convertView.findViewById(R.id.comment_count);
             viewHolder.reportCaption = (TextView) convertView.findViewById(R.id.report_caption);
-//            viewHolder.reportGroups = (TextView) convertView.findViewById(R.id.report_groups);
             viewHolder.ownerAvatar = (ImageView) convertView.findViewById(R.id.owner_avatar);
             viewHolder.reportGroups = (LinearLayout) convertView.findViewById(R.id.reportGroups);
             viewHolder.reportThumb = (ImageView) convertView.findViewById(R.id.report_thumb);
@@ -200,8 +198,18 @@ public class TimelineAdapter extends ArrayAdapter {
         viewHolder.reportDate.setText(creationDate);
         viewHolder.reportOwner.setText(String.format("%s %s", feature.properties.owner.properties.first_name, feature.properties.owner.properties.last_name));
         viewHolder.reportWatershed.setText(watershedName);
-        viewHolder.reportCaption.setText(feature.properties.report_description.trim());
-//        viewHolder.reportGroups.setText(groupList);
+
+        if (feature.properties.report_description.length() > 0) {
+
+            viewHolder.reportCaption.setVisibility(View.VISIBLE);
+
+            viewHolder.reportCaption.setText(feature.properties.report_description.trim());
+
+        } else {
+
+            viewHolder.reportCaption.setVisibility(View.GONE);
+
+        }
 
         // Add clickable organization views, if any
 
@@ -211,26 +219,7 @@ public class TimelineAdapter extends ArrayAdapter {
 
         if (feature.properties.groups.size() > 0) {
 
-//            viewHolder.reportGroups.removeAllViews();
-
-//            RelatedGroupAdapter adapter = new RelatedGroupAdapter(getContext(), feature.properties.groups);
-//
-//            final int adapterCount = adapter.getCount();
-//
-//            for (int i = 0; i < adapterCount; i++) {
-//
-//                View item = adapter.getView(i, null, null);
-//
-//                viewHolder.reportGroups.addView(item);
-//
-//            }
-//            RelatedGroupAdapter adapter = new RelatedGroupAdapter(getContext(), feature.properties.groups);
-
-//            final int adapterCount = adapter.getCount();
-
             for (Organization organization : feature.properties.groups) {
-
-//                View item = adapter.getView(i, null, null);
 
                 TextView groupName = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.related_group_item, parent, false);
 

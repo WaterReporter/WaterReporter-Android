@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:paddingBottom="0dp"
     android:paddingLeft="0dp"
-    android:paddingRight="16dp"
+    android:paddingRight="12dp"
     android:paddingTop="2dp"
     android:textColor="@color/gray_186"
     android:textSize="12sp" />

@@ -44,51 +44,31 @@ import retrofit.client.Response;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
-public class UserGroupsActivity extends AppCompatActivity {
-
-    @Bind(R.id.search_box)
-    EditText listFilter;
+public class OrganizationMembersActivity extends AppCompatActivity {
 
     @Bind(R.id.list)
     ListView listView;
-
-    private boolean generic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_user_groups);
+        setContentView(R.layout.activity_organization_members);
 
         ButterKnife.bind(this);
 
-        generic = getIntent().getExtras().getBoolean("GENERIC_USER", TRUE);
+        ArrayList<User> users = OrganizationMemberList.getList();
 
-        //assert getSupportActionBar() != null;
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ArrayList<Organization> organizations = UserGroupList.getList();
-
-        Collections.sort(organizations, new Comparator<Organization>() {
+        Collections.sort(users, new Comparator<User>() {
             @Override
-            public int compare(Organization organization1, Organization organization2) {
-                return organization1.properties.name.compareTo(organization2.properties.name);
+            public int compare(User user1, User user2) {
+                return user1.properties.last_name.compareTo(user2.properties.last_name);
             }
         });
 
-        populateOrganizations(organizations);
+        populateUsers(users);
 
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        MenuInflater menuInflater = getMenuInflater();
-
-        menuInflater.inflate(R.menu.organization_list, menu);
-
-        return super.onCreateOptionsMenu(menu);
 
     }
 
@@ -103,39 +83,11 @@ public class UserGroupsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void populateOrganizations(ArrayList<Organization> orgs) {
+    private void populateUsers(ArrayList<User> users) {
 
-        final OrganizationListAdapter adapter = new OrganizationListAdapter(this, orgs, true);
+        final UserListAdapter adapter = new UserListAdapter(this, users, true);
 
         listView.setAdapter(adapter);
-
-        if (!generic) {
-
-            listFilter.setVisibility(View.VISIBLE);
-
-            listFilter.addTextChangedListener(new TextWatcher() {
-
-                public void afterTextChanged(Editable s) {
-                }
-
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                    Log.d("filter", s.toString());
-
-                    adapter.getFilter().filter(s.toString());
-
-                }
-
-            });
-
-            // Enable ListView filtering
-
-            listView.setTextFilterEnabled(true);
-
-        }
 
     }
 

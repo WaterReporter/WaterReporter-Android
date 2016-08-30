@@ -225,8 +225,6 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         // Count reports with actions
 
-//        complexQuery = String.format(getResources().getString(R.string.complex_actions_query), organizationId, organizationId);
-
         complexQuery = buildQuery(true, new String[][]{
                 {"state", "eq", "closed"}
         });
@@ -299,22 +297,22 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             }
         });
 
-//        peopleStat.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                if (hasMembers) {
-//
-//                    Intent intent = new Intent(context, UserGroupsActivity.class);
-//
+        peopleStat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (hasMembers) {
+
+                    Intent intent = new Intent(context, OrganizationMembersActivity.class);
+
 //                    intent.putExtra("GENERIC_USER", TRUE);
-//
-//                    startActivity(intent);
-//
-//                }
-//
-//            }
-//        });
+
+                    startActivity(intent);
+
+                }
+
+            }
+        });
 
     }
 
@@ -404,9 +402,9 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                 if (!members.isEmpty()) {
 
-                    hasMembers = true;
-
                     OrganizationMemberList.setList(members);
+
+                    hasMembers = true;
 
                 }
 
@@ -449,7 +447,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                 // Triggered only when new data needs to be appended to the list
 
                 if (actionFocus) {
-                    
+
                     fetchReports(10, page, complexQuery, false, false);
 
                 } else {

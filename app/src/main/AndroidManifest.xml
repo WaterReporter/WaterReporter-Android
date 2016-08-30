@@ -219,6 +219,10 @@
         <activity
             android:name=".OrganizationProfileActivity"
             android:label="@string/title_activity_organization_profile"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".OrganizationMembersActivity"
+            android:label="@string/title_activity_organization_members"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
