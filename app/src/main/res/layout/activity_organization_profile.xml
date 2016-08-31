@@ -68,24 +68,12 @@
                 android:id="@+id/organizationName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="0dp"
+                android:paddingBottom="4dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="0dp"
                 android:paddingTop="0dp"
                 android:text="A name goes here"
                 android:textSize="16sp" />
-
-            <!--<TextView-->
-                <!--android:id="@+id/organizationTitle"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:paddingBottom="2dp"-->
-                <!--android:paddingLeft="16dp"-->
-                <!--android:paddingRight="0dp"-->
-                <!--android:paddingTop="2dp"-->
-                <!--android:text="Upper Potomac Watershed"-->
-                <!--android:textColor="@color/gray_186"-->
-                <!--android:textSize="@dimen/small_text" />-->
 
             <TextView
                 android:id="@+id/organizationDescription"
@@ -97,7 +85,7 @@
                 android:paddingBottom="0dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:paddingTop="2dp"
+                android:paddingTop="0dp"
                 android:text="A description goes here"
                 android:textColor="@color/material_blue_grey950"
                 android:textSize="14sp" />
@@ -110,6 +98,7 @@
         android:id="@+id/profileStats"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         android:background="#FBFBFB"
         android:baselineAligned="false"
         android:orientation="horizontal"
@@ -199,7 +188,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/peopleCount"
@@ -234,15 +224,29 @@
 
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/timeline_items"
+    <FrameLayout
+        android:id="@+id/listTabs"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="#FFFFFF"
-        android:dividerHeight="0dp"
-        android:fadingEdgeLength="0dp"
-        android:listSelector="@drawable/timeline_selector"
-        android:overScrollMode="never"
-        android:scrollbars="none" />
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/timeline_items"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="#FFFFFF"
+            android:dividerHeight="0dp"
+            android:fadingEdgeLength="0dp"
+            android:listSelector="@drawable/timeline_selector"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
+
+        <fragment
+            android:id="@+id/navigationFragment"
+            android:name="com.viableindustries.waterreporter.NavigationFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom" />
+
+    </FrameLayout>
 
 </LinearLayout>

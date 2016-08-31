@@ -251,7 +251,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 }
 
-                animation.setDuration(duration);
+                animation.setDuration(100);
                 animation.setInterpolator(new LinearOutSlowInInterpolator());
                 animation.start();
 
@@ -380,9 +380,10 @@ public class UserProfileActivity extends AppCompatActivity {
                 switch (filterName) {
                     case "state":
                         if (count > 0) {
-                            actionStat.setVisibility(View.VISIBLE);
+//                            actionStat.setVisibility(View.VISIBLE);
                             actionCount = count;
                             actionCounter.setText(String.valueOf(actionCount));
+                            actionStat.setVisibility(View.VISIBLE);
 
                         }
                         break;
@@ -439,23 +440,15 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 ArrayList<Organization> organizations = organizationCollectionResponse.getFeatures();
 
-                groupCount = organizations.size();
-
-                groupCounter.setText(String.valueOf(groupCount));
-
                 if (!organizations.isEmpty()) {
 
-                    hasGroups = true;
+                    groupCounter.setText(String.valueOf(organizations.size()));
 
-                    groupList = organizations.toString();
+                    groupStat.setVisibility(View.VISIBLE);
 
                     UserGroupList.setList(organizations);
 
-                    for (Organization organization : organizations) {
-
-                        Log.d("orgName", organization.properties.name);
-
-                    }
+                    hasGroups = true;
 
                 }
 

@@ -115,6 +115,7 @@
         android:id="@+id/profileStats"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         android:background="#FBFBFB"
         android:baselineAligned="false"
         android:orientation="horizontal"
@@ -204,7 +205,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/groupCount"
@@ -243,17 +245,30 @@
     <!--android:id="@+id/timeline"-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="match_parent">-->
-
-    <ListView
-        android:id="@+id/timeline_items"
+    <FrameLayout
+        android:id="@+id/listTabs"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="#FFFFFF"
-        android:dividerHeight="0dp"
-        android:fadingEdgeLength="0dp"
-        android:listSelector="@drawable/timeline_selector"
-        android:overScrollMode="never"
-        android:scrollbars="none" />
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/timeline_items"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="#FFFFFF"
+            android:dividerHeight="0dp"
+            android:fadingEdgeLength="0dp"
+            android:listSelector="@drawable/timeline_selector"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
+
+        <fragment
+            android:id="@+id/navigationFragment"
+            android:name="com.viableindustries.waterreporter.NavigationFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom" />
+
+    </FrameLayout>
 
     <!--</android.support.v4.widget.SwipeRefreshLayout>-->
 

@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.AbsListView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -110,6 +111,9 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     @Bind(R.id.timeline_items)
     ListView timeLine;
+
+    @Bind(R.id.listTabs)
+    FrameLayout listTabs;
 
     protected TimelineAdapter timelineAdapter;
 
@@ -208,7 +212,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                     }
 
-                    animation.setDuration(duration);
+                    animation.setDuration(100);
                     animation.setInterpolator(new LinearOutSlowInInterpolator());
                     animation.start();
 
@@ -396,11 +400,11 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                 ArrayList<User> members = userFeatureCollection.getFeatures();
 
-                memberCount = members.size();
-
-                peopleCounter.setText(String.valueOf(memberCount));
-
                 if (!members.isEmpty()) {
+
+                    peopleCounter.setText(String.valueOf(members.size()));
+
+                    peopleStat.setVisibility(View.VISIBLE);
 
                     OrganizationMemberList.setList(members);
 
@@ -476,21 +480,21 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                         @Override
                         public void run() {
 
-                            timeLine.setLayoutParams(listViewParams);
+                            listTabs.setLayoutParams(listViewParams);
 
-                            timeLine.requestLayout();
+                            listTabs.requestLayout();
 
                         }
                     };
 
                     int headerHeight = profileMeta.getHeight() + profileStats.getHeight();
 
-                    listViewParams = (ViewGroup.LayoutParams) timeLine.getLayoutParams();
+                    listViewParams = (ViewGroup.LayoutParams) listTabs.getLayoutParams();
 
                     // see if top Y is at 0 and first visible position is at 0
                     if (top == 0 && timeLine.getFirstVisiblePosition() == 0) {
 
-                        timeLine.animate().translationY(0);
+                        listTabs.animate().translationY(0);
 
                         listViewParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
@@ -502,9 +506,9 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                         if (!hasScrolled) {
 
-                            timeLine.animate().translationY(0 - headerHeight);
+                            listTabs.animate().translationY(0 - headerHeight);
 
-                            listViewParams.height = timeLine.getHeight() + headerHeight;
+                            listViewParams.height = listTabs.getHeight() + headerHeight;
 
                             h.postDelayed(changeHeight, 0);
 
