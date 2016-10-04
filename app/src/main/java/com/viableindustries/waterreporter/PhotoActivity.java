@@ -1,6 +1,7 @@
 package com.viableindustries.waterreporter;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.ContentResolver;
@@ -1002,12 +1003,17 @@ public class PhotoActivity extends AppCompatActivity
 
         if (photoCaptured) {
 
-            Intent intent = new Intent(PhotoActivity.this, PhotoMetaActivity.class);
+//            Intent intent = new Intent(PhotoActivity.this, PhotoMetaActivity.class);
 
             // Pass the on-device file path with the intent
-            intent.putExtra("image_path", newFilePath);
+//            intent.putExtra("image_path", newFilePath);
 
-            startActivity(intent);
+//            startActivity(intent);intent
+
+            Intent resultData = new Intent();
+            resultData.putExtra("file_path", newFilePath);
+            setResult(Activity.RESULT_OK, resultData);
+            finish();
 
         } else {
 

@@ -138,5 +138,10 @@
     <string name="user_organization_name">Organization Name</string>
 
     <string name="user_bio">Bio</string>
+    <string name="user_avatar">Photo</string>
+
+    <!-- Report save -->
+
+    <string name="saving_profile">Saving profile&#8230;</string>
 
 </resources>
