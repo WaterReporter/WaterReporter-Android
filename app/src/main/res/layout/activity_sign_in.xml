@@ -1,24 +1,34 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
     android:orientation="vertical"
     tools:context="com.viableindustries.waterreporter.SignInActivity">
 
-    <TextView
-        android:id="@+id/prompt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <!--<TextView-->
+    <!--android:id="@+id/prompt"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:layout_marginBottom="20dp"-->
+    <!--android:layout_marginTop="0dp"-->
+    <!--android:background="@color/base_blue"-->
+    <!--android:gravity="center"-->
+    <!--android:paddingBottom="20dp"-->
+    <!--android:paddingTop="20dp"-->
+    <!--android:text="Sign In"-->
+    <!--android:textColor="@color/white"-->
+    <!--android:textSize="@dimen/medium_text" />-->
+
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:layout_gravity="center"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="0dp"
-        android:background="@color/base_blue"
-        android:gravity="center"
-        android:paddingBottom="20dp"
-        android:paddingTop="20dp"
-        android:text="Sign In"
-        android:textColor="@color/white"
-        android:textSize="@dimen/medium_text" />
+        android:layout_marginTop="64dp"
+        android:background="@drawable/water_reporter_logo"
+        android:contentDescription="Water Reporter logo"
+        android:scaleType="fitXY" />
 
     <LinearLayout
         android:id="@+id/error_message"
@@ -40,21 +50,56 @@
             android:text="@string/invalid_credentials"
             android:textSize="@dimen/base_text" />
 
-        <Button
-            android:layout_width="match_parent"
+        <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="20dp"-->
+        <!--android:layout_marginLeft="0dp"-->
+        <!--android:layout_marginRight="0dp"-->
+        <!--android:layout_marginTop="0dp"-->
+        <!--android:background="@android:color/transparent"-->
+        <!--android:gravity="center"-->
+        <!--android:onClick="toReset"-->
+        <!--android:paddingBottom="16dp"-->
+        <!--android:paddingTop="16dp"-->
+        <!--android:text="I forgot my password."-->
+        <!--android:textColor="@color/base_blue"-->
+        <!--android:textSize="@dimen/base_text" />-->
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/view_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="24dp"
+        android:paddingTop="24dp">
+
+        <TextView
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginRight="0dp"
-            android:layout_marginTop="0dp"
-            android:background="@android:color/transparent"
+            android:layout_gravity="center"
+            android:layout_weight="0.5"
             android:gravity="center"
-            android:onClick="toReset"
-            android:paddingBottom="16dp"
-            android:paddingTop="16dp"
-            android:text="I forgot my password."
+            android:text="Log in"
+            android:textAllCaps="true"
             android:textColor="@color/base_blue"
-            android:textSize="@dimen/base_text" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:onClick="toRegister"
+            android:text="sign up"
+            android:textAllCaps="true"
+            android:textColor="@color/gray_186"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
@@ -87,6 +132,22 @@
         android:textSize="@dimen/base_text" />
 
     <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:onClick="toReset"
+        android:paddingBottom="20dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:paddingTop="4dp"
+        android:text="Forgot your password?"
+        android:textAllCaps="false"
+        android:textColor="@color/base_blue"
+        android:textSize="12sp" />
+
+    <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
@@ -98,8 +159,9 @@
         android:onClick="saveAccount"
         android:paddingBottom="20dp"
         android:paddingTop="20dp"
-        android:text="Submit"
-        android:textColor="@color/white"
+        android:text="Log in"
+        android:textAllCaps="true"
+        android:textColor="#FFFFFF"
         android:textSize="@dimen/base_text" />
 
 </LinearLayout>

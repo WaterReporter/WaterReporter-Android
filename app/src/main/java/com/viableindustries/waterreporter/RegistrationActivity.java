@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,7 +34,7 @@ import retrofit.client.Response;
 
 // Activity shown as dialog to handle first-time user registration.
 
-public class RegistrationActivity extends Activity {
+public class RegistrationActivity extends AppCompatActivity {
 
     @Bind(R.id.password)
     EditText password_text;
@@ -49,6 +50,10 @@ public class RegistrationActivity extends Activity {
 
     @Bind(R.id.spinner)
     ProgressBar progressBar;
+
+    static final int REGISTRATION_REQUEST = 1;
+
+    static final int LOGIN_REQUEST = 2;
 
     static final int PROFILE_REQUEST = 1;
 
@@ -305,9 +310,31 @@ public class RegistrationActivity extends Activity {
 
     public void toLogIn(View v) {
 
-        startActivity(new Intent(this, SignInActivity.class));
+        startActivityForResult(new Intent(this, SignInActivity.class), LOGIN_REQUEST);
 
         finish();
+
+    }
+
+//    public void toRegister(View v) {
+//
+//        startActivityForResult(new Intent(this, RegistrationActivity.class), REGISTRATION_REQUEST);
+//
+//        finish();
+//
+//    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (resultCode == RESULT_OK) {
+
+            // The user is logged in and may already have reports in the system.
+            // Let's attempt to fetch the user's report collection and, if none exist,
+            // direct the user to submit their first report.
+            startActivity(new Intent(this, MainActivity.class));
+
+        }
 
     }
 

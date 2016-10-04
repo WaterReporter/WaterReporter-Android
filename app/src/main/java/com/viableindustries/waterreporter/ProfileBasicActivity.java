@@ -19,7 +19,9 @@ import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserBasicResponse;
 import com.viableindustries.waterreporter.data.UserService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,10 +38,26 @@ import retrofit.client.Response;
 public class ProfileBasicActivity extends Activity {
 
     @Bind(R.id.first_name)
-    EditText first_name;
+    EditText firstNameInput;
 
     @Bind(R.id.last_name)
-    EditText last_name;
+    EditText lastNameInput;
+
+    @Bind(R.id.user_title)
+    EditText userTitleInput;
+
+    @Bind(R.id.user_organization_name)
+    EditText userOrganizationNameInput;
+
+    @Bind(R.id.user_public_email)
+    EditText userPublicEmailInput;
+
+    @Bind(R.id.user_telephone)
+    EditText userTelephoneInput;
+
+    @Bind(R.id.user_bio)
+    EditText userBioInput;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,13 +76,23 @@ public class ProfileBasicActivity extends Activity {
 
     public void saveProfile(View view) {
 
-        final String firstName = String.valueOf(first_name.getText());
+        final String firstName = String.valueOf(firstNameInput.getText());
 
-        final String lastName = String.valueOf(last_name.getText());
+        final String lastName = String.valueOf(lastNameInput.getText());
+
+        final String title = String.valueOf(userTitleInput.getText());
+
+        final String organizationName = String.valueOf(userOrganizationNameInput.getText());
+
+        final String publicEmail = String.valueOf(userPublicEmailInput.getText());
+
+        final String telephone = String.valueOf(userTelephoneInput.getText());
+
+        final String description = String.valueOf(userBioInput.getText());
 
         if (firstName.isEmpty() || lastName.isEmpty()) {
 
-            CharSequence text = "Please enter your first and last names.";
+            CharSequence text = "Please enter both your first and last names.";
             Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
             toast.show();
 
@@ -83,11 +111,30 @@ public class ProfileBasicActivity extends Activity {
 
         String token = prefs.getString("access_token", "");
 
-        Map<String, String> userPatch = new HashMap<String, String>();
+        Map<String, Object> userPatch = new HashMap<String, Object>();
 
         userPatch.put("first_name", firstName);
-
         userPatch.put("last_name", lastName);
+
+        if (!title.isEmpty()) userPatch.put("title", title);
+        if (!organizationName.isEmpty()) userPatch.put("organization_name", organizationName);
+        if (!publicEmail.isEmpty()) userPatch.put("public_email", publicEmail);
+
+        if (!description.isEmpty()) userPatch.put("description", description);
+
+        if (!telephone.isEmpty()) {
+
+            List<Map<String, String>> telephones = new ArrayList<>();
+
+            Map<String, String> phoneNumber = new HashMap<String, String>();
+
+            phoneNumber.put("number", telephone);
+
+            telephones.add(phoneNumber);
+
+            userPatch.put("telephone", telephones);
+
+        }
 
         userService.updateUser(token,
                 "application/json",

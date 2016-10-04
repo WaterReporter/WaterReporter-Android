@@ -1,24 +1,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
     android:orientation="vertical"
     tools:context="com.viableindustries.waterreporter.RegistrationActivity">
 
-    <TextView
-        android:id="@+id/prompt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:layout_gravity="center"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="0dp"
-        android:background="@color/base_blue"
-        android:gravity="center"
-        android:paddingBottom="20dp"
-        android:paddingTop="20dp"
-        android:text="Sign Up"
-        android:textColor="@color/white"
-        android:textSize="@dimen/medium_text" />
+        android:layout_marginTop="64dp"
+        android:background="@drawable/water_reporter_logo"
+        android:contentDescription="Water Reporter logo"
+        android:scaleType="fitXY" />
 
     <LinearLayout
         android:id="@+id/error_message"
@@ -40,21 +35,56 @@
             android:text="@string/existing_email"
             android:textSize="@dimen/base_text" />
 
-        <Button
-            android:layout_width="match_parent"
+        <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="20dp"-->
+        <!--android:layout_marginLeft="0dp"-->
+        <!--android:layout_marginRight="0dp"-->
+        <!--android:layout_marginTop="0dp"-->
+        <!--android:background="@android:color/transparent"-->
+        <!--android:gravity="center"-->
+        <!--android:onClick="toLogIn"-->
+        <!--android:paddingBottom="16dp"-->
+        <!--android:paddingTop="16dp"-->
+        <!--android:text="Sign In"-->
+        <!--android:textColor="@color/base_blue"-->
+        <!--android:textSize="@dimen/base_text" />-->
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/view_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="24dp"
+        android:paddingTop="24dp">
+
+        <TextView
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:layout_marginLeft="0dp"
-            android:layout_marginRight="0dp"
-            android:layout_marginTop="0dp"
-            android:background="@android:color/transparent"
+            android:layout_gravity="center"
+            android:layout_weight="0.5"
             android:gravity="center"
             android:onClick="toLogIn"
-            android:paddingBottom="16dp"
-            android:paddingTop="16dp"
-            android:text="Sign In"
+            android:text="Log in"
+            android:textAllCaps="true"
+            android:textColor="@color/gray_186"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:text="sign up"
+            android:textAllCaps="true"
             android:textColor="@color/base_blue"
-            android:textSize="@dimen/base_text" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
@@ -96,17 +126,18 @@
             android:id="@+id/register"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="0dp"
+            android:layout_marginBottom="20dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginTop="0dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/blue_button"
             android:gravity="center"
             android:onClick="saveAccount"
             android:paddingBottom="20dp"
             android:paddingTop="20dp"
-            android:text="Join"
-            android:textColor="@color/white"
+            android:text="Sign up"
+            android:textAllCaps="true"
+            android:textColor="#FFFFFF"
             android:textSize="@dimen/base_text" />
 
         <ProgressBar

@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.AbsListView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -111,6 +112,9 @@ public class UserProfileActivity extends AppCompatActivity {
     @Bind(R.id.timeline_items)
     ListView timeLine;
 
+    @Bind(R.id.listTabs)
+    FrameLayout listTabs;
+
     protected TimelineAdapter timelineAdapter;
 
     protected List<Report> reportCollection = new ArrayList<Report>();
@@ -165,30 +169,12 @@ public class UserProfileActivity extends AppCompatActivity {
         userOrganization = user.properties.organization_name;
         userAvatarUrl = user.properties.picture;
 
-//        userId = getIntent().getExtras().getInt("USER_ID");
-//        userTitleText = getIntent().getExtras().getString("USER_TITLE");
-//        userDescriptionText = getIntent().getExtras().getString("USER_DESCRIPTION");
-//        userNameText = getIntent().getExtras().getString("USER_NAME");
-//        userOrganization = getIntent().getExtras().getString("USER_ORGANIZATION", "");
-//        userAvatarUrl = getIntent().getExtras().getString("USER_AVATAR");
-
-//        Log.d("userOrg", userOrganization);
-
         userName.setText(userNameText);
 
-//        if (userOrganization) {
-//
-//            userTitle.setText(String.format("%s at %s", userTitleText, userOrganization));
-//
-//        } else {
-//
-//            userTitle.setText(userTitleText);
-//
-//        }
         try {
 
             if (!userOrganization.isEmpty()) {
-//
+
                 userTitle.setText(String.format("%s at %s", userTitleText, userOrganization));
 
             } else {
@@ -212,8 +198,6 @@ public class UserProfileActivity extends AppCompatActivity {
             userDescription.setVisibility(View.GONE);
 
         }
-
-//        userDescription.setText(userDescriptionText);
 
         userDescription.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -356,6 +340,13 @@ public class UserProfileActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    protected void addListViewHeader() {
+
+//        if (if)
+
 
     }
 
@@ -510,60 +501,60 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
 
-                if (scrollState == 0) {
+//                if (scrollState == 0) {
 
-                    View mView = timeLine.getChildAt(0);
+                View mView = timeLine.getChildAt(0);
 
-                    int top = mView.getTop();
+                int top = mView.getTop();
 
-                    final Handler h = new Handler();
+                final Handler h = new Handler();
 
-                    final Runnable changeHeight = new Runnable() {
+                final Runnable changeHeight = new Runnable() {
 
-                        @Override
-                        public void run() {
+                    @Override
+                    public void run() {
 
-                            timeLine.setLayoutParams(listViewParams);
+                        listTabs.setLayoutParams(listViewParams);
 
-                            timeLine.requestLayout();
+                        //listTabs.requestLayout();
 
-                        }
-                    };
+                    }
+                };
 
-                    int headerHeight = profileMeta.getHeight() + profileStats.getHeight();
+                int headerHeight = profileMeta.getHeight() + profileStats.getHeight();
 
-                    listViewParams = (ViewGroup.LayoutParams) timeLine.getLayoutParams();
+                listViewParams = (ViewGroup.LayoutParams) listTabs.getLayoutParams();
 
-                    // see if top Y is at 0 and first visible position is at 0
-                    if (top == 0 && timeLine.getFirstVisiblePosition() == 0) {
+                // see if top Y is at 0 and first visible position is at 0
+                if (top == 0 && timeLine.getFirstVisiblePosition() == 0) {
 
-                        timeLine.animate().translationY(0);
+                    listTabs.animate().translationY(0);
 
-                        listViewParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    listViewParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
-                        h.postDelayed(changeHeight, 500);
+                    h.postDelayed(changeHeight, 500);
 
-                        hasScrolled = false;
+                    hasScrolled = false;
 
-                    } else {
+                } else {
 
-                        if (!hasScrolled) {
+                    if (!hasScrolled) {
 
-                            timeLine.animate().translationY(0 - headerHeight);
+                        listTabs.animate().translationY(0 - headerHeight);
 
-                            listViewParams.height = timeLine.getHeight() + headerHeight;
+                        listViewParams.height = listTabs.getHeight() + headerHeight;
 
-                            h.postDelayed(changeHeight, 0);
+                        h.postDelayed(changeHeight, 0);
 
-                            hasScrolled = true;
-
-                        }
+                        hasScrolled = true;
 
                     }
 
                 }
 
             }
+
+//            }
 
         });
 

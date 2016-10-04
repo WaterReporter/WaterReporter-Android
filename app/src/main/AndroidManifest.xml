@@ -115,7 +115,7 @@
             android:label="@string/title_activity_sign_in"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar.MinWidth">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.viableindustries.waterreporter.MainActivity" />
@@ -138,7 +138,7 @@
             android:label="@string/title_activity_registration"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar.MinWidth">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.viableindustries.waterreporter.MainActivity" />
@@ -148,17 +148,17 @@
             android:label="@string/title_activity_profile_basic"
             android:parentActivityName=".RegistrationActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar.MinWidth">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.viableindustries.waterreporter.RegistrationActivity" />
+                android:value="com.viableindustries.waterreporter.MainActivity" />
         </activity>
         <activity
             android:name=".RegistrationForkActivity"
             android:label="@string/title_activity_registration_fork"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar.MinWidth">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.viableindustries.waterreporter.MainActivity" />
@@ -168,7 +168,7 @@
             android:label="@string/title_activity_password_reset"
             android:parentActivityName=".SignInActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar.MinWidth">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.viableindustries.waterreporter.SignInActivity" />

@@ -86,17 +86,17 @@ public class MainActivity extends AppCompatActivity {
 
             user_id = prefs.getInt("user_id", 0);
 
-            if (user_id == 0) {
-
-                startActivityForResult(new Intent(this, RegistrationForkActivity.class), REGISTRATION_REQUEST);
-
-            } else if (access_token.equals("")) {
+            if (user_id == 0 || access_token.equals("")) {
 
                 startActivityForResult(new Intent(this, SignInActivity.class), LOGIN_REQUEST);
 
+//            } else if (access_token.equals("")) {
+//
+//                startActivityForResult(new Intent(this, SignInActivity.class), LOGIN_REQUEST);
+
             } else {
 
-                if(reportCollection.isEmpty()) {
+                if (reportCollection.isEmpty()) {
 
                     requestData(10, 1, false, false);
 
@@ -414,27 +414,38 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
-        if (requestCode == REGISTRATION_REQUEST) {
-            // Make sure the request was successful
-            if (resultCode == RESULT_OK) {
+//        if (requestCode == REGISTRATION_REQUEST) {
+//            // Make sure the request was successful
+//            if (resultCode == RESULT_OK) {
+//
+//                // Since the user just registered, direct them to create a new report
+//                startActivity(new Intent(this, PhotoActivity.class));
+//
+//            }
+//
+//        } else if (requestCode == LOGIN_REQUEST) {
+//
+//            if (resultCode == RESULT_OK) {
+//
+//                // The user is logged in and may already have reports in the system.
+//                // Let's attempt to fetch the user's report collection and, if none exist,
+//                // direct the user to submit their first report.
+//                requestData(10, 1, false, false);
+//
+//                fetchUserGroups();
+//
+//            }
+//
+//        }
 
-                // Since the user just registered, direct them to create a new report
-                startActivity(new Intent(this, PhotoActivity.class));
+        if (resultCode == RESULT_OK) {
 
-            }
+            // The user is logged in and may already have reports in the system.
+            // Let's attempt to fetch the user's report collection and, if none exist,
+            // direct the user to submit their first report.
+            requestData(10, 1, false, false);
 
-        } else if (requestCode == LOGIN_REQUEST) {
-
-            if (resultCode == RESULT_OK) {
-
-                // The user is logged in and may already have reports in the system.
-                // Let's attempt to fetch the user's report collection and, if none exist,
-                // direct the user to submit their first report.
-                requestData(10, 1, false, false);
-
-                fetchUserGroups();
-
-            }
+            fetchUserGroups();
 
         }
 

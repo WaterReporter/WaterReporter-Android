@@ -467,60 +467,62 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
 
-                if (scrollState == 0) {
+//                if (scrollState == 0) {
 
-                    View mView = timeLine.getChildAt(0);
+                View mView = timeLine.getChildAt(0);
 
-                    int top = mView.getTop();
+                int top = mView.getTop();
 
-                    final Handler h = new Handler();
+                Log.d("topView", top + "");
 
-                    final Runnable changeHeight = new Runnable() {
+                final Handler h = new Handler();
 
-                        @Override
-                        public void run() {
+                final Runnable changeHeight = new Runnable() {
 
-                            listTabs.setLayoutParams(listViewParams);
+                    @Override
+                    public void run() {
 
-                            listTabs.requestLayout();
+                        listTabs.setLayoutParams(listViewParams);
 
-                        }
-                    };
+                        //listTabs.requestLayout();
 
-                    int headerHeight = profileMeta.getHeight() + profileStats.getHeight();
+                    }
+                };
 
-                    listViewParams = (ViewGroup.LayoutParams) listTabs.getLayoutParams();
+                int headerHeight = profileMeta.getHeight() + profileStats.getHeight();
 
-                    // see if top Y is at 0 and first visible position is at 0
-                    if (top == 0 && timeLine.getFirstVisiblePosition() == 0) {
+                listViewParams = (ViewGroup.LayoutParams) listTabs.getLayoutParams();
 
-                        listTabs.animate().translationY(0);
+                // see if top Y is at 0 and first visible position is at 0
+                if (top == 0 && timeLine.getFirstVisiblePosition() == 0) {
 
-                        listViewParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    listTabs.animate().translationY(0);
 
-                        h.postDelayed(changeHeight, 500);
+                    listViewParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
-                        hasScrolled = false;
+                    h.postDelayed(changeHeight, 500);
 
-                    } else {
+                    hasScrolled = false;
 
-                        if (!hasScrolled) {
+                } else {
 
-                            listTabs.animate().translationY(0 - headerHeight);
+                    if (!hasScrolled) {
 
-                            listViewParams.height = listTabs.getHeight() + headerHeight;
+                        listTabs.animate().translationY(0 - headerHeight);
 
-                            h.postDelayed(changeHeight, 0);
+                        listViewParams.height = listTabs.getHeight() + headerHeight;
 
-                            hasScrolled = true;
+                        h.postDelayed(changeHeight, 0);
 
-                        }
+                        hasScrolled = true;
 
                     }
 
                 }
 
             }
+
+//            }
 
         });
 

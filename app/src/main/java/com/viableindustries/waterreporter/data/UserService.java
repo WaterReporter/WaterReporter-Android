@@ -31,7 +31,7 @@ public interface UserService {
     public void updateUser(@Header("Authorization") String authorization,
                            @Header("Content-Type") String contentType,
                            @Path("user") int user_id,
-                           @Body Map<String, String> userPatch,
+                           @Body Map<String, Object> userPatch,
                            Callback<User> userResponseCallback);
 
     @PATCH("/data/user/{user}")

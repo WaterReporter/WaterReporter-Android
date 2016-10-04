@@ -233,6 +233,7 @@
             android:id="@+id/timeline_items"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="55dp"
             android:divider="#FFFFFF"
             android:dividerHeight="0dp"
             android:fadingEdgeLength="0dp"

@@ -127,4 +127,16 @@
     <string name="title_activity_organization_profile">OrganizationProfileActivity</string>
     <string name="title_activity_organization_members">OrganizationMembersActivity</string>
 
+    <!-- User profile -->
+    <string name="user_first_name">First Name</string>
+    <string name="user_last_name">Last Name</string>
+
+    <string name="user_email">Public email</string>
+    <string name="user_telephone">Telephone</string>
+
+    <string name="user_title">Title</string>
+    <string name="user_organization_name">Organization Name</string>
+
+    <string name="user_bio">Bio</string>
+
 </resources>
