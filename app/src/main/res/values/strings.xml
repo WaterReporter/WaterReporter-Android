@@ -143,5 +143,6 @@
     <!-- Report save -->
 
     <string name="saving_profile">Saving profile&#8230;</string>
+    <string name="title_activity_group_action_list">GroupActionListActivity</string>
 
 </resources>

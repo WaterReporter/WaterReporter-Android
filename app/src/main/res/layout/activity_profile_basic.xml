@@ -73,6 +73,8 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="0dp"
             android:scaleType="fitXY"
             android:visibility="gone" />
 

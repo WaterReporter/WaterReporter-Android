@@ -179,7 +179,7 @@ public class ProfileBasicActivity extends AppCompatActivity {
             int colorTo = ContextCompat.getColor(this, R.color.green_1);
 
             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-            colorAnimation.setDuration(250); // milliseconds
+            colorAnimation.setDuration(400); // milliseconds
 
             colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
@@ -312,11 +312,11 @@ public class ProfileBasicActivity extends AppCompatActivity {
                                                 @Override
                                                 public void run() {
 
-                                                    startActivity(new Intent(ProfileBasicActivity.this, RegistrationGroupsActivity.class));
+                                                    startActivity(new Intent(ProfileBasicActivity.this, GroupActionListActivity.class));
 
                                                 }
 
-                                            }, 1000);
+                                            }, 100);
 
                                         }
 
@@ -328,7 +328,7 @@ public class ProfileBasicActivity extends AppCompatActivity {
                                             int colorTo = ContextCompat.getColor(ProfileBasicActivity.this, R.color.base_blue);
 
                                             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-                                            colorAnimation.setDuration(250); // milliseconds
+                                            colorAnimation.setDuration(400); // milliseconds
 
                                             colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
@@ -354,7 +354,7 @@ public class ProfileBasicActivity extends AppCompatActivity {
                             int colorTo = ContextCompat.getColor(ProfileBasicActivity.this, R.color.base_blue);
 
                             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-                            colorAnimation.setDuration(250); // milliseconds
+                            colorAnimation.setDuration(400); // milliseconds
 
                             colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
