@@ -247,6 +247,9 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 //            }
 //        });
         // Add click listener to membership button
+
+        viewHolder.groupMembershipButton.setTag("join_group");
+
         viewHolder.groupMembershipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

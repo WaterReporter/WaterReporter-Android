@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -87,6 +88,9 @@ public class ProfileBasicActivity extends AppCompatActivity {
 
     @Bind(R.id.save_profile)
     ImageButton saveProfileButton;
+
+    @Bind(R.id.saving_message)
+    TextView savingMessage;
 
     private String mGalleryPath;
 
@@ -174,7 +178,9 @@ public class ProfileBasicActivity extends AppCompatActivity {
 
         if (photoCaptured) {
 
-//            saveProfileButton.setText(getResources().getString(R.string.saving_profile));
+            savingMessage.setVisibility(View.VISIBLE);
+
+            savingMessage.setText(getResources().getString(R.string.saving_profile));
 //
 //            int colorFrom = ContextCompat.getColor(this, R.color.base_blue);
 //            int colorTo = ContextCompat.getColor(this, R.color.green_1);
@@ -323,7 +329,8 @@ public class ProfileBasicActivity extends AppCompatActivity {
 
                                         @Override
                                         public void failure(RetrofitError error) {
-//                                            saveProfileButton.setText(getResources().getString(R.string.save));
+                                            savingMessage.setVisibility(View.GONE);
+                                            savingMessage.setText(getResources().getString(R.string.save));
 ////                                        onPostError();
 //                                            int colorFrom = ContextCompat.getColor(ProfileBasicActivity.this, R.color.green_1);
 //                                            int colorTo = ContextCompat.getColor(ProfileBasicActivity.this, R.color.base_blue);
@@ -349,7 +356,8 @@ public class ProfileBasicActivity extends AppCompatActivity {
 
                         @Override
                         public void failure(RetrofitError error) {
-//                            saveProfileButton.setText(getResources().getString(R.string.save));
+                            savingMessage.setVisibility(View.GONE);
+                            savingMessage.setText(getResources().getString(R.string.save));
 ////                        onPostError();
 //                            int colorFrom = ContextCompat.getColor(ProfileBasicActivity.this, R.color.green_1);
 //                            int colorTo = ContextCompat.getColor(ProfileBasicActivity.this, R.color.base_blue);
