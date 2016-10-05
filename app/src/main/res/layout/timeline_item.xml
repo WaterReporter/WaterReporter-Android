@@ -17,72 +17,71 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="0dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="0dp"
-        android:paddingTop="0dp">
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/owner_avatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical|start"
+            android:scaleType="fitXY" />
 
         <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="64dp"
-            android:layout_weight="1">
-
-            <ImageView
-                android:id="@+id/owner_avatar"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center_vertical"
-                android:scaleType="fitXY" />
-
-        </RelativeLayout>
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="4"
-            android:orientation="vertical">
+            android:paddingStart="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="0dp"
+            android:paddingEnd="0dp">
 
-            <TextView
-                android:id="@+id/report_owner"
+            <LinearLayout
+                android:id="@+id/text_descriptors"
+                android:layout_toLeftOf="@+id/report_date"
+                android:layout_toStartOf="@+id/report_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="0dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="0dp"
-                android:paddingTop="0dp"
-                android:text="A name goes here"
-                android:textSize="16sp" />
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/report_owner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:paddingBottom="0dp"
+                    android:paddingTop="0dp"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/report_watershed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:paddingBottom="0dp"
+                    android:paddingTop="2dp"
+                    android:textColor="@color/gray_186"
+                    android:textSize="@dimen/small_text" />
+
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/report_watershed"
+                android:id="@+id/report_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="0dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="0dp"
-                android:paddingTop="2dp"
-                android:text="Upper Potomac Watershed"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:gravity="end"
+                android:padding="0dp"
+                android:layout_centerVertical="true"
                 android:textColor="@color/gray_186"
                 android:textSize="@dimen/small_text" />
 
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/report_date"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="3"
-            android:gravity="end"
-            android:paddingBottom="0dp"
-            android:paddingLeft="0dp"
-            android:paddingRight="16dp"
-            android:paddingTop="0dp"
-            android:text="A date goes here"
-            android:textColor="@color/gray_186"
-            android:textSize="@dimen/small_text" />
+        </RelativeLayout>
 
     </LinearLayout>
 
@@ -215,22 +214,22 @@
         android:textSize="16sp" />
 
     <!--<TextView-->
-        <!--android:id="@+id/report_groups"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:paddingBottom="16dp"-->
-        <!--android:paddingLeft="16dp"-->
-        <!--android:paddingRight="16dp"-->
-        <!--android:paddingTop="8dp"-->
-        <!--android:text="A group list goes here"-->
-        <!--android:textColor="@color/gray_186"-->
-        <!--android:textSize="@dimen/small_text" />-->
+    <!--android:id="@+id/report_groups"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:paddingBottom="16dp"-->
+    <!--android:paddingLeft="16dp"-->
+    <!--android:paddingRight="16dp"-->
+    <!--android:paddingTop="8dp"-->
+    <!--android:text="A group list goes here"-->
+    <!--android:textColor="@color/gray_186"-->
+    <!--android:textSize="@dimen/small_text" />-->
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/reportGroups"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:paddingBottom="16dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
