@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -85,7 +86,7 @@ public class ProfileBasicActivity extends AppCompatActivity {
     Button addPhoto;
 
     @Bind(R.id.save_profile)
-    Button saveProfileButton;
+    ImageButton saveProfileButton;
 
     private String mGalleryPath;
 
@@ -173,24 +174,24 @@ public class ProfileBasicActivity extends AppCompatActivity {
 
         if (photoCaptured) {
 
-            saveProfileButton.setText(getResources().getString(R.string.saving_profile));
-
-            int colorFrom = ContextCompat.getColor(this, R.color.base_blue);
-            int colorTo = ContextCompat.getColor(this, R.color.green_1);
-
-            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-            colorAnimation.setDuration(400); // milliseconds
-
-            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-                @Override
-                public void onAnimationUpdate(ValueAnimator animator) {
-                    saveProfileButton.setBackgroundColor((int) animator.getAnimatedValue());
-                }
-
-            });
-
-            colorAnimation.start();
+//            saveProfileButton.setText(getResources().getString(R.string.saving_profile));
+//
+//            int colorFrom = ContextCompat.getColor(this, R.color.base_blue);
+//            int colorTo = ContextCompat.getColor(this, R.color.green_1);
+//
+//            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+//            colorAnimation.setDuration(400); // milliseconds
+//
+//            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//
+//                @Override
+//                public void onAnimationUpdate(ValueAnimator animator) {
+//                    saveProfileButton.setBackgroundColor((int) animator.getAnimatedValue());
+//                }
+//
+//            });
+//
+//            colorAnimation.start();
 
             final String firstName = String.valueOf(firstNameInput.getText());
 
@@ -322,24 +323,24 @@ public class ProfileBasicActivity extends AppCompatActivity {
 
                                         @Override
                                         public void failure(RetrofitError error) {
-                                            saveProfileButton.setText(getResources().getString(R.string.save));
-//                                        onPostError();
-                                            int colorFrom = ContextCompat.getColor(ProfileBasicActivity.this, R.color.green_1);
-                                            int colorTo = ContextCompat.getColor(ProfileBasicActivity.this, R.color.base_blue);
-
-                                            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-                                            colorAnimation.setDuration(400); // milliseconds
-
-                                            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-                                                @Override
-                                                public void onAnimationUpdate(ValueAnimator animator) {
-                                                    saveProfileButton.setBackgroundColor((int) animator.getAnimatedValue());
-                                                }
-
-                                            });
-
-                                            colorAnimation.start();
+//                                            saveProfileButton.setText(getResources().getString(R.string.save));
+////                                        onPostError();
+//                                            int colorFrom = ContextCompat.getColor(ProfileBasicActivity.this, R.color.green_1);
+//                                            int colorTo = ContextCompat.getColor(ProfileBasicActivity.this, R.color.base_blue);
+//
+//                                            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+//                                            colorAnimation.setDuration(400); // milliseconds
+//
+//                                            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//
+//                                                @Override
+//                                                public void onAnimationUpdate(ValueAnimator animator) {
+//                                                    saveProfileButton.setBackgroundColor((int) animator.getAnimatedValue());
+//                                                }
+//
+//                                            });
+//
+//                                            colorAnimation.start();
                                         }
 
                                     });
@@ -348,24 +349,24 @@ public class ProfileBasicActivity extends AppCompatActivity {
 
                         @Override
                         public void failure(RetrofitError error) {
-                            saveProfileButton.setText(getResources().getString(R.string.save));
-//                        onPostError();
-                            int colorFrom = ContextCompat.getColor(ProfileBasicActivity.this, R.color.green_1);
-                            int colorTo = ContextCompat.getColor(ProfileBasicActivity.this, R.color.base_blue);
-
-                            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-                            colorAnimation.setDuration(400); // milliseconds
-
-                            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-                                @Override
-                                public void onAnimationUpdate(ValueAnimator animator) {
-                                    saveProfileButton.setBackgroundColor((int) animator.getAnimatedValue());
-                                }
-
-                            });
-
-                            colorAnimation.start();
+//                            saveProfileButton.setText(getResources().getString(R.string.save));
+////                        onPostError();
+//                            int colorFrom = ContextCompat.getColor(ProfileBasicActivity.this, R.color.green_1);
+//                            int colorTo = ContextCompat.getColor(ProfileBasicActivity.this, R.color.base_blue);
+//
+//                            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+//                            colorAnimation.setDuration(400); // milliseconds
+//
+//                            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//
+//                                @Override
+//                                public void onAnimationUpdate(ValueAnimator animator) {
+//                                    saveProfileButton.setBackgroundColor((int) animator.getAnimatedValue());
+//                                }
+//
+//                            });
+//
+//                            colorAnimation.start();
                         }
 
                     });
