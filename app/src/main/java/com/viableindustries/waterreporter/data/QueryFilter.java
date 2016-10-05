@@ -10,13 +10,13 @@ import java.util.List;
 public class QueryFilter {
 
     @SerializedName("name")
-    String name;
+    private String name;
 
     @SerializedName("op")
-    String op;
+    private String op;
 
     @SerializedName("val")
-    Object val;
+    private Object val;
 
     public QueryFilter (String aName, String aOp, Object aVal) {
 

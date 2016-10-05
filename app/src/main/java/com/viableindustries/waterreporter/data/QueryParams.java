@@ -10,10 +10,10 @@ import java.util.List;
 public class QueryParams {
 
     @SerializedName("filters")
-    List<QueryFilter> filters;
+    private List<QueryFilter> filters;
 
     @SerializedName("order_by")
-    List<QuerySort> order_by;
+    private List<QuerySort> order_by;
 
     public QueryParams (List<QueryFilter> aFilters, List<QuerySort> aOrderBy) {
 
