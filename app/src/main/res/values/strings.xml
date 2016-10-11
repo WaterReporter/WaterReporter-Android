@@ -114,6 +114,9 @@
     <string name="add_group">Add</string>
     <string name="remove_group">Remove</string>
 
+    <!-- Shared preference key for active user profile -->
+    <string name="active_user_profile_key">com.viableindustries.waterreporter.ACTIVE_USER_PROFILE</string>
+
     <!-- Shared preference key for groups associated with a report -->
     <string name="associated_group_key">com.viableindustries.waterreporter.ASSOCIATED_GROUPS</string>
 

@@ -52,6 +52,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedFile;
 
+import static java.security.AccessController.getContext;
+
 // Activity shown as dialog to handle final step in first-time user registration.
 
 public class ProfileBasicActivity extends AppCompatActivity {
@@ -304,6 +306,17 @@ public class ProfileBasicActivity extends AppCompatActivity {
                                             boolean imageDeleted = tempFile.delete();
 
                                             Log.w("Delete Check", "File deleted: " + tempFile + imageDeleted);
+
+                                            final SharedPreferences userProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+//                                            for(User user : user)
+
+//                                            Map<String,?> keys = userProfile.getAll();
+//
+//                for(Map.Entry<String,?> entry : keys.entrySet()){
+//                    Log.d("map values",entry.getKey() + ": " +
+//                            entry.getValue().toString());
+//                }
 
                                             // Clear any stored group associations
 

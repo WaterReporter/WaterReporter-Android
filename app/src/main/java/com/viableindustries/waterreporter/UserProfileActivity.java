@@ -160,7 +160,11 @@ public class UserProfileActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        // Retrieve stored User object
+
         User user = UserHolder.getUser();
+
+        // These are the User attributes we need to start populating the view
 
         userId = user.properties.id;
         userTitleText = user.properties.title;

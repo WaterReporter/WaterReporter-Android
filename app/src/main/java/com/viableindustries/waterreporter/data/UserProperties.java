@@ -46,4 +46,26 @@ public class UserProperties implements Serializable {
     @SerializedName("title")
     public String title;
 
+    public UserProperties createProperties(Boolean aActive, String aDescription, String aEmail, int aId,
+                                           String aLastName, String aFirstName, int aLoginCount,
+                                           ArrayList<Organization> aOrganizations, String aOrganizationName,
+                                           String aPicture, String aPublicEmail, String aTitle){
+
+        this.active = aActive;
+        this.description = aDescription;
+        this.email = aEmail;
+        this.first_name = aFirstName;
+        this.id = aId;
+        this.last_name = aLastName;
+        this.login_count = aLoginCount;
+        this.organizations = aOrganizations;
+        this.organization_name = aOrganizationName;
+        this.picture = aPicture;
+        this.public_email = aPublicEmail;
+        this.title = aTitle;
+
+        return this;
+
+    }
+
 }
