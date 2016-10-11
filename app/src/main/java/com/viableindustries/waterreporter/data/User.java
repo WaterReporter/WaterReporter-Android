@@ -12,8 +12,8 @@ import java.util.Map;
  */
 public class User implements Serializable {
 
-    @SerializedName("geometry")
-    public GeometryResponse geometry;
+    //@SerializedName("geometry")
+    //public GeometryResponse geometry;
 
     @SerializedName("id")
     public int id;
@@ -24,11 +24,11 @@ public class User implements Serializable {
     //@SerializedName("type")
     //public String type;
 
-    public static User createUser(GeometryResponse aGeometry, int aId, UserProperties aProperties){
+    public static User createUser(int aId, UserProperties aProperties){
 
         User newUser = new User();
 
-        newUser.geometry = aGeometry;
+        //newUser.geometry = aGeometry;
         newUser.id = aId;
         newUser.properties = aProperties;
         //newUser.type = aType;

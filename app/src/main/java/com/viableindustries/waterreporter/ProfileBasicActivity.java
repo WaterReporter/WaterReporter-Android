@@ -307,7 +307,17 @@ public class ProfileBasicActivity extends AppCompatActivity {
 
                                             Log.w("Delete Check", "File deleted: " + tempFile + imageDeleted);
 
-                                            final SharedPreferences userProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+                                            final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+                                            coreProfile.edit()
+                                                    .putBoolean("active", user.properties.active)
+                                                    .putInt("id", user.id)
+                                                    .apply();
+
+                                            // Model strings
+                                            String[] KEYS = {"active", "description", "email", "first_name",
+                                                    "last_name", "login_count", "organization_name", "picture",
+                                                    "public_email", "title"};
 
 //                                            for(User user : user)
 

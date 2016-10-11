@@ -80,7 +80,7 @@ public class NavigationFragment extends Fragment {
 
                 UserProperties userProperties = (UserProperties) coreProfile.getAll();
 
-                User coreUser = User.createUser(null, coreId, userProperties);
+                User coreUser = User.createUser(coreId, userProperties);
 
                 UserHolder.setUser(coreUser);
 
