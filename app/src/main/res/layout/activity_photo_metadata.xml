@@ -3,8 +3,11 @@
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
     android:fadingEdge="none"
     android:fillViewport="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical"
     android:overScrollMode="never"
     android:scrollbars="none"
@@ -14,6 +17,9 @@
         android:id="@+id/report_submission_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:descendantFocusability="beforeDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -40,10 +46,15 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
                 android:background="@null"
-                android:onClick="saveProfile"
+                android:onClick="submitReport"
                 android:src="@drawable/ic_done_blue_24dp" />
 
         </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray_224" />
 
         <RelativeLayout
             android:id="@+id/save_message"
@@ -83,91 +94,114 @@
 
         </RelativeLayout>
 
-        <LinearLayout
+        <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:descendantFocusability="beforeDescendants"-->
+        <!--android:focusable="true"-->
+        <!--android:focusableInTouchMode="true"-->
+        <!--android:orientation="vertical"-->
+        <!--android:paddingBottom="@dimen/activity_vertical_margin"-->
+        <!--android:paddingLeft="@dimen/activity_horizontal_margin"-->
+        <!--android:paddingRight="@dimen/activity_horizontal_margin"-->
+        <!--android:paddingTop="@dimen/activity_vertical_margin">-->
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:descendantFocusability="beforeDescendants"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/activity_vertical_margin"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/activity_vertical_margin">
+            android:layout_height="320dp">
+
+            <Button
+                android:id="@+id/add_photo"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@drawable/green_button"
+                android:gravity="center"
+                android:onClick="addImage"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp"
+                android:text="Add photo"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/small_text"
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/preview"
                 android:layout_width="match_parent"
-                android:layout_height="320dp"
+                android:layout_height="match_parent"
                 android:adjustViewBounds="true"
-                android:scaleType="centerCrop" />
-
-            <ProgressBar
-                android:id="@+id/photo_bar"
-                style="@android:style/Widget.Holo.ProgressBar.Horizontal"
-                android:layout_width="240dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:onClick="addImage"
+                android:scaleType="centerCrop"
                 android:visibility="gone" />
 
-            <EditText
-                android:id="@+id/date"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/white_canvas"
-                android:clickable="true"
-                android:hint="@string/date_hint"
-                android:inputType="date"
-                android:padding="16dp"
-                android:textSize="@dimen/base_text" />
+        </RelativeLayout>
 
-            <EditText
-                android:id="@+id/comments"
-                android:layout_width="fill_parent"
-                android:layout_height="200dp"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/white_canvas"
-                android:gravity="start"
-                android:hint="@string/comment_hint"
-                android:inputType="textMultiLine|textCapSentences"
-                android:padding="16dp"
-                android:textSize="@dimen/base_text" />
+        <ProgressBar
+            android:id="@+id/photo_bar"
+            style="@android:style/Widget.Holo.ProgressBar.Horizontal"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:visibility="gone" />
 
-            <Button
-                android:id="@+id/location_button"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="0dp"
-                android:background="@drawable/blue_button"
-                android:onClick="updateLocation"
-                android:text="Add location"
-                android:textColor="@color/white" />
+        <EditText
+            android:id="@+id/date"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/white_canvas"
+            android:clickable="true"
+            android:hint="@string/date_hint"
+            android:inputType="date"
+            android:padding="16dp"
+            android:textSize="@dimen/base_text" />
 
-            <LinearLayout
-                android:id="@+id/groups"
+        <EditText
+            android:id="@+id/comments"
+            android:layout_width="fill_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/white_canvas"
+            android:gravity="start"
+            android:hint="@string/comment_hint"
+            android:inputType="textMultiLine|textCapSentences"
+            android:padding="16dp"
+            android:textSize="@dimen/base_text" />
+
+        <Button
+            android:id="@+id/location_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="0dp"
+            android:background="@drawable/blue_button"
+            android:onClick="updateLocation"
+            android:text="Add location"
+            android:textColor="@color/white" />
+
+        <LinearLayout
+            android:id="@+id/groups"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_marginTop="16dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="16dp"
-                    android:paddingTop="0dp"
-                    android:text="Associate this report with one or more of your groups."
-                    android:textSize="@dimen/base_text" />
-
-            </LinearLayout>
+                android:paddingBottom="16dp"
+                android:paddingTop="0dp"
+                android:text="Associate this report with one or more of your groups."
+                android:textSize="@dimen/base_text" />
 
         </LinearLayout>
 
     </LinearLayout>
+
+    <!--</LinearLayout>-->
 
 </ScrollView>

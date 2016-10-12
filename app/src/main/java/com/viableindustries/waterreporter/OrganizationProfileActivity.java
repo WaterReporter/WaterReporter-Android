@@ -629,7 +629,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                 } else {
 
-                    CharSequence text = "The organization is not affiliated with any reports.";
+                    CharSequence text = "This organization is not affiliated with any reports.";
                     int duration = Toast.LENGTH_LONG;
 
                     Toast toast = Toast.makeText(context, text, duration);

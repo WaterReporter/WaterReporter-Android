@@ -671,11 +671,11 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 } else {
 
-                    CharSequence text = "Your report collection is empty. Tap on the plus sign in the menu bar to start a new report.";
-                    int duration = Toast.LENGTH_LONG;
+                    //CharSequence text = "Your report collection is empty. Tap on the plus sign in the menu bar to start a new report.";
+                    //int duration = Toast.LENGTH_LONG;
 
-                    Toast toast = Toast.makeText(UserProfileActivity.this, text, duration);
-                    toast.show();
+                    //Toast toast = Toast.makeText(UserProfileActivity.this, text, duration);
+                    //toast.show();
 
                 }
 

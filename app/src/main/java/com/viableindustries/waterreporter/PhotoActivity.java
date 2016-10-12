@@ -40,6 +40,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -79,7 +80,7 @@ public class PhotoActivity extends AppCompatActivity
         implements PhotoPickerDialogFragment.PhotoPickerDialogListener {
 
     @Bind(R.id.parent_layout)
-    RelativeLayout parentLayout;
+    LinearLayout parentLayout;
 
     @Bind(R.id.button_capture)
     ImageButton captureButton;
@@ -149,7 +150,7 @@ public class PhotoActivity extends AppCompatActivity
 
         if (id == R.id.action_save) {
 
-            savePhoto();
+            //savePhoto();
 
         } else {
 
@@ -983,7 +984,7 @@ public class PhotoActivity extends AppCompatActivity
 
     }
 
-    protected void savePhoto() {
+    public void savePhoto(View view) {
 
         // If we don't have a data connection, abort and send the user back to the main activity
 

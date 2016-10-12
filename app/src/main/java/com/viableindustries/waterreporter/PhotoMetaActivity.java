@@ -96,10 +96,15 @@ public class PhotoMetaActivity extends AppCompatActivity {
     @Bind(R.id.location_button)
     Button locationButton;
 
+    @Bind(R.id.add_photo)
+    Button addPhoto;
+
     @Bind(R.id.groups)
     LinearLayout groupList;
 
     private static final int ACTION_SET_LOCATION = 0;
+
+    private static final int ACTION_ADD_PHOTO = 1;
 
     private String mGalleryPath;
 
@@ -311,6 +316,50 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                 break;
 
+            case ACTION_ADD_PHOTO:
+
+                if (resultCode == RESULT_OK) {
+
+//                    Bundle bundle = data.getParcelableExtra("bundle");
+
+                    mTempImagePath = data.getStringExtra("file_path");
+
+                    if (mTempImagePath != null) {
+
+                        //photoCaptured = true;
+
+                        addPhoto.setVisibility(View.GONE);
+
+                        mImageView.setVisibility(View.VISIBLE);
+
+                        File photo = new File(mTempImagePath);
+
+                        Picasso.with(this).load(photo).placeholder(R.drawable.user_avatar_placeholder).into(mImageView);
+
+//                        Log.d("location", location.getLatitude() + "");
+//
+//                        longitude = location.getLongitude();
+//
+//                        latitude = location.getLatitude();
+//
+//                        Log.d("position", longitude + latitude + "");
+//
+//                        locationButton.setText("Edit location");
+//
+//                        locationButton.setBackgroundResource(R.drawable.green_button);
+//
+//                        CharSequence text = "Location saved successfully";
+//
+//                        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+//
+//                        toast.show();
+
+                    }
+
+                }
+
+                break;
+
         }
 
     }
@@ -321,6 +370,12 @@ public class PhotoMetaActivity extends AppCompatActivity {
     public void updateLocation(View v) {
 
 //        startActivityForResult(new Intent(this, LocationActivity.class), ACTION_SET_LOCATION);
+
+    }
+
+    public void addImage(View v) {
+
+        startActivityForResult(new Intent(this, PhotoActivity.class), ACTION_ADD_PHOTO);
 
     }
 
@@ -353,7 +408,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
     // Send POST request
 
-    protected void submitReport() {
+    public void submitReport(View view) {
 
         if (!connectionActive()) {
 
@@ -696,7 +751,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
             }
 
-            submitReport();
+            //submitReport();
 
             return true;
 
