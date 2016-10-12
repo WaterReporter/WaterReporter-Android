@@ -45,6 +45,9 @@ import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportPostBody;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.Submission;
+import com.viableindustries.waterreporter.data.User;
+import com.viableindustries.waterreporter.data.UserHolder;
+import com.viableindustries.waterreporter.data.UserProperties;
 import com.viableindustries.waterreporter.data.UserService;
 
 import java.io.File;
@@ -560,7 +563,20 @@ public class PhotoMetaActivity extends AppCompatActivity {
                                             @Override
                                             public void run() {
 
-                                                startActivity(new Intent(PhotoMetaActivity.this, SubmissionsActivity.class));
+                                                final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+                                                int coreId = coreProfile.getInt("id", 0);
+
+                                                UserProperties userProperties = new UserProperties(coreId, coreProfile.getString("description", ""),
+                                                        coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
+                                                        coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
+                                                        coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null);
+
+                                                User coreUser = User.createUser(coreId, userProperties);
+
+                                                UserHolder.setUser(coreUser);
+
+                                                startActivity(new Intent(PhotoMetaActivity.this, UserProfileActivity.class));
 
                                             }
 
