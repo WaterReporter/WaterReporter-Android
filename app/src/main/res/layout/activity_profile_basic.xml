@@ -77,9 +77,10 @@
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
             android:text="Add photo"
-            android:textAllCaps="false"
+            android:textAllCaps="true"
             android:textColor="@color/white"
-            android:textSize="@dimen/base_text" />
+            android:textSize="@dimen/small_text"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/user_avatar"

@@ -250,11 +250,11 @@ public class RegistrationActivity extends AppCompatActivity {
                             // storage and therefore need to retrieve it via the UserService by including
                             // the token obtained just now upon successful log-in.
 
-                            // Keep in mind that users could be re-installing the app or setting up a new device.
+                            // Keep in mind that users could be re-installing the app or setting up a new device. 
 
                             UserService userService = restAdapter.create(UserService.class);
 
-                            userService.getUser(access_token, "application/json",
+                            userService.getActiveUser(access_token, "application/json",
                                     new Callback<UserBasicResponse>() {
                                         @Override
                                         public void success(UserBasicResponse userBasicResponse,

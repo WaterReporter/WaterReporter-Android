@@ -78,7 +78,16 @@ public class NavigationFragment extends Fragment {
 
                 int coreId = coreProfile.getInt("id", 0);
 
-                UserProperties userProperties = (UserProperties) coreProfile.getAll();
+//                public UserProperties (String aDescription, int aId, String aLastName,
+//                        String aFirstName, ArrayList<Organization> aOrganizations,
+//                        String aOrganizationName, String aPicture, String aPublicEmail, String aTitle){
+
+                // UserProperties userProperties = (UserProperties) coreProfile.getAll();
+
+                UserProperties userProperties = new UserProperties(coreId, coreProfile.getString("description", ""),
+                        coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
+                        coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
+                        coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null);
 
                 User coreUser = User.createUser(coreId, userProperties);
 

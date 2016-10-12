@@ -4,20 +4,22 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by brendanmcintyre on 8/27/15.
  */
 public class UserProperties implements Serializable {
 
-    @SerializedName("active")
-    public Boolean active;
+    //@SerializedName("active")
+    //public Boolean active;
 
     @SerializedName("description")
     public String description;
 
-    @SerializedName("email")
-    public String email;
+    //@SerializedName("email")
+    //public String email;
 
     @SerializedName("first_name")
     public String first_name;
@@ -25,11 +27,14 @@ public class UserProperties implements Serializable {
     @SerializedName("id")
     public int id;
 
+    @SerializedName("images")
+    public ArrayList<ReportPhoto> images;
+
     @SerializedName("last_name")
     public String last_name;
 
-    @SerializedName("login_count")
-    public int login_count;
+    //@SerializedName("login_count")
+    //public int login_count;
 
     @SerializedName("organization")
     public ArrayList<Organization> organizations;
@@ -46,25 +51,42 @@ public class UserProperties implements Serializable {
     @SerializedName("title")
     public String title;
 
-    public UserProperties createProperties(Boolean aActive, String aDescription, String aEmail, int aId,
-                                           String aLastName, String aFirstName, int aLoginCount,
-                                           ArrayList<Organization> aOrganizations, String aOrganizationName,
-                                           String aPicture, String aPublicEmail, String aTitle){
+    public UserProperties (int aId, String aDescription, String aFirstName,
+                           String aLastName, String aOrganizationName, String aPicture,
+                           String aPublicEmail, String aTitle, ArrayList<ReportPhoto> aImages,
+                           ArrayList<Organization> aOrganizations){
 
-        this.active = aActive;
+        //this.active = aActive;
         this.description = aDescription;
-        this.email = aEmail;
+        //this.email = aEmail;
         this.first_name = aFirstName;
         this.id = aId;
+        this.images = aImages;
         this.last_name = aLastName;
-        this.login_count = aLoginCount;
+        //this.login_count = aLoginCount;
         this.organizations = aOrganizations;
         this.organization_name = aOrganizationName;
         this.picture = aPicture;
         this.public_email = aPublicEmail;
         this.title = aTitle;
 
-        return this;
+        //return this;
+
+    }
+
+    public Map<String, String> getStringProperties(){
+
+        Map<String, String> stringProperties = new HashMap<String, String>();
+
+        stringProperties.put("description", this.description);
+        stringProperties.put("first_name", this.first_name);
+        stringProperties.put("last_name", this.last_name);
+        stringProperties.put("organization_name", this.organization_name);
+        stringProperties.put("picture", this.picture);
+        stringProperties.put("public_email", this.public_email);
+        stringProperties.put("title", this.title);
+
+        return stringProperties;
 
     }
 

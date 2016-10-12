@@ -310,14 +310,23 @@ public class ProfileBasicActivity extends AppCompatActivity {
                                             final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
                                             coreProfile.edit()
-                                                    .putBoolean("active", user.properties.active)
+                                                    //.putBoolean("active", user.properties.active)
                                                     .putInt("id", user.id)
+                                                    .putString("picture", user.properties.images.get(0).properties.icon_retina)
                                                     .apply();
 
                                             // Model strings
-                                            String[] KEYS = {"active", "description", "email", "first_name",
-                                                    "last_name", "login_count", "organization_name", "picture",
+                                            String[] KEYS = {"description", "first_name",
+                                                    "last_name", "organization_name", //"picture",
                                                     "public_email", "title"};
+
+                                            for (String key : KEYS){
+
+                                                coreProfile.edit().putString(key, user.properties.getStringProperties().get(key)).apply();
+
+                                            }
+
+                                            //coreProfile.appl
 
 //                                            for(User user : user)
 

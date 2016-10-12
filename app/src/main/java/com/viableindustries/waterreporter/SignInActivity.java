@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import com.viableindustries.waterreporter.data.AuthResponse;
 import com.viableindustries.waterreporter.data.LogInBody;
 import com.viableindustries.waterreporter.data.SecurityService;
+import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserBasicResponse;
 import com.viableindustries.waterreporter.data.UserService;
 
@@ -96,7 +97,7 @@ public class SignInActivity extends AppCompatActivity {
                         public void success(AuthResponse authResponse,
                                             Response response) {
 
-                            String access_token = "Bearer " + authResponse.getAccessToken();
+                            final String access_token = "Bearer " + authResponse.getAccessToken();
 
                             prefs.edit().putString("access_token", access_token).apply();
 
@@ -109,9 +110,9 @@ public class SignInActivity extends AppCompatActivity {
 
                             if (user_id == 0) {
 
-                                UserService userService = restAdapter.create(UserService.class);
+                                final UserService userService = restAdapter.create(UserService.class);
 
-                                userService.getUser(access_token, "application/json",
+                                userService.getActiveUser(access_token, "application/json",
                                         new Callback<UserBasicResponse>() {
                                             @Override
                                             public void success(UserBasicResponse userBasicResponse,
@@ -119,17 +120,52 @@ public class SignInActivity extends AppCompatActivity {
 
                                                 prefs.edit().putInt("user_id", userBasicResponse.getUserId()).apply();
 
-                                                Intent intent = new Intent();
+                                                userService.getUser(access_token,
+                                                        "application/json",
+                                                        userBasicResponse.getUserId(),
+                                                        new Callback<User>() {
+                                                            @Override
+                                                            public void success(User user,
+                                                                                Response response) {
 
-                                                setResult(RESULT_OK, intent);
+                                                                final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
-                                                finish();
+                                                                coreProfile.edit()
+                                                                        //.putBoolean("active", user.properties.active)
+                                                                        .putInt("id", user.id)
+                                                                        .putString("picture", user.properties.images.get(0).properties.icon_retina)
+                                                                        .apply();
+
+                                                                // Model strings
+                                                                String[] KEYS = {"description", "first_name",
+                                                                        "last_name", "organization_name", //"picture",
+                                                                        "public_email", "title"};
+
+                                                                for (String key : KEYS){
+
+                                                                    coreProfile.edit().putString(key, user.properties.getStringProperties().get(key)).apply();
+
+                                                                }
+
+                                                                Intent intent = new Intent();
+
+                                                                setResult(RESULT_OK, intent);
+
+                                                                finish();
+
+                                                            }
+
+                                                            @Override
+                                                            public void failure(RetrofitError error) {
+                                                                //
+                                                            }
+                                                        });
 
                                             }
 
                                             @Override
                                             public void failure(RetrofitError error) {
-
+                                                //
                                             }
                                         });
 

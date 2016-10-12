@@ -23,9 +23,16 @@ public interface UserService {
             .build();
 
     @GET("/data/me")
-    public void getUser(@Header("Authorization") String authorization,
+    public void getActiveUser(@Header("Authorization") String authorization,
                         @Header("Content-Type") String contentType,
                         Callback<UserBasicResponse> userResponseCallback);
+
+    @GET("/data/user/{user}")
+    public void getUser(@Header("Authorization") String authorization,
+                           @Header("Content-Type") String contentType,
+                           @Path("user") int user_id,
+                           //@Body Map<String, Object> userPatch,
+                           Callback<User> userResponseCallback);
 
     @PATCH("/data/user/{user}")
     public void updateUser(@Header("Authorization") String authorization,

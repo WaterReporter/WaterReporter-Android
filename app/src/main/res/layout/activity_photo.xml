@@ -15,12 +15,41 @@
     <!--android:gravity="bottom"-->
     <!--android:orientation="vertical"-->
     <!--android:visibility="visible">-->
+    <RelativeLayout
+        android:id="@+id/action_bar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#FFFFFF">
+
+        <ImageView
+            android:id="@+id/logo_horizontal_lockup"
+            android:layout_width="88dp"
+            android:layout_height="24dp"
+            android:layout_centerInParent="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/logo_horizontal_lockup" />
+
+        <ImageButton
+            android:id="@+id/save_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@null"
+            android:onClick="saveProfile"
+            android:src="@drawable/ic_done_blue_24dp" />
+
+    </RelativeLayout>
 
     <ImageView
         android:id="@+id/preview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_below="@+id/action_bar"
         android:layout_gravity="center_horizontal"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
@@ -49,6 +78,7 @@
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
         android:background="@drawable/floating_action_green"
