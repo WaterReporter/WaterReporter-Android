@@ -180,7 +180,7 @@ public class UserFeedFragment extends Fragment {
 
     private void populateTimeline(List list) {
 
-        timelineAdapter = new TimelineAdapter(getContext(), list);
+        timelineAdapter = new TimelineAdapter(getContext(), list, true);
 
         // Attach the adapter to a ListView
         timeLine.setAdapter(timelineAdapter);

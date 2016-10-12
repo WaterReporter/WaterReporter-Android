@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void populateTimeline(List list) {
 
-        timelineAdapter = new TimelineAdapter(this, list);
+        timelineAdapter = new TimelineAdapter(this, list, false);
 
         // Attach the adapter to a ListView
         listView.setAdapter(timelineAdapter);

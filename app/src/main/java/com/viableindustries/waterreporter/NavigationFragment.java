@@ -66,7 +66,7 @@ public class NavigationFragment extends Fragment {
         submitTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), PhotoActivity.class));
+                startActivity(new Intent(getActivity(), PhotoMetaActivity.class));
             }
         });
 

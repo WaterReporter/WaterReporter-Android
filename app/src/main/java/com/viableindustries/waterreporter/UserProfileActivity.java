@@ -720,7 +720,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private void populateTimeline(List list) {
 
-        timelineAdapter = new TimelineAdapter(UserProfileActivity.this, list);
+        timelineAdapter = new TimelineAdapter(UserProfileActivity.this, list, true);
 
         // Attach the adapter to a ListView
         timeLine.setAdapter(timelineAdapter);

@@ -77,12 +77,13 @@
         <activity
             android:name=".PhotoMetaActivity"
             android:label="@string/title_activity_report"
-            android:parentActivityName=".PhotoActivity"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">>
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.viableindustries.waterreporter.PhotoActivity" />
+                android:value="com.viableindustries.waterreporter.MainActivity" />
         </activity>
         <activity
             android:name=".MarkerDetailActivity"

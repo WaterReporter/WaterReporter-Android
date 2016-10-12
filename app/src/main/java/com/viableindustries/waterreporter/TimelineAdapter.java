@@ -38,6 +38,8 @@ public class TimelineAdapter extends ArrayAdapter {
 
     private final Context context;
 
+    private final boolean isProfile;
+
     protected String creationDate;
 
     protected Integer featureId;
@@ -52,9 +54,10 @@ public class TimelineAdapter extends ArrayAdapter {
 
     protected String commentCount;
 
-    public TimelineAdapter(Context context, List features) {
+    public TimelineAdapter(Context context, List features, boolean isProfile) {
         super(context, 0, features);
         this.context = context;
+        this.isProfile = isProfile;
     }
 
     protected static class ViewHolder {
@@ -164,9 +167,13 @@ public class TimelineAdapter extends ArrayAdapter {
             }
         });
 
-        viewHolder.ownerAvatar.setOnClickListener(new UserProfileListener(getContext(), feature.properties.owner));
+        if (!isProfile) {
 
-        viewHolder.reportOwner.setOnClickListener(new UserProfileListener(getContext(), feature.properties.owner));
+            viewHolder.ownerAvatar.setOnClickListener(new UserProfileListener(getContext(), feature.properties.owner));
+
+            viewHolder.reportOwner.setOnClickListener(new UserProfileListener(getContext(), feature.properties.owner));
+
+        }
 
         viewHolder.directionsIcon.setOnClickListener(new View.OnClickListener() {
             @Override
