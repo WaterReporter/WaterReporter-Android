@@ -8,8 +8,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.viableindustries.waterreporter.data.AuthResponse;
 import com.viableindustries.waterreporter.data.LogInBody;
@@ -43,6 +45,12 @@ public class SignInActivity extends AppCompatActivity {
     @Bind(R.id.error_message)
     LinearLayout error_message;
 
+    @Bind(R.id.log_in)
+    Button logInButton;
+
+    @Bind(R.id.spinner)
+    ProgressBar progressBar;
+
     static final int REGISTRATION_REQUEST = 1;
 
     static final int LOGIN_REQUEST = 2;
@@ -70,6 +78,30 @@ public class SignInActivity extends AppCompatActivity {
 
     }
 
+    protected void onRequestError(RetrofitError error){
+
+        logInButton.setVisibility(View.VISIBLE);
+
+        progressBar.setVisibility(View.GONE);
+
+        Response response = error.getResponse();
+
+        if (response != null) {
+
+            int status = response.getStatus();
+
+            if (status == 403) {
+
+                error_message.setVisibility(View.VISIBLE);
+
+                password_text.getText().clear();
+
+            }
+
+        }
+
+    }
+
     public void saveAccount(View view) {
 
         final RestAdapter restAdapter = SecurityService.restAdapter;
@@ -86,6 +118,10 @@ public class SignInActivity extends AppCompatActivity {
         Matcher matcher = emailPattern.matcher(email);
 
         if (matcher.matches()) {
+
+            logInButton.setVisibility(View.GONE);
+
+            progressBar.setVisibility(View.VISIBLE);
 
             LogInBody logInBody = new LogInBody(email, password, getString(R.string.response_type),
                     "Ru8hamw7ixuCtsHs23Twf4UB12fyIijdQcLssqpd", "http://stg.waterreporter.org/authorize",
@@ -160,6 +196,8 @@ public class SignInActivity extends AppCompatActivity {
                                                             @Override
                                                             public void failure(RetrofitError error) {
                                                                 //
+                                                                onRequestError(error);
+
                                                             }
                                                         });
 
@@ -168,6 +206,8 @@ public class SignInActivity extends AppCompatActivity {
                                             @Override
                                             public void failure(RetrofitError error) {
                                                 //
+                                                onRequestError(error);
+
                                             }
                                         });
 
@@ -182,21 +222,7 @@ public class SignInActivity extends AppCompatActivity {
                         @Override
                         public void failure(RetrofitError error) {
 
-                            Response response = error.getResponse();
-
-                            if (response != null) {
-
-                                int status = response.getStatus();
-
-                                if (status == 403) {
-
-                                    error_message.setVisibility(View.VISIBLE);
-
-                                    password_text.getText().clear();
-
-                                }
-
-                            }
+                            onRequestError(error);
 
                         }
                     });
