@@ -147,11 +147,13 @@ public class SignInActivity extends AppCompatActivity {
 
                                                                 }
 
-                                                                Intent intent = new Intent();
+                                                                //Intent intent = new Intent();
 
-                                                                setResult(RESULT_OK, intent);
+                                                                //setResult(RESULT_OK, intent);
 
-                                                                finish();
+                                                                //finish();
+
+                                                                startActivity(new Intent(SignInActivity.this, MainActivity.class));
 
                                                             }
 
@@ -189,6 +191,8 @@ public class SignInActivity extends AppCompatActivity {
                                 if (status == 403) {
 
                                     error_message.setVisibility(View.VISIBLE);
+
+                                    password_text.getText().clear();
 
                                 }
 

@@ -729,6 +729,26 @@ public class UserProfileActivity extends AppCompatActivity {
 
     }
 
+    public void logOut(View view) {
+
+        // Clear stored token and user id values
+
+        final SharedPreferences prefs =
+                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        prefs.edit().putString("access_token", "")
+                .putInt("user_id", 0).apply();
+
+        // Clear stored active user profile
+
+        final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+        coreProfile.edit().clear().apply();
+
+        startActivity(new Intent(this, SignInActivity.class));
+
+    }
+
     @Override
     public void onResume() {
         super.onResume();

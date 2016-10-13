@@ -20,11 +20,15 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.data.OrganizationService;
+import com.viableindustries.waterreporter.data.QueryParams;
+import com.viableindustries.waterreporter.data.QuerySort;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -115,7 +119,23 @@ public class GroupActionListActivity extends AppCompatActivity {
 
         OrganizationService service = OrganizationService.restAdapter.create(OrganizationService.class);
 
-        service.getOrganizations(access_token, "application/json", 100, null, new Callback<OrganizationFeatureCollection>() {
+        // Create order_by list and add a sort parameter
+
+        List<QuerySort> queryOrder = new ArrayList<QuerySort>();
+
+        QuerySort querySort = new QuerySort("name", "asc");
+
+        queryOrder.add(querySort);
+
+        // Create query string from new QueryParams
+
+        QueryParams queryParams = new QueryParams(null, queryOrder);
+
+        String query = new Gson().toJson(queryParams);
+
+        Log.d("URL", query);
+
+        service.getOrganizations(access_token, "application/json", 100, query, new Callback<OrganizationFeatureCollection>() {
 
             @Override
             public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
