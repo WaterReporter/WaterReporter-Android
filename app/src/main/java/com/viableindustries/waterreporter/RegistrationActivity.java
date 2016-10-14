@@ -316,15 +316,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     }
 
-    //    public void toRegister(View v) {
-//
-//        startActivityForResult(new Intent(this, RegistrationActivity.class), REGISTRATION_REQUEST);
-//
-//        finish();
-//
-//    }
-
-    // Exit the application to avoid 
+    // Exit the application when user taps the system back button
 
     @Override
     public void onBackPressed() {

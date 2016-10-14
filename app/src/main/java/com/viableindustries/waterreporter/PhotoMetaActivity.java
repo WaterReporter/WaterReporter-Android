@@ -372,7 +372,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
      **/
     public void updateLocation(View v) {
 
-//        startActivityForResult(new Intent(this, LocationActivity.class), ACTION_SET_LOCATION);
+        startActivityForResult(new Intent(this, LocationActivity.class), ACTION_SET_LOCATION);
 
     }
 

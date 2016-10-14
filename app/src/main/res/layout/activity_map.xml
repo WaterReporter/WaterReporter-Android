@@ -5,10 +5,16 @@
     android:layout_height="match_parent"
     tools:context="com.viableindustries.waterreporter.LocationActivity">
 
-    <com.mapbox.mapboxsdk.views.MapView
+    <!--<com.mapbox.mapboxsdk.views.MapView-->
+        <!--android:id="@+id/mapview"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent" />-->
+
+    <com.mapbox.mapboxsdk.maps.MapView
         android:id="@+id/mapview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        mapbox:style_url="mapbox://styles/mapbox/satellite-v9" />
 
 
     <View

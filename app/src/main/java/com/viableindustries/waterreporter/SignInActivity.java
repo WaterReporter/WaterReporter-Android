@@ -253,6 +253,8 @@ public class SignInActivity extends AppCompatActivity {
 
     }
 
+    // Exit the application when user taps the system back button
+
     @Override
     public void onBackPressed() {
         Intent a = new Intent(Intent.ACTION_MAIN);

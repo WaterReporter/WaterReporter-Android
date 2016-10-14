@@ -44,43 +44,49 @@
 
     </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/preview"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        android:visibility="gone" />
+        android:layout_height="match_parent">
 
-    <!--<Button-->
-    <!--android:id="@+id/button_capture"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignParentBottom="true"-->
-    <!--android:layout_gravity="center|bottom"-->
-    <!--android:layout_marginBottom="0dp"-->
-    <!--android:layout_marginLeft="0dp"-->
-    <!--android:layout_marginRight="0dp"-->
-    <!--android:layout_marginTop="16dp"-->
-    <!--android:background="@color/base_blue"-->
-    <!--android:clickable="true"-->
-    <!--android:onClick="checkStoragePermission"-->
-    <!--android:paddingBottom="20dp"-->
-    <!--android:paddingTop="20dp"-->
-    <!--android:text="Add Photo"-->
-    <!--android:textColor="@color/white" />-->
+        <ImageView
+            android:id="@+id/preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
 
-    <ImageButton
-        android:id="@+id/button_capture"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:background="@drawable/floating_action_green"
-        android:clickable="true"
-        android:onClick="checkStoragePermission"
-        android:src="@drawable/ic_add_white_24dp" />
+        <!--<Button-->
+        <!--android:id="@+id/button_capture"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_gravity="center|bottom"-->
+        <!--android:layout_marginBottom="0dp"-->
+        <!--android:layout_marginLeft="0dp"-->
+        <!--android:layout_marginRight="0dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:background="@color/base_blue"-->
+        <!--android:clickable="true"-->
+        <!--android:onClick="checkStoragePermission"-->
+        <!--android:paddingBottom="20dp"-->
+        <!--android:paddingTop="20dp"-->
+        <!--android:text="Add Photo"-->
+        <!--android:textColor="@color/white" />-->
+
+        <ImageButton
+            android:id="@+id/button_capture"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:background="@drawable/floating_action_green"
+            android:clickable="true"
+            android:onClick="checkStoragePermission"
+            android:src="@drawable/ic_add_white_24dp" />
+
+    </FrameLayout>
 
     <!--</RelativeLayout>-->
 

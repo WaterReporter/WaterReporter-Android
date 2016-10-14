@@ -154,7 +154,14 @@ public class TimelineAdapter extends ArrayAdapter {
                 intent.putExtra("THUMBNAIL_URL", feature.properties.images.get(0).properties.icon_retina);
                 intent.putExtra("FULL_IMAGE_URL", feature.properties.images.get(0).properties.square_retina);
                 intent.putExtra("REPORT_CREATED", creationDate);
-                intent.putExtra("REPORT_DESCRIPTION", feature.properties.report_description.trim());
+
+                try {
+                    intent.putExtra("REPORT_DESCRIPTION", feature.properties.report_description.trim());
+
+                } catch (NullPointerException ne) {
+
+                    intent.putExtra("REPORT_DESCRIPTION", "");
+                }
                 intent.putExtra("REPORT_WATERSHED", watershedName);
                 intent.putExtra("REPORT_GROUPS", groupList);
                 intent.putExtra("COMMENT_COUNT", commentCount);
@@ -206,7 +213,7 @@ public class TimelineAdapter extends ArrayAdapter {
         viewHolder.reportOwner.setText(String.format("%s %s", feature.properties.owner.properties.first_name, feature.properties.owner.properties.last_name));
         viewHolder.reportWatershed.setText(watershedName);
 
-        if (feature.properties.report_description.length() > 0) {
+        if (feature.properties.report_description != null && (feature.properties.report_description.length() > 0)) {
 
             viewHolder.reportCaption.setVisibility(View.VISIBLE);
 
