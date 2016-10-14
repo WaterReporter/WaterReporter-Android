@@ -78,7 +78,7 @@ public class SignInActivity extends AppCompatActivity {
 
     }
 
-    protected void onRequestError(RetrofitError error){
+    protected void onRequestError(RetrofitError error) {
 
         logInButton.setVisibility(View.VISIBLE);
 
@@ -177,7 +177,7 @@ public class SignInActivity extends AppCompatActivity {
                                                                         "last_name", "organization_name", //"picture",
                                                                         "public_email", "title"};
 
-                                                                for (String key : KEYS){
+                                                                for (String key : KEYS) {
 
                                                                     coreProfile.edit().putString(key, user.properties.getStringProperties().get(key)).apply();
 
@@ -251,6 +251,14 @@ public class SignInActivity extends AppCompatActivity {
 
         finish();
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent a = new Intent(Intent.ACTION_MAIN);
+        a.addCategory(Intent.CATEGORY_HOME);
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(a);
     }
 
     @Override

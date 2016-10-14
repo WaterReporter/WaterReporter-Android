@@ -316,13 +316,23 @@ public class RegistrationActivity extends AppCompatActivity {
 
     }
 
-//    public void toRegister(View v) {
+    //    public void toRegister(View v) {
 //
 //        startActivityForResult(new Intent(this, RegistrationActivity.class), REGISTRATION_REQUEST);
 //
 //        finish();
 //
 //    }
+
+    // Exit the application to avoid 
+
+    @Override
+    public void onBackPressed() {
+        Intent a = new Intent(Intent.ACTION_MAIN);
+        a.addCategory(Intent.CATEGORY_HOME);
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(a);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
