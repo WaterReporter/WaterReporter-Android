@@ -19,11 +19,20 @@ public class CommentProperties implements Serializable {
     @SerializedName("id")
     public int id;
 
+    @SerializedName("images")
+    public List<ReportPhoto> images;
+
     @SerializedName("owner_id")
     public int owner_id;
 
+    @SerializedName("owner")
+    public User owner;
+
     @SerializedName("report_id")
     public int report_id;
+
+    @SerializedName("report")
+    public Report report;
 
     @SerializedName("report_state")
     public String report_state;

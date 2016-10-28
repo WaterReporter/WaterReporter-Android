@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.viableindustries.waterreporter.data.Comment;
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationProfileListener;
@@ -112,7 +113,7 @@ public class TimelineAdapter extends ArrayAdapter {
         // Get the data item for this position
         final Report feature = (Report) getItem(position);
 
-        Log.d("groups", feature.properties.groups.toString());
+//        Log.d("groups", feature.properties.groups.toString());
 
         ReportPhoto image = (ReportPhoto) feature.properties.images.get(0);
 
@@ -134,6 +135,19 @@ public class TimelineAdapter extends ArrayAdapter {
         creationDate = AttributeTransformUtility.parseDate(new SimpleDateFormat("MMM dd, yyyy", Locale.US), creationDate);
 
         // Attach click listeners to active UI components
+
+        viewHolder.reportComments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ReportHolder.setReport(feature);
+
+                Intent intent = new Intent(context, CommentActivity.class);
+
+                context.startActivity(intent);
+
+            }
+        });
 
         viewHolder.locationIcon.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -147,5 +147,10 @@
 
     <string name="saving_profile">Saving profile&#8230;</string>
     <string name="title_activity_group_action_list">GroupActionListActivity</string>
+    <string name="title_activity_comment">CommentActivity</string>
+
+    <!-- Commenting -->
+    <string name="action_taken">Action taken by</string>
+    <string name="add_comment">Add a comment&#8230;</string>
 
 </resources>

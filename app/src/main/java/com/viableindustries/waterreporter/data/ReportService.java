@@ -62,6 +62,15 @@ public interface ReportService {
                                 @Path("report") int reportId,
                                 Callback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
 
+    @GET("/data/report/{report}/comments")
+    public void getReportComments(@Header("Authorization") String authorization,
+                                  @Header("Content-Type") String contentType,
+                                  @Path("report") int reportId,
+                                  @Query("page") int page,
+                                  @Query("results_per_page") int numResults,
+                                  @Query("q") String q,
+                                  Callback<CommentCollection> commentCollectionCallback);
+
     @POST("/data/report")
     public void postReport
             (@Header("Authorization") String authorization,
