@@ -28,6 +28,8 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.viableindustries.waterreporter.data.Comment;
 import com.viableindustries.waterreporter.data.CommentCollection;
+import com.viableindustries.waterreporter.data.CommentPost;
+import com.viableindustries.waterreporter.data.CommentService;
 import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
@@ -61,9 +63,6 @@ import static java.lang.Boolean.TRUE;
 
 public class CommentActivity extends AppCompatActivity {
 
-//    @Bind(R.id.search_box)
-//    EditText listFilter;
-
     @Bind(R.id.list)
     ListView listView;
 
@@ -91,6 +90,8 @@ public class CommentActivity extends AppCompatActivity {
 
     protected List<Comment> commentCollectionList = new ArrayList<Comment>();
 
+    private boolean working;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -100,34 +101,7 @@ public class CommentActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-//        int occupiedWidth = cameraButtonContainer.getMeasuredWidth() + sendButtonContainer.getMeasuredWidth();
-//
-//        Log.v("occupiedWidth", occupiedWidth + "");
-//
-//        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) commentBox.getLayoutParams();
-//
-//        layoutParams.width = commentComponent.getMeasuredWidth() - occupiedWidth;
-//
-//        Log.v("width", layoutParams.width + "");
-//
-//        commentBox.setLayoutParams(layoutParams);
-
-//        listViewParams = (ViewGroup.LayoutParams) listTabs.getLayoutParams();
-
-//        generic = getIntent().getExtras().getBoolean("GENERIC_USER", TRUE);
-
-        //assert getSupportActionBar() != null;
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        ArrayList<Organization> organizations = UserGroupList.getList();
-//
-//        Collections.sort(organizations, new Comparator<Organization>() {
-//            @Override
-//            public int compare(Organization organization1, Organization organization2) {
-//                return organization1.properties.name.compareTo(organization2.properties.name);
-//            }
-//        });
-
-        fetchComments(10, 1);
+        fetchComments(50, 1);
 
     }
 
@@ -162,9 +136,6 @@ public class CommentActivity extends AppCompatActivity {
 
         Log.d("", access_token);
 
-        // We shouldn't need to retrieve this value again, but we'll deal with that issue later
-//        user_id = prefs.getInt("user_id", 0);
-
         // Create order_by list and add a sort parameter
 
         List<QuerySort> queryOrder = new ArrayList<QuerySort>();
@@ -194,40 +165,22 @@ public class CommentActivity extends AppCompatActivity {
 
                 Log.v("list", comments.toString());
 
-                if (!comments.isEmpty()) {
+                commentCollectionList.addAll(comments);
 
-                    commentCollectionList.addAll(comments);
+                try {
 
-                    try {
+                    commentAdapter.notifyDataSetChanged();
 
-                        commentAdapter.notifyDataSetChanged();
+                } catch (NullPointerException ne) {
 
-                    } catch (NullPointerException ne) {
-
-                        populateComments(commentCollectionList);
-
-                    }
+                    populateComments(commentCollectionList);
 
                 }
-
-                commentCollectionList = comments;
-
-//                if (refresh) {
-//
-//                    reportCollection = reports;
-//
-//                    populateTimeline(reportCollection);
-//
-//                }
-
-//                listView.setRefreshing(false);
 
             }
 
             @Override
             public void failure(RetrofitError error) {
-
-//                timeline.setRefreshing(false);
 
                 if (error == null) return;
 
@@ -259,39 +212,98 @@ public class CommentActivity extends AppCompatActivity {
 
         listView.setAdapter(commentAdapter);
 
-//        if (!generic) {
-//
-//            listFilter.setVisibility(View.VISIBLE);
-//
-//            listFilter.addTextChangedListener(new TextWatcher() {
-//
-//                public void afterTextChanged(Editable s) {
-//                }
-//
-//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//                }
-//
-//                public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//                    Log.d("filter", s.toString());
-//
-//                    adapter.getFilter().filter(s.toString());
-//
-//                }
-//
-//            });
-//
-//            // Enable ListView filtering
-//
-//            listView.setTextFilterEnabled(true);
-//
-//        }
-
     }
 
     public void addPhoto(View view) {
 
         startActivity(new Intent(CommentActivity.this, PhotoActivity.class));
+
+    }
+
+    public void prepareComment(View view) {
+
+        String body = commentBox.getText().toString();
+
+        Log.d("body", body);
+
+        if (working || body.isEmpty()) return;
+
+        reportId = ReportHolder.getReport().id;
+
+        CommentPost commentPost = new CommentPost(body, reportId, null, "public");
+
+        sendComment(commentPost);
+
+    }
+
+    private void sendComment(CommentPost commentPost) {
+
+        working = true;
+
+        SharedPreferences prefs =
+                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        final String access_token = prefs.getString("access_token", "");
+
+        Log.d("", access_token);
+
+        CommentService service = CommentService.restAdapter.create(CommentService.class);
+
+        service.postComment(access_token, "application/json", commentPost, new Callback<Comment>() {
+
+            @Override
+            public void success(Comment comment, Response response) {
+
+                // Lift UI lock
+
+                working = false;
+
+                // Clear the comment box
+
+                commentBox.setText("");
+
+                commentCollectionList.add(comment);
+
+                try {
+
+                    commentAdapter.notifyDataSetChanged();
+
+                } catch (NullPointerException ne) {
+
+                    populateComments(commentCollectionList);
+
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                // Lift UI lock
+
+                working = false;
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(CommentActivity.this, SignInActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
 
     }
 

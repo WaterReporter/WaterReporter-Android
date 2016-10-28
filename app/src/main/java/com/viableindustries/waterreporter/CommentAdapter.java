@@ -112,14 +112,14 @@ public class CommentAdapter extends ArrayAdapter {
 
         }
 
-        creationDate = (String) feature.properties.created;
+        creationDate = (String) AttributeTransformUtility.relativeTime(feature.properties.created);
 
         featureId = (Integer) feature.id;
 
         viewHolder.tracker.setText(String.valueOf(featureId));
 
         // Parse creation date
-        creationDate = AttributeTransformUtility.parseDate(new SimpleDateFormat("MMM dd, yyyy", Locale.US), creationDate);
+//        creationDate = AttributeTransformUtility.parseDate(new SimpleDateFormat("MMM dd, yyyy", Locale.US), creationDate);
 
         // Attach click listeners to active UI components
 
@@ -129,6 +129,7 @@ public class CommentAdapter extends ArrayAdapter {
 
         // Populate the data into the template view using the data object
         viewHolder.reportDate.setText(creationDate);
+
         viewHolder.reportOwner.setText(String.format("%s %s", feature.properties.owner.properties.first_name, feature.properties.owner.properties.last_name));
 
         if (feature.properties.body != null && (feature.properties.body.length() > 0)) {

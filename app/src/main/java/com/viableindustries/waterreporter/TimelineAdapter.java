@@ -74,6 +74,7 @@ public class TimelineAdapter extends ArrayAdapter {
         LinearLayout reportStub;
         RelativeLayout locationIcon;
         RelativeLayout directionsIcon;
+        RelativeLayout commentIcon;
         TextView tracker;
     }
 
@@ -100,6 +101,7 @@ public class TimelineAdapter extends ArrayAdapter {
             viewHolder.reportStub = (LinearLayout) convertView.findViewById(R.id.report_stub);
             viewHolder.locationIcon = (RelativeLayout) convertView.findViewById(R.id.location_icon);
             viewHolder.directionsIcon = (RelativeLayout) convertView.findViewById(R.id.directions_icon);
+            viewHolder.commentIcon = (RelativeLayout) convertView.findViewById(R.id.comment_icon);
             viewHolder.tracker = (TextView) convertView.findViewById(R.id.tracker);
 
             convertView.setTag(viewHolder);
@@ -119,7 +121,9 @@ public class TimelineAdapter extends ArrayAdapter {
 
         imagePath = (String) image.properties.square_retina;
 
-        creationDate = (String) feature.properties.created;
+//        creationDate = (String) feature.properties.created;
+
+        creationDate = (String) AttributeTransformUtility.relativeTime(feature.properties.created);
 
         featureId = (Integer) feature.id;
 
@@ -132,11 +136,11 @@ public class TimelineAdapter extends ArrayAdapter {
         groupList = AttributeTransformUtility.groupListSize(feature.properties.groups);
 
         // Parse creation date
-        creationDate = AttributeTransformUtility.parseDate(new SimpleDateFormat("MMM dd, yyyy", Locale.US), creationDate);
+//        creationDate = AttributeTransformUtility.parseDate(new SimpleDateFormat("MMM dd, yyyy", Locale.US), creationDate);
 
         // Attach click listeners to active UI components
 
-        viewHolder.reportComments.setOnClickListener(new View.OnClickListener() {
+        viewHolder.commentIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 

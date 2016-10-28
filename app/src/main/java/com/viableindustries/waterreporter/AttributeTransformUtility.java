@@ -1,6 +1,7 @@
 package com.viableindustries.waterreporter;
 
 import android.support.annotation.Nullable;
+import android.text.format.DateUtils;
 
 import com.viableindustries.waterreporter.data.Comment;
 import com.viableindustries.waterreporter.data.Organization;
@@ -81,6 +82,34 @@ public class AttributeTransformUtility {
             return "Watershed not available";
 
         }
+
+    }
+
+    public static CharSequence relativeTime(String dateString) {
+
+        CharSequence relativeTime = (CharSequence) dateString;
+
+        long now = new Date().getTime();
+
+        try {
+
+            //create SimpleDateFormat object with source string date format
+            SimpleDateFormat sdfSource = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.US);
+
+            //parse the string into Date object
+
+            long date = sdfSource.parse(dateString).getTime();
+
+            relativeTime = DateUtils.getRelativeTimeSpanString(date, now,
+                    0L, DateUtils.FORMAT_ABBREV_ALL);
+
+        } catch (ParseException pe) {
+
+            System.out.println("Parse Exception : " + pe);
+
+        }
+
+        return  relativeTime;
 
     }
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_user_profile"
@@ -12,6 +12,7 @@
     tools:context="com.viableindustries.waterreporter.CommentActivity">
 
     <RelativeLayout
+        android:id="@+id/header_container"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="#FFFFFF">
@@ -24,30 +25,36 @@
             android:scaleType="fitXY"
             android:src="@drawable/logo_horizontal_lockup" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/gray_232" />
+
     </RelativeLayout>
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/comment_component"
+        android:layout_below="@+id/header_container"
+        android:divider="@color/gray_232"
+        android:dividerHeight="0.5dp"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll" />
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
+        android:layout_above="@+id/comment_component"
         android:background="@color/gray_224" />
-
-    <!-- Pretty hint text, and maxLines -->
-    <!--<EditText-->
-    <!--android:id="@+id/search_box"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_margin="16dp"-->
-    <!--android:layout_marginBottom="16dp"-->
-    <!--android:layout_marginTop="0dp"-->
-    <!--android:hint="Type to search"-->
-    <!--android:inputType="text"-->
-    <!--android:maxLines="1"-->
-    <!--android:visibility="gone" />-->
 
     <LinearLayout
         android:id="@+id/comment_component"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:orientation="horizontal">
 
         <RelativeLayout
@@ -64,19 +71,6 @@
                 android:layout_centerInParent="true"
                 android:alpha="0.5"
                 android:src="@drawable/ic_camera_alt_black_24dp" />
-
-            <!--<ImageButton-->
-            <!--android:id="@+id/add_image"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_centerInParent="true"-->
-            <!--android:layout_marginEnd="0dp"-->
-            <!--android:layout_marginRight="0dp"-->
-            <!--android:background="@null"-->
-            <!--android:onClick="addPhoto"-->
-            <!--android:paddingLeft="8dp"-->
-            <!--android:paddingRight="8dp"-->
-            <!--android:src="@drawable/ic_camera_alt_white_24dp" />-->
 
         </RelativeLayout>
 
@@ -105,6 +99,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="bottom|end"
             android:background="@color/base_blue"
+            android:onClick="prepareComment"
             android:paddingLeft="8dp"
             android:paddingRight="8dp">
 
@@ -115,42 +110,8 @@
                 android:layout_centerInParent="true"
                 android:src="@drawable/ic_send_white_24dp" />
 
-            <!--<ImageButton-->
-            <!--android:id="@+id/send"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_centerInParent="true"-->
-            <!--android:layout_marginEnd="0dp"-->
-            <!--android:layout_marginRight="0dp"-->
-            <!--android:background="@null"-->
-            <!--android:src="@drawable/ic_send_white_24dp" />-->
-
         </RelativeLayout>
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/gray_224" />
-
-    <!-- Set height to 0, and let the weight param expand it -->
-    <!-- Note the use of the default ID! This lets us use a
-         ListActivity still! -->
-    <ListView
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <!--<EditText-->
-    <!--android:id="@+id/comment_box"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="bottom"-->
-    <!--android:layout_marginBottom="0dp"-->
-    <!--android:layout_marginTop="0dp"-->
-    <!--android:hint="@string/add_comment"-->
-    <!--android:inputType="text"-->
-    <!--android:maxLines="1" />-->
-
-</LinearLayout>
+</RelativeLayout>

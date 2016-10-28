@@ -20,13 +20,13 @@
             android:scaleType="fitXY"
             android:src="@drawable/logo_horizontal_lockup" />
 
-    </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/gray_232" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="-1dp"
-        android:background="@color/gray_224" />
+    </RelativeLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -41,8 +41,8 @@
                 android:id="@+id/timeline_items"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:divider="@color/white"
-                android:dividerHeight="0dp"
+                android:divider="@color/gray_232"
+                android:dividerHeight="0.5dp"
                 android:fadingEdgeLength="0dp"
                 android:listSelector="@drawable/timeline_selector"
                 android:overScrollMode="never"

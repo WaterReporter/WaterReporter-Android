@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.AbsListView;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -115,6 +116,9 @@ public class UserProfileActivity extends AppCompatActivity {
     @Bind(R.id.listTabs)
     FrameLayout listTabs;
 
+    @Bind(R.id.log_out)
+    ImageButton logOutButton;
+
     protected TimelineAdapter timelineAdapter;
 
     protected List<Report> reportCollection = new ArrayList<Report>();
@@ -151,6 +155,10 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private boolean hasGroups = false;
 
+    private SharedPreferences prefs;
+
+    private SharedPreferences coreProfile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -160,6 +168,8 @@ public class UserProfileActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
         // Retrieve stored User object
 
         User user = UserHolder.getUser();
@@ -167,6 +177,13 @@ public class UserProfileActivity extends AppCompatActivity {
         // These are the User attributes we need to start populating the view
 
         userId = user.properties.id;
+
+        if (prefs.getInt("user_id", 0) == userId) {
+
+            logOutButton.setVisibility(View.VISIBLE);
+
+        }
+
         userTitleText = user.properties.title;
         userDescriptionText = user.properties.description;
         userNameText = String.format("%s %s", user.properties.first_name, user.properties.last_name);
@@ -733,15 +750,12 @@ public class UserProfileActivity extends AppCompatActivity {
 
         // Clear stored token and user id values
 
-        final SharedPreferences prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
-
         prefs.edit().putString("access_token", "")
                 .putInt("user_id", 0).apply();
 
         // Clear stored active user profile
 
-        final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+        coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
         coreProfile.edit().clear().apply();
 
