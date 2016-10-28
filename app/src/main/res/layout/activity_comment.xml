@@ -44,21 +44,90 @@
     <!--android:maxLines="1"-->
     <!--android:visibility="gone" />-->
 
-    <EditText
-        android:id="@+id/comment_box"
+    <LinearLayout
+        android:id="@+id/comment_component"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="0dp"
-        android:layout_marginTop="0dp"
-        android:hint="@string/add_comment"
-        android:inputType="text"
-        android:maxLines="1"
-        android:paddingEnd="16dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingStart="16dp"
-        android:textSize="16sp" />
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/camera_button_container"
+            android:layout_width="56dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start|bottom"
+            android:onClick="addPhoto">
+
+            <ImageView
+                android:id="@+id/add_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:alpha="0.5"
+                android:src="@drawable/ic_camera_alt_black_24dp" />
+
+            <!--<ImageButton-->
+            <!--android:id="@+id/add_image"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:layout_marginEnd="0dp"-->
+            <!--android:layout_marginRight="0dp"-->
+            <!--android:background="@null"-->
+            <!--android:onClick="addPhoto"-->
+            <!--android:paddingLeft="8dp"-->
+            <!--android:paddingRight="8dp"-->
+            <!--android:src="@drawable/ic_camera_alt_white_24dp" />-->
+
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/comment_box"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:hint="@string/add_comment"
+            android:inputType="textMultiLine"
+            android:paddingBottom="16dp"
+            android:paddingEnd="16dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="16dp"
+            android:paddingStart="0dp"
+            android:paddingTop="16dp"
+            android:textSize="16sp" />
+
+        <RelativeLayout
+            android:id="@+id/send_button_container"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom|end"
+            android:background="@color/base_blue"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp">
+
+            <ImageView
+                android:id="@+id/send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_send_white_24dp" />
+
+            <!--<ImageButton-->
+            <!--android:id="@+id/send"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:layout_marginEnd="0dp"-->
+            <!--android:layout_marginRight="0dp"-->
+            <!--android:background="@null"-->
+            <!--android:src="@drawable/ic_send_white_24dp" />-->
+
+        </RelativeLayout>
+
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"

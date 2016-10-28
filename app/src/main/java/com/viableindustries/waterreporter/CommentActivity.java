@@ -16,8 +16,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -62,6 +67,24 @@ public class CommentActivity extends AppCompatActivity {
     @Bind(R.id.list)
     ListView listView;
 
+    @Bind(R.id.comment_component)
+    LinearLayout commentComponent;
+
+    @Bind(R.id.camera_button_container)
+    RelativeLayout cameraButtonContainer;
+
+    @Bind(R.id.send_button_container)
+    RelativeLayout sendButtonContainer;
+
+    @Bind(R.id.add_image)
+    ImageView addImage;
+
+    @Bind(R.id.send)
+    ImageView sendComment;
+
+    @Bind(R.id.comment_box)
+    EditText commentBox;
+
     private int reportId;
 
     protected CommentAdapter commentAdapter;
@@ -76,6 +99,20 @@ public class CommentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_comment);
 
         ButterKnife.bind(this);
+
+//        int occupiedWidth = cameraButtonContainer.getMeasuredWidth() + sendButtonContainer.getMeasuredWidth();
+//
+//        Log.v("occupiedWidth", occupiedWidth + "");
+//
+//        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) commentBox.getLayoutParams();
+//
+//        layoutParams.width = commentComponent.getMeasuredWidth() - occupiedWidth;
+//
+//        Log.v("width", layoutParams.width + "");
+//
+//        commentBox.setLayoutParams(layoutParams);
+
+//        listViewParams = (ViewGroup.LayoutParams) listTabs.getLayoutParams();
 
 //        generic = getIntent().getExtras().getBoolean("GENERIC_USER", TRUE);
 
@@ -249,6 +286,12 @@ public class CommentActivity extends AppCompatActivity {
 //            listView.setTextFilterEnabled(true);
 //
 //        }
+
+    }
+
+    public void addPhoto(View view) {
+
+        startActivity(new Intent(CommentActivity.this, PhotoActivity.class));
 
     }
 
