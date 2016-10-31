@@ -15,11 +15,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -29,6 +32,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.internal.Streams;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.Comment;
 import com.viableindustries.waterreporter.data.CommentCollection;
@@ -55,6 +59,7 @@ import com.viableindustries.waterreporter.data.UserHolder;
 import com.viableindustries.waterreporter.data.UserProperties;
 import com.viableindustries.waterreporter.data.UserService;
 import com.viableindustries.waterreporter.dialogs.CommentActionDialog;
+import com.viableindustries.waterreporter.dialogs.CommentActionDialogListener;
 import com.viableindustries.waterreporter.dialogs.CommentPhotoDialogListener;
 
 import java.io.File;
@@ -78,7 +83,7 @@ import static com.viableindustries.waterreporter.data.ReportService.restAdapter;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
-public class CommentActivity extends AppCompatActivity implements CommentPhotoDialogListener {
+public class CommentActivity extends AppCompatActivity implements CommentPhotoDialogListener, CommentActionDialogListener {
 
     @Bind(R.id.list)
     ListView listView;
@@ -116,6 +121,8 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
     private String mTempImagePath;
 
+    private String reportState = "open";
+
     private static final int ACTION_ADD_PHOTO = 1;
 
     @Override
@@ -131,6 +138,35 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
             @Override
             public void onClick(View view) {
                 presentPhotoActions();
+            }
+        });
+
+        sendComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // Check for minimum data requirements
+
+                body = (commentBox.getText().length() > 0) ? commentBox.getText().toString() : null;
+
+                reportId = ReportHolder.getReport().id;
+
+//                Log.d("body", body);
+
+                if (working || (body == null && mTempImagePath == null)) return;
+
+                final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+                if ("admin".equals(coreProfile.getString("role", ""))) {
+
+                    presentAdminActions();
+
+                } else {
+
+                    prepareComment();
+
+                }
+
             }
         });
 
@@ -286,15 +322,7 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
     }
 
-    public void prepareComment(View view) {
-
-        body = (commentBox.getText().length() > 0) ? commentBox.getText().toString() : null;
-
-        reportId = ReportHolder.getReport().id;
-
-        Log.d("body", body);
-
-        if (working || (body.isEmpty() && mTempImagePath.isEmpty())) return;
+    private void prepareComment() {
 
         try {
 
@@ -302,7 +330,7 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
         } catch (NullPointerException ne) {
 
-            CommentPost commentPost = new CommentPost(body, null, reportId, "open", "public");
+            CommentPost commentPost = new CommentPost(body, null, reportId, reportState, "public");
 
             sendComment(commentPost);
 
@@ -311,8 +339,6 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
     }
 
     protected void onPostError() {
-
-//        saveMessage.setVisibility(View.GONE);
 
         CharSequence text =
                 "Error posting comment. Please try again later.";
@@ -369,7 +395,7 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
                         images.add(image_id);
 
-                        CommentPost commentPost = new CommentPost(body, images, reportId, null, "public");
+                        CommentPost commentPost = new CommentPost(body, images, reportId, reportState, "public");
 
                         sendComment(commentPost);
 
@@ -469,6 +495,14 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
     }
 
+    private void presentAdminActions() {
+
+        DialogFragment adminActions = new CommentActionDialog();
+
+        adminActions.show(getSupportFragmentManager(), "admin_actions");
+
+    }
+
     @Override
     public void onReturnValue(int index) {
 
@@ -499,6 +533,19 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
             addImage.setVisibility(View.VISIBLE);
 
         }
+
+    }
+
+    @Override
+    public void onSelectAction(int index) {
+
+        if (index == 1){
+
+            reportState = "closed";
+
+        }
+
+        prepareComment();
 
     }
 

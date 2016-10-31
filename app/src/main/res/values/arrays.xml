@@ -4,4 +4,8 @@
         <item>Change photo</item>
         <item>Remove photo</item>
     </string-array>
+    <string-array name="comment_action_options">
+        <item>Save comment</item>
+        <item>Save comment and close report</item>
+    </string-array>
 </resources>
