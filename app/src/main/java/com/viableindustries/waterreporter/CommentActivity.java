@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -53,6 +54,8 @@ import com.viableindustries.waterreporter.data.UserGroupList;
 import com.viableindustries.waterreporter.data.UserHolder;
 import com.viableindustries.waterreporter.data.UserProperties;
 import com.viableindustries.waterreporter.data.UserService;
+import com.viableindustries.waterreporter.dialogs.CommentActionDialog;
+import com.viableindustries.waterreporter.dialogs.CommentPhotoDialogListener;
 
 import java.io.File;
 import java.net.FileNameMap;
@@ -75,7 +78,7 @@ import static com.viableindustries.waterreporter.data.ReportService.restAdapter;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
-public class CommentActivity extends AppCompatActivity {
+public class CommentActivity extends AppCompatActivity implements CommentPhotoDialogListener {
 
     @Bind(R.id.list)
     ListView listView;
@@ -123,6 +126,13 @@ public class CommentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_comment);
 
         ButterKnife.bind(this);
+
+        mImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presentPhotoActions();
+            }
+        });
 
         fetchComments(50, 1);
 
@@ -284,7 +294,7 @@ public class CommentActivity extends AppCompatActivity {
 
         Log.d("body", body);
 
-        if (working || body.isEmpty()) return;
+        if (working || (body.isEmpty() && mTempImagePath.isEmpty())) return;
 
         try {
 
@@ -292,7 +302,7 @@ public class CommentActivity extends AppCompatActivity {
 
         } catch (NullPointerException ne) {
 
-            CommentPost commentPost = new CommentPost(body, null, reportId, null, "public");
+            CommentPost commentPost = new CommentPost(body, null, reportId, "open", "public");
 
             sendComment(commentPost);
 
@@ -451,26 +461,51 @@ public class CommentActivity extends AppCompatActivity {
 
     }
 
+    private void presentPhotoActions() {
+
+        DialogFragment photoActions = new CommentActionDialog();
+
+        photoActions.show(getSupportFragmentManager(), "photo_actions");
+
+    }
+
+    @Override
+    public void onReturnValue(int index) {
+
+        if (index == 0){
+
+            startActivityForResult(new Intent(this, PhotoActivity.class), ACTION_ADD_PHOTO);
+
+        } else {
+
+            // Remove the temporary file from the cache
+
+            File tempFile = new File(mTempImagePath);
+
+            boolean imageDeleted = tempFile.delete();
+
+            Log.w("Delete Check", "File deleted: " + tempFile + imageDeleted);
+
+            mTempImagePath = null;
+
+            // Hide and reset the image preview
+
+            mImageView.setVisibility(View.GONE);
+
+            mImageView.setImageResource(android.R.color.transparent);
+
+            // Show the camera button
+
+            addImage.setVisibility(View.VISIBLE);
+
+        }
+
+    }
+
     @Override
     protected void onResume() {
 
         super.onResume();
-
-        // Check for a data connection!
-
-//        if (!connectionActive()) {
-//
-//            CharSequence text = "Looks like you're not connected to the internet, so we couldn't capture your report. Please connect to a network and try again.";
-//            int duration = Toast.LENGTH_LONG;
-//
-//            Toast toast = Toast.makeText(getBaseContext(), text, duration);
-//            toast.show();
-//
-//            startActivity(new Intent(this, MainActivity.class));
-//
-//            finish();
-//
-//        }
 
     }
 

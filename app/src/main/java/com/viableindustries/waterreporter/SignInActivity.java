@@ -183,6 +183,8 @@ public class SignInActivity extends AppCompatActivity {
 
                                                                 }
 
+                                                                coreProfile.edit().putString("role", user.properties.roles.get(0).properties.name).apply();
+
                                                                 //Intent intent = new Intent();
 
                                                                 //setResult(RESULT_OK, intent);

@@ -48,13 +48,16 @@ public class UserProperties implements Serializable {
     @SerializedName("public_email")
     public String public_email;
 
+    @SerializedName("roles")
+    public ArrayList<Role> roles;
+
     @SerializedName("title")
     public String title;
 
     public UserProperties (int aId, String aDescription, String aFirstName,
                            String aLastName, String aOrganizationName, String aPicture,
                            String aPublicEmail, String aTitle, ArrayList<ReportPhoto> aImages,
-                           ArrayList<Organization> aOrganizations){
+                           ArrayList<Organization> aOrganizations, ArrayList<Role> aRoles){
 
         //this.active = aActive;
         this.description = aDescription;
@@ -68,6 +71,7 @@ public class UserProperties implements Serializable {
         this.organization_name = aOrganizationName;
         this.picture = aPicture;
         this.public_email = aPublicEmail;
+        this.roles = aRoles;
         this.title = aTitle;
 
         //return this;
