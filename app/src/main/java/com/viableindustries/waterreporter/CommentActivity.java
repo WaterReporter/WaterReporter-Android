@@ -7,6 +7,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.app.Activity;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -26,11 +28,16 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.Comment;
 import com.viableindustries.waterreporter.data.CommentCollection;
 import com.viableindustries.waterreporter.data.CommentPost;
 import com.viableindustries.waterreporter.data.CommentService;
 import com.viableindustries.waterreporter.data.FeatureCollection;
+import com.viableindustries.waterreporter.data.Geometry;
+import com.viableindustries.waterreporter.data.GeometryResponse;
+import com.viableindustries.waterreporter.data.ImageProperties;
+import com.viableindustries.waterreporter.data.ImageService;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.data.OrganizationMemberList;
@@ -39,11 +46,17 @@ import com.viableindustries.waterreporter.data.QueryParams;
 import com.viableindustries.waterreporter.data.QuerySort;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportHolder;
+import com.viableindustries.waterreporter.data.ReportPostBody;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserGroupList;
+import com.viableindustries.waterreporter.data.UserHolder;
+import com.viableindustries.waterreporter.data.UserProperties;
 import com.viableindustries.waterreporter.data.UserService;
 
+import java.io.File;
+import java.net.FileNameMap;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -56,6 +69,7 @@ import butterknife.ButterKnife;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.mime.TypedFile;
 
 import static com.viableindustries.waterreporter.data.ReportService.restAdapter;
 import static java.lang.Boolean.FALSE;
@@ -84,13 +98,24 @@ public class CommentActivity extends AppCompatActivity {
     @Bind(R.id.comment_box)
     EditText commentBox;
 
+    @Bind(R.id.preview)
+    ImageView mImageView;
+
     private int reportId;
+
+    private String body;
 
     protected CommentAdapter commentAdapter;
 
     protected List<Comment> commentCollectionList = new ArrayList<Comment>();
 
     private boolean working;
+
+    private String mGalleryPath;
+
+    private String mTempImagePath;
+
+    private static final int ACTION_ADD_PHOTO = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -214,25 +239,144 @@ public class CommentActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        switch (requestCode) {
+
+            case ACTION_ADD_PHOTO:
+
+                if (resultCode == RESULT_OK) {
+
+                    mTempImagePath = data.getStringExtra("file_path");
+
+                    if (mTempImagePath != null) {
+
+                        // Remove image preview
+
+                        addImage.setVisibility(View.GONE);
+
+//                        mImageView.setVisibility(View.GONE);
+
+                        mImageView.setVisibility(View.VISIBLE);
+
+                        File photo = new File(mTempImagePath);
+
+                        Picasso.with(this).load(photo).placeholder(R.drawable.user_avatar_placeholder).into(mImageView);
+
+                    }
+
+                }
+
+                break;
+
+        }
+
+    }
+
     public void addPhoto(View view) {
 
-        startActivity(new Intent(CommentActivity.this, PhotoActivity.class));
+//        startActivity(new Intent(CommentActivity.this, PhotoActivity.class));
+
+        startActivityForResult(new Intent(this, PhotoActivity.class), ACTION_ADD_PHOTO);
 
     }
 
     public void prepareComment(View view) {
 
-        String body = commentBox.getText().toString();
+        body = (commentBox.getText().length() > 0) ? commentBox.getText().toString() : null;
+
+        reportId = ReportHolder.getReport().id;
 
         Log.d("body", body);
 
         if (working || body.isEmpty()) return;
 
-        reportId = ReportHolder.getReport().id;
+        try {
 
-        CommentPost commentPost = new CommentPost(body, reportId, null, "public");
+            appendImage(mTempImagePath);
 
-        sendComment(commentPost);
+        } catch (NullPointerException ne) {
+
+            CommentPost commentPost = new CommentPost(body, null, reportId, null, "public");
+
+            sendComment(commentPost);
+
+        }
+
+    }
+
+    protected void onPostError() {
+
+//        saveMessage.setVisibility(View.GONE);
+
+        CharSequence text =
+                "Error posting comment. Please try again later.";
+
+        Toast toast = Toast.makeText(getBaseContext(), text,
+                Toast.LENGTH_SHORT);
+
+        toast.show();
+
+    }
+
+    private void appendImage(@NonNull final String filePath) {
+
+        final ImageService imageService = ImageService.restAdapter.create(ImageService.class);
+
+        SharedPreferences prefs =
+                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        final String access_token = prefs.getString("access_token", "");
+
+        FileNameMap fileNameMap = URLConnection.getFileNameMap();
+
+        Log.d("filepath", filePath);
+
+        File photo = new File(filePath);
+
+        String mimeType = fileNameMap.getContentTypeFor(filePath);
+
+        TypedFile typedPhoto = new TypedFile(mimeType, photo);
+
+        imageService.postImage(access_token, typedPhoto,
+                new Callback<ImageProperties>() {
+                    @Override
+                    public void success(ImageProperties imageProperties,
+                                        Response response) {
+
+                        // Immediately delete the cached image file now that we no longer need it
+
+                        File tempFile = new File(filePath);
+
+                        boolean imageDeleted = tempFile.delete();
+
+                        Log.w("Delete Check", "File deleted: " + tempFile + imageDeleted);
+
+                        mTempImagePath = null;
+
+                        // Retrieve the image id and create a new report
+
+                        final Map<String, Integer> image_id = new HashMap<String, Integer>();
+
+                        image_id.put("id", imageProperties.id);
+
+                        List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
+
+                        images.add(image_id);
+
+                        CommentPost commentPost = new CommentPost(body, images, reportId, null, "public");
+
+                        sendComment(commentPost);
+
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        onPostError();
+                    }
+
+                });
 
     }
 
@@ -263,6 +407,12 @@ public class CommentActivity extends AppCompatActivity {
                 commentBox.setText("");
 
                 commentCollectionList.add(comment);
+
+                // Remove image preview
+
+                addImage.setVisibility(View.VISIBLE);
+
+                mImageView.setVisibility(View.GONE);
 
                 try {
 

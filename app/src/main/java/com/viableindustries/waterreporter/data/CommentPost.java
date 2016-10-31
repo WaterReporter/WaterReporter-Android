@@ -16,6 +16,9 @@ public class CommentPost {
     @SerializedName("body")
     public String body;
 
+    @SerializedName("images")
+    public List<Map<String, Integer>> images;
+
     @SerializedName("report_id")
     public int reportId;
 
@@ -25,9 +28,11 @@ public class CommentPost {
     @SerializedName("status")
     public String status;
 
-    public CommentPost (String aBody, int aReportId, String aReportState, String aStatus) {
+    public CommentPost (String aBody, List<Map<String, Integer>> aImages, int aReportId, String aReportState, String aStatus) {
 
         this.body = aBody;
+
+        this.images = aImages;
 
         this.reportId = aReportId;
 
