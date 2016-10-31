@@ -750,16 +750,16 @@ public class UserProfileActivity extends AppCompatActivity {
 
         // Clear stored token and user id values
 
-        prefs.edit().putString("access_token", "")
-                .putInt("user_id", 0).apply();
+//        prefs.edit().putString("access_token", "")
+//                .putInt("user_id", 0).apply();
+//
+//        // Clear stored active user profile
+//
+//        coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+//
+//        coreProfile.edit().clear().apply();
 
-        // Clear stored active user profile
-
-        coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
-
-        coreProfile.edit().clear().apply();
-
-        startActivity(new Intent(this, SignInActivity.class));
+        startActivity(new Intent(this, ProfileSettingsActivity.class));
 
     }
 

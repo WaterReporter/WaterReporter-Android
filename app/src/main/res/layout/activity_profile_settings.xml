@@ -1,0 +1,94 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fadingEdge="none"
+    android:fillViewport="true"
+    android:scrollbars="none"
+    tools:context="com.viableindustries.waterreporter.ProfileSettingsActivity">
+
+    <LinearLayout
+        android:id="@+id/detail_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/notification_options"
+            android:textSize="@dimen/base_text" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/gray_232" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/account_options"
+            android:textSize="@dimen/base_text" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/gray_232" />
+
+        <TextView
+            android:id="@+id/edit_profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/edit_profile"
+            android:textColor="@color/base_blue" />
+
+        <TextView
+            android:id="@+id/manage_groups"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/manage_groups"
+            android:textColor="@color/base_blue" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/gray_232" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/general_options"
+            android:textSize="@dimen/base_text" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/gray_232" />
+
+        <TextView
+            android:id="@+id/report_bug"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="composeEmail"
+            android:padding="16dp"
+            android:text="@string/bug_report"
+            android:textColor="@color/base_blue" />
+
+        <TextView
+            android:id="@+id/log_out"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="logOut"
+            android:padding="16dp"
+            android:text="@string/log_out"
+            android:textColor="@color/base_blue" />
+
+    </LinearLayout>
+
+</ScrollView>

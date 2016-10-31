@@ -272,7 +272,7 @@ public class TimelineAdapter extends ArrayAdapter {
         }
 
         // Display badge if report is closed
-        if (feature.properties.state.equals("closed")) {
+        if ("closed".equals(feature.properties.state)) {
 
             viewHolder.actionBadge.setVisibility(View.VISIBLE);
 

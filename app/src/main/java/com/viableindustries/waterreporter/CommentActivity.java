@@ -111,8 +111,6 @@ public class CommentActivity extends AppCompatActivity {
 
     private boolean working;
 
-    private String mGalleryPath;
-
     private String mTempImagePath;
 
     private static final int ACTION_ADD_PHOTO = 1;
@@ -256,8 +254,6 @@ public class CommentActivity extends AppCompatActivity {
 
                         addImage.setVisibility(View.GONE);
 
-//                        mImageView.setVisibility(View.GONE);
-
                         mImageView.setVisibility(View.VISIBLE);
 
                         File photo = new File(mTempImagePath);
@@ -275,8 +271,6 @@ public class CommentActivity extends AppCompatActivity {
     }
 
     public void addPhoto(View view) {
-
-//        startActivity(new Intent(CommentActivity.this, PhotoActivity.class));
 
         startActivityForResult(new Intent(this, PhotoActivity.class), ACTION_ADD_PHOTO);
 
@@ -454,6 +448,45 @@ public class CommentActivity extends AppCompatActivity {
             }
 
         });
+
+    }
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+
+        // Check for a data connection!
+
+//        if (!connectionActive()) {
+//
+//            CharSequence text = "Looks like you're not connected to the internet, so we couldn't capture your report. Please connect to a network and try again.";
+//            int duration = Toast.LENGTH_LONG;
+//
+//            Toast toast = Toast.makeText(getBaseContext(), text, duration);
+//            toast.show();
+//
+//            startActivity(new Intent(this, MainActivity.class));
+//
+//            finish();
+//
+//        }
+
+    }
+
+    @Override
+    protected void onPause() {
+
+        super.onPause();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+
+        ButterKnife.unbind(this);
 
     }
 

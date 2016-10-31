@@ -247,7 +247,15 @@
         <activity
             android:name=".CommentActivity"
             android:label="@string/title_activity_comment"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".ProfileSettingsActivity"
+            android:label="@string/title_activity_profile_settings"
+            android:parentActivityName=".UserProfileActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.viableindustries.waterreporter.UserProfileActivity" />
+        </activity>
     </application>
 
 </manifest>

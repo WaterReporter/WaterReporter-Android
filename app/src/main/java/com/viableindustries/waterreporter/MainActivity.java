@@ -78,9 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
-        if (networkInfo != null && networkInfo.isConnected()) {
-
-            connectionActive = true;
+        if (ConnectionUtility.connectionActive(this)) {
 
             String access_token = prefs.getString("access_token", "");
 
@@ -89,10 +87,6 @@ public class MainActivity extends AppCompatActivity {
             if (user_id == 0 || access_token.equals("")) {
 
                 startActivityForResult(new Intent(this, SignInActivity.class), LOGIN_REQUEST);
-
-//            } else if (access_token.equals("")) {
-//
-//                startActivityForResult(new Intent(this, SignInActivity.class), LOGIN_REQUEST);
 
             } else {
 
@@ -108,9 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
 
-            connectionActive = false;
-
-            CharSequence text = "Looks like you're not connected to the internet, so we couldn't retrieve your reports.";
+            CharSequence text = "Unable to refresh feed.";
             int duration = Toast.LENGTH_SHORT;
 
             Toast toast = Toast.makeText(context, text, duration);

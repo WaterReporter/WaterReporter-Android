@@ -42,8 +42,6 @@
     <string name="unknown_issue">Issue Type</string>
     <string name="log_tag">VILog</string>
     <string name="package_name">com.viableindustries.waterreporter</string>
-    <string name="marker_date"></string>
-    <string name="marker_caption"></string>
     <string name="title_activity_well_detail">WellDetailActivity</string>
     <string name="waterreporter_orange">#F9AC00</string>
     <string name="waterreporter_green">#72C224</string>
@@ -100,6 +98,7 @@
     <string name="title_activity_registration_fork">RegistrationForkActivity</string>
     <string name="title_activity_password_reset">PasswordResetActivity</string>
     <string name="title_activity_organization_list">Groups</string>
+    <string name="title_activity_profile_settings">Options</string>
 
     <!-- Join a group -->
     <string name="join_button">Join</string>
@@ -131,6 +130,7 @@
     <string name="title_activity_organization_members">OrganizationMembersActivity</string>
 
     <!-- User profile -->
+
     <string name="user_first_name">First Name</string>
     <string name="user_last_name">Last Name</string>
 
@@ -142,6 +142,15 @@
 
     <string name="user_bio">Bio</string>
     <string name="user_avatar">Photo</string>
+
+    <!-- Profile settings -->
+    <string name="notification_options">Notifications</string>
+    <string name="account_options">Account</string>
+    <string name="edit_profile">Edit profile</string>
+    <string name="manage_groups">Manage groups</string>
+    <string name="general_options">General</string>
+    <string name="log_out">Log out</string>
+    <string name="bug_report">Report a bug or suggest a change</string>
 
     <!-- Report save -->
 

@@ -129,16 +129,16 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
     // Check for a data connection!
 
-    protected boolean connectionActive() {
-
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-
-        return networkInfo != null && networkInfo.isConnected();
-
-    }
+//    protected boolean connectionActive() {
+//
+//        ConnectivityManager connMgr = (ConnectivityManager)
+//                getSystemService(Context.CONNECTIVITY_SERVICE);
+//
+//        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+//
+//        return networkInfo != null && networkInfo.isConnected();
+//
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,7 +153,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
                 ContextCompat.getColor(this, R.color.base_blue),
                 android.graphics.PorterDuff.Mode.SRC_IN);
 
-        if (!connectionActive()) {
+        if (!ConnectionUtility.connectionActive(this)) {
 
             CharSequence text = "Looks like you're not connected to the internet, so we couldn't submit your report. Please connect to a network and try again.";
             int duration = Toast.LENGTH_LONG;
@@ -413,7 +413,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
     public void submitReport(View view) {
 
-        if (!connectionActive()) {
+        if (!ConnectionUtility.connectionActive(this)) {
 
             CharSequence text = "Looks like you're not connected to the internet, so we couldn't capture your report. Please connect to a network and try again.";
             int duration = Toast.LENGTH_LONG;
@@ -784,7 +784,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
         // Check for a data connection!
 
-        if (!connectionActive()) {
+        if (!ConnectionUtility.connectionActive(this)) {
 
             CharSequence text = "Looks like you're not connected to the internet, so we couldn't capture your report. Please connect to a network and try again.";
             int duration = Toast.LENGTH_LONG;

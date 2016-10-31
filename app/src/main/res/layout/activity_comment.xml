@@ -39,6 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/comment_component"
         android:layout_below="@+id/header_container"
+        android:animateLayoutChanges="true"
         android:divider="@color/gray_232"
         android:dividerHeight="0.5dp"
         android:stackFromBottom="true"
