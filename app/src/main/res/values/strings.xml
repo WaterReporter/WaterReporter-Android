@@ -161,5 +161,6 @@
     <!-- Commenting -->
     <string name="action_taken">Action taken by</string>
     <string name="add_comment">Add a comment&#8230;</string>
+    <string name="title_activity_edit_profile">EditProfileActivity</string>
 
 </resources>
