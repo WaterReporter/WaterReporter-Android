@@ -208,18 +208,6 @@
         android:text="A caption goes here"
         android:textSize="16sp" />
 
-    <!--<TextView-->
-    <!--android:id="@+id/report_groups"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:paddingBottom="16dp"-->
-    <!--android:paddingLeft="16dp"-->
-    <!--android:paddingRight="16dp"-->
-    <!--android:paddingTop="8dp"-->
-    <!--android:text="A group list goes here"-->
-    <!--android:textColor="@color/gray_186"-->
-    <!--android:textSize="@dimen/small_text" />-->
-
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/reportGroups"
         android:layout_width="match_parent"

@@ -176,6 +176,7 @@ public class TimelineAdapter extends ArrayAdapter {
                 intent.putExtra("REPORT_CREATED", creationDate);
 
                 try {
+
                     intent.putExtra("REPORT_DESCRIPTION", feature.properties.report_description.trim());
 
                 } catch (NullPointerException ne) {

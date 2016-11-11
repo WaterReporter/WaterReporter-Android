@@ -27,12 +27,12 @@
         <!--android:onClick="getDirections"-->
         <!--android:src="@drawable/ic_directions_white_24dp" />-->
 
-    <fragment
-        android:id="@+id/navigationFragment"
-        android:name="com.viableindustries.waterreporter.NavigationFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom" />
+    <!--<fragment-->
+        <!--android:id="@+id/navigationFragment"-->
+        <!--android:name="com.viableindustries.waterreporter.NavigationFragment"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_gravity="bottom" />-->
 
 </RelativeLayout>

@@ -13,7 +13,6 @@
         android:background="#FFFFFF">
 
         <ImageView
-            android:id="@+id/owner_avatar"
             android:layout_width="88dp"
             android:layout_height="24dp"
             android:layout_centerInParent="true"
