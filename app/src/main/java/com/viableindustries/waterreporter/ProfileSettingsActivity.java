@@ -98,6 +98,29 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         }
     }
 
+    // Back button should always go to user profile
+
+    @Override
+    public void onBackPressed() {
+
+        final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+        int coreId = coreProfile.getInt("id", 0);
+
+        UserProperties userProperties = new UserProperties(coreId, coreProfile.getString("description", ""),
+                coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
+                coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
+                coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null);
+
+        User coreUser = User.createUser(coreId, userProperties);
+
+        UserHolder.setUser(coreUser);
+
+
+        startActivity(new Intent(this, UserProfileActivity.class));
+
+    }
+
     @Override
     public void onResume() {
         super.onResume();

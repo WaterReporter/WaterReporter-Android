@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,6 +22,7 @@ import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.ImageProperties;
 import com.viableindustries.waterreporter.data.ImageService;
 import com.viableindustries.waterreporter.data.User;
+import com.viableindustries.waterreporter.data.UserProperties;
 import com.viableindustries.waterreporter.data.UserService;
 
 import java.io.File;
@@ -64,11 +66,17 @@ public class EditProfileActivity extends AppCompatActivity {
     @Bind(R.id.user_bio)
     EditText userBioInput;
 
+    @Bind(R.id.avatarPreview)
+    FrameLayout avatarPreview;
+
     @Bind(R.id.user_avatar)
     ImageView userAvatar;
 
-    @Bind(R.id.edit_photo)
+    @Bind(R.id.add_photo)
     Button addPhoto;
+
+    @Bind(R.id.change_image)
+    ImageButton editPhoto;
 
     @Bind(R.id.save_profile)
     ImageButton saveProfileButton;
@@ -84,6 +92,10 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private static final int ACTION_ADD_PHOTO = 1;
 
+    private User coreUser;
+
+    private String access_token;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -93,9 +105,60 @@ public class EditProfileActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+        int coreId = coreProfile.getInt("id", 0);
+
+        UserProperties userProperties = new UserProperties(coreId, coreProfile.getString("description", ""),
+                coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
+                coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
+                coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null);
+
+        coreUser = User.createUser(coreId, userProperties);
+
+        lastNameInput.setText(coreUser.properties.last_name);
+
+        firstNameInput.setText(coreUser.properties.first_name);
+
+        userTitleInput.setText(coreUser.properties.title);
+
+        userOrganizationNameInput.setText(coreUser.properties.organization_name);
+
+        userPublicEmailInput.setText(coreUser.properties.public_email);
+
+        userBioInput.setText(coreUser.properties.description);
+
+        // Load avatar if it exists
+
+        if (coreUser.properties.picture != null) {
+
+            addPhoto.setVisibility(View.GONE);
+
+            avatarPreview.setVisibility(View.VISIBLE);
+
+            Picasso.with(this).load(coreUser.properties.picture).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(userAvatar);
+
+        }
+
+        // Set click listeners
+
+        userAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addProfilePic();
+            }
+        });
+
+        editPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addProfilePic();
+            }
+        });
+
     }
 
-    public void addProfilePic(View v) {
+    private void addProfilePic() {
 
         startActivityForResult(new Intent(this, PhotoActivity.class), ACTION_ADD_PHOTO);
 
@@ -118,7 +181,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
                         addPhoto.setVisibility(View.GONE);
 
-                        userAvatar.setVisibility(View.VISIBLE);
+                        avatarPreview.setVisibility(View.VISIBLE);
 
                         File photo = new File(mTempImagePath);
 
@@ -134,176 +197,199 @@ public class EditProfileActivity extends AppCompatActivity {
 
     }
 
-    public void saveProfile(View view) {
+    private void postImage() {
 
-        if (photoCaptured) {
+        final ImageService imageService = ImageService.restAdapter.create(ImageService.class);
 
-            savingMessage.setVisibility(View.VISIBLE);
+        final UserService userService = UserService.restAdapter.create(UserService.class);
 
-            savingMessage.setText(getResources().getString(R.string.saving_profile));
+        final SharedPreferences prefs =
+                getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-            final String firstName = String.valueOf(firstNameInput.getText());
+        final int userId = prefs.getInt("user_id", 0);
 
-            final String lastName = String.valueOf(lastNameInput.getText());
+        final String access_token = prefs.getString("access_token", "");
 
-            final String title = String.valueOf(userTitleInput.getText());
+        File photo = new File(mTempImagePath);
 
-            final String organizationName = String.valueOf(userOrganizationNameInput.getText());
+        FileNameMap fileNameMap = URLConnection.getFileNameMap();
 
-            final String publicEmail = String.valueOf(userPublicEmailInput.getText());
+        String mimeType = fileNameMap.getContentTypeFor(mTempImagePath);
 
-            final String telephone = String.valueOf(userTelephoneInput.getText());
+        TypedFile typedPhoto = new TypedFile(mimeType, photo);
 
-            final String description = String.valueOf(userBioInput.getText());
+        imageService.postImage(access_token, typedPhoto,
+                new Callback<ImageProperties>() {
+                    @Override
+                    public void success(ImageProperties imageProperties,
+                                        Response response) {
 
-            if (firstName.isEmpty() || lastName.isEmpty()) {
+                        // Immediately delete the cached image file now that we no longer need it
 
-                CharSequence text = "Please enter both your first and last names.";
-                Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-                toast.show();
+                        File tempFile = new File(mTempImagePath);
 
-                return;
+                        boolean imageDeleted = tempFile.delete();
 
-            }
+                        Log.w("Delete Check", "File deleted: " + tempFile + imageDeleted);
 
-            final ImageService imageService = ImageService.restAdapter.create(ImageService.class);
+                        // Retrieve the image id and add relation to PATCH request body
 
-            final UserService userService = UserService.restAdapter.create(UserService.class);
+                        Map<String, Object> userPatch = new HashMap<String, Object>();
 
-            final SharedPreferences prefs =
-                    getSharedPreferences(getPackageName(), MODE_PRIVATE);
+                        final Map<String, Integer> image_id = new HashMap<String, Integer>();
 
-            final int userId = prefs.getInt("user_id", 0);
+                        image_id.put("id", imageProperties.id);
 
-            final String access_token = prefs.getString("access_token", "");
+                        List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
 
-            File photo = new File(mTempImagePath);
+                        images.add(image_id);
 
-            FileNameMap fileNameMap = URLConnection.getFileNameMap();
+                        userPatch.put("images", images);
 
-            String mimeType = fileNameMap.getContentTypeFor(mTempImagePath);
+                        // Complete request body and send PATCH request
 
-            TypedFile typedPhoto = new TypedFile(mimeType, photo);
+                        updateProfile(userPatch);
 
-            imageService.postImage(access_token, typedPhoto,
-                    new Callback<ImageProperties>() {
-                        @Override
-                        public void success(ImageProperties imageProperties,
-                                            Response response) {
+                    }
 
-                            // Retrieve the image id and add relation to PATCH request body
+                    @Override
+                    public void failure(RetrofitError error) {
+                        savingMessage.setVisibility(View.GONE);
+                        savingMessage.setText(getResources().getString(R.string.save));
+                    }
 
-                            Map<String, Object> userPatch = new HashMap<String, Object>();
+                });
 
-                            final Map<String, Integer> image_id = new HashMap<String, Integer>();
 
-                            image_id.put("id", imageProperties.id);
+    }
 
-                            List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
+    public void updateProfile(Map<String, Object> userPatch) {
 
-                            images.add(image_id);
+        final String firstName = String.valueOf(firstNameInput.getText());
 
-                            userPatch.put("images", images);
+        final String lastName = String.valueOf(lastNameInput.getText());
 
-                            // Build out remaining values
+        final String title = String.valueOf(userTitleInput.getText());
 
-                            userPatch.put("first_name", firstName);
-                            userPatch.put("last_name", lastName);
+        final String organizationName = String.valueOf(userOrganizationNameInput.getText());
 
-                            if (!title.isEmpty()) userPatch.put("title", title);
-                            if (!organizationName.isEmpty())
-                                userPatch.put("organization_name", organizationName);
-                            if (!publicEmail.isEmpty()) userPatch.put("public_email", publicEmail);
+        final String publicEmail = String.valueOf(userPublicEmailInput.getText());
 
-                            if (!description.isEmpty()) userPatch.put("description", description);
+        final String telephone = String.valueOf(userTelephoneInput.getText());
 
-                            if (!telephone.isEmpty()) {
+        final String description = String.valueOf(userBioInput.getText());
 
-                                List<Map<String, String>> telephones = new ArrayList<>();
+        if (firstName.isEmpty() || lastName.isEmpty()) {
 
-                                Map<String, String> phoneNumber = new HashMap<String, String>();
+            CharSequence text = "Please enter both your first and last names.";
+            Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+            toast.show();
 
-                                phoneNumber.put("number", telephone);
+            return;
 
-                                telephones.add(phoneNumber);
+        }
 
-                                userPatch.put("telephone", telephones);
+        // Build out remaining values
+
+        userPatch.put("first_name", firstName);
+        userPatch.put("last_name", lastName);
+
+        if (!title.isEmpty()) userPatch.put("title", title);
+
+        if (!organizationName.isEmpty())
+            userPatch.put("organization_name", organizationName);
+
+        if (!publicEmail.isEmpty()) userPatch.put("public_email", publicEmail);
+
+        if (!description.isEmpty()) userPatch.put("description", description);
+
+        if (!telephone.isEmpty()) {
+
+            List<Map<String, String>> telephones = new ArrayList<>();
+
+            Map<String, String> phoneNumber = new HashMap<String, String>();
+
+            phoneNumber.put("number", telephone);
+
+            telephones.add(phoneNumber);
+
+            userPatch.put("telephone", telephones);
+
+        }
+
+        final UserService userService = UserService.restAdapter.create(UserService.class);
+
+        userService.updateUser(access_token,
+                "application/json",
+                coreUser.id,
+                userPatch,
+                new Callback<User>() {
+                    @Override
+                    public void success(User user,
+                                        Response response) {
+
+                        final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+                        coreProfile.edit()
+                                //.putBoolean("active", user.properties.active)
+                                .putInt("id", user.id)
+                                .putString("picture", user.properties.images.get(0).properties.icon_retina)
+                                .apply();
+
+                        // Model strings
+                        String[] KEYS = {"description", "first_name",
+                                "last_name", "organization_name",
+                                "public_email", "title"};
+
+                        for (String key : KEYS) {
+
+                            coreProfile.edit().putString(key, user.properties.getStringProperties().get(key)).apply();
+
+                        }
+
+                        final Handler handler = new Handler();
+
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                startActivity(new Intent(EditProfileActivity.this, ProfileSettingsActivity.class));
 
                             }
 
-                            userService.updateUser(access_token,
-                                    "application/json",
-                                    userId,
-                                    userPatch,
-                                    new Callback<User>() {
-                                        @Override
-                                        public void success(User user,
-                                                            Response response) {
+                        }, 100);
 
-                                            // Immediately delete the cached image file now that we no longer need it
+                    }
 
-                                            File tempFile = new File(mTempImagePath);
+                    @Override
+                    public void failure(RetrofitError error) {
+                        savingMessage.setVisibility(View.GONE);
+                        savingMessage.setText(getResources().getString(R.string.save));
+                    }
 
-                                            boolean imageDeleted = tempFile.delete();
+                });
 
-                                            Log.w("Delete Check", "File deleted: " + tempFile + imageDeleted);
 
-                                            final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+    }
 
-                                            coreProfile.edit()
-                                                    //.putBoolean("active", user.properties.active)
-                                                    .putInt("id", user.id)
-                                                    .putString("picture", user.properties.images.get(0).properties.icon_retina)
-                                                    .apply();
+    public void saveProfile(View view) {
 
-                                            // Model strings
-                                            String[] KEYS = {"description", "first_name",
-                                                    "last_name", "organization_name", //"picture",
-                                                    "public_email", "title"};
+        final SharedPreferences prefs =
+                getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-                                            for (String key : KEYS){
+        access_token = prefs.getString("access_token", "");
 
-                                                coreProfile.edit().putString(key, user.properties.getStringProperties().get(key)).apply();
+        savingMessage.setVisibility(View.VISIBLE);
 
-                                            }
+        savingMessage.setText(getResources().getString(R.string.saving_profile));
 
-                                            final Handler handler = new Handler();
+        if (photoCaptured) {
 
-                                            handler.postDelayed(new Runnable() {
-                                                @Override
-                                                public void run() {
-
-                                                    startActivity(new Intent(EditProfileActivity.this, ProfileSettingsActivity.class));
-
-                                                }
-
-                                            }, 100);
-
-                                        }
-
-                                        @Override
-                                        public void failure(RetrofitError error) {
-                                            savingMessage.setVisibility(View.GONE);
-                                            savingMessage.setText(getResources().getString(R.string.save));
-                                        }
-
-                                    });
-
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-                            savingMessage.setVisibility(View.GONE);
-                            savingMessage.setText(getResources().getString(R.string.save));
-                        }
-
-                    });
+            postImage();
 
         } else {
 
-            Snackbar.make(parentLayout, "Please add a photo. You don't need to use a self-portrait, so feel free to pick something like your favorite animal.",
-                    Snackbar.LENGTH_SHORT)
-                    .show();
+            updateProfile(new HashMap<String, Object>());
 
         }
 

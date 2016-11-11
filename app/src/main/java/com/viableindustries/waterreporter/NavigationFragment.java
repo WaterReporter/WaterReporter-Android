@@ -92,12 +92,6 @@ public class NavigationFragment extends Fragment {
 
                 int coreId = coreProfile.getInt("id", 0);
 
-//                public UserProperties (String aDescription, int aId, String aLastName,
-//                        String aFirstName, ArrayList<Organization> aOrganizations,
-//                        String aOrganizationName, String aPicture, String aPublicEmail, String aTitle){
-
-                // UserProperties userProperties = (UserProperties) coreProfile.getAll();
-
                 UserProperties userProperties = new UserProperties(coreId, coreProfile.getString("description", ""),
                         coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
                         coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
@@ -106,13 +100,6 @@ public class NavigationFragment extends Fragment {
                 User coreUser = User.createUser(coreId, userProperties);
 
                 UserHolder.setUser(coreUser);
-
-//                Map<String,?> keys = coreProfile.getAll();
-//
-//                for(Map.Entry<String,?> entry : keys.entrySet()){
-//                    Log.d("map values",entry.getKey() + ": " +
-//                            entry.getValue().toString());
-//                }
 
                 startActivity(new Intent(getActivity(), UserProfileActivity.class));
 

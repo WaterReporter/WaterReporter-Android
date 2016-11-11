@@ -174,13 +174,6 @@ public class LocationActivity extends AppCompatActivity implements
 
         ButterKnife.bind(this);
 
-        // Locate the UI widgets.
-//        mStartUpdatesButton = (Button) findViewById(R.id.start_updates_button);
-//        mStopUpdatesButton = (Button) findViewById(R.id.stop_updates_button);
-//        mLatitudeTextView = (TextView) findViewById(R.id.latitude_text);
-//        mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
-//        mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
-
         mRequestingLocationUpdates = true;
         mLastUpdateTime = "";
 
@@ -193,8 +186,6 @@ public class LocationActivity extends AppCompatActivity implements
         createLocationRequest();
         buildLocationSettingsRequest();
         checkLocationSettings();
-
-        //setUpMap();
 
         mapView.onCreate(savedInstanceState);
 
@@ -216,76 +207,6 @@ public class LocationActivity extends AppCompatActivity implements
                 mapboxMap.animateCamera(CameraUpdateFactory
                         .newCameraPosition(position), 4000);
 
-//                mapboxMap.addMarker(new MarkerOptions()
-//                        .position(new LatLng(latitude, longitude)));
-
-                // Create an Icon object for the marker to use
-                //IconFactory iconFactory = IconFactory.getInstance(MapDetailActivity.this);
-                //Drawable iconDrawable = ContextCompat.getDrawable(MapDetailActivity.this, R.drawable.anchor_marker);
-                //Icon icon = iconFactory.fromDrawable(iconDrawable);
-
-                // Add the custom icon marker to the map
-//                mapboxMap.addMarker(new MarkerOptions()
-//                        .position(new LatLng(latitude, longitude))
-//                        .title("Cape Town Harbour")
-//                        .snippet("One of the busiest ports in South Africa")
-//                        .icon(icon));
-
-                // add custom ViewMarker
-//                CustomMarkerViewOptions options = new CustomMarkerViewOptions();
-//                options.position(new LatLng(latitude, longitude));
-//                options.flat(true);
-//                options.reportId(reportId);
-//                options.reportDescription(reportDescription);
-//                options.thumbNail(thumbNail);
-//                options.fullImage(fullImage);
-//                options.creationDate(creationDate);
-//                options.watershedName(watershedName);
-//                options.groupList(groupList);
-//                options.commentCount(commentCount);
-//                options.userName(userName);
-//                options.userAvatar(userAvatar);
-//                options.status(status);
-//                options.inFocus(1);
-//                //options.anchor(0.5f, 0.5f);
-//                mapboxMap.addMarker(options);
-
-                //trackId(reportId);
-
-//                mapboxMap.addMarker(new MarkerOptions()
-//                        .position(new LatLng(latitude, longitude)));
-
-                // if you want to customise a ViewMarker you need to extend ViewMarker and provide an adapter implementation
-                // set adapters for child classes of ViewMarker
-//                markerViewManager.addMarkerViewAdapter(new MapDetailActivity.MarkerAdapter(MapDetailActivity.this, mapboxMap));
-//
-//                mapboxMap.setOnCameraChangeListener(new MapboxMap.OnCameraChangeListener() {
-//                    @Override
-//                    public void onCameraChange(CameraPosition position) {
-//
-//                        Log.d("mapPosition", position.toString());
-//
-//                        if (position.zoom >= 14) {
-//
-//                            LatLngBounds latLngBounds = mapboxMap.getProjection().getVisibleRegion().latLngBounds;
-//
-//                            double north = latLngBounds.getLatNorth();
-//                            double south = latLngBounds.getLatSouth();
-//                            double east = latLngBounds.getLonEast();
-//                            double west = latLngBounds.getLonWest();
-//
-//                            String polygon = String.format("SRID=4326;POLYGON((%s %s,%s %s,%s %s,%s %s,%s %s))", west, north, east, north, east, south, west, south, west, north);
-//
-//                            Log.d("polygonString", polygon);
-//
-//                            fetchNearbyReports(polygon, reportId);
-//
-//                        }
-//
-//                        Log.d("mapPosition", position.toString());
-//
-//                    }
-//                });
             }
         });
 
@@ -295,25 +216,7 @@ public class LocationActivity extends AppCompatActivity implements
 
     protected void setUpMap() {
 
-        // Geographic center of contiguous United States
-        //LatLng defaultCenter = new LatLng(39.828175, -98.5795);
-
-        //mapView.setCenter(defaultCenter);
-
-        //mapView.setMinZoomLevel(mapView.getTileProvider().getMinimumZoomLevel());
-
-        //mapView.setMaxZoomLevel(mapView.getTileProvider().getMaximumZoomLevel());
-
-        // There are reports from across the nation now, so let's start way out before zooming to
-        // bounding box
-        //mapView.setZoom(4);
-
-        // Adds an icon that shows location
-        //mLocationOverlay = new UserLocationOverlay(new GpsLocationProvider(this), mapView);
-
-        //mLocationOverlay.setDrawAccuracyEnabled(true);
-
-        //mapView.getOverlays().add(mLocationOverlay);
+        //
 
     }
 
@@ -321,15 +224,6 @@ public class LocationActivity extends AppCompatActivity implements
 
     protected void setBounds(Location location) {
 
-//        LatLng northeast = new LatLng(location.getLatitude() + 0.02, location.getLongitude() + 0.02);
-//
-//        LatLng southwest = new LatLng(location.getLatitude() - 0.02, location.getLongitude() - 0.02);
-
-        //BoundingBox box = new BoundingBox(northeast, southwest);
-
-//        LatLngBounds bounds = LatLngBounds.
-
-        //mapView.zoomToBoundingBox(box, true, true);
         CameraPosition position = new CameraPosition.Builder()
                 .target(new LatLng(location.getLatitude(), location.getLongitude())) // Sets the new camera position
                 .zoom(14) // Sets the zoom
@@ -475,13 +369,6 @@ public class LocationActivity extends AppCompatActivity implements
             }
 
         }
-
-//        PendingResult<LocationSettingsResult> result =
-//                LocationServices.SettingsApi.checkLocationSettings(
-//                        mGoogleApiClient,
-//                        mLocationSettingsRequest
-//                );
-//        result.setResultCallback(this);
     }
 
     /**
@@ -653,24 +540,18 @@ public class LocationActivity extends AppCompatActivity implements
      * if the user is requesting location updates.
      */
     private void setButtonsEnabledState() {
-//        if (mRequestingLocationUpdates) {
-//            mStartUpdatesButton.setEnabled(false);
-//            mStopUpdatesButton.setEnabled(true);
-//        } else {
-//            mStartUpdatesButton.setEnabled(true);
-//            mStopUpdatesButton.setEnabled(false);
-//        }
+
+        //
+
     }
 
     /**
      * Sets the value of the UI fields for the location latitude, longitude and last update time.
      */
     private void updateLocationUI() {
-//        if (mCurrentLocation != null) {
-//            mLatitudeTextView.setText(String.valueOf(mCurrentLocation.getLatitude()));
-//            mLongitudeTextView.setText(String.valueOf(mCurrentLocation.getLongitude()));
-//            mLastUpdateTimeTextView.setText(mLastUpdateTime);
-//        }
+
+        //
+
     }
 
     /**
@@ -894,29 +775,11 @@ public class LocationActivity extends AppCompatActivity implements
 
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        mapView.onResume();
-//    }
-//
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        mapView.onPause();
-//    }
-
     @Override
     public void onLowMemory() {
         super.onLowMemory();
         mapView.onLowMemory();
     }
-
-//    @Override
-//    public void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        mapView.onSaveInstanceState(outState);
-//    }
 
     @Override
     public void onDestroy() {

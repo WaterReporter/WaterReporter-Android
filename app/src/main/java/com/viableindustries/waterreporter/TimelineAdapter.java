@@ -117,13 +117,9 @@ public class TimelineAdapter extends ArrayAdapter {
         // Get the data item for this position
         final Report feature = (Report) getItem(position);
 
-//        Log.d("groups", feature.properties.groups.toString());
-
         ReportPhoto image = (ReportPhoto) feature.properties.images.get(0);
 
         imagePath = (String) image.properties.square_retina;
-
-//        creationDate = (String) feature.properties.created;
 
         creationDate = (String) AttributeTransformUtility.relativeTime(feature.properties.created);
 
@@ -136,9 +132,6 @@ public class TimelineAdapter extends ArrayAdapter {
 
         // Extract group names, if any
         groupList = AttributeTransformUtility.groupListSize(feature.properties.groups);
-
-        // Parse creation date
-//        creationDate = AttributeTransformUtility.parseDate(new SimpleDateFormat("MMM dd, yyyy", Locale.US), creationDate);
 
         // Attach click listeners to active UI components
 

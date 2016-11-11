@@ -748,18 +748,32 @@ public class UserProfileActivity extends AppCompatActivity {
 
     public void logOut(View view) {
 
-        // Clear stored token and user id values
-
-//        prefs.edit().putString("access_token", "")
-//                .putInt("user_id", 0).apply();
-//
-//        // Clear stored active user profile
-//
-//        coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
-//
-//        coreProfile.edit().clear().apply();
-
         startActivity(new Intent(this, ProfileSettingsActivity.class));
+
+    }
+
+    // Exit the application when user taps the system back button
+    // having just been directed here following successful report submission
+
+    @Override
+    public void onBackPressed() {
+
+        final SharedPreferences prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        if (prefs.getBoolean("report_post_success", false)) {
+
+            prefs.edit().putBoolean("report_post_success", false).apply();
+
+            Intent a = new Intent(Intent.ACTION_MAIN);
+            a.addCategory(Intent.CATEGORY_HOME);
+            a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(a);
+
+        } else {
+
+            super.onBackPressed();
+
+        }
 
     }
 
