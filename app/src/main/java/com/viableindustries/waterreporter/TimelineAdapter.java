@@ -75,6 +75,7 @@ public class TimelineAdapter extends ArrayAdapter {
         RelativeLayout locationIcon;
         RelativeLayout directionsIcon;
         RelativeLayout commentIcon;
+        RelativeLayout actionsEllipsis;
         TextView tracker;
     }
 
@@ -102,6 +103,7 @@ public class TimelineAdapter extends ArrayAdapter {
             viewHolder.locationIcon = (RelativeLayout) convertView.findViewById(R.id.location_icon);
             viewHolder.directionsIcon = (RelativeLayout) convertView.findViewById(R.id.directions_icon);
             viewHolder.commentIcon = (RelativeLayout) convertView.findViewById(R.id.comment_icon);
+            viewHolder.actionsEllipsis = (RelativeLayout) convertView.findViewById(R.id.action_ellipsis);
             viewHolder.tracker = (TextView) convertView.findViewById(R.id.tracker);
 
             convertView.setTag(viewHolder);
@@ -192,14 +194,6 @@ public class TimelineAdapter extends ArrayAdapter {
             }
         });
 
-        if (!isProfile) {
-
-            viewHolder.ownerAvatar.setOnClickListener(new UserProfileListener(getContext(), feature.properties.owner));
-
-            viewHolder.reportOwner.setOnClickListener(new UserProfileListener(getContext(), feature.properties.owner));
-
-        }
-
         viewHolder.directionsIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -287,11 +281,29 @@ public class TimelineAdapter extends ArrayAdapter {
 
         viewHolder.reportComments.setText(commentCount);
 
+        // Load report image and user avatar
+
         Log.v("url", imagePath);
 
         Picasso.with(context).load(feature.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(viewHolder.ownerAvatar);
 
         Picasso.with(context).load(imagePath).fit().centerCrop().into(viewHolder.reportThumb);
+
+        // Context-dependent configuration
+
+        if (!isProfile) {
+
+            viewHolder.ownerAvatar.setOnClickListener(new UserProfileListener(getContext(), feature.properties.owner));
+
+            viewHolder.reportOwner.setOnClickListener(new UserProfileListener(getContext(), feature.properties.owner));
+
+            viewHolder.actionsEllipsis.setVisibility(View.GONE);
+
+        } else {
+
+            viewHolder.actionsEllipsis.setVisibility(View.VISIBLE);
+
+        }
 
         // Return the completed view to render on screen
         return convertView;

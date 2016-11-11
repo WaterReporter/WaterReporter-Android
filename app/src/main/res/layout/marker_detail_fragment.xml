@@ -174,22 +174,22 @@
 
                     </RelativeLayout>
 
-                    <RelativeLayout
-                        android:id="@+id/location_icon"
-                        android:layout_width="48dp"
-                        android:layout_height="match_parent"
-                        android:paddingLeft="0dp"
-                        android:paddingRight="0dp">
+                    <!--<RelativeLayout-->
+                        <!--android:id="@+id/location_icon"-->
+                        <!--android:layout_width="48dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:paddingLeft="0dp"-->
+                        <!--android:paddingRight="0dp">-->
 
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_centerInParent="true"
-                            android:layout_gravity="center_vertical"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/report_location_icon" />
+                        <!--<ImageView-->
+                            <!--android:layout_width="24dp"-->
+                            <!--android:layout_height="24dp"-->
+                            <!--android:layout_centerInParent="true"-->
+                            <!--android:layout_gravity="center_vertical"-->
+                            <!--android:scaleType="fitXY"-->
+                            <!--android:src="@drawable/report_location_icon" />-->
 
-                    </RelativeLayout>
+                    <!--</RelativeLayout>-->
 
                     <RelativeLayout
                         android:id="@+id/directions_icon"
@@ -238,24 +238,24 @@
                         android:textColor="@color/gray_186"
                         android:textSize="@dimen/small_text" />
 
-                    <RelativeLayout
-                        android:id="@+id/action_ellipsis"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="end"
-                        android:paddingLeft="0dp"
-                        android:paddingRight="9dp">
+                    <!--<RelativeLayout-->
+                        <!--android:id="@+id/action_ellipsis"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:gravity="end"-->
+                        <!--android:paddingLeft="0dp"-->
+                        <!--android:paddingRight="9dp">-->
 
-                        <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="24dp"
-                            android:layout_centerVertical="true"
-                            android:layout_gravity="center_vertical"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/timeline_action_ellipsis" />
+                        <!--<ImageView-->
+                            <!--android:layout_width="48dp"-->
+                            <!--android:layout_height="24dp"-->
+                            <!--android:layout_centerVertical="true"-->
+                            <!--android:layout_gravity="center_vertical"-->
+                            <!--android:scaleType="fitXY"-->
+                            <!--android:src="@drawable/timeline_action_ellipsis" />-->
 
-                    </RelativeLayout>
+                    <!--</RelativeLayout>-->
 
                 </LinearLayout>
 

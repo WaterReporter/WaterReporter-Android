@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void requestData(int limit, int page, final boolean transition, final boolean refresh) {
+    protected void requestData(int limit, int page, final boolean transition, final boolean refresh) {
 
         SharedPreferences prefs =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);

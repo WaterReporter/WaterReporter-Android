@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,11 +50,23 @@ public class NavigationFragment extends Fragment {
 
                 Log.d("context", context.toString());
 
-                if (context.toString().contains("MainActivity")) {
+                // If the current activity is the main feed, simply refresh the timeline
 
-                    ListView listView = (ListView) getActivity().findViewById(R.id.timeline_items);
+                if ("MainActivity".equals(getActivity().getClass().getSimpleName())) {
 
-                    listView.smoothScrollToPosition(0);
+                    Log.d("activity", getActivity().getClass().getSimpleName());
+
+                    final SwipeRefreshLayout timeline = (SwipeRefreshLayout) getActivity().findViewById(R.id.timeline);
+
+//                    timeline.post(new Runnable() {
+//                        @Override public void run() {
+//                            timeline.setRefreshing(true);
+//                        }
+//                    });
+
+                    timeline.setRefreshing(true);
+
+                    ((MainActivity) getActivity()).requestData(10, 1, false, true);
 
                 } else {
 
