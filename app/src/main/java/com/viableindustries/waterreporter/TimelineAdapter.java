@@ -2,13 +2,17 @@ package com.viableindustries.waterreporter;
 
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +32,10 @@ import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.ReportPhoto;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.UserProfileListener;
+import com.viableindustries.waterreporter.dialogs.CommentActionDialog;
+import com.viableindustries.waterreporter.dialogs.CommentActionDialogListener;
+import com.viableindustries.waterreporter.dialogs.ReportActionDialog;
+import com.viableindustries.waterreporter.dialogs.ReportActionDialogListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -296,6 +304,39 @@ public class TimelineAdapter extends ArrayAdapter {
         } else {
 
             viewHolder.actionsEllipsis.setVisibility(View.VISIBLE);
+
+            viewHolder.actionsEllipsis.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+//                    DialogFragment reportActions = new ReportActionDialog();
+
+//                    FragmentManager fragmentManager = context.getApplicationContext();
+
+//                    reportActions.show(getSupportFragmentManager(), "report_actions");
+
+                    // Use the Builder class for convenient dialog construction
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                    builder.setItems(R.array.report_action_options, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            ReportHolder.setReport(feature);
+
+                            // The 'which' argument contains the index position
+                            // of the selected item
+                            ReportActionDialogListener activity = (ReportActionDialogListener) context;
+
+                            activity.onSelectAction(which);
+
+                        }
+                    });
+
+                    // Create the AlertDialog object and return it
+                    builder.create().show();
+
+                }
+            });
 
         }
 

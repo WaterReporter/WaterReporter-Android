@@ -37,6 +37,9 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.Comment;
+import com.viableindustries.waterreporter.data.CommentPost;
+import com.viableindustries.waterreporter.data.CommentService;
 import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
@@ -44,11 +47,15 @@ import com.viableindustries.waterreporter.data.QueryFilter;
 import com.viableindustries.waterreporter.data.QueryParams;
 import com.viableindustries.waterreporter.data.QuerySort;
 import com.viableindustries.waterreporter.data.Report;
+import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserGroupList;
 import com.viableindustries.waterreporter.data.UserHolder;
 import com.viableindustries.waterreporter.data.UserService;
+import com.viableindustries.waterreporter.dialogs.CommentActionDialogListener;
+import com.viableindustries.waterreporter.dialogs.CommentPhotoDialogListener;
+import com.viableindustries.waterreporter.dialogs.ReportActionDialogListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +70,7 @@ import retrofit.client.Response;
 import static java.lang.Boolean.TRUE;
 import static java.security.AccessController.getContext;
 
-public class UserProfileActivity extends AppCompatActivity {
+public class UserProfileActivity extends AppCompatActivity implements ReportActionDialogListener {
 
     @Bind(R.id.userName)
     TextView userName;
@@ -652,7 +659,17 @@ public class UserProfileActivity extends AppCompatActivity {
 
                     reportCount = featureCollection.getProperties().num_results;
 
-                    reportCounter.setText(String.valueOf(reportCount));
+                    if (reportCount > 0) {
+
+                        reportStat.setVisibility(View.VISIBLE);
+
+                        reportCounter.setText(String.valueOf(reportCount));
+
+                    } else {
+
+                        reportStat.setVisibility(View.GONE);
+
+                    }
 
                 }
 
@@ -699,6 +716,20 @@ public class UserProfileActivity extends AppCompatActivity {
                 if (refresh) {
 
                     reportCollection = reports;
+
+                    reportCount = featureCollection.getProperties().num_results;
+
+                    if (reportCount > 0) {
+
+                        reportStat.setVisibility(View.VISIBLE);
+
+                        reportCounter.setText(String.valueOf(reportCount));
+
+                    } else {
+
+                        reportStat.setVisibility(View.GONE);
+
+                    }
 
                     populateTimeline(reportCollection);
 
@@ -749,6 +780,78 @@ public class UserProfileActivity extends AppCompatActivity {
     public void logOut(View view) {
 
         startActivity(new Intent(this, ProfileSettingsActivity.class));
+
+    }
+
+    private void deleteReport() {
+
+//        working = true;
+
+        SharedPreferences prefs =
+                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        final String access_token = prefs.getString("access_token", "");
+
+        Log.d("", access_token);
+
+        ReportService service = ReportService.restAdapter.create(ReportService.class);
+
+        int reportId = ReportHolder.getReport().id;
+
+        service.deleteSingleReport(access_token, reportId, new Callback<Response>() {
+
+            @Override
+            public void success(Response response, Response response_) {
+
+                // Lift UI lock
+
+//                working = false;
+
+                fetchReports(10, 1, buildQuery(true, null), true, true);
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                // Lift UI lock
+
+//                working = false;
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(UserProfileActivity.this, SignInActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+    @Override
+    public void onSelectAction(int index) {
+
+        if (index == 1) {
+
+            deleteReport();
+
+        }
+
+        //deleteReport();
 
     }
 

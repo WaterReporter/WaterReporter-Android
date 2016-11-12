@@ -8,4 +8,8 @@
         <item>Save comment</item>
         <item>Save comment and close report</item>
     </string-array>
+    <string-array name="report_action_options">
+        <item>Edit this report</item>
+        <item>Delete this report</item>
+    </string-array>
 </resources>
