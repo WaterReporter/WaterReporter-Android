@@ -173,9 +173,13 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         user = UserHolder.getUser();
 
-        // These are the User attributes we need to start populating the view
-
         userId = user.properties.id;
+
+        if (prefs.getInt("user_id", 0) == userId) {
+
+            logOutButton.setVisibility(View.VISIBLE);
+
+        }
 
         // Set refresh listener on report feed container
 
@@ -256,12 +260,6 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
         profileMeta = (LinearLayout) header.findViewById(R.id.profileMeta);
 
         profileStats = (LinearLayout) header.findViewById(R.id.profileStats);
-
-        if (prefs.getInt("user_id", 0) == userId) {
-
-            logOutButton.setVisibility(View.VISIBLE);
-
-        }
 
         userTitleText = user.properties.title;
         userDescriptionText = user.properties.description;

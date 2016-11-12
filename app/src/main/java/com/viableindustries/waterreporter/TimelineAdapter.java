@@ -4,6 +4,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
@@ -31,6 +32,7 @@ import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.ReportPhoto;
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.UserHolder;
 import com.viableindustries.waterreporter.data.UserProfileListener;
 import com.viableindustries.waterreporter.dialogs.CommentActionDialog;
 import com.viableindustries.waterreporter.dialogs.CommentActionDialogListener;
@@ -42,6 +44,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class TimelineAdapter extends ArrayAdapter {
 
@@ -303,40 +307,43 @@ public class TimelineAdapter extends ArrayAdapter {
 
         } else {
 
-            viewHolder.actionsEllipsis.setVisibility(View.VISIBLE);
+            final SharedPreferences prefs = context.getSharedPreferences(context.getPackageName(), MODE_PRIVATE);
 
-            viewHolder.actionsEllipsis.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+            if (prefs.getInt("user_id", 0) == feature.properties.owner_id) {
 
-//                    DialogFragment reportActions = new ReportActionDialog();
+                viewHolder.actionsEllipsis.setVisibility(View.VISIBLE);
 
-//                    FragmentManager fragmentManager = context.getApplicationContext();
+                viewHolder.actionsEllipsis.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
 
-//                    reportActions.show(getSupportFragmentManager(), "report_actions");
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-                    // Use the Builder class for convenient dialog construction
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder.setItems(R.array.report_action_options, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
 
-                    builder.setItems(R.array.report_action_options, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
+                                ReportHolder.setReport(feature);
 
-                            ReportHolder.setReport(feature);
+                                // The 'which' argument contains the index position
+                                // of the selected item
+                                ReportActionDialogListener activity = (ReportActionDialogListener) context;
 
-                            // The 'which' argument contains the index position
-                            // of the selected item
-                            ReportActionDialogListener activity = (ReportActionDialogListener) context;
+                                activity.onSelectAction(which);
 
-                            activity.onSelectAction(which);
+                            }
+                        });
 
-                        }
-                    });
+                        // Create the AlertDialog object and return it
+                        builder.create().show();
 
-                    // Create the AlertDialog object and return it
-                    builder.create().show();
+                    }
+                });
 
-                }
-            });
+            } else {
+
+                viewHolder.actionsEllipsis.setVisibility(View.GONE);
+
+            }
 
         }
 
