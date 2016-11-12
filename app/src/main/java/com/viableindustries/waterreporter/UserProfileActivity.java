@@ -74,50 +74,38 @@ import static java.security.AccessController.getContext;
 
 public class UserProfileActivity extends AppCompatActivity implements ReportActionDialogListener {
 
-    //    @Bind(R.id.userName)
     TextView userName;
 
-    //    @Bind(R.id.userTitle)
     TextView userTitle;
 
-    //    @Bind(R.id.userDescription)
     TextView userDescription;
 
-    //    @Bind(R.id.userAvatar)
     ImageView userAvatar;
 
-    //    @Bind(R.id.reportCount)
     TextView reportCounter;
 
-    //    @Bind(R.id.actionCount)
     TextView actionCounter;
 
-    //    @Bind(R.id.groupCount)
     TextView groupCounter;
 
-    //    @Bind(R.id.reportCountLabel)
     TextView reportCountLabel;
 
-    //    @Bind(R.id.actionCountLabel)
     TextView actionCountLabel;
 
-    //    @Bind(R.id.groupCountLabel)
     TextView groupCountLabel;
 
-    //    @Bind(R.id.reportStat)
     LinearLayout reportStat;
 
-    //    @Bind(R.id.actionStat)
     LinearLayout actionStat;
 
-    //    @Bind(R.id.groupStat)
     LinearLayout groupStat;
 
-    //    @Bind(R.id.profileMeta)
     LinearLayout profileMeta;
 
-    //    @Bind(R.id.profileStats)
     LinearLayout profileStats;
+
+    @Bind(R.id.timeline)
+    SwipeRefreshLayout timeLineContainer;
 
     @Bind(R.id.timeline_items)
     ListView timeLine;
@@ -168,6 +156,8 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     private SharedPreferences coreProfile;
 
+    private User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -181,11 +171,57 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         // Retrieve stored User object
 
-        User user = UserHolder.getUser();
+        user = UserHolder.getUser();
 
         // These are the User attributes we need to start populating the view
 
         userId = user.properties.id;
+
+        // Set refresh listener on report feed container
+
+        timeLineContainer.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
+                        // This method performs the actual data-refresh operation.
+                        // The method calls setRefreshing(false) when it's finished.
+                        fetchReports(10, 1, buildQuery(true, null), true, false);
+                    }
+                }
+        );
+
+        // Set color of swipe refresh arrow animation
+
+        timeLineContainer.setColorSchemeResources(R.color.waterreporter_blue);
+
+        // Inflate and insert timeline header view
+
+        addListViewHeader();
+
+        // Count reports with actions
+
+        complexQuery = String.format(getResources().getString(R.string.complex_actions_query), userId, userId);
+
+        countReports(complexQuery, "state");
+
+        // Retrieve the user's groups
+
+        fetchUserGroups(userId);
+
+        // Retrieve first batch of user's reports
+
+        if (reportCollection.isEmpty()) {
+
+            timeLineContainer.setRefreshing(true);
+
+            fetchReports(10, 1, buildQuery(true, null), false, false);
+
+        }
+
+    }
+
+    protected void addListViewHeader() {
 
         LayoutInflater inflater = getLayoutInflater();
 
@@ -308,24 +344,6 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         Picasso.with(this).load(userAvatarUrl).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(userAvatar);
 
-        // Count reports with actions
-
-        complexQuery = String.format(getResources().getString(R.string.complex_actions_query), userId, userId);
-
-        countReports(complexQuery, "state");
-
-        // Retrieve the user's groups
-
-        fetchUserGroups(userId);
-
-        // Retrieve first batch of user's reports
-
-        if (reportCollection.isEmpty()) {
-
-            fetchReports(10, 1, buildQuery(true, null), false, false);
-
-        }
-
         // Attach click listeners to stat elements
 
         reportStat.setOnClickListener(new View.OnClickListener() {
@@ -398,12 +416,6 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
         });
 
         timeLine.addHeaderView(header, null, false);
-
-    }
-
-    protected void addListViewHeader() {
-
-        //
 
     }
 
@@ -643,8 +655,6 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                 if (!reports.isEmpty()) {
 
-//                    reportCollection.addAll(reports);
-
                     if (replace) {
 
                         reportCollection = reports;
@@ -697,12 +707,14 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                 }
 
+                timeLineContainer.setRefreshing(false);
+
             }
 
             @Override
             public void failure(RetrofitError error) {
 
-                //swipeRefreshLayout.setRefreshing(false);
+                timeLineContainer.setRefreshing(false);
 
                 if (error == null) return;
 
@@ -747,7 +759,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     private void deleteReport() {
 
-//        working = true;
+        timeLineContainer.setRefreshing(true);
 
         SharedPreferences prefs =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
@@ -765,9 +777,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
             @Override
             public void success(Response response, Response response_) {
 
-                // Lift UI lock
-
-//                working = false;
+                timeLineContainer.setRefreshing(false);
 
                 fetchReports(10, 1, buildQuery(true, null), true, true);
 
@@ -776,9 +786,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
             @Override
             public void failure(RetrofitError error) {
 
-                // Lift UI lock
-
-//                working = false;
+                timeLineContainer.setRefreshing(false);
 
                 if (error == null) return;
 
