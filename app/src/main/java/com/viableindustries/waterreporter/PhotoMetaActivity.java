@@ -127,19 +127,6 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
     protected Map<String, Integer> groupMap = new HashMap<>();
 
-    // Check for a data connection!
-
-//    protected boolean connectionActive() {
-//
-//        ConnectivityManager connMgr = (ConnectivityManager)
-//                getSystemService(Context.CONNECTIVITY_SERVICE);
-//
-//        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-//
-//        return networkInfo != null && networkInfo.isConnected();
-//
-//    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -323,13 +310,9 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                 if (resultCode == RESULT_OK) {
 
-//                    Bundle bundle = data.getParcelableExtra("bundle");
-
                     mTempImagePath = data.getStringExtra("file_path");
 
                     if (mTempImagePath != null) {
-
-                        //photoCaptured = true;
 
                         addPhoto.setVisibility(View.GONE);
 
@@ -338,24 +321,6 @@ public class PhotoMetaActivity extends AppCompatActivity {
                         File photo = new File(mTempImagePath);
 
                         Picasso.with(this).load(photo).placeholder(R.drawable.user_avatar_placeholder).into(mImageView);
-
-//                        Log.d("location", location.getLatitude() + "");
-//
-//                        longitude = location.getLongitude();
-//
-//                        latitude = location.getLatitude();
-//
-//                        Log.d("position", longitude + latitude + "");
-//
-//                        locationButton.setText("Edit location");
-//
-//                        locationButton.setBackgroundResource(R.drawable.green_button);
-//
-//                        CharSequence text = "Location saved successfully";
-//
-//                        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-//
-//                        toast.show();
 
                     }
 
@@ -442,6 +407,10 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
         final String access_token = prefs.getString("access_token", "");
 
+        commentsText = commentsField.getText().toString();
+
+        Log.d("comments", commentsText);
+
         ArrayList<Double> coordinates = new ArrayList<Double>(2);
 
         String point = "Point";
@@ -487,22 +456,6 @@ public class PhotoMetaActivity extends AppCompatActivity {
                         images.add(image_id);
 
                         List<Map<String, Integer>> groups = new ArrayList<Map<String, Integer>>();
-
-                        /*for (Map.Entry<String, Integer> entry : groupMap.entrySet()) {
-
-                            Integer value = entry.getValue();
-
-                            if (value > 0) {
-
-                                Map<String, Integer> groupId = new HashMap<String, Integer>();
-
-                                groupId.put("id", value);
-
-                                groups.add(groupId);
-
-                            }
-
-                        }*/
 
                         try {
 
@@ -654,19 +607,19 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                 Response errorResponse = error.getResponse();
 
-                // If we have a valid response object, check the status code and redirect to log in view if necessary
+                 // If we have a valid response object, check the status code and redirect to log in view if necessary
 
-//                if (errorResponse != null) {
-//
-//                    int status = errorResponse.getStatus();
-//
-//                    if (status == 403) {
-//
-//                        startActivity(new Intent(MainActivity.this, SignInActivity.class));
-//
-//                    }
-//
-//                }
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(PhotoMetaActivity.this, SignInActivity.class));
+
+                    }
+
+                }
 
             }
 
@@ -780,8 +733,6 @@ public class PhotoMetaActivity extends AppCompatActivity {
                 }
 
             }
-
-            //submitReport();
 
             return true;
 
