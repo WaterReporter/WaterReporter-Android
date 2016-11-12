@@ -45,250 +45,30 @@
 
     </RelativeLayout>
 
-    <!--<View-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="1dp"-->
-    <!--android:background="@color/gray_224" />-->
-
-    <!--<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:id="@+id/timeline"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent">-->
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/profileMeta"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#FBFBFB"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:paddingBottom="16dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="0dp"
-        android:paddingTop="16dp">
-
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="64dp"
-            android:layout_weight="1">
-
-            <ImageView
-                android:id="@+id/userAvatar"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center_vertical"
-                android:scaleType="fitXY" />
-
-        </RelativeLayout>
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="4"
-            android:animateLayoutChanges="true"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/userName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="0dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="0dp"
-                android:paddingTop="0dp"
-                android:text="A name goes here"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/userTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="2dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="0dp"
-                android:paddingTop="2dp"
-                android:text="Upper Potomac Watershed"
-                android:textColor="@color/gray_186"
-                android:textSize="@dimen/small_text" />
-
-            <TextView
-                android:id="@+id/userDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:paddingBottom="0dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="2dp"
-                android:text="A description goes here"
-                android:textColor="@color/material_blue_grey950"
-                android:textSize="14sp" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/profileStats"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        android:background="#FBFBFB"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:paddingBottom="16dp"
-        android:paddingLeft="0dp"
-        android:paddingRight="0dp"
-        android:paddingTop="0dp">
-
-        <LinearLayout
-            android:id="@+id/reportStat"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/reportCount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingBottom="0dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
-                android:paddingTop="0dp"
-                android:text="0"
-                android:textColor="@color/base_blue"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/reportCountLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:paddingBottom="0dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
-                android:paddingTop="2dp"
-                android:text="Reports"
-                android:textColor="@color/base_blue"
-                android:textSize="14sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/actionStat"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/actionCount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:paddingBottom="0dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
-                android:paddingTop="0dp"
-                android:text="0"
-                android:textColor="@color/material_blue_grey950"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/actionCountLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:paddingBottom="0dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
-                android:paddingTop="2dp"
-                android:text="Actions"
-                android:textColor="@color/material_blue_grey950"
-                android:textSize="14sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/groupStat"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/groupCount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:paddingBottom="0dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
-                android:paddingTop="0dp"
-                android:text="0"
-                android:textColor="@color/material_blue_grey950"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/groupCountLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:paddingBottom="0dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
-                android:paddingTop="2dp"
-                android:text="Groups"
-                android:textColor="@color/material_blue_grey950"
-                android:textSize="14sp" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/gray_232" />
-
-    <!--<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:id="@+id/timeline"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent">-->
     <FrameLayout
         android:id="@+id/listTabs"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom">
 
-        <ListView
-            android:id="@+id/timeline_items"
+        <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/timeline"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="55dp"
-            android:divider="@color/gray_232"
-            android:dividerHeight="0.5dp"
-            android:fadingEdgeLength="0dp"
-            android:listSelector="@drawable/timeline_selector"
-            android:overScrollMode="never"
-            android:scrollbars="none" />
+            android:layout_height="match_parent">
+
+            <ListView
+                android:id="@+id/timeline_items"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="55dp"
+                android:divider="@color/gray_232"
+                android:dividerHeight="0.5dp"
+                android:fadingEdgeLength="0dp"
+                android:listSelector="@drawable/timeline_selector"
+                android:overScrollMode="never"
+                android:scrollbars="none" />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
 
         <fragment
             android:id="@+id/navigationFragment"
@@ -298,47 +78,5 @@
             android:layout_gravity="bottom" />
 
     </FrameLayout>
-
-    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
-
-    <!--<android.support.design.widget.TabLayout-->
-    <!--android:id="@+id/sliding_tabs"-->
-    <!--style="@style/ProfileTabLayout"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--app:tabMode="fixed"-->
-    <!--app:tabSelectedTextColor="@color/base_blue" />-->
-
-    <!--<android.support.v4.view.ViewPager-->
-    <!--android:id="@+id/profileViewPager"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:background="@android:color/white"-->
-    <!--android:fadingEdgeLength="0dp"-->
-    <!--android:overScrollMode="never"-->
-    <!--android:scrollbars="none" />-->
-
-    <!--<com.chesapeakecommons.stream_mapper.SlidingTabLayout-->
-    <!--android:id="@+id/attachment_tabs"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"/>-->
-
-    <!--<android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:id="@+id/attachment_pager"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="400dp"-->
-    <!--android:fadingEdgeLength="0dp"-->
-    <!--android:overScrollMode="never"-->
-    <!--android:scrollbars="none">-->
-
-    <!--&lt;!&ndash;<android.support.v4.view.PagerTabStrip-->
-    <!--android:id="@+id/attachment_pager_header"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="top"-->
-    <!--android:paddingBottom="8dp"-->
-    <!--android:paddingTop="8dp"/>&ndash;&gt;-->
-
-    <!--</android.support.v4.view.ViewPager>-->
 
 </LinearLayout>

@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.Image;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Handler;
@@ -21,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,49 +74,49 @@ import static java.security.AccessController.getContext;
 
 public class UserProfileActivity extends AppCompatActivity implements ReportActionDialogListener {
 
-    @Bind(R.id.userName)
+    //    @Bind(R.id.userName)
     TextView userName;
 
-    @Bind(R.id.userTitle)
+    //    @Bind(R.id.userTitle)
     TextView userTitle;
 
-    @Bind(R.id.userDescription)
+    //    @Bind(R.id.userDescription)
     TextView userDescription;
 
-    @Bind(R.id.userAvatar)
+    //    @Bind(R.id.userAvatar)
     ImageView userAvatar;
 
-    @Bind(R.id.reportCount)
+    //    @Bind(R.id.reportCount)
     TextView reportCounter;
 
-    @Bind(R.id.actionCount)
+    //    @Bind(R.id.actionCount)
     TextView actionCounter;
 
-    @Bind(R.id.groupCount)
+    //    @Bind(R.id.groupCount)
     TextView groupCounter;
 
-    @Bind(R.id.reportCountLabel)
+    //    @Bind(R.id.reportCountLabel)
     TextView reportCountLabel;
 
-    @Bind(R.id.actionCountLabel)
+    //    @Bind(R.id.actionCountLabel)
     TextView actionCountLabel;
 
-    @Bind(R.id.groupCountLabel)
+    //    @Bind(R.id.groupCountLabel)
     TextView groupCountLabel;
 
-    @Bind(R.id.reportStat)
+    //    @Bind(R.id.reportStat)
     LinearLayout reportStat;
 
-    @Bind(R.id.actionStat)
+    //    @Bind(R.id.actionStat)
     LinearLayout actionStat;
 
-    @Bind(R.id.groupStat)
+    //    @Bind(R.id.groupStat)
     LinearLayout groupStat;
 
-    @Bind(R.id.profileMeta)
+    //    @Bind(R.id.profileMeta)
     LinearLayout profileMeta;
 
-    @Bind(R.id.profileStats)
+    //    @Bind(R.id.profileStats)
     LinearLayout profileStats;
 
     @Bind(R.id.timeline_items)
@@ -184,6 +186,40 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
         // These are the User attributes we need to start populating the view
 
         userId = user.properties.id;
+
+        LayoutInflater inflater = getLayoutInflater();
+
+        ViewGroup header = (ViewGroup) inflater.inflate(R.layout.user_profile_header, timeLine, false);
+
+        TextView userName = (TextView) header.findViewById(R.id.userName);
+
+        userTitle = (TextView) header.findViewById(R.id.userTitle);
+
+        userDescription = (TextView) header.findViewById(R.id.userDescription);
+
+        userAvatar = (ImageView) header.findViewById(R.id.userAvatar);
+
+        reportCounter = (TextView) header.findViewById(R.id.reportCount);
+
+        actionCounter = (TextView) header.findViewById(R.id.actionCount);
+
+        groupCounter = (TextView) header.findViewById(R.id.groupCount);
+
+        reportCountLabel = (TextView) header.findViewById(R.id.reportCountLabel);
+
+        actionCountLabel = (TextView) header.findViewById(R.id.actionCountLabel);
+
+        groupCountLabel = (TextView) header.findViewById(R.id.groupCountLabel);
+
+        reportStat = (LinearLayout) header.findViewById(R.id.reportStat);
+
+        actionStat = (LinearLayout) header.findViewById(R.id.actionStat);
+
+        groupStat = (LinearLayout) header.findViewById(R.id.groupStat);
+
+        profileMeta = (LinearLayout) header.findViewById(R.id.profileMeta);
+
+        profileStats = (LinearLayout) header.findViewById(R.id.profileStats);
 
         if (prefs.getInt("user_id", 0) == userId) {
 
@@ -276,10 +312,6 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         complexQuery = String.format(getResources().getString(R.string.complex_actions_query), userId, userId);
 
-//        countReports(buildQuery(false, new String[][]{
-//                {"state", "eq", "closed"}
-//        }), "state");
-
         countReports(complexQuery, "state");
 
         // Retrieve the user's groups
@@ -310,7 +342,6 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                     if (!actionFocus) {
 
-                        //timeLine.smoothScrollToPosition(0);
                         timeLine.setSelection(0);
 
                     } else {
@@ -344,9 +375,6 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                 }
 
-//                fetchReports(10, 1, buildQuery(true, new String[][]{
-//                        {"state", "eq", "closed"}
-//                }), false, true);
                 fetchReports(10, 1, complexQuery, false, true);
 
             }
@@ -369,12 +397,13 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
             }
         });
 
+        timeLine.addHeaderView(header, null, false);
+
     }
 
     protected void addListViewHeader() {
 
-//        if (if)
-
+        //
 
     }
 
@@ -399,7 +428,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
                 switch (filterName) {
                     case "state":
                         if (count > 0) {
-//                            actionStat.setVisibility(View.VISIBLE);
+
                             actionCount = count;
                             actionCounter.setText(String.valueOf(actionCount));
                             actionStat.setVisibility(View.VISIBLE);
@@ -511,9 +540,6 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                 if (actionFocus) {
 
-//                    fetchReports(10, page, buildQuery(true, new String[][]{
-//                            {"state", "eq", "closed"}
-//                    }), false, false);
                     fetchReports(10, page, complexQuery, false, false);
 
                 } else {
@@ -525,64 +551,6 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
                 return true; // ONLY if more data is actually being loaded; false otherwise.
 
             }
-
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-//                if (scrollState == 0) {
-
-                View mView = timeLine.getChildAt(0);
-
-                int top = mView.getTop();
-
-                final Handler h = new Handler();
-
-                final Runnable changeHeight = new Runnable() {
-
-                    @Override
-                    public void run() {
-
-                        listTabs.setLayoutParams(listViewParams);
-
-                        //listTabs.requestLayout();
-
-                    }
-                };
-
-                int headerHeight = profileMeta.getHeight() + profileStats.getHeight();
-
-                listViewParams = (ViewGroup.LayoutParams) listTabs.getLayoutParams();
-
-                // see if top Y is at 0 and first visible position is at 0
-                if (top == 0 && timeLine.getFirstVisiblePosition() == 0) {
-
-                    listTabs.animate().translationY(0);
-
-                    listViewParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-
-                    h.postDelayed(changeHeight, 500);
-
-                    hasScrolled = false;
-
-                } else {
-
-                    if (!hasScrolled) {
-
-                        listTabs.animate().translationY(0 - headerHeight);
-
-                        listViewParams.height = listTabs.getHeight() + headerHeight;
-
-                        h.postDelayed(changeHeight, 0);
-
-                        hasScrolled = true;
-
-                    }
-
-                }
-
-            }
-
-//            }
 
         });
 
@@ -675,13 +643,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                 if (!reports.isEmpty()) {
 
-                    if (bookMark == null) {
-
-                        bookMark = String.valueOf(reports.get(0).id);
-
-                    }
-
-                    reportCollection.addAll(reports);
+//                    reportCollection.addAll(reports);
 
                     if (replace) {
 
@@ -690,6 +652,8 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
                         populateTimeline(reportCollection);
 
                     } else {
+
+                        reportCollection.addAll(reports);
 
                         try {
 
@@ -705,11 +669,9 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                 } else {
 
-                    //CharSequence text = "Your report collection is empty. Tap on the plus sign in the menu bar to start a new report.";
-                    //int duration = Toast.LENGTH_LONG;
+                    reportCollection = reports;
 
-                    //Toast toast = Toast.makeText(UserProfileActivity.this, text, duration);
-                    //toast.show();
+                    populateTimeline(reportCollection);
 
                 }
 
@@ -850,8 +812,6 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
             deleteReport();
 
         }
-
-        //deleteReport();
 
     }
 
