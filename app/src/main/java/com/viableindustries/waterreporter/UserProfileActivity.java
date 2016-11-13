@@ -74,8 +74,6 @@ import static java.security.AccessController.getContext;
 
 public class UserProfileActivity extends AppCompatActivity implements ReportActionDialogListener {
 
-    TextView userName;
-
     TextView userTitle;
 
     TextView userDescription;
@@ -130,13 +128,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     private String userOrganization;
 
-    private String bookMark;
-
-    private String groupList;
-
     private String complexQuery;
-
-    private ViewGroup.LayoutParams listViewParams;
 
     private int userId;
 
@@ -144,17 +136,11 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     private int reportCount = 99999999;
 
-    private int groupCount = 0;
-
     private boolean actionFocus = false;
-
-    private boolean hasScrolled = false;
 
     private boolean hasGroups = false;
 
     private SharedPreferences prefs;
-
-    private SharedPreferences coreProfile;
 
     private User user;
 
@@ -364,6 +350,8 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                         actionFocus = false;
 
+                        timeLineContainer.setRefreshing(true);
+
                         fetchReports(10, 1, buildQuery(true, null), false, true);
 
                     }
@@ -390,6 +378,8 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
                     timeLine.setSelection(0);
 
                 }
+
+                timeLineContainer.setRefreshing(true);
 
                 fetchReports(10, 1, complexQuery, false, true);
 

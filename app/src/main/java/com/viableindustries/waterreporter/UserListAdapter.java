@@ -50,13 +50,13 @@ public class UserListAdapter extends ArrayAdapter<User> implements Filterable {
 
     protected int id;
 
-    private ArrayList<User> sourceList;
+    private List<User> sourceList;
 
-    private ArrayList<User> filteredList;
+    private List<User> filteredList;
 
 //    private UserFilter mFilter;
 
-    public UserListAdapter(Context context, ArrayList<User> features, boolean aShowLeaveButton) {
+    public UserListAdapter(Context context, List<User> features, boolean aShowLeaveButton) {
 
         super(context, 0, features);
 

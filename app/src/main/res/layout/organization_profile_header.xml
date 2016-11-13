@@ -24,7 +24,7 @@
             android:layout_weight="1">
 
             <ImageView
-                android:id="@+id/userAvatar"
+                android:id="@+id/organizationLogo"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:layout_centerVertical="true"
@@ -42,7 +42,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/userName"
+                android:id="@+id/organizationName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="0dp"
@@ -53,19 +53,7 @@
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/userTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="2dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="0dp"
-                android:paddingTop="2dp"
-                android:text="Upper Potomac Watershed"
-                android:textColor="@color/gray_186"
-                android:textSize="@dimen/small_text" />
-
-            <TextView
-                android:id="@+id/userDescription"
+                android:id="@+id/organizationDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -174,7 +162,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/groupStat"
+            android:id="@+id/peopleStat"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -182,7 +170,7 @@
             android:visibility="gone">
 
             <TextView
-                android:id="@+id/groupCount"
+                android:id="@+id/peopleCount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -197,7 +185,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/groupCountLabel"
+                android:id="@+id/peopleCountLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -206,7 +194,7 @@
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
                 android:paddingTop="2dp"
-                android:text="Groups"
+                android:text="People"
                 android:textColor="@color/material_blue_grey950"
                 android:textSize="14sp" />
 

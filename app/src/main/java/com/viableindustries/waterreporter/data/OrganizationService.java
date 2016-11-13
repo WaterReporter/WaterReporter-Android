@@ -46,8 +46,9 @@ public interface OrganizationService {
     public void getOrganizationMembers(@Header("Authorization") String authorization,
                                        @Header("Content-Type") String contentType,
                                        @Path("organization") int organizationId,
+                                       @Query("page") int page,
                                        @Query("results_per_page") int numResults,
                                        @Query("q") String q,
-                                       Callback<UserFeatureCollection> userFeatureCollectionCallback);
+                                       Callback<UserCollection> userCollectionCallback);
 
 }

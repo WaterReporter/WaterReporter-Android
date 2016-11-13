@@ -21,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,7 @@ import com.viableindustries.waterreporter.data.QuerySort;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.User;
+import com.viableindustries.waterreporter.data.UserCollection;
 import com.viableindustries.waterreporter.data.UserFeatureCollection;
 import com.viableindustries.waterreporter.data.UserGroupList;
 import com.viableindustries.waterreporter.data.UserService;
@@ -67,47 +69,36 @@ import static java.security.AccessController.getContext;
 
 public class OrganizationProfileActivity extends AppCompatActivity {
 
-    @Bind(R.id.organizationName)
-    TextView organizationName;
-
-    @Bind(R.id.organizationDescription)
-    TextView organizationDescription;
-
-    @Bind(R.id.organizationLogo)
-    ImageView organizationLogo;
-
-    @Bind(R.id.reportCount)
-    TextView reportCounter;
-
-    @Bind(R.id.actionCount)
-    TextView actionCounter;
-
-    @Bind(R.id.peopleCount)
-    TextView peopleCounter;
-
-    @Bind(R.id.reportCountLabel)
-    TextView reportCountLabel;
-
-    @Bind(R.id.actionCountLabel)
-    TextView actionCountLabel;
-
-    @Bind(R.id.peopleCountLabel)
-    TextView peopleCountLabel;
-
-    @Bind(R.id.reportStat)
-    LinearLayout reportStat;
-
-    @Bind(R.id.actionStat)
-    LinearLayout actionStat;
-
-    @Bind(R.id.peopleStat)
-    LinearLayout peopleStat;
-
-    @Bind(R.id.profileMeta)
     LinearLayout profileMeta;
 
-    @Bind(R.id.profileStats)
     LinearLayout profileStats;
+
+    LinearLayout reportStat;
+
+    TextView reportCounter;
+
+    TextView reportCountLabel;
+
+    LinearLayout actionStat;
+
+    TextView actionCounter;
+
+    TextView actionCountLabel;
+
+    LinearLayout peopleStat;
+
+    TextView peopleCounter;
+
+    TextView peopleCountLabel;
+    
+    TextView organizationName;
+    
+    TextView organizationDescription;
+    
+    ImageView organizationLogo;
+
+    @Bind(R.id.timeline)
+    SwipeRefreshLayout timeLineContainer;
 
     @Bind(R.id.timeline_items)
     ListView timeLine;
@@ -135,8 +126,6 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     private int reportCount = 99999999;
 
-    private int memberCount = 0;
-
     private boolean actionFocus = false;
 
     private boolean hasScrolled = false;
@@ -160,10 +149,85 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         organization = OrganizationHolder.getOrganization();
 
-//        organizationId = getIntent().getExtras().getInt("ORGANIZATION_ID");
-//        organizationDescriptionText = getIntent().getExtras().getString("USER_DESCRIPTION");
-//        organizationNameText = getIntent().getExtras().getString("USER_NAME");
-//        organizationLogoUrl = getIntent().getExtras().getString("USER_AVATAR");
+        // Set refresh listener on report feed container
+
+        timeLineContainer.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
+                        // This method performs the actual data-refresh operation.
+                        // The method calls setRefreshing(false) when it's finished.
+                        fetchReports(10, 1, buildQuery(true, null), true, false);
+                    }
+                }
+        );
+
+        // Set color of swipe refresh arrow animation
+
+        timeLineContainer.setColorSchemeResources(R.color.waterreporter_blue);
+        
+        // Inflate and insert timeline header view
+
+        addListViewHeader();
+
+        // Count reports with actions
+
+        complexQuery = buildQuery(true, new String[][]{
+                {"state", "eq", "closed"}
+        });
+
+        countReports(complexQuery, "state");
+
+        // Retrieve the organization's members
+
+        fetchOrganizationMembers(25, 1, organizationId);
+
+        // Retrieve first batch of user's reports
+
+        if (reportCollection.isEmpty()) {
+
+            timeLineContainer.setRefreshing(true);
+
+            fetchReports(10, 1, buildQuery(true, null), false, false);
+
+        }
+
+    }
+
+    protected void addListViewHeader() {
+
+        LayoutInflater inflater = getLayoutInflater();
+
+        ViewGroup header = (ViewGroup) inflater.inflate(R.layout.organization_profile_header, timeLine, false);
+
+        organizationName = (TextView) header.findViewById(R.id.organizationName);
+
+        organizationDescription = (TextView) header.findViewById(R.id.organizationDescription);
+
+        organizationLogo = (ImageView) header.findViewById(R.id.organizationLogo);
+
+        reportCounter = (TextView) header.findViewById(R.id.reportCount);
+
+        actionCounter = (TextView) header.findViewById(R.id.actionCount);
+
+        peopleCounter = (TextView) header.findViewById(R.id.peopleCount);
+
+        reportCountLabel = (TextView) header.findViewById(R.id.reportCountLabel);
+
+        actionCountLabel = (TextView) header.findViewById(R.id.actionCountLabel);
+
+        peopleCountLabel = (TextView) header.findViewById(R.id.peopleCountLabel);
+
+        reportStat = (LinearLayout) header.findViewById(R.id.reportStat);
+
+        actionStat = (LinearLayout) header.findViewById(R.id.actionStat);
+
+        peopleStat = (LinearLayout) header.findViewById(R.id.peopleStat);
+
+        profileMeta = (LinearLayout) header.findViewById(R.id.profileMeta);
+
+        profileStats = (LinearLayout) header.findViewById(R.id.profileStats);
 
         organizationId = organization.id;
         organizationDescriptionText = organization.properties.description;
@@ -171,6 +235,8 @@ public class OrganizationProfileActivity extends AppCompatActivity {
         organizationLogoUrl = organization.properties.picture;
 
         organizationName.setText(organizationNameText);
+
+        Picasso.with(this).load(organizationLogoUrl).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(organizationLogo);
 
         try {
 
@@ -225,28 +291,6 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         }
 
-        Picasso.with(this).load(organizationLogoUrl).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(organizationLogo);
-
-        // Count reports with actions
-
-        complexQuery = buildQuery(true, new String[][]{
-                {"state", "eq", "closed"}
-        });
-
-        countReports(complexQuery, "state");
-
-        // Retrieve the user's groups
-
-        fetchOrganizationMembers(organizationId);
-
-        // Retrieve first batch of user's reports
-
-        if (reportCollection.isEmpty()) {
-
-            fetchReports(10, 1, buildQuery(true, null), false, false);
-
-        }
-
         // Attach click listeners to stat elements
 
         reportStat.setOnClickListener(new View.OnClickListener() {
@@ -268,6 +312,8 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                     } else {
 
                         actionFocus = false;
+
+                        timeLineContainer.setRefreshing(true);
 
                         fetchReports(10, 1, buildQuery(true, null), false, true);
 
@@ -296,6 +342,8 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                 }
 
+                timeLineContainer.setRefreshing(true);
+
                 fetchReports(10, 1, complexQuery, false, true);
 
             }
@@ -309,14 +357,16 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                     Intent intent = new Intent(context, OrganizationMembersActivity.class);
 
-//                    intent.putExtra("GENERIC_USER", TRUE);
-
                     startActivity(intent);
 
                 }
 
             }
         });
+
+        // Add populated header view to report timeline
+
+        timeLine.addHeaderView(header, null, false);
 
     }
 
@@ -382,7 +432,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     }
 
-    protected void fetchOrganizationMembers(int organizationId) {
+    protected void fetchOrganizationMembers(int limit, int page, int organizationId) {
 
         final SharedPreferences prefs =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
@@ -393,16 +443,16 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         OrganizationService service = OrganizationService.restAdapter.create(OrganizationService.class);
 
-        service.getOrganizationMembers(access_token, "application/json", organizationId, 25, null, new Callback<UserFeatureCollection>() {
+        service.getOrganizationMembers(access_token, "application/json", organizationId, page, limit, null, new Callback<UserCollection>() {
 
             @Override
-            public void success(UserFeatureCollection userFeatureCollection, Response response) {
+            public void success(UserCollection userCollection, Response response) {
 
-                ArrayList<User> members = userFeatureCollection.getFeatures();
+                ArrayList<User> members = userCollection.getFeatures();
 
                 if (!members.isEmpty()) {
 
-                    peopleCounter.setText(String.valueOf(members.size()));
+                    peopleCounter.setText(String.valueOf(userCollection.getProperties().num_results));
 
                     peopleStat.setVisibility(View.VISIBLE);
 
@@ -463,66 +513,6 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                 return true; // ONLY if more data is actually being loaded; false otherwise.
 
             }
-
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-//                if (scrollState == 0) {
-
-                View mView = timeLine.getChildAt(0);
-
-                int top = mView.getTop();
-
-                Log.d("topView", top + "");
-
-                final Handler h = new Handler();
-
-                final Runnable changeHeight = new Runnable() {
-
-                    @Override
-                    public void run() {
-
-                        listTabs.setLayoutParams(listViewParams);
-
-                        //listTabs.requestLayout();
-
-                    }
-                };
-
-                int headerHeight = profileMeta.getHeight() + profileStats.getHeight();
-
-                listViewParams = (ViewGroup.LayoutParams) listTabs.getLayoutParams();
-
-                // see if top Y is at 0 and first visible position is at 0
-                if (top == 0 && timeLine.getFirstVisiblePosition() == 0) {
-
-                    listTabs.animate().translationY(0);
-
-                    listViewParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-
-                    h.postDelayed(changeHeight, 500);
-
-                    hasScrolled = false;
-
-                } else {
-
-                    if (!hasScrolled) {
-
-                        listTabs.animate().translationY(0 - headerHeight);
-
-                        listViewParams.height = listTabs.getHeight() + headerHeight;
-
-                        h.postDelayed(changeHeight, 0);
-
-                        hasScrolled = true;
-
-                    }
-
-                }
-
-            }
-
-//            }
 
         });
 
@@ -599,7 +589,17 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                     reportCount = featureCollection.getProperties().num_results;
 
-                    reportCounter.setText(String.valueOf(reportCount));
+                    if (reportCount > 0) {
+
+                        reportStat.setVisibility(View.VISIBLE);
+
+                        reportCounter.setText(String.valueOf(reportCount));
+
+                    } else {
+
+                        reportStat.setVisibility(View.GONE);
+
+                    }
 
                 }
 
@@ -629,11 +629,9 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                 } else {
 
-                    CharSequence text = "This organization is not affiliated with any reports.";
-                    int duration = Toast.LENGTH_LONG;
+                    reportCollection = reports;
 
-                    Toast toast = Toast.makeText(context, text, duration);
-                    toast.show();
+                    populateTimeline(reportCollection);
 
                 }
 
@@ -641,14 +639,32 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                     reportCollection = reports;
 
+                    reportCount = featureCollection.getProperties().num_results;
+
+                    if (reportCount > 0) {
+
+                        reportStat.setVisibility(View.VISIBLE);
+
+                        reportCounter.setText(String.valueOf(reportCount));
+
+                    } else {
+
+                        reportStat.setVisibility(View.GONE);
+
+                    }
+
                     populateTimeline(reportCollection);
 
                 }
+
+                timeLineContainer.setRefreshing(false);
 
             }
 
             @Override
             public void failure(RetrofitError error) {
+
+                timeLineContainer.setRefreshing(false);
 
                 if (error == null) return;
 

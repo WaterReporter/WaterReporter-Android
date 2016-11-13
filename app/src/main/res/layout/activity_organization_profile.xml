@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_organization_profile"
     android:layout_width="match_parent"
@@ -22,224 +21,235 @@
             android:scaleType="fitXY"
             android:src="@drawable/logo_horizontal_lockup" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/gray_232" />
+
     </RelativeLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/gray_224" />
+    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--android:id="@+id/profileMeta"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="#FBFBFB"-->
+        <!--android:baselineAligned="false"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:paddingBottom="16dp"-->
+        <!--android:paddingLeft="16dp"-->
+        <!--android:paddingRight="0dp"-->
+        <!--android:paddingTop="16dp">-->
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/profileMeta"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#FBFBFB"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:paddingBottom="16dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="0dp"
-        android:paddingTop="16dp">
+        <!--<RelativeLayout-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="64dp"-->
+            <!--android:layout_weight="1">-->
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="64dp"
-            android:layout_weight="1">
+            <!--<ImageView-->
+                <!--android:id="@+id/organizationLogo"-->
+                <!--android:layout_width="64dp"-->
+                <!--android:layout_height="64dp"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:scaleType="fitXY" />-->
 
-            <ImageView
-                android:id="@+id/organizationLogo"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center_vertical"
-                android:scaleType="fitXY" />
+        <!--</RelativeLayout>-->
 
-        </RelativeLayout>
+        <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:layout_weight="4"-->
+            <!--android:animateLayoutChanges="true"-->
+            <!--android:orientation="vertical">-->
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="4"
-            android:animateLayoutChanges="true"
-            android:orientation="vertical">
+            <!--<TextView-->
+                <!--android:id="@+id/organizationName"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:paddingBottom="4dp"-->
+                <!--android:paddingLeft="16dp"-->
+                <!--android:paddingRight="0dp"-->
+                <!--android:paddingTop="0dp"-->
+                <!--android:text="A name goes here"-->
+                <!--android:textSize="16sp" />-->
 
-            <TextView
-                android:id="@+id/organizationName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="4dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="0dp"
-                android:paddingTop="0dp"
-                android:text="A name goes here"
-                android:textSize="16sp" />
+            <!--<TextView-->
+                <!--android:id="@+id/organizationDescription"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:ellipsize="end"-->
+                <!--android:maxLines="2"-->
+                <!--android:paddingBottom="0dp"-->
+                <!--android:paddingLeft="16dp"-->
+                <!--android:paddingRight="16dp"-->
+                <!--android:paddingTop="0dp"-->
+                <!--android:text="A description goes here"-->
+                <!--android:textColor="@color/material_blue_grey950"-->
+                <!--android:textSize="14sp" />-->
 
-            <TextView
-                android:id="@+id/organizationDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:paddingBottom="0dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="0dp"
-                android:text="A description goes here"
-                android:textColor="@color/material_blue_grey950"
-                android:textSize="14sp" />
+        <!--</LinearLayout>-->
 
-        </LinearLayout>
+    <!--</LinearLayout>-->
 
-    </LinearLayout>
+    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--android:id="@+id/profileStats"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:animateLayoutChanges="true"-->
+        <!--android:background="#FBFBFB"-->
+        <!--android:baselineAligned="false"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:paddingBottom="16dp"-->
+        <!--android:paddingLeft="0dp"-->
+        <!--android:paddingRight="0dp"-->
+        <!--android:paddingTop="0dp">-->
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/profileStats"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        android:background="#FBFBFB"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:paddingBottom="16dp"
-        android:paddingLeft="0dp"
-        android:paddingRight="0dp"
-        android:paddingTop="0dp">
+        <!--<LinearLayout-->
+            <!--android:id="@+id/reportStat"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:orientation="vertical">-->
 
-        <LinearLayout
-            android:id="@+id/reportStat"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            <!--<TextView-->
+                <!--android:id="@+id/reportCount"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:gravity="center"-->
+                <!--android:paddingBottom="0dp"-->
+                <!--android:paddingLeft="0dp"-->
+                <!--android:paddingRight="0dp"-->
+                <!--android:paddingTop="0dp"-->
+                <!--android:text="0"-->
+                <!--android:textColor="@color/base_blue"-->
+                <!--android:textSize="20sp"-->
+                <!--android:textStyle="bold" />-->
 
-            <TextView
-                android:id="@+id/reportCount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingBottom="0dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
-                android:paddingTop="0dp"
-                android:text="0"
-                android:textColor="@color/base_blue"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+            <!--<TextView-->
+                <!--android:id="@+id/reportCountLabel"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:gravity="center"-->
+                <!--android:paddingBottom="0dp"-->
+                <!--android:paddingLeft="0dp"-->
+                <!--android:paddingRight="0dp"-->
+                <!--android:paddingTop="2dp"-->
+                <!--android:text="Reports"-->
+                <!--android:textColor="@color/base_blue"-->
+                <!--android:textSize="14sp" />-->
 
-            <TextView
-                android:id="@+id/reportCountLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:paddingBottom="0dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
-                android:paddingTop="2dp"
-                android:text="Reports"
-                android:textColor="@color/base_blue"
-                android:textSize="14sp" />
+        <!--</LinearLayout>-->
 
-        </LinearLayout>
+        <!--<LinearLayout-->
+            <!--android:id="@+id/actionStat"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:orientation="vertical"-->
+            <!--android:visibility="gone">-->
 
-        <LinearLayout
-            android:id="@+id/actionStat"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:visibility="gone">
+            <!--<TextView-->
+                <!--android:id="@+id/actionCount"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:gravity="center"-->
+                <!--android:paddingBottom="0dp"-->
+                <!--android:paddingLeft="0dp"-->
+                <!--android:paddingRight="0dp"-->
+                <!--android:paddingTop="0dp"-->
+                <!--android:text="0"-->
+                <!--android:textColor="@color/material_blue_grey950"-->
+                <!--android:textSize="20sp"-->
+                <!--android:textStyle="bold" />-->
 
-            <TextView
-                android:id="@+id/actionCount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:paddingBottom="0dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
-                android:paddingTop="0dp"
-                android:text="0"
-                android:textColor="@color/material_blue_grey950"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+            <!--<TextView-->
+                <!--android:id="@+id/actionCountLabel"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:gravity="center"-->
+                <!--android:paddingBottom="0dp"-->
+                <!--android:paddingLeft="0dp"-->
+                <!--android:paddingRight="0dp"-->
+                <!--android:paddingTop="2dp"-->
+                <!--android:text="Actions"-->
+                <!--android:textColor="@color/material_blue_grey950"-->
+                <!--android:textSize="14sp" />-->
 
-            <TextView
-                android:id="@+id/actionCountLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:paddingBottom="0dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
-                android:paddingTop="2dp"
-                android:text="Actions"
-                android:textColor="@color/material_blue_grey950"
-                android:textSize="14sp" />
+        <!--</LinearLayout>-->
 
-        </LinearLayout>
+        <!--<LinearLayout-->
+            <!--android:id="@+id/peopleStat"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:orientation="vertical"-->
+            <!--android:visibility="gone">-->
 
-        <LinearLayout
-            android:id="@+id/peopleStat"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:visibility="gone">
+            <!--<TextView-->
+                <!--android:id="@+id/peopleCount"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:gravity="center"-->
+                <!--android:paddingBottom="0dp"-->
+                <!--android:paddingLeft="0dp"-->
+                <!--android:paddingRight="0dp"-->
+                <!--android:paddingTop="0dp"-->
+                <!--android:text="0"-->
+                <!--android:textColor="@color/material_blue_grey950"-->
+                <!--android:textSize="20sp"-->
+                <!--android:textStyle="bold" />-->
 
-            <TextView
-                android:id="@+id/peopleCount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:paddingBottom="0dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
-                android:paddingTop="0dp"
-                android:text="0"
-                android:textColor="@color/material_blue_grey950"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+            <!--<TextView-->
+                <!--android:id="@+id/peopleCountLabel"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:gravity="center"-->
+                <!--android:paddingBottom="0dp"-->
+                <!--android:paddingLeft="0dp"-->
+                <!--android:paddingRight="0dp"-->
+                <!--android:paddingTop="2dp"-->
+                <!--android:text="People"-->
+                <!--android:textColor="@color/material_blue_grey950"-->
+                <!--android:textSize="14sp" />-->
 
-            <TextView
-                android:id="@+id/peopleCountLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:paddingBottom="0dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
-                android:paddingTop="2dp"
-                android:text="People"
-                android:textColor="@color/material_blue_grey950"
-                android:textSize="14sp" />
+        <!--</LinearLayout>-->
 
-        </LinearLayout>
-
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
     <FrameLayout
         android:id="@+id/listTabs"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom">
 
-        <ListView
-            android:id="@+id/timeline_items"
+        <android.support.v4.widget.SwipeRefreshLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/timeline"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="55dp"
-            android:divider="#FFFFFF"
-            android:dividerHeight="0dp"
-            android:fadingEdgeLength="0dp"
-            android:listSelector="@drawable/timeline_selector"
-            android:overScrollMode="never"
-            android:scrollbars="none" />
+            android:layout_height="match_parent"
+            android:layout_marginBottom="55dp">
+
+            <ListView
+                android:id="@+id/timeline_items"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="55dp"
+                android:divider="@color/gray_232"
+                android:dividerHeight="0.5dp"
+                android:fadingEdgeLength="0dp"
+                android:listSelector="@drawable/timeline_selector"
+                android:overScrollMode="never"
+                android:scrollbars="none" />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
 
         <fragment
             android:id="@+id/navigationFragment"

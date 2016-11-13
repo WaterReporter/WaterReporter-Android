@@ -43,13 +43,6 @@ public interface ReportService {
                            @Query("q") String q,
                            Callback<FeatureCollection> featureCollectionCallback);
 
-//    @GET("/data/report")
-//    public void getUserReports(@Header("Authorization") String authorization,
-//                               @Header("Content-Type") String contentType,
-//                               @Query("results_per_page") int numResults,
-//                               @Query(value = "q", encodeName = false, encodeValue = false) String q,
-//                               Callback<FeatureCollection> featureCollectionCallback);
-
     @GET("/data/report/{report}")
     public void getSingleReport(@Header("Authorization") String authorization,
                                 @Header("Content-Type") String contentType,
