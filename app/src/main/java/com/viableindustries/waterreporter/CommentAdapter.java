@@ -145,13 +145,13 @@ public class CommentAdapter extends ArrayAdapter {
 
         if ("closed".equals(feature.properties.report_state)) {
 
-            viewHolder.actionBadge.setVisibility(View.VISIBLE);
+//            viewHolder.actionBadge.setVisibility(View.VISIBLE);
 
             viewHolder.actionTaken.setVisibility(View.VISIBLE);
 
         } else {
 
-            viewHolder.actionBadge.setVisibility(View.GONE);
+//            viewHolder.actionBadge.setVisibility(View.GONE);
 
             viewHolder.actionTaken.setVisibility(View.GONE);
 

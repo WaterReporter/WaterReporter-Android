@@ -196,7 +196,7 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
                 } else {
 
-                    prepareComment();
+                    prepareComment(false);
 
                 }
 
@@ -429,7 +429,17 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
     }
 
-    private void prepareComment() {
+    private void prepareComment(boolean changeState) {
+
+        String state = null;
+
+        if (changeState) {
+
+            state = reportState;
+
+            patchReport(report.id, reportState);
+
+        }
 
         try {
 
@@ -437,13 +447,11 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
         } catch (NullPointerException ne) {
 
-            CommentPost commentPost = new CommentPost(body, null, report.id, reportState, "public");
+            CommentPost commentPost = new CommentPost(body, null, report.id, state, "public");
 
             sendComment(commentPost);
 
         }
-
-        patchReport(report.id, reportState);
 
     }
 
@@ -701,7 +709,7 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
             Report report = ReportHolder.getReport();
 
-            if ("open".equals(report.properties.state)) {
+            if ("open".equals(report.properties.state) || "public".equals(report.properties.state)) {
 
                 reportState = "closed";
 
@@ -711,9 +719,13 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
             }
 
-        }
+            prepareComment(true);
 
-        prepareComment();
+        } else {
+
+            prepareComment(false);
+
+        }
 
     }
 

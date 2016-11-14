@@ -407,6 +407,8 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
         final String access_token = prefs.getString("access_token", "");
 
+        dateText = String.valueOf(dateField.getText());
+
         commentsText = commentsField.getText().toString();
 
         Log.d("comments", commentsText);
@@ -673,8 +675,6 @@ public class PhotoMetaActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_save) {
-
-            dateText = String.valueOf(dateField.getText());
 
             commentsText = String.valueOf(commentsField.getText());
 

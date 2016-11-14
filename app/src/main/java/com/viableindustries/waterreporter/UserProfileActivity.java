@@ -132,7 +132,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     private int userId;
 
-    private int actionCount = 0;
+    private int actionCount;
 
     private int reportCount = 99999999;
 
@@ -177,6 +177,9 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
                         // This method performs the actual data-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
                         fetchReports(10, 1, buildQuery(true, null), true, false);
+
+                        countReports(complexQuery, "state");
+                        
                     }
                 }
         );
@@ -334,29 +337,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
             @Override
             public void onClick(View v) {
 
-                reportCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
-                reportCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
-
-                actionCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
-                actionCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
-
-                if (timeLine != null) {
-
-                    if (!actionFocus) {
-
-                        timeLine.setSelection(0);
-
-                    } else {
-
-                        actionFocus = false;
-
-                        timeLineContainer.setRefreshing(true);
-
-                        fetchReports(10, 1, buildQuery(true, null), false, true);
-
-                    }
-
-                }
+                resetStats();
 
             }
         });
@@ -745,6 +726,22 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     }
 
+    private void resetStats() {
+
+        reportCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
+        reportCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
+
+        actionCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
+        actionCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
+
+        actionFocus = false;
+
+        timeLineContainer.setRefreshing(true);
+
+        fetchReports(10, 1, buildQuery(true, null), true, true);
+
+    }
+
     private void deleteReport() {
 
         timeLineContainer.setRefreshing(true);
@@ -758,16 +755,44 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         ReportService service = ReportService.restAdapter.create(ReportService.class);
 
-        int reportId = ReportHolder.getReport().id;
+        final Report report = ReportHolder.getReport();
 
-        service.deleteSingleReport(access_token, reportId, new Callback<Response>() {
+        service.deleteSingleReport(access_token, report.id, new Callback<Response>() {
 
             @Override
             public void success(Response response, Response response_) {
 
-                timeLineContainer.setRefreshing(false);
+                reportCount -= 1;
 
-                fetchReports(10, 1, buildQuery(true, null), true, true);
+                if (reportCount > 0) {
+
+                    reportCounter.setText(String.valueOf(reportCount));
+
+                } else {
+
+                    reportStat.setVisibility(View.GONE);
+
+                }
+
+                if ("closed".equals(report.properties.state)) {
+
+                    actionCount -= 1;
+
+                    if (actionCount > 0) {
+
+                        actionCounter.setText(String.valueOf(actionCount));
+
+                    } else {
+
+                        actionStat.setVisibility(View.GONE);
+
+                    }
+
+                }
+
+                ReportHolder.setReport(null);
+
+                resetStats();
 
             }
 

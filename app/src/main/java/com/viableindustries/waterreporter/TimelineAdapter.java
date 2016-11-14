@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 
 import com.viableindustries.waterreporter.data.Comment;
 import com.viableindustries.waterreporter.data.Geometry;
+import com.viableindustries.waterreporter.data.HtmlCompat;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationProfileListener;
 import com.viableindustries.waterreporter.data.Report;
@@ -335,9 +337,21 @@ public class TimelineAdapter extends ArrayAdapter {
                     @Override
                     public void onClick(View view) {
 
+                        Resources res = context.getResources();
+
+                        String[] options = res.getStringArray(R.array.report_action_options);
+
+                        CharSequence[] renders = new CharSequence[2];
+
+                        for (int i = 0; i < options.length; i++) {
+
+                            renders[i] = HtmlCompat.fromHtml(options[i]);
+
+                        }
+
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-                        builder.setItems(R.array.report_action_options, new DialogInterface.OnClickListener() {
+                        builder.setItems(renders, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
 
                                 ReportHolder.setReport(feature);

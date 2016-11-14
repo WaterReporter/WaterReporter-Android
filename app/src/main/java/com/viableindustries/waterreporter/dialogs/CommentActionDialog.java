@@ -22,7 +22,7 @@ import com.viableindustries.waterreporter.data.ReportHolder;
  * Created by brendanmcintyre on 10/31/16.
  */
 
-public class CommentActionDialog extends DialogFragment {
+public class CommentActionDialog extends android.support.v4.app.DialogFragment {
 
     @Override
     @NonNull
@@ -36,7 +36,7 @@ public class CommentActionDialog extends DialogFragment {
 
         CharSequence[] renders = new CharSequence[2];
 
-        if ("open".equals(report.properties.state)) {
+        if ("open".equals(report.properties.state) || "public".equals(report.properties.state)) {
 
             options = res.getStringArray(R.array.comment_action_options_close);
 
