@@ -118,9 +118,6 @@ public class CommentAdapter extends ArrayAdapter {
 
         viewHolder.tracker.setText(String.valueOf(featureId));
 
-        // Parse creation date
-//        creationDate = AttributeTransformUtility.parseDate(new SimpleDateFormat("MMM dd, yyyy", Locale.US), creationDate);
-
         // Attach click listeners to active UI components
 
         viewHolder.ownerAvatar.setOnClickListener(new UserProfileListener(getContext(), feature.properties.owner));
@@ -159,8 +156,6 @@ public class CommentAdapter extends ArrayAdapter {
             viewHolder.actionTaken.setVisibility(View.GONE);
 
         }
-
-//        Log.v("url", imagePath);
 
         Picasso.with(context).load(feature.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(viewHolder.ownerAvatar);
 

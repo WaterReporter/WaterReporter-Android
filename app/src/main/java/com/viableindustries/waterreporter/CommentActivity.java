@@ -1,5 +1,6 @@
 package com.viableindustries.waterreporter;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,11 +12,17 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,6 +36,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -56,6 +64,7 @@ import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserGroupList;
 import com.viableindustries.waterreporter.data.UserHolder;
+import com.viableindustries.waterreporter.data.UserProfileListener;
 import com.viableindustries.waterreporter.data.UserProperties;
 import com.viableindustries.waterreporter.data.UserService;
 import com.viableindustries.waterreporter.dialogs.CommentActionDialog;
@@ -85,8 +94,11 @@ import static java.lang.Boolean.TRUE;
 
 public class CommentActivity extends AppCompatActivity implements CommentPhotoDialogListener, CommentActionDialogListener {
 
-    @Bind(R.id.list)
-    ListView listView;
+    @Bind(R.id.commentListContainer)
+    SwipeRefreshLayout commentListContainer;
+
+    @Bind(R.id.commentList)
+    ListView commentList;
 
     @Bind(R.id.comment_component)
     LinearLayout commentComponent;
@@ -109,7 +121,9 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
     @Bind(R.id.preview)
     ImageView mImageView;
 
-    private int reportId;
+//    private int reportId;
+
+    private Report report;
 
     private String body;
 
@@ -134,6 +148,10 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
         ButterKnife.bind(this);
 
+        report = ReportHolder.getReport();
+
+        addListViewHeader(report);
+
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -148,10 +166,6 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
                 // Check for minimum data requirements
 
                 body = (commentBox.getText().length() > 0) ? commentBox.getText().toString() : null;
-
-                reportId = ReportHolder.getReport().id;
-
-//                Log.d("body", body);
 
                 if (working || (body == null && mTempImagePath == null)) return;
 
@@ -169,6 +183,24 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
             }
         });
+
+        // Set refresh listener on report feed container
+
+        commentListContainer.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
+                        // This method performs the actual data-refresh operation.
+                        // The method calls setRefreshing(false) when it's finished.
+                        fetchComments(50, 1);
+                    }
+                }
+        );
+
+        // Set color of swipe refresh arrow animation
+
+        commentListContainer.setColorSchemeResources(R.color.waterreporter_blue);
 
         fetchComments(50, 1);
 
@@ -194,6 +226,66 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    protected void addListViewHeader(Report report) {
+
+        Log.d("report", report.toString());
+
+        Log.d("report", report.properties.owner.toString());
+
+        Log.d("report", report.properties.owner.properties.toString());
+
+        LayoutInflater inflater = getLayoutInflater();
+
+        ViewGroup header = (ViewGroup) inflater.inflate(R.layout.comment_list_header, commentList, false);
+
+        TextView reportOwner = (TextView) header.findViewById(R.id.report_owner);
+
+        TextView reportDate = (TextView) header.findViewById(R.id.report_date);
+
+        TextView reportCaption = (TextView) header.findViewById(R.id.report_caption);
+
+        ImageView ownerAvatar = (ImageView) header.findViewById(R.id.owner_avatar);
+
+        String creationDate = (String) AttributeTransformUtility.relativeTime(report.properties.created);
+
+        reportDate.setText(creationDate);
+
+        reportOwner.setText(String.format("%s %s", report.properties.owner.properties.first_name, report.properties.owner.properties.last_name));
+
+        // Load user's avatar
+
+        String avatarUrl = report.properties.owner.properties.picture;
+
+        Picasso.with(this).
+                load(avatarUrl)
+                .placeholder(R.drawable.user_avatar_placeholder)
+                .transform(new CircleTransform())
+                .into(ownerAvatar);
+
+        // Load report caption
+
+        if (report.properties.report_description != null && (report.properties.report_description.length() > 0)) {
+
+            reportCaption.setVisibility(View.VISIBLE);
+
+            reportCaption.setText(report.properties.report_description.trim());
+
+        } else {
+
+            reportCaption.setVisibility(View.GONE);
+
+        }
+
+        // Attach click listener to avatar
+
+        ownerAvatar.setOnClickListener(new UserProfileListener(this, report.properties.owner));
+
+        // Add populated header view to report timeline
+
+        commentList.addHeaderView(header, null, false);
+
     }
 
     private void fetchComments(int limit, int page) {
@@ -223,9 +315,9 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
         ReportService service = ReportService.restAdapter.create(ReportService.class);
 
-        reportId = ReportHolder.getReport().id;
+        commentListContainer.setRefreshing(true);
 
-        service.getReportComments(access_token, "application/json", reportId, page, limit, query, new Callback<CommentCollection>() {
+        service.getReportComments(access_token, "application/json", report.id, page, limit, query, new Callback<CommentCollection>() {
 
             @Override
             public void success(CommentCollection commentCollection, Response response) {
@@ -234,22 +326,28 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
                 Log.v("list", comments.toString());
 
-                commentCollectionList.addAll(comments);
+                commentCollectionList = comments;
 
-                try {
+//                commentCollectionList.addAll(comments);
 
-                    commentAdapter.notifyDataSetChanged();
-
-                } catch (NullPointerException ne) {
+//                try {
+//
+//                    commentAdapter.notifyDataSetChanged();
+//
+//                } catch (NullPointerException ne) {
 
                     populateComments(commentCollectionList);
 
-                }
+//                }
+
+                commentListContainer.setRefreshing(false);
 
             }
 
             @Override
             public void failure(RetrofitError error) {
+
+                commentListContainer.setRefreshing(false);
 
                 if (error == null) return;
 
@@ -279,7 +377,7 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
         commentAdapter = new CommentAdapter(this, comments, true);
 
-        listView.setAdapter(commentAdapter);
+        commentList.setAdapter(commentAdapter);
 
     }
 
@@ -330,7 +428,7 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
         } catch (NullPointerException ne) {
 
-            CommentPost commentPost = new CommentPost(body, null, reportId, reportState, "public");
+            CommentPost commentPost = new CommentPost(body, null, report.id, reportState, "public");
 
             sendComment(commentPost);
 
@@ -338,7 +436,31 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
     }
 
-    protected void onPostError() {
+    protected void onPostError(RetrofitError error) {
+
+        commentListContainer.setRefreshing(false);
+
+        // Lift UI lock
+
+        working = false;
+
+        if (error == null) return;
+
+        Response errorResponse = error.getResponse();
+
+        // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+        if (errorResponse != null) {
+
+            int status = errorResponse.getStatus();
+
+            if (status == 403) {
+
+                startActivity(new Intent(CommentActivity.this, SignInActivity.class));
+
+            }
+
+        }
 
         CharSequence text =
                 "Error posting comment. Please try again later.";
@@ -369,6 +491,8 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
         TypedFile typedPhoto = new TypedFile(mimeType, photo);
 
+        commentListContainer.setRefreshing(true);
+
         imageService.postImage(access_token, typedPhoto,
                 new Callback<ImageProperties>() {
                     @Override
@@ -395,7 +519,7 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
                         images.add(image_id);
 
-                        CommentPost commentPost = new CommentPost(body, images, reportId, reportState, "public");
+                        CommentPost commentPost = new CommentPost(body, images, report.id, reportState, "public");
 
                         sendComment(commentPost);
 
@@ -403,7 +527,7 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
                     @Override
                     public void failure(RetrofitError error) {
-                        onPostError();
+                        onPostError(error);
                     }
 
                 });
@@ -422,6 +546,8 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
         Log.d("", access_token);
 
         CommentService service = CommentService.restAdapter.create(CommentService.class);
+
+        commentListContainer.setRefreshing(true);
 
         service.postComment(access_token, "application/json", commentPost, new Callback<Comment>() {
 
@@ -459,27 +585,7 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
             @Override
             public void failure(RetrofitError error) {
 
-                // Lift UI lock
-
-                working = false;
-
-                if (error == null) return;
-
-                Response errorResponse = error.getResponse();
-
-                // If we have a valid response object, check the status code and redirect to log in view if necessary
-
-                if (errorResponse != null) {
-
-                    int status = errorResponse.getStatus();
-
-                    if (status == 403) {
-
-                        startActivity(new Intent(CommentActivity.this, SignInActivity.class));
-
-                    }
-
-                }
+                onPostError(error);
 
             }
 
@@ -506,7 +612,7 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
     @Override
     public void onReturnValue(int index) {
 
-        if (index == 0){
+        if (index == 0) {
 
             startActivityForResult(new Intent(this, PhotoActivity.class), ACTION_ADD_PHOTO);
 
@@ -539,7 +645,7 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
     @Override
     public void onSelectAction(int index) {
 
-        if (index == 1){
+        if (index == 1) {
 
             reportState = "closed";
 

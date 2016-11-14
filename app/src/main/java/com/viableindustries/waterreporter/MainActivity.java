@@ -140,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d("URL", query);
 
+        timeline.setRefreshing(true);
+
         service.getReports(access_token, "application/json", page, limit, query, new Callback<FeatureCollection>() {
 
             @Override
