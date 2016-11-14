@@ -4,7 +4,7 @@
     android:id="@+id/report_stub"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_250.50.52"
+    android:background="#FFFFFF"
     android:orientation="vertical">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -96,22 +96,6 @@
         android:paddingTop="0dp">
 
         <RelativeLayout
-            android:id="@+id/action_badge"
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
-            android:visibility="visible">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center_vertical"
-                android:scaleType="fitXY"
-                android:src="@drawable/action_badge_small" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
             android:id="@+id/location_icon"
             android:layout_width="48dp"
             android:layout_height="match_parent"
@@ -143,6 +127,22 @@
                 android:alpha="0.5"
                 android:scaleType="fitXY"
                 android:src="@drawable/ic_directions_black_24dp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/action_badge"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center_vertical"
+                android:scaleType="fitXY"
+                android:src="@drawable/action_badge_small" />
 
         </RelativeLayout>
 

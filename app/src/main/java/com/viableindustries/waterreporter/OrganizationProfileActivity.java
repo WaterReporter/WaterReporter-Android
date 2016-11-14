@@ -181,7 +181,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         // Retrieve the organization's members
 
-        fetchOrganizationMembers(25, 1, organizationId);
+        fetchOrganizationMembers(50, 1, organizationId);
 
         // Retrieve first batch of user's reports
 

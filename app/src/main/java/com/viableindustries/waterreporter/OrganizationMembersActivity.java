@@ -98,7 +98,7 @@ public class OrganizationMembersActivity extends AppCompatActivity {
                         Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
                         // This method performs the actual data-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
-                        fetchOrganizationMembers(25, 1, organization.id, null, true);
+                        fetchOrganizationMembers(50, 1, organization.id, null, true);
                     }
                 }
         );
@@ -142,7 +142,7 @@ public class OrganizationMembersActivity extends AppCompatActivity {
 
                 // Triggered only when new data needs to be appended to the list
 
-                fetchOrganizationMembers(25, page, organization.id, null, false);
+                fetchOrganizationMembers(50, page, organization.id, null, false);
 
                 return true; // ONLY if more data is actually being loaded; false otherwise.
 

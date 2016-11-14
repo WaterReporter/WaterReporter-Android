@@ -276,9 +276,13 @@ public class TimelineAdapter extends ArrayAdapter {
 
             viewHolder.actionBadge.setVisibility(View.VISIBLE);
 
+            viewHolder.commentIcon.setVisibility(View.GONE);
+
         } else {
 
             viewHolder.actionBadge.setVisibility(View.GONE);
+
+            viewHolder.commentIcon.setVisibility(View.VISIBLE);
 
         }
 

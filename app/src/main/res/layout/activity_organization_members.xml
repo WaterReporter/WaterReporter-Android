@@ -41,7 +41,6 @@
             android:id="@+id/memberList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
             android:scrollbars="none" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
