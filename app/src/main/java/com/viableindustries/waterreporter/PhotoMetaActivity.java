@@ -294,7 +294,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                         locationButton.setBackgroundResource(R.drawable.green_button);
 
-                        CharSequence text = "Location saved successfully";
+                        CharSequence text = "Location captured successfully";
 
                         Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
 

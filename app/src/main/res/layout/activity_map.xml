@@ -5,38 +5,17 @@
     android:layout_height="match_parent"
     tools:context="com.viableindustries.waterreporter.LocationActivity">
 
-    <!--<com.mapbox.mapboxsdk.views.MapView-->
-        <!--android:id="@+id/mapview"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent" />-->
-
     <com.mapbox.mapboxsdk.maps.MapView
         android:id="@+id/mapview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        mapbox:style_url="mapbox://styles/mapbox/satellite-v9" />
+        mapbox:style_url="mapbox://styles/mapbox/basic-v9" />
 
 
     <View
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_centerInParent="true"
         android:background="@drawable/blue_marker" />
-
-    <!--<Button-->
-        <!--android:layout_width="80dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_marginBottom="0dp"-->
-        <!--android:layout_marginLeft="0dp"-->
-        <!--android:layout_marginRight="16dp"-->
-        <!--android:layout_marginTop="16dp"-->
-        <!--android:background="@drawable/blue_button"-->
-        <!--android:gravity="center"-->
-        <!--android:onClick="getMapCenter"-->
-        <!--android:text="@string/save"-->
-        <!--android:textAllCaps="true"-->
-        <!--android:textColor="@color/white"-->
-        <!--android:textStyle="bold" />-->
 
 </RelativeLayout>

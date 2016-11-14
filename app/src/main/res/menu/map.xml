@@ -4,7 +4,7 @@
     tools:context="com.viableindustries.waterreporter.LocationActivity" >
 
     <item android:id="@+id/action_save_location"
-        android:icon="@drawable/ic_done_white_24dp"
+        android:icon="@drawable/ic_done_black_24dp"
         android:title="@string/save"
         app:showAsAction="always" />
 

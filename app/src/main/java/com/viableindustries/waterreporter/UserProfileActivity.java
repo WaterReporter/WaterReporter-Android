@@ -179,7 +179,8 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
                         fetchReports(10, 1, buildQuery(true, null), true, false);
 
                         countReports(complexQuery, "state");
-                        
+
+
                     }
                 }
         );

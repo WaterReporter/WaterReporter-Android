@@ -16,7 +16,7 @@
     <string name="date_hint">Enter Date</string>
     <string name="incident_hint">Incident Type</string>
     <string name="facility_hint">Facility Type</string>
-    <string name="comment_hint">Comments</string>
+    <string name="comment_hint">Add a few words about the photo&#8230;</string>
     <string name="legend_header">Legend</string>
     <string name="marker_header">General Oil &amp; Gas Report</string>
     <string name="title_activity_marker">Report</string>
@@ -73,10 +73,11 @@
     <string name="reset_success">We sent you an email with a password reset link. Please come back and log in after you change your password.</string>
     <string name="reset_error">We couldn\'t find you in Water Reporter. Please double-check the email that you entered and make sure that it\'s the same one you used to register.</string>
 
-    <!-- Report save -->
+    <!-- Report -->
 
-    <string name="saving">Please sit tight while we save your report...</string>
+    <string name="saving">Please sit tight while we save your report&#8230;</string>
     <string name="report_received">Great! Your report was successfully broadcast on Water Reporter.</string>
+    <string name="report_instruction">To get started, tap on the camera icon to add a photo.</string>
 
     <!-- Camera -->
     <string name="picture">Picture</string>
@@ -152,7 +153,7 @@
     <string name="log_out">Log out</string>
     <string name="bug_report">Report a bug or suggest a change</string>
 
-    <!-- Report save -->
+    <!-- Profile -->
 
     <string name="saving_profile">Saving profile&#8230;</string>
     <string name="title_activity_group_action_list">GroupActionListActivity</string>

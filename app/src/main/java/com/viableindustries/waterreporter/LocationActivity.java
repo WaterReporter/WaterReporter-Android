@@ -15,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -174,6 +175,12 @@ public class LocationActivity extends AppCompatActivity implements
 
         ButterKnife.bind(this);
 
+        if (getSupportActionBar() != null) {
+
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        }
+
         mRequestingLocationUpdates = true;
         mLastUpdateTime = "";
 
@@ -229,8 +236,12 @@ public class LocationActivity extends AppCompatActivity implements
                 .zoom(14) // Sets the zoom
                 .build(); // Creates a CameraPosition from the builder
 
-        mMapboxMap.animateCamera(CameraUpdateFactory
-                .newCameraPosition(position), 4000);
+        if (mMapboxMap != null) {
+
+            mMapboxMap.animateCamera(CameraUpdateFactory
+                    .newCameraPosition(position), 4000);
+
+        }
 
     }
 
@@ -772,6 +783,15 @@ public class LocationActivity extends AppCompatActivity implements
         }
 
         return super.onOptionsItemSelected(item);
+
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+
+        finish();
+
+        return true;
 
     }
 
