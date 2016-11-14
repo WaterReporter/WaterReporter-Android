@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="comment_photo_options">
-        <item>Change photo</item>
-        <item>Remove photo</item>
+        <item><![CDATA[<b>Change photo</b>]]></item>
+        <item><![CDATA[<b>Remove photo</b>]]></item>
     </string-array>
-    <string-array name="comment_action_options">
-        <item>Save comment</item>
-        <item>Save comment and close report</item>
+    <string-array name="comment_action_options_close">
+        <item><![CDATA[<b>Save comment</b>]]></item>
+        <item><![CDATA[<b>Save comment and close report</b>]]></item>
+    </string-array>
+    <string-array name="comment_action_options_open">
+        <item><![CDATA[<b>Save comment</b>]]></item>
+        <item><![CDATA[<b>Save comment and re-open report</b>]]></item>
     </string-array>
     <string-array name="report_action_options">
-        <item>Edit this report</item>
-        <item>Delete this report</item>
+        <item><![CDATA[<b>Edit this report</b>]]></item>
+        <item><![CDATA[<b>Delete this report</b>]]></item>
     </string-array>
 </resources>

@@ -160,6 +160,20 @@ public class TimelineAdapter extends ArrayAdapter {
             }
         });
 
+        viewHolder.actionBadge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ReportHolder.setReport(feature);
+
+                Intent intent = new Intent(context, CommentActivity.class);
+
+                context.startActivity(intent);
+
+            }
+        });
+
+
         viewHolder.locationIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

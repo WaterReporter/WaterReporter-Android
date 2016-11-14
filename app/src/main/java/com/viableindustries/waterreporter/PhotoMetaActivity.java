@@ -529,17 +529,10 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                                                 UserHolder.setUser(coreUser);
 
-                                                // Set flag indicating successful report submission to avoid trapping users
-                                                // who attempt to navigate back through the stack from their profile
-                                                // (which is where they end up next)
+                                                // Re-direct user to main activity feed, which has the effect of preventing
+                                                // unwanted access to the history stack
 
-                                                final SharedPreferences prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
-
-                                                prefs.edit().putBoolean("report_post_success", true).apply();
-
-                                                Intent intent = new Intent(PhotoMetaActivity.this, UserProfileActivity.class);
-
-//                                                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                                                Intent intent = new Intent(PhotoMetaActivity.this, MainActivity.class);
 
                                                 startActivity(intent);
 

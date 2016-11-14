@@ -811,31 +811,6 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     }
 
-    // Exit the application when user taps the system back button
-    // having just been directed here following successful report submission
-
-    @Override
-    public void onBackPressed() {
-
-        final SharedPreferences prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
-
-        if (prefs.getBoolean("report_post_success", false)) {
-
-            prefs.edit().putBoolean("report_post_success", false).apply();
-
-            Intent a = new Intent(Intent.ACTION_MAIN);
-            a.addCategory(Intent.CATEGORY_HOME);
-            a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(a);
-
-        } else {
-
-            super.onBackPressed();
-
-        }
-
-    }
-
     @Override
     public void onResume() {
         super.onResume();

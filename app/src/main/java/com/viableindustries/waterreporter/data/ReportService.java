@@ -15,6 +15,7 @@ import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Headers;
 import retrofit.http.Multipart;
+import retrofit.http.PATCH;
 import retrofit.http.POST;
 import retrofit.http.Part;
 import retrofit.http.Path;
@@ -48,6 +49,13 @@ public interface ReportService {
                                 @Header("Content-Type") String contentType,
                                 @Path("report") int reportId,
                                 Callback<Report> report);
+
+    @PATCH("/data/report/{report}")
+    public void setReportState(@Header("Authorization") String authorization,
+                               @Header("Content-Type") String contentType,
+                               @Path("report") int reportId,
+                               @Body ReportStateBody reportStateBody,
+                               Callback<Report> report);
 
     @GET("/data/report/{report}/groups")
     public void getReportGroups(@Header("Authorization") String authorization,

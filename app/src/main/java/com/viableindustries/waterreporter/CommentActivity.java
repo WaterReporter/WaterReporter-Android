@@ -61,6 +61,7 @@ import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.ReportPostBody;
 import com.viableindustries.waterreporter.data.ReportService;
+import com.viableindustries.waterreporter.data.ReportStateBody;
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserGroupList;
 import com.viableindustries.waterreporter.data.UserHolder;
@@ -69,6 +70,7 @@ import com.viableindustries.waterreporter.data.UserProperties;
 import com.viableindustries.waterreporter.data.UserService;
 import com.viableindustries.waterreporter.dialogs.CommentActionDialog;
 import com.viableindustries.waterreporter.dialogs.CommentActionDialogListener;
+import com.viableindustries.waterreporter.dialogs.CommentPhotoDialog;
 import com.viableindustries.waterreporter.dialogs.CommentPhotoDialogListener;
 
 import java.io.File;
@@ -116,12 +118,13 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
     ImageView sendComment;
 
     @Bind(R.id.comment_box)
-    EditText commentBox;
+    RelativeLayout commentBox;
+
+    @Bind(R.id.comment_input)
+    EditText commentInput;
 
     @Bind(R.id.preview)
     ImageView mImageView;
-
-//    private int reportId;
 
     private Report report;
 
@@ -152,10 +155,26 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
         addListViewHeader(report);
 
-        mImageView.setOnClickListener(new View.OnClickListener() {
+        cameraButtonContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presentPhotoActions();
+                addPhoto();
+            }
+        });
+
+        cameraButtonContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (mTempImagePath == null) {
+
+                    addPhoto();
+
+                } else {
+
+                    presentPhotoActions();
+
+                }
             }
         });
 
@@ -165,7 +184,7 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
                 // Check for minimum data requirements
 
-                body = (commentBox.getText().length() > 0) ? commentBox.getText().toString() : null;
+                body = (commentInput.getText().length() > 0) ? commentInput.getText().toString() : null;
 
                 if (working || (body == null && mTempImagePath == null)) return;
 
@@ -328,17 +347,7 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
                 commentCollectionList = comments;
 
-//                commentCollectionList.addAll(comments);
-
-//                try {
-//
-//                    commentAdapter.notifyDataSetChanged();
-//
-//                } catch (NullPointerException ne) {
-
-                    populateComments(commentCollectionList);
-
-//                }
+                populateComments(commentCollectionList);
 
                 commentListContainer.setRefreshing(false);
 
@@ -414,7 +423,7 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
     }
 
-    public void addPhoto(View view) {
+    public void addPhoto() {
 
         startActivityForResult(new Intent(this, PhotoActivity.class), ACTION_ADD_PHOTO);
 
@@ -433,6 +442,8 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
             sendComment(commentPost);
 
         }
+
+        patchReport(report.id, reportState);
 
     }
 
@@ -474,6 +485,10 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
     private void appendImage(@NonNull final String filePath) {
 
+        // Change UI state
+
+        commentListContainer.setRefreshing(true);
+
         final ImageService imageService = ImageService.restAdapter.create(ImageService.class);
 
         SharedPreferences prefs =
@@ -490,8 +505,6 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
         String mimeType = fileNameMap.getContentTypeFor(filePath);
 
         TypedFile typedPhoto = new TypedFile(mimeType, photo);
-
-        commentListContainer.setRefreshing(true);
 
         imageService.postImage(access_token, typedPhoto,
                 new Callback<ImageProperties>() {
@@ -536,6 +549,10 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
     private void sendComment(CommentPost commentPost) {
 
+        // Change UI state
+
+        commentListContainer.setRefreshing(true);
+
         working = true;
 
         SharedPreferences prefs =
@@ -547,8 +564,6 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
         CommentService service = CommentService.restAdapter.create(CommentService.class);
 
-        commentListContainer.setRefreshing(true);
-
         service.postComment(access_token, "application/json", commentPost, new Callback<Comment>() {
 
             @Override
@@ -558,9 +573,11 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
                 working = false;
 
+                commentListContainer.setRefreshing(false);
+
                 // Clear the comment box
 
-                commentBox.setText("");
+                commentInput.setText("");
 
                 commentCollectionList.add(comment);
 
@@ -593,9 +610,44 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
     }
 
-    private void presentPhotoActions() {
+    private void patchReport(int reportId, String state) {
 
-        DialogFragment photoActions = new CommentActionDialog();
+        SharedPreferences prefs =
+                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        final String access_token = prefs.getString("access_token", "");
+
+        Log.d("", access_token);
+
+        ReportService service = ReportService.restAdapter.create(ReportService.class);
+
+        ReportStateBody reportStateBody = new ReportStateBody(reportId, state);
+
+        service.setReportState(access_token, "application/json", reportId, reportStateBody, new Callback<Report>() {
+
+            @Override
+            public void success(Report report, Response response) {
+
+                // Update current bookmarked report
+
+                ReportHolder.setReport(report);
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                onPostError(error);
+
+            }
+
+        });
+
+    }
+
+    public void presentPhotoActions() {
+
+        DialogFragment photoActions = new CommentPhotoDialog();
 
         photoActions.show(getSupportFragmentManager(), "photo_actions");
 
@@ -647,7 +699,17 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
         if (index == 1) {
 
-            reportState = "closed";
+            Report report = ReportHolder.getReport();
+
+            if ("open".equals(report.properties.state)) {
+
+                reportState = "closed";
+
+            } else {
+
+                reportState = "open";
+
+            }
 
         }
 

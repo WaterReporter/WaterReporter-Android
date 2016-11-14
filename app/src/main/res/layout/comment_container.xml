@@ -24,19 +24,6 @@
                 android:layout_height="40dp"
                 android:scaleType="fitXY" />
 
-            <ImageView
-                android:id="@+id/action_badge"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="end"
-                android:layout_marginEnd="0dp"
-                android:layout_marginRight="0dp"
-                android:layout_marginTop="0dp"
-                android:elevation="1dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/action_badge_small"
-                android:visibility="gone" />
-
         </FrameLayout>
 
         <RelativeLayout
@@ -59,15 +46,36 @@
                 android:layout_toStartOf="@+id/report_date"
                 android:orientation="vertical">
 
-                <TextView
+                <LinearLayout
                     android:id="@+id/action_taken"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
                     android:paddingBottom="4dp"
                     android:paddingTop="0dp"
-                    android:text="@string/action_taken"
-                    android:textSize="14sp"
-                    android:visibility="gone" />
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/action_badge"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="start|center_vertical"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="0dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/action_badge_small" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:paddingBottom="0dp"
+                        android:paddingTop="0dp"
+                        android:text="@string/action_taken"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/report_owner"
@@ -97,10 +105,10 @@
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/gray_232" />
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0.5dp"-->
+        <!--android:background="@color/gray_232" />-->
 
     <ImageView
         android:id="@+id/report_thumb"

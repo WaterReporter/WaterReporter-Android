@@ -58,7 +58,7 @@ public class CommentAdapter extends ArrayAdapter {
         TextView reportCaption;
         ImageView ownerAvatar;
         ImageView reportThumb;
-        TextView actionTaken;
+        LinearLayout actionTaken;
         ImageView actionBadge;
         LinearLayout reportStub;
         TextView tracker;
@@ -81,7 +81,7 @@ public class CommentAdapter extends ArrayAdapter {
             viewHolder.ownerAvatar = (ImageView) convertView.findViewById(R.id.owner_avatar);
             viewHolder.reportThumb = (ImageView) convertView.findViewById(R.id.report_thumb);
             viewHolder.actionBadge = (ImageView) convertView.findViewById(R.id.action_badge);
-            viewHolder.actionTaken = (TextView) convertView.findViewById(R.id.action_taken);
+            viewHolder.actionTaken = (LinearLayout) convertView.findViewById(R.id.action_taken);
             viewHolder.reportStub = (LinearLayout) convertView.findViewById(R.id.report_stub);
             viewHolder.tracker = (TextView) convertView.findViewById(R.id.tracker);
 
