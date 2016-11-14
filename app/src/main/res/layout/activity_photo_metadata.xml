@@ -110,6 +110,7 @@
             android:layout_height="56dp"
             android:layout_gravity="bottom"
             android:background="#FFFFFF"
+            android:baselineAligned="false"
             android:orientation="horizontal">
 
             <RelativeLayout
@@ -140,6 +141,12 @@
                     android:adjustViewBounds="true"
                     android:scaleType="centerCrop"
                     android:visibility="gone" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/gray_232" />
 
             </RelativeLayout>
 
@@ -174,72 +181,78 @@
                     android:paddingTop="16dp"
                     android:textSize="16sp" />
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/gray_232" />
+
             </RelativeLayout>
 
             <!--<RelativeLayout-->
-                <!--android:id="@+id/send_button_container"-->
-                <!--android:layout_width="56dp"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:layout_gravity="bottom|end"-->
-                <!--android:background="@color/base_blue">-->
+            <!--android:id="@+id/send_button_container"-->
+            <!--android:layout_width="56dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_gravity="bottom|end"-->
+            <!--android:background="@color/base_blue">-->
 
-                <!--<View-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="0.5dp"-->
-                    <!--android:layout_alignParentTop="true"-->
-                    <!--android:background="@color/gray_232" />-->
+            <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0.5dp"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:background="@color/gray_232" />-->
 
-                <!--<ImageView-->
-                    <!--android:id="@+id/send"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_centerInParent="true"-->
-                    <!--android:src="@drawable/ic_send_white_24dp" />-->
+            <!--<ImageView-->
+            <!--android:id="@+id/send"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:src="@drawable/ic_send_white_24dp" />-->
 
             <!--</RelativeLayout>-->
 
         </LinearLayout>
 
         <!--<RelativeLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="320dp">-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="320dp">-->
 
-            <!--<Button-->
-                <!--android:id="@+id/add_photo"-->
-                <!--android:layout_width="120dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_centerInParent="true"-->
-                <!--android:background="@drawable/green_button"-->
-                <!--android:gravity="center"-->
-                <!--android:onClick="addImage"-->
-                <!--android:paddingBottom="8dp"-->
-                <!--android:paddingTop="8dp"-->
-                <!--android:text="Add photo"-->
-                <!--android:textAllCaps="true"-->
-                <!--android:textColor="@color/white"-->
-                <!--android:textSize="@dimen/small_text"-->
-                <!--android:textStyle="bold" />-->
+        <!--<Button-->
+        <!--android:id="@+id/add_photo"-->
+        <!--android:layout_width="120dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--android:background="@drawable/green_button"-->
+        <!--android:gravity="center"-->
+        <!--android:onClick="addImage"-->
+        <!--android:paddingBottom="8dp"-->
+        <!--android:paddingTop="8dp"-->
+        <!--android:text="Add photo"-->
+        <!--android:textAllCaps="true"-->
+        <!--android:textColor="@color/white"-->
+        <!--android:textSize="@dimen/small_text"-->
+        <!--android:textStyle="bold" />-->
 
-            <!--<ImageView-->
-                <!--android:id="@+id/preview"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:adjustViewBounds="true"-->
-                <!--android:onClick="addImage"-->
-                <!--android:scaleType="centerCrop"-->
-                <!--android:visibility="gone" />-->
+        <!--<ImageView-->
+        <!--android:id="@+id/preview"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:adjustViewBounds="true"-->
+        <!--android:onClick="addImage"-->
+        <!--android:scaleType="centerCrop"-->
+        <!--android:visibility="gone" />-->
 
         <!--</RelativeLayout>-->
 
         <!--<ProgressBar-->
-            <!--android:id="@+id/photo_bar"-->
-            <!--style="@android:style/Widget.Holo.ProgressBar.Horizontal"-->
-            <!--android:layout_width="240dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center_horizontal"-->
-            <!--android:layout_marginBottom="@dimen/activity_vertical_margin"-->
-            <!--android:layout_marginTop="@dimen/activity_vertical_margin"-->
-            <!--android:visibility="gone" />-->
+        <!--android:id="@+id/photo_bar"-->
+        <!--style="@android:style/Widget.Holo.ProgressBar.Horizontal"-->
+        <!--android:layout_width="240dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:layout_marginBottom="@dimen/activity_vertical_margin"-->
+        <!--android:layout_marginTop="@dimen/activity_vertical_margin"-->
+        <!--android:visibility="gone" />-->
 
         <EditText
             android:id="@+id/date"
@@ -255,16 +268,16 @@
             android:textSize="@dimen/base_text" />
 
         <!--<EditText-->
-            <!--android:id="@+id/comments"-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="200dp"-->
-            <!--android:layout_marginBottom="20dp"-->
-            <!--android:background="@drawable/white_canvas"-->
-            <!--android:gravity="start"-->
-            <!--android:hint="@string/comment_hint"-->
-            <!--android:inputType="textMultiLine|textCapSentences"-->
-            <!--android:padding="16dp"-->
-            <!--android:textSize="@dimen/base_text" />-->
+        <!--android:id="@+id/comments"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="200dp"-->
+        <!--android:layout_marginBottom="20dp"-->
+        <!--android:background="@drawable/white_canvas"-->
+        <!--android:gravity="start"-->
+        <!--android:hint="@string/comment_hint"-->
+        <!--android:inputType="textMultiLine|textCapSentences"-->
+        <!--android:padding="16dp"-->
+        <!--android:textSize="@dimen/base_text" />-->
 
         <!-- Location capture elements -->
 
@@ -274,6 +287,7 @@
             android:layout_height="56dp"
             android:layout_gravity="bottom"
             android:background="#FFFFFF"
+            android:baselineAligned="false"
             android:orientation="horizontal">
 
             <RelativeLayout
@@ -303,16 +317,13 @@
                     android:layout_centerInParent="true"
                     android:alpha="0.5"
                     android:src="@drawable/ic_edit_location_black_24dp"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
-                <!--<ImageView-->
-                    <!--android:id="@+id/preview"-->
-                    <!--android:layout_width="32dp"-->
-                    <!--android:layout_height="32dp"-->
-                    <!--android:layout_centerInParent="true"-->
-                    <!--android:adjustViewBounds="true"-->
-                    <!--android:scaleType="centerCrop"-->
-                    <!--android:visibility="gone" />-->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/gray_232" />
 
             </RelativeLayout>
 
@@ -339,27 +350,22 @@
                     android:background="#00000000"
                     android:paddingBottom="16dp"
                     android:paddingEnd="16dp"
-                    android:text="Add location"
                     android:paddingLeft="0dp"
                     android:paddingRight="16dp"
                     android:paddingStart="0dp"
                     android:paddingTop="16dp"
+                    android:text="Add location"
                     android:textSize="16sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/gray_232" />
 
             </RelativeLayout>
 
         </LinearLayout>
-
-        <!--<Button-->
-            <!--android:id="@+id/location_button"-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginBottom="20dp"-->
-            <!--android:layout_marginTop="0dp"-->
-            <!--android:background="@drawable/blue_button"-->
-            <!--android:onClick="updateLocation"-->
-            <!--android:text="Add location"-->
-            <!--android:textColor="@color/white" />-->
 
         <LinearLayout
             android:id="@+id/groups"
@@ -367,12 +373,16 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:layout_marginTop="16dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingEnd="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingStart="16dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
+                android:paddingBottom="16dp"
                 android:text="Associate this report with one or more of your groups."
                 android:textSize="@dimen/base_text" />
 
