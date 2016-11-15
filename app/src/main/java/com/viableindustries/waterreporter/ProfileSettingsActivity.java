@@ -7,12 +7,19 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.NotificationSetting;
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserHolder;
 import com.viableindustries.waterreporter.data.UserProperties;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -31,12 +38,16 @@ public class ProfileSettingsActivity extends AppCompatActivity {
     @Bind(R.id.log_out)
     TextView logOut;
 
-//    @Bind(R.id.reportCount)
-//    TextView reportCounter;
+    @Bind(R.id.notification_settings)
+    LinearLayout notificationSettingsContainer;
 
     private SharedPreferences prefs;
 
     private SharedPreferences coreProfile;
+
+    private int userId;
+
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,27 +56,79 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_profile_settings);
 
-//        getActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ButterKnife.bind(this);
 
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+        user = UserHolder.getUser();
+
+        configureNotificationSettings();
+
+    }
+
+    private void setCurrentUser(int userId, SharedPreferences coreProfile) {
+
+        UserProperties userProperties = new UserProperties(userId, coreProfile.getString("description", ""),
+                coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
+                coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
+                coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null);
+
+        User coreUser = User.createUser(userId, userProperties);
+
+        UserHolder.setUser(coreUser);
+
+    }
+
+    private void configureNotificationSettings() {
+
+        String[] notificationFields;
+
+        if ("admin".equals(coreProfile.getString("role", ""))) {
+
+            notificationFields = user.properties.getAdminNotificationSettingFields();
+
+        } else {
+
+            notificationFields = user.properties.getNotificationSettingFields();
+
+        }
+
+        List<NotificationSetting> currentNotificationSettings = new ArrayList<>();
+
+        for (String field : notificationFields) {
+
+            int settingId = getResources().getIdentifier(field, "string",
+                    getPackageName());
+
+            String description = getResources().getString(settingId);
+
+            currentNotificationSettings.add(
+                    new NotificationSetting(
+                            field, description, coreProfile.getBoolean(field, false)
+                    )
+            );
+
+        }
+
+        NotificationSettingAdapter notificationSettingAdapter = new NotificationSettingAdapter(ProfileSettingsActivity.this, currentNotificationSettings, true);
+
+        final int adapterCount = notificationSettingAdapter.getCount();
+
+        for (int i = 0; i < adapterCount; i++) {
+
+            View item = notificationSettingAdapter.getView(i, null, notificationSettingsContainer);
+
+            notificationSettingsContainer.addView(item);
+
+        }
 
     }
 
     public void editProfile(View view) {
 
-        final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
-
-        int coreId = coreProfile.getInt("id", 0);
-
-        UserProperties userProperties = new UserProperties(coreId, coreProfile.getString("description", ""),
-                coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
-                coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
-                coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null);
-
-        User coreUser = User.createUser(coreId, userProperties);
-
-        UserHolder.setUser(coreUser);
+//        setCurrentUser(userId, coreProfile);
 
         startActivity(new Intent(this, EditProfileActivity.class));
 
@@ -79,8 +142,6 @@ public class ProfileSettingsActivity extends AppCompatActivity {
                 .putInt("user_id", 0).apply();
 
         // Clear stored active user profile
-
-        coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
         coreProfile.edit().clear().apply();
 
@@ -103,19 +164,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
-
-        int coreId = coreProfile.getInt("id", 0);
-
-        UserProperties userProperties = new UserProperties(coreId, coreProfile.getString("description", ""),
-                coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
-                coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
-                coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null);
-
-        User coreUser = User.createUser(coreId, userProperties);
-
-        UserHolder.setUser(coreUser);
-
+//        setCurrentUser(userId, coreProfile);
 
         startActivity(new Intent(this, UserProfileActivity.class));
 

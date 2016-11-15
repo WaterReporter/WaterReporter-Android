@@ -167,4 +167,15 @@
     <string name="add_comment">Add a comment&#8230;</string>
     <string name="title_activity_edit_profile">EditProfileActivity</string>
 
+    <!-- Notification settings -->
+    <string name="can_notify_owner_comment_on_owned_report">Let me know when people comment on my reports.</string>
+    <string name="can_notify_owner_admin_closes_owned_report">Let me know when someone takes action on my reports.</string>
+    <string name="can_notify_admin_admin_closes_report_in_group">Alert me when another admin takes action on a report linked to my organization.</string>
+    <string name="can_notify_admin_admin_closes_report_in_territory">Alert me when another admin takes action on a report in my geographic area of interest.</string>
+    <string name="can_notify_admin_comment_on_report_in_group">Alert me when someone comments on a report linked to my organization.</string>
+    <string name="can_notify_admin_comment_on_report_in_territory">Alert me when someone comments on a report in my geographic area of interest.</string>
+    <string name="can_notify_admin_user_joins_group">Alert me when someone joins my organization.</string>
+    <string name="can_notify_admin_user_submits_report_in_group">Alert me when someone tags my organization in a report.</string>
+    <string name="can_notify_admin_user_submits_report_in_territory">Alert me when someone submits a report in my geographic area of interest.</string>
+
 </resources>

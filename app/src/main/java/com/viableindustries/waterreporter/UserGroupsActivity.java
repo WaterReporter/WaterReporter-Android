@@ -65,8 +65,6 @@ public class UserGroupsActivity extends AppCompatActivity {
 
         generic = getIntent().getExtras().getBoolean("GENERIC_USER", TRUE);
 
-        //assert getSupportActionBar() != null;
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ArrayList<Organization> organizations = UserGroupList.getList();
 
         Collections.sort(organizations, new Comparator<Organization>() {

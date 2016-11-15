@@ -7,7 +7,8 @@
 
     <!-- Standard text sizing -->
     <dimen name="base_text">16sp</dimen>
-    <dimen name="small_text">12sp</dimen>
+    <dimen name="smaller_text">12sp</dimen>
+    <dimen name="small_text">14sp</dimen>
     <dimen name="medium_text">20sp</dimen>
     <dimen name="large_text">24sp</dimen>
     <dimen name="mega_text">32sp</dimen>

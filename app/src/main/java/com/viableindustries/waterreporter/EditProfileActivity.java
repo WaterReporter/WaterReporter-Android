@@ -22,6 +22,7 @@ import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.ImageProperties;
 import com.viableindustries.waterreporter.data.ImageService;
 import com.viableindustries.waterreporter.data.User;
+import com.viableindustries.waterreporter.data.UserHolder;
 import com.viableindustries.waterreporter.data.UserProperties;
 import com.viableindustries.waterreporter.data.UserService;
 
@@ -331,21 +332,28 @@ public class EditProfileActivity extends AppCompatActivity {
                         final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
                         coreProfile.edit()
-                                //.putBoolean("active", user.properties.active)
                                 .putInt("id", user.id)
                                 .putString("picture", user.properties.images.get(0).properties.icon_retina)
                                 .apply();
 
-                        // Model strings
-                        String[] KEYS = {"description", "first_name",
-                                "last_name", "organization_name",
-                                "public_email", "title"};
+                        // Update stored values of user's string type attributes
 
-                        for (String key : KEYS) {
+                        Map<String, String> userStringProperties = user.properties.getStringProperties();
 
-                            coreProfile.edit().putString(key, user.properties.getStringProperties().get(key)).apply();
+                        for (Map.Entry<String, String> entry : userStringProperties.entrySet()) {
+
+                            coreProfile.edit().putString(entry.getKey(), entry.getValue()).apply();
 
                         }
+
+                        UserProperties userProperties = new UserProperties(user.id, coreProfile.getString("description", ""),
+                                coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
+                                coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
+                                coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null);
+
+                        User coreUser = User.createUser(user.id, userProperties);
+
+                        UserHolder.setUser(coreUser);
 
                         final Handler handler = new Handler();
 

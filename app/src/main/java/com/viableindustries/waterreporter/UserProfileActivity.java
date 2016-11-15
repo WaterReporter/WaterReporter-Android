@@ -142,6 +142,8 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     private SharedPreferences prefs;
 
+    private SharedPreferences coreProfile;
+
     private User user;
 
     @Override
@@ -154,6 +156,10 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
         ButterKnife.bind(this);
 
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+        Log.d("avatar", coreProfile.getString("picture", ""));
 
         // Retrieve stored User object
 
@@ -257,7 +263,22 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
         userDescriptionText = user.properties.description;
         userNameText = String.format("%s %s", user.properties.first_name, user.properties.last_name);
         userOrganization = user.properties.organization_name;
-        userAvatarUrl = user.properties.picture;
+
+        // Locate valid avatar field
+
+        try {
+
+            userAvatarUrl = user.properties.images.get(0).properties.icon_retina;
+
+        } catch (NullPointerException ne) {
+
+            userAvatarUrl = user.properties.picture;
+
+        }
+
+        Log.d("avatar", userAvatarUrl + "");
+
+        Picasso.with(this).load(userAvatarUrl).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(userAvatar);
 
         userName.setText(userNameText);
 
@@ -331,8 +352,6 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
             }
         });
-
-        Picasso.with(this).load(userAvatarUrl).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(userAvatar);
 
         // Attach click listeners to stat elements
 
@@ -723,7 +742,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     }
 
-    public void logOut(View view) {
+    public void viewOptions(View view) {
 
         startActivity(new Intent(this, ProfileSettingsActivity.class));
 

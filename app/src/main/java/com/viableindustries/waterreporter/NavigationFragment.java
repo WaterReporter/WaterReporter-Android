@@ -58,12 +58,6 @@ public class NavigationFragment extends Fragment {
 
                     final SwipeRefreshLayout timeline = (SwipeRefreshLayout) getActivity().findViewById(R.id.timeline);
 
-//                    timeline.post(new Runnable() {
-//                        @Override public void run() {
-//                            timeline.setRefreshing(true);
-//                        }
-//                    });
-
                     timeline.setRefreshing(true);
 
                     ((MainActivity) getActivity()).requestData(10, 1, false, true);
@@ -91,6 +85,8 @@ public class NavigationFragment extends Fragment {
                 final SharedPreferences coreProfile = getContext().getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
                 int coreId = coreProfile.getInt("id", 0);
+
+                Log.d("avatar", coreProfile.getString("picture", ""));
 
                 UserProperties userProperties = new UserProperties(coreId, coreProfile.getString("description", ""),
                         coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),

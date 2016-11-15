@@ -6,7 +6,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.BoolRes;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +22,7 @@ import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserBasicResponse;
 import com.viableindustries.waterreporter.data.UserService;
 
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -167,29 +170,35 @@ public class SignInActivity extends AppCompatActivity {
                                                                 final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
                                                                 coreProfile.edit()
-                                                                        //.putBoolean("active", user.properties.active)
                                                                         .putInt("id", user.id)
                                                                         .putString("picture", user.properties.images.get(0).properties.icon_retina)
                                                                         .apply();
 
-                                                                // Model strings
-                                                                String[] KEYS = {"description", "first_name",
-                                                                        "last_name", "organization_name", //"picture",
-                                                                        "public_email", "title"};
+                                                                Log.d("avatar", user.properties.images.get(0).properties.icon_retina);
 
-                                                                for (String key : KEYS) {
+                                                                // Update stored values of user's string type attributes
 
-                                                                    coreProfile.edit().putString(key, user.properties.getStringProperties().get(key)).apply();
+                                                                Map<String, String> userStringProperties = user.properties.getStringProperties();
+
+                                                                for (Map.Entry<String, String> entry : userStringProperties.entrySet()) {
+
+                                                                    coreProfile.edit().putString(entry.getKey(), entry.getValue()).apply();
 
                                                                 }
 
+                                                                // Update stored values of user's notification settings
+
+                                                                Map<String, Boolean> userNotificationSettings = user.properties.getNotificationProperties();
+
+                                                                for (Map.Entry<String, Boolean> entry : userNotificationSettings.entrySet()) {
+
+                                                                    coreProfile.edit().putBoolean(entry.getKey(), entry.getValue()).apply();
+
+                                                                }
+
+                                                                // Update stored values of user's role designation
+
                                                                 coreProfile.edit().putString("role", user.properties.roles.get(0).properties.name).apply();
-
-                                                                //Intent intent = new Intent();
-
-                                                                //setResult(RESULT_OK, intent);
-
-                                                                //finish();
 
                                                                 startActivity(new Intent(SignInActivity.this, MainActivity.class));
 

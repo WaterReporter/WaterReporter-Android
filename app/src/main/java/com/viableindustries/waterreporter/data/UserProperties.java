@@ -12,14 +12,39 @@ import java.util.Map;
  */
 public class UserProperties implements Serializable {
 
-    //@SerializedName("active")
-    //public Boolean active;
+    // Notification settings
+
+    @SerializedName("can_notify_admin_admin_closes_report_in_group")
+    private boolean can_notify_admin_admin_closes_report_in_group;
+
+    @SerializedName("can_notify_admin_admin_closes_report_in_territory")
+    private boolean can_notify_admin_admin_closes_report_in_territory;
+
+    @SerializedName("can_notify_admin_comment_on_report_in_group")
+    private boolean can_notify_admin_comment_on_report_in_group;
+
+    @SerializedName("can_notify_admin_comment_on_report_in_territory")
+    private boolean can_notify_admin_comment_on_report_in_territory;
+
+    @SerializedName("can_notify_admin_user_joins_group")
+    private boolean can_notify_admin_user_joins_group;
+
+    @SerializedName("can_notify_admin_user_submits_report_in_group")
+    private boolean can_notify_admin_user_submits_report_in_group;
+
+    @SerializedName("can_notify_admin_user_submits_report_in_territory")
+    private boolean can_notify_admin_user_submits_report_in_territory;
+
+    @SerializedName("can_notify_owner_admin_closes_owned_report")
+    private boolean can_notify_owner_admin_closes_owned_report;
+
+    @SerializedName("can_notify_owner_comment_on_owned_report")
+    private boolean can_notify_owner_comment_on_owned_report;
+
+    // Descriptive attributes, identifiers and related content
 
     @SerializedName("description")
     public String description;
-
-    //@SerializedName("email")
-    //public String email;
 
     @SerializedName("first_name")
     public String first_name;
@@ -32,9 +57,6 @@ public class UserProperties implements Serializable {
 
     @SerializedName("last_name")
     public String last_name;
-
-    //@SerializedName("login_count")
-    //public int login_count;
 
     @SerializedName("organization")
     public ArrayList<Organization> organizations;
@@ -54,19 +76,16 @@ public class UserProperties implements Serializable {
     @SerializedName("title")
     public String title;
 
-    public UserProperties (int aId, String aDescription, String aFirstName,
-                           String aLastName, String aOrganizationName, String aPicture,
-                           String aPublicEmail, String aTitle, ArrayList<ReportPhoto> aImages,
-                           ArrayList<Organization> aOrganizations, ArrayList<Role> aRoles){
+    public UserProperties(int aId, String aDescription, String aFirstName,
+                          String aLastName, String aOrganizationName, String aPicture,
+                          String aPublicEmail, String aTitle, ArrayList<ReportPhoto> aImages,
+                          ArrayList<Organization> aOrganizations, ArrayList<Role> aRoles) {
 
-        //this.active = aActive;
         this.description = aDescription;
-        //this.email = aEmail;
         this.first_name = aFirstName;
         this.id = aId;
         this.images = aImages;
         this.last_name = aLastName;
-        //this.login_count = aLoginCount;
         this.organizations = aOrganizations;
         this.organization_name = aOrganizationName;
         this.picture = aPicture;
@@ -74,11 +93,9 @@ public class UserProperties implements Serializable {
         this.roles = aRoles;
         this.title = aTitle;
 
-        //return this;
-
     }
 
-    public Map<String, String> getStringProperties(){
+    public Map<String, String> getStringProperties() {
 
         Map<String, String> stringProperties = new HashMap<String, String>();
 
@@ -91,6 +108,63 @@ public class UserProperties implements Serializable {
         stringProperties.put("title", this.title);
 
         return stringProperties;
+
+    }
+
+    public String[] getStringFields() {
+
+        return new String[]{
+                "description",
+                "first_name",
+                "last_name",
+                "organization_name",
+                "picture",
+                "public_email",
+                "title"
+        };
+
+    }
+
+    public Map<String, Boolean> getNotificationProperties() {
+
+        Map<String, Boolean> notificationSettings = new HashMap<>();
+
+        notificationSettings.put("can_notify_admin_admin_closes_report_in_group", this.can_notify_admin_admin_closes_report_in_group);
+        notificationSettings.put("can_notify_admin_admin_closes_report_in_territory", this.can_notify_admin_admin_closes_report_in_territory);
+        notificationSettings.put("can_notify_admin_comment_on_report_in_group", this.can_notify_admin_comment_on_report_in_group);
+        notificationSettings.put("can_notify_admin_comment_on_report_in_territory", this.can_notify_admin_comment_on_report_in_territory);
+        notificationSettings.put("can_notify_admin_user_joins_group", this.can_notify_admin_user_joins_group);
+        notificationSettings.put("can_notify_admin_user_submits_report_in_group", this.can_notify_admin_user_submits_report_in_group);
+        notificationSettings.put("can_notify_admin_user_submits_report_in_territory", this.can_notify_admin_user_submits_report_in_territory);
+        notificationSettings.put("can_notify_owner_admin_closes_owned_report", this.can_notify_owner_admin_closes_owned_report);
+        notificationSettings.put("can_notify_owner_comment_on_owned_report", this.can_notify_owner_comment_on_owned_report);
+
+        return notificationSettings;
+
+    }
+
+    public String[] getNotificationSettingFields() {
+
+        return new String[]{
+                "can_notify_owner_admin_closes_owned_report",
+                "can_notify_owner_comment_on_owned_report"
+        };
+
+    }
+
+    public String[] getAdminNotificationSettingFields() {
+
+        return new String[]{
+                "can_notify_owner_admin_closes_owned_report",
+                "can_notify_owner_comment_on_owned_report",
+                "can_notify_admin_admin_closes_report_in_group",
+                "can_notify_admin_admin_closes_report_in_territory",
+                "can_notify_admin_comment_on_report_in_group",
+                "can_notify_admin_comment_on_report_in_territory",
+                "can_notify_admin_user_joins_group",
+                "can_notify_admin_user_submits_report_in_group",
+                "can_notify_admin_user_submits_report_in_territory"
+        };
 
     }
 
