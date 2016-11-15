@@ -310,7 +310,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
             // Set date text
 
-            dateField.setText(AttributeTransformUtility.parseDate(new SimpleDateFormat("MMMM d, yyyy", Locale.US), report.properties.report_date));
+            dateField.setText(AttributeTransformUtility.parseDate(new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()), report.properties.report_date));
 
         }
 

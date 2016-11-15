@@ -65,7 +65,6 @@
             android:layout_margin="16dp"
             android:background="@drawable/floating_action_green"
             android:clickable="true"
-            android:onClick="checkStoragePermission"
             android:src="@drawable/ic_add_white_24dp" />
 
     </FrameLayout>
