@@ -174,11 +174,13 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
                     @Override
                     public void onRefresh() {
                         Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
+
                         // This method performs the actual data-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
-                        fetchReports(10, 1, buildQuery(true, null), true, false);
 
                         countReports(complexQuery, "state");
+
+                        resetStats();
 
 
                     }
