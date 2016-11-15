@@ -57,6 +57,13 @@ public interface ReportService {
                                @Body ReportStateBody reportStateBody,
                                Callback<Report> report);
 
+    @PATCH("/data/report/{report}")
+    public void updateReport(@Header("Authorization") String authorization,
+                               @Header("Content-Type") String contentType,
+                               @Path("report") int reportId,
+                               @Body ReportPatchBody reportPatchBody,
+                               Callback<Report> report);
+
     @GET("/data/report/{report}/groups")
     public void getReportGroups(@Header("Authorization") String authorization,
                                 @Header("Content-Type") String contentType,

@@ -3,6 +3,7 @@
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/gray_250.50.52"
     android:descendantFocusability="beforeDescendants"
     android:fadingEdge="none"
     android:fillViewport="true"
@@ -46,7 +47,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
                 android:background="@null"
-                android:onClick="submitReport"
+                android:onClick="stageRequest"
                 android:src="@drawable/ic_done_blue_24dp" />
 
             <View
@@ -54,44 +55,6 @@
                 android:layout_height="0.5dp"
                 android:layout_alignParentBottom="true"
                 android:background="@color/gray_232" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/save_message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:visibility="gone">
-
-            <ProgressBar
-                android:id="@+id/loading_spinner"
-                style="@android:style/Widget.Holo.ProgressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="16dp"
-                android:layout_marginTop="16dp"
-                android:indeterminate="true" />
-
-            <TextView
-                android:id="@+id/save_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/loading_spinner"
-                android:layout_gravity="center"
-                android:layout_marginBottom="16dp"
-                android:layout_marginTop="0dp"
-                android:text="@string/saving"
-                android:textSize="@dimen/base_text" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_below="@+id/save_status"
-                android:background="@color/gray_224" />
 
         </RelativeLayout>
 
@@ -342,13 +305,14 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:background="#00000000"
+                    android:maxLines="1"
                     android:paddingBottom="16dp"
                     android:paddingEnd="16dp"
                     android:paddingLeft="0dp"
                     android:paddingRight="16dp"
                     android:paddingStart="0dp"
                     android:paddingTop="16dp"
-                    android:text="Add location"
+                    android:text="@string/report_location_prompt"
                     android:textSize="16sp" />
 
                 <View
@@ -377,7 +341,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="16dp"
-                android:text="Associate this report with one or more of your groups."
+                android:text="@string/report_groups_prompt"
                 android:textSize="@dimen/base_text" />
 
         </LinearLayout>

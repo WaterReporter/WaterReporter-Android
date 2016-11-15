@@ -826,12 +826,26 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     }
 
+    private void editReport() {
+
+        Intent intent = new Intent(UserProfileActivity.this, PhotoMetaActivity.class);
+
+        intent.putExtra("EDIT_MODE", true);
+
+        startActivity(intent);
+
+    }
+
     @Override
     public void onSelectAction(int index) {
 
         if (index == 1) {
 
             deleteReport();
+
+        } else {
+
+            editReport();
 
         }
 

@@ -34,6 +34,7 @@ import android.widget.Toast;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.DisplayDecimal;
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.GeometryResponse;
 import com.viableindustries.waterreporter.data.GroupNameComparator;
@@ -42,6 +43,8 @@ import com.viableindustries.waterreporter.data.ImageService;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.data.Report;
+import com.viableindustries.waterreporter.data.ReportHolder;
+import com.viableindustries.waterreporter.data.ReportPatchBody;
 import com.viableindustries.waterreporter.data.ReportPostBody;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.Submission;
@@ -55,11 +58,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.FileNameMap;
 import java.net.URLConnection;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.Bind;
@@ -78,32 +84,44 @@ public class PhotoMetaActivity extends AppCompatActivity {
     @Bind(R.id.scrollView)
     ScrollView scrollView;
 
-    @Bind(R.id.save_message)
-    RelativeLayout saveMessage;
-
-    @Bind(R.id.save_status)
-    TextView saveStatus;
-
-    @Bind(R.id.loading_spinner)
-    ProgressBar progressBar;
-
-    @Bind(R.id.date)
+    @Bind(R.id.date_input)
     EditText dateField;
 
-    @Bind(R.id.comments)
+    @Bind(R.id.comment_input)
     EditText commentsField;
 
     @Bind(R.id.preview)
     ImageView mImageView;
 
-    @Bind(R.id.location_button)
-    Button locationButton;
-
-    @Bind(R.id.add_photo)
-    Button addPhoto;
-
     @Bind(R.id.groups)
     LinearLayout groupList;
+
+    @Bind(R.id.comment_component)
+    LinearLayout commentComponent;
+
+    @Bind(R.id.camera_button_container)
+    RelativeLayout cameraButtonContainer;
+
+    @Bind(R.id.date_component)
+    LinearLayout dateComponent;
+
+    @Bind(R.id.date_button_container)
+    RelativeLayout dateButtonContainer;
+
+    @Bind(R.id.location_component)
+    LinearLayout locationComponent;
+
+    @Bind(R.id.location_button_container)
+    RelativeLayout locationButtonContainer;
+
+    @Bind(R.id.add_location)
+    ImageView addLocationIcon;
+
+    @Bind(R.id.edit_location)
+    ImageView editLocationIcon;
+
+    @Bind(R.id.location_output)
+    TextView locationOutput;
 
     private static final int ACTION_SET_LOCATION = 0;
 
@@ -125,7 +143,23 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
     protected double longitude;
 
+    private boolean editMode;
+
     protected Map<String, Integer> groupMap = new HashMap<>();
+
+    private ReportService reportService;
+
+    private ImageService imageService;
+
+    private SharedPreferences prefs;
+
+    private SharedPreferences groupPrefs;
+
+    private String access_token;
+
+    private GeometryResponse geometryResponse;
+
+    private Report report;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,9 +170,18 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        progressBar.getIndeterminateDrawable().setColorFilter(
-                ContextCompat.getColor(this, R.color.base_blue),
-                android.graphics.PorterDuff.Mode.SRC_IN);
+        // Instantiate SharedPreference references
+
+        prefs =
+                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        groupPrefs = getSharedPreferences(getString(R.string.associated_group_key), MODE_PRIVATE);
+
+        // Instantiate API services
+
+        reportService = ReportService.restAdapter.create(ReportService.class);
+
+        imageService = ImageService.restAdapter.create(ImageService.class);
 
         if (!ConnectionUtility.connectionActive(this)) {
 
@@ -159,6 +202,8 @@ public class PhotoMetaActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
+
+            editMode = extras.getBoolean("EDIT_MODE", false);
 
             mTempImagePath = extras.getString("image_path", "");
 
@@ -221,11 +266,51 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
             if (longitude > 0 && latitude > 0) {
 
-                locationButton.setText("Edit location");
+                addLocationIcon.setVisibility(View.GONE);
+
+                editLocationIcon.setVisibility(View.VISIBLE);
+
+                locationOutput.setText(String.format("%s, %s", longitude, latitude));
 
             }
 
             mImageId = savedInstanceState.getInt("image_id", 0);
+
+        }
+
+        // If edit mode is active, set the values of the relevant fields
+
+        if (editMode) {
+
+            report = ReportHolder.getReport();
+
+            // Set comment text
+
+            if (report.properties.report_description != null && (report.properties.report_description.length() > 0)) {
+
+                commentsField.setText(report.properties.report_description);
+
+            }
+
+            // Set location text
+
+            Geometry geometry = report.geometry.geometries.get(0);
+
+            Log.d("geometry", geometry.toString());
+
+            latitude = geometry.coordinates.get(1);
+
+            longitude = geometry.coordinates.get(0);
+
+            locationOutput.setText(DisplayDecimal.formatDecimals("#.###", "%s, %s", longitude, latitude));
+
+            // Load image
+
+            Picasso.with(this).load(report.properties.images.get(0).properties.square_retina).placeholder(R.drawable.user_avatar_placeholder).into(mImageView);
+
+            // Set date text
+
+            dateField.setText(AttributeTransformUtility.parseDate(new SimpleDateFormat("MMMM d, yyyy", Locale.US), report.properties.report_date));
 
         }
 
@@ -246,6 +331,35 @@ public class PhotoMetaActivity extends AppCompatActivity {
                 if (hasFocus) {
                     showDatePickerDialog(v);
                 }
+            }
+        });
+
+        // Add click listener to photo element
+
+        if (!editMode) {
+
+            cameraButtonContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    addImage(view);
+                }
+            });
+
+        }
+
+        // Add click listener to location element
+
+        locationButtonContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updateLocation(view);
+            }
+        });
+
+        locationOutput.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updateLocation(view);
             }
         });
 
@@ -290,9 +404,11 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                         Log.d("position", longitude + latitude + "");
 
-                        locationButton.setText("Edit location");
+                        locationOutput.setText(DisplayDecimal.formatDecimals("#.###", "%s, %s", longitude, latitude));
 
-                        locationButton.setBackgroundResource(R.drawable.green_button);
+                        addLocationIcon.setVisibility(View.GONE);
+
+                        editLocationIcon.setVisibility(View.VISIBLE);
 
                         CharSequence text = "Location captured successfully";
 
@@ -313,8 +429,6 @@ public class PhotoMetaActivity extends AppCompatActivity {
                     mTempImagePath = data.getStringExtra("file_path");
 
                     if (mTempImagePath != null) {
-
-                        addPhoto.setVisibility(View.GONE);
 
                         mImageView.setVisibility(View.VISIBLE);
 
@@ -362,8 +476,6 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
     protected void onPostError() {
 
-        saveMessage.setVisibility(View.GONE);
-
         CharSequence text =
                 "Error posting report. Please try again later.";
 
@@ -374,9 +486,9 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
     }
 
-    // Send POST request
+    // Extract input values and prepare request (POST or PATCH)
 
-    public void submitReport(View view) {
+    public void stageRequest(View view) {
 
         if (!ConnectionUtility.connectionActive(this)) {
 
@@ -394,18 +506,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
         scrollView.smoothScrollTo(0, 0);
 
-        saveMessage.setVisibility(View.VISIBLE);
-
-        final ReportService reportService = ReportService.restAdapter.create(ReportService.class);
-
-        final ImageService imageService = ImageService.restAdapter.create(ImageService.class);
-
-        SharedPreferences prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
-
-        final SharedPreferences groupPrefs = getSharedPreferences(getString(R.string.associated_group_key), MODE_PRIVATE);
-
-        final String access_token = prefs.getString("access_token", "");
+        access_token = prefs.getString("access_token", "");
 
         dateText = String.valueOf(dateField.getText());
 
@@ -421,8 +522,6 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
         List<Geometry> geometryList = new ArrayList<Geometry>(1);
 
-        FileNameMap fileNameMap = URLConnection.getFileNameMap();
-
         coordinates.clear();
         geometryList.clear();
 
@@ -431,11 +530,45 @@ public class PhotoMetaActivity extends AppCompatActivity {
         Geometry geometry = new Geometry(coordinates, point);
         geometryList.add(geometry);
 
-        final GeometryResponse geometryResponse = new GeometryResponse(geometryList, type);
+        geometryResponse = new GeometryResponse(geometryList, type);
+
+        if (commentsText.isEmpty() || mTempImagePath == null) {
+
+            CharSequence text = "Please add a photo and comment.";
+            Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+            toast.show();
+
+            return;
+
+        }
+
+        if (editMode) {
+
+            patchReport();
+
+        } else {
+
+            postReport();
+
+        }
+
+    }
+
+    // POST new report
+
+    private void postReport() {
+
+        CharSequence text = "Posting report...";
+
+        Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
+
+        toast.show();
 
         Log.d("filepath", mTempImagePath);
 
         File photo = new File(mTempImagePath);
+
+        FileNameMap fileNameMap = URLConnection.getFileNameMap();
 
         String mimeType = fileNameMap.getContentTypeFor(mTempImagePath);
 
@@ -508,10 +641,6 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                                         groupPrefs.edit().clear().apply();
 
-                                        //progressBar.setVisibility(View.GONE);
-
-                                        saveStatus.setText(getResources().getString(R.string.report_received));
-
                                         final Handler handler = new Handler();
 
                                         handler.postDelayed(new Runnable() {
@@ -564,6 +693,100 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
     }
 
+    // PATCH existing report
+
+    private void patchReport() {
+
+        CharSequence text = "Updating report...";
+
+        Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
+
+        toast.show();
+
+        List<Map<String, Integer>> groups = new ArrayList<Map<String, Integer>>();
+
+        try {
+
+            Map<String, ?> groupKeys = groupPrefs.getAll();
+
+            for (Map.Entry<String, ?> entry : groupKeys.entrySet()) {
+
+                Integer value = (Integer) entry.getValue();
+
+                if (value > 0) {
+
+                    Map<String, Integer> groupId = new HashMap<String, Integer>();
+
+                    groupId.put("id", value);
+
+                    groups.add(groupId);
+
+                }
+
+            }
+
+        } catch (NullPointerException ne) {
+
+            Log.d("groups", "No groups selected.");
+
+        }
+
+        ReportPatchBody reportPatchBody = new ReportPatchBody(geometryResponse, groups, dateText, commentsText, "public");
+
+        Log.d("groups", groups.toString());
+
+        reportService.updateReport(access_token, "application/json", report.id, reportPatchBody,
+                new Callback<Report>() {
+                    @Override
+                    public void success(Report report, Response response) {
+
+                        // Clear any stored group associations
+
+                        groupPrefs.edit().clear().apply();
+
+                        final Handler handler = new Handler();
+
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+                                int coreId = coreProfile.getInt("id", 0);
+
+                                UserProperties userProperties = new UserProperties(coreId, coreProfile.getString("description", ""),
+                                        coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
+                                        coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
+                                        coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null);
+
+                                User coreUser = User.createUser(coreId, userProperties);
+
+                                UserHolder.setUser(coreUser);
+
+                                // Re-direct user to main activity feed, which has the effect of preventing
+                                // unwanted access to the history stack
+
+                                Intent intent = new Intent(PhotoMetaActivity.this, MainActivity.class);
+
+                                startActivity(intent);
+
+                                finish();
+
+                            }
+
+                        }, 2000);
+
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        onPostError();
+                    }
+
+                });
+
+    }
+
     protected void fetchUserGroups() {
 
         final SharedPreferences prefs =
@@ -602,7 +825,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                 Response errorResponse = error.getResponse();
 
-                 // If we have a valid response object, check the status code and redirect to log in view if necessary
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
 
                 if (errorResponse != null) {
 
@@ -624,19 +847,23 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
     private void populateOrganizations(ArrayList<Organization> orgs) {
 
-        groupList.setVisibility(View.VISIBLE);
+        if (!orgs.isEmpty()) {
 
-        // Populating a LinearLayout here rather than a ListView
+            groupList.setVisibility(View.VISIBLE);
 
-        final OrganizationCheckListAdapter adapter = new OrganizationCheckListAdapter(this, orgs);
+            // Populating a LinearLayout here rather than a ListView
 
-        final int adapterCount = adapter.getCount();
+            final OrganizationCheckListAdapter adapter = new OrganizationCheckListAdapter(this, orgs);
 
-        for (int i = 0; i < adapterCount; i++) {
+            final int adapterCount = adapter.getCount();
 
-            View item = adapter.getView(i, null, null);
+            for (int i = 0; i < adapterCount; i++) {
 
-            groupList.addView(item);
+                View item = adapter.getView(i, null, null);
+
+                groupList.addView(item);
+
+            }
 
         }
 
@@ -680,9 +907,9 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
             // Step through comment and location checks and warn the user if anything's missing.
 
-            if (commentsText.isEmpty()) {
+            if (commentsText.isEmpty() || mTempImagePath == null) {
 
-                CharSequence text = "Please add a comment.";
+                CharSequence text = "Please add a photo and comment.";
                 Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
                 toast.show();
 

@@ -16,7 +16,7 @@
     <string name="date_hint">Enter Date</string>
     <string name="incident_hint">Incident Type</string>
     <string name="facility_hint">Facility Type</string>
-    <string name="comment_hint">Add a few words about the photo&#8230;</string>
+    <!--<string name="comment_hint">Write a few words about the photo&#8230;</string>-->
     <string name="legend_header">Legend</string>
     <string name="marker_header">General Oil &amp; Gas Report</string>
     <string name="title_activity_marker">Report</string>
@@ -75,9 +75,12 @@
 
     <!-- Report -->
 
+    <string name="report_instruction">To get started, tap on the camera icon to add a photo.</string>
+    <string name="comment_hint">Write a few words about the photo&#8230;</string>
+    <string name="report_location_prompt">Confirm location</string>
+    <string name="report_groups_prompt">Associate this report with one or more of your groups.</string>
     <string name="saving">Please sit tight while we save your report&#8230;</string>
     <string name="report_received">Great! Your report was successfully broadcast on Water Reporter.</string>
-    <string name="report_instruction">To get started, tap on the camera icon to add a photo.</string>
 
     <!-- Camera -->
     <string name="picture">Picture</string>

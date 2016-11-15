@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
  */
 public class DatePickerFragment extends DialogFragment implements
         DatePickerDialog.OnDateSetListener {
-    @Bind(R.id.date) EditText dateInput;
+    @Bind(R.id.date_input) EditText dateInput;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
