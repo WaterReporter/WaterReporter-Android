@@ -115,6 +115,10 @@ public class PhotoActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
+        // Check current permission settings for camera and storage
+
+        checkStoragePermission();
+
         if (savedInstanceState != null) {
 
             mCurrentPhotoPath = savedInstanceState.getString("gallery_path");
@@ -128,6 +132,13 @@ public class PhotoActivity extends AppCompatActivity
             mImageView.setVisibility(View.VISIBLE);
 
         }
+
+        captureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkStoragePermission();
+            }
+        });
 
     }
 
@@ -353,47 +364,11 @@ public class PhotoActivity extends AppCompatActivity
 
         return bitmap;
 
-        // First decode with inJustDecodeBounds=true to check dimensions
-        //final BitmapFactory.Options options = new BitmapFactory.Options();
-
-//        options.inJustDecodeBounds = true;
-//
-//        BitmapFactory.decodeFileDescriptor(inputStream, null, options);
-//
-//        // Calculate inSampleSize
-//        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-//
-//        // Decode bitmap with inSampleSize set
-//        options.inJustDecodeBounds = false;
-//
-//        return BitmapFactory.decodeStream(inputStream, null, options);
-
     }
 
     private void setPic(String filePath) {
 
         Bitmap scaledBitmap = decodeSampledBitmapFromResource(filePath, 1080, 1080);
-
-        //Log.d(null, filePath + " " + bitmap.getWidth() + " " + bitmap.getHeight());
-
-        //Log.d(null, bitmap.getWidth() + " " + bitmap.getHeight());
-
-        //int dimension = getSquareCropDimensionForBitmap(bitmap);
-
-        //Bitmap scaledBitmap = ThumbnailUtils.extractThumbnail(bitmap, dimension, dimension);
-
-//        int maxHeight = (1280 <= bitmap.getHeight()) ? 1280 : bitmap.getHeight();
-//        int maxWidth = (1280 <= bitmap.getWidth()) ? 1280 : bitmap.getWidth();
-//
-//        float scale = Math.min(((float) maxHeight / bitmap.getWidth()), ((float) maxWidth / bitmap.getHeight()));
-//
-//        Matrix matrix = new Matrix();
-//        matrix.postScale(scale, scale);
-//
-//        Bitmap scaledBitmap = Bitmap.createBitmap(bitmap,
-//                0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-
-        //bitmap.recycle();
 
         try {
 
@@ -565,57 +540,9 @@ public class PhotoActivity extends AppCompatActivity
 
     }
 
-//    private void processGalleryPhoto(Intent returnedImageIntent) {
-//
-//        Uri selectedImage = returnedImageIntent.getData();
-//
-//        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-//
-//        try {
-//
-//            ContentResolver contentResolver = getApplicationContext().getContentResolver();
-//
-//            Cursor cursor = contentResolver.query(
-//                    selectedImage, filePathColumn, null, null, null);
-//
-//            cursor.moveToFirst();
-//
-//            if (cursor.moveToFirst()) {
-//
-//                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//
-//                mCurrentPhotoPath = cursor.getString(columnIndex);
-//
-//                cursor.close();
-//
-//                setPic(mCurrentPhotoPath);
-//
-//            }
-//
-//        } catch (NullPointerException ne) {
-//
-//            Snackbar.make(parentLayout, "Unable to open image.",
-//                    Snackbar.LENGTH_SHORT)
-//                    .show();
-//
-//        }
-//
-//    }
-
     protected static int getImageProperty(Context context, Uri photoUri, String column) {
-    /* it's on the external media. */
-//        Cursor cursor = context.getContentResolver().query(photoUri,
-//                new
 
         String[] proj = {MediaStore.Images.ImageColumns.ORIENTATION};
-
-//        if (cursor.getCount() != 1) {
-//            return -1;
-//        }
-//
-//        cursor.moveToFirst();
-//
-//        return cursor.getInt(0);
 
         CursorLoader loader = new CursorLoader(context, photoUri, proj, null, null, null);
 
@@ -630,8 +557,6 @@ public class PhotoActivity extends AppCompatActivity
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.ORIENTATION);
 
         cursor.moveToFirst();
-
-        //String result = cursor.getString(column_index);
 
         cursor.close();
 
@@ -648,19 +573,9 @@ public class PhotoActivity extends AppCompatActivity
 
                 if (resultCode == RESULT_OK) {
 
-                    //if (data != null) {
-
                     captureButton.setImageResource(R.drawable.ic_edit_white_24dp);
 
                     handleBigCameraPhoto();
-
-                    //Uri selectedImageUri = data.getData();
-
-                    //String filestring = selectedImageUri.getPath();
-
-                    //setPic(filestring);
-
-                    //}
 
                 }
 
@@ -679,34 +594,6 @@ public class PhotoActivity extends AppCompatActivity
                         try {
 
                             Bitmap scaledBitmap = decodeSampledBitmapFromStream(selectedImageUri, 1080, 1080);
-
-//                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
-//
-//                            int maxHeight = (1280 <= bitmap.getHeight()) ? 1280 : bitmap.getHeight();
-//                            int maxWidth = (1280 <= bitmap.getWidth()) ? 1280 : bitmap.getWidth();
-//
-//                            float scale = 1;
-//
-//                            if (maxHeight >= 1280 && maxWidth >= 1280) {
-//
-//                                scale = Math.min(((float) maxHeight / bitmap.getWidth()), ((float) maxWidth / bitmap.getHeight()));
-//
-//                            }
-//
-//                            Matrix matrix = new Matrix();
-//                            matrix.postScale(scale, scale);
-//
-//                            Bitmap scaledBitmap = Bitmap.createBitmap(bitmap,
-//                                    0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-//
-//                            int dimension = getSquareCropDimensionForBitmap(scaledBitmap);
-
-                            //Bitmap resizedBitmap = ThumbnailUtils.extractThumbnail(scaledBitmap, dimension, dimension);
-
-//                            Bitmap resizedBitmap = Bitmap.createScaledBitmap(
-//                                    bitmap, 1280, 1280, false);
-
-                            //bitmap.recycle();
 
                             try {
 
@@ -727,18 +614,8 @@ public class PhotoActivity extends AppCompatActivity
                                 // Create instances of ExifInterface for new and existing image files
 
                                 ExifInterface oldExif = new ExifInterface(selectedImageUri.getPath());
-//
+
                                 ExifInterface newExif = new ExifInterface(newFilePath);
-//
-//                                int exifOrientation = getImageProperty(this, selectedImageUri, "orientation");
-//
-//                                if (exifOrientation > -1) {
-//
-//                                    Log.d("orientation", String.valueOf(exifOrientation));
-//                                    newExif.setAttribute(ExifInterface.TAG_ORIENTATION, String.valueOf(exifOrientation));
-//                                    newExif.saveAttributes();
-//
-//                                }
 
                                 String exifOrientation = oldExif.getAttribute(ExifInterface.TAG_ORIENTATION);
 
@@ -764,13 +641,6 @@ public class PhotoActivity extends AppCompatActivity
 
                             mImageView.setImageBitmap(scaledBitmap);
 
-//                            Picasso.with(this)
-//                                    .load(new File (newFilePath))
-//                                    .fit()
-//                                    //.resize(50, 50)
-//                                    //.centerCrop()
-//                                    .into(mImageView);
-
                             mImageView.setVisibility(View.VISIBLE);
 
                             photoCaptured = true;
@@ -783,12 +653,6 @@ public class PhotoActivity extends AppCompatActivity
 
                         }
 
-                        //String fileString = getRealPathFromURI(selectedImageUri);
-
-                        //Log.d("path", fileString);
-
-                        //setPic(fileString);
-
                     }
 
                 }
@@ -800,7 +664,7 @@ public class PhotoActivity extends AppCompatActivity
 
     // Check storage permissions. If present, launch the photo picker dialog.
 
-    public void checkStoragePermission(View v) {
+    public void checkStoragePermission() {
 
         if (ContextCompat.checkSelfPermission(PhotoActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(PhotoActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -1003,13 +867,6 @@ public class PhotoActivity extends AppCompatActivity
         }
 
         if (photoCaptured) {
-
-//            Intent intent = new Intent(PhotoActivity.this, PhotoMetaActivity.class);
-
-            // Pass the on-device file path with the intent
-//            intent.putExtra("image_path", newFilePath);
-
-//            startActivity(intent);intent
 
             Intent resultData = new Intent();
             resultData.putExtra("file_path", newFilePath);
