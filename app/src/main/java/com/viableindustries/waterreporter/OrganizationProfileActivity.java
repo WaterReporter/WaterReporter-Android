@@ -90,11 +90,11 @@ public class OrganizationProfileActivity extends AppCompatActivity {
     TextView peopleCounter;
 
     TextView peopleCountLabel;
-    
+
     TextView organizationName;
-    
+
     TextView organizationDescription;
-    
+
     ImageView organizationLogo;
 
     @Bind(R.id.timeline)
@@ -158,7 +158,11 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                         Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
                         // This method performs the actual data-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
-                        fetchReports(10, 1, buildQuery(true, null), true, false);
+
+                        countReports(complexQuery, "state");
+
+                        resetStats();
+
                     }
                 }
         );
@@ -166,7 +170,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
         // Set color of swipe refresh arrow animation
 
         timeLineContainer.setColorSchemeResources(R.color.waterreporter_blue);
-        
+
         // Inflate and insert timeline header view
 
         addListViewHeader();
@@ -297,29 +301,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                reportCounter.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
-                reportCountLabel.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
-
-                actionCounter.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
-                actionCountLabel.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
-
-                if (timeLine != null) {
-
-                    if (!actionFocus) {
-
-                        timeLine.setSelection(0);
-
-                    } else {
-
-                        actionFocus = false;
-
-                        timeLineContainer.setRefreshing(true);
-
-                        fetchReports(10, 1, buildQuery(true, null), false, true);
-
-                    }
-
-                }
+                resetStats();
 
             }
         });
@@ -367,6 +349,22 @@ public class OrganizationProfileActivity extends AppCompatActivity {
         // Add populated header view to report timeline
 
         timeLine.addHeaderView(header, null, false);
+
+    }
+
+    private void resetStats() {
+
+        reportCounter.setTextColor(ContextCompat.getColor(OrganizationProfileActivity.this, R.color.base_blue));
+        reportCountLabel.setTextColor(ContextCompat.getColor(OrganizationProfileActivity.this, R.color.base_blue));
+
+        actionCounter.setTextColor(ContextCompat.getColor(OrganizationProfileActivity.this, R.color.material_blue_grey950));
+        actionCountLabel.setTextColor(ContextCompat.getColor(OrganizationProfileActivity.this, R.color.material_blue_grey950));
+
+        actionFocus = false;
+
+        timeLineContainer.setRefreshing(true);
+
+        fetchReports(10, 1, buildQuery(true, null), true, true);
 
     }
 
