@@ -267,6 +267,8 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
         ImageView ownerAvatar = (ImageView) header.findViewById(R.id.owner_avatar);
 
+        ImageView actionBanner = (ImageView) header.findViewById(R.id.action_banner);
+
         String creationDate = (String) AttributeTransformUtility.relativeTime(report.properties.created);
 
         reportDate.setText(creationDate);
@@ -283,6 +285,10 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
                 .transform(new CircleTransform())
                 .into(ownerAvatar);
 
+        // Attach click listener to avatar
+
+        ownerAvatar.setOnClickListener(new UserProfileListener(this, report.properties.owner));
+
         // Load report caption
 
         if (report.properties.report_description != null && (report.properties.report_description.length() > 0)) {
@@ -297,9 +303,17 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
         }
 
-        // Attach click listener to avatar
+        // Display badge if report is closed
 
-        ownerAvatar.setOnClickListener(new UserProfileListener(this, report.properties.owner));
+        if ("closed".equals(report.properties.state)) {
+
+            actionBanner.setVisibility(View.VISIBLE);
+
+        } else {
+
+            actionBanner.setVisibility(View.GONE);
+
+        }
 
         // Add populated header view to report timeline
 

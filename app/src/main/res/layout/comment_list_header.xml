@@ -6,6 +6,16 @@
     android:background="#FFFFFF"
     android:orientation="vertical">
 
+    <ImageView
+        android:id="@+id/action_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/certified_action"
+        android:visibility="gone" />
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
