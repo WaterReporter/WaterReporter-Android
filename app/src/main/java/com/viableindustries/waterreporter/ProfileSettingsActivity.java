@@ -132,6 +132,12 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
     }
 
+    public void manageGroups(View view) {
+
+        startActivity(new Intent(this, OrganizationListActivity.class));
+
+    }
+
     public void logOut(View view) {
 
         // Clear stored token and user id values

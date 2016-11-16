@@ -331,6 +331,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:layout_marginTop="16dp"
+            android:animateLayoutChanges="true"
             android:orientation="vertical"
             android:paddingBottom="24dp"
             android:paddingEnd="16dp"
@@ -349,6 +350,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
+                android:layout_marginBottom="8dp"
                 android:background="@color/gray_232" />
 
         </LinearLayout>
