@@ -188,7 +188,6 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                         resetStats();
 
-
                     }
                 }
         );

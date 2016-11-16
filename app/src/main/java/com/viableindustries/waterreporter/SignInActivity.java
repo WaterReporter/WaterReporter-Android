@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 
 import com.viableindustries.waterreporter.data.AuthResponse;
 import com.viableindustries.waterreporter.data.LogInBody;
+import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.SecurityService;
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserBasicResponse;
@@ -171,7 +172,6 @@ public class SignInActivity extends AppCompatActivity {
 
                                                                 coreProfile.edit()
                                                                         .putInt("id", user.id)
-//                                                                        .putString("picture", user.properties.images.get(0).properties.icon_retina)
                                                                         .apply();
 
                                                                 Log.d("avatar", user.properties.images.get(0).properties.icon_retina);
@@ -193,6 +193,16 @@ public class SignInActivity extends AppCompatActivity {
                                                                 for (Map.Entry<String, Boolean> entry : userNotificationSettings.entrySet()) {
 
                                                                     coreProfile.edit().putBoolean(entry.getKey(), entry.getValue()).apply();
+
+                                                                }
+
+                                                                // Update stored values of user's group memberships
+
+                                                                final SharedPreferences groupPrefs = getSharedPreferences(getString(R.string.associated_group_key), 0);
+
+                                                                for (Organization organization : user.properties.organizations) {
+
+                                                                    groupPrefs.edit().putInt(organization.properties.name, organization.properties.id).apply();
 
                                                                 }
 

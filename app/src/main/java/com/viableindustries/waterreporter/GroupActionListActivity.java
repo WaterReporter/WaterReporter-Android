@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.app.Activity;
 import android.support.v4.app.NavUtils;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -26,6 +28,7 @@ import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.data.OrganizationService;
 import com.viableindustries.waterreporter.data.QueryParams;
 import com.viableindustries.waterreporter.data.QuerySort;
+import com.viableindustries.waterreporter.data.Report;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,11 +41,23 @@ import retrofit.client.Response;
 
 public class GroupActionListActivity extends AppCompatActivity {
 
+    @Bind(R.id.organizationListContainer)
+    SwipeRefreshLayout organizationListContainer;
+
+    @Bind(R.id.skipAhead)
+    ImageButton skipAhead;
+
     @Bind(R.id.search_box)
     EditText listFilter;
 
-    @Bind(R.id.list)
+    @Bind(R.id.organizationList)
     ListView listView;
+
+    ArrayList<Organization> organizations;
+
+    GroupActionListAdapter adapter;
+
+    private boolean isRegistrationFlow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +68,42 @@ public class GroupActionListActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        assert getSupportActionBar() != null;
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        // Determine if we need "forward" navigation
 
-        connectionStatus();
+        Bundle extras = getIntent().getExtras();
 
+        if (extras != null && extras.getBoolean("POST_REGISTER", false)) {
+
+            skipAhead.setVisibility(View.VISIBLE);
+
+        }
+
+        // Initialize empty list to hold organizations
+
+        organizations = new ArrayList<Organization>();
+
+        organizationListContainer.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
+                        // This method performs the actual data-refresh operation.
+                        // The method calls setRefreshing(false) when it's finished.
+                        buildList(1, 20, true);
+
+                    }
+                }
+        );
+
+        // Set color of swipe refresh arrow animation
+
+        organizationListContainer.setColorSchemeResources(R.color.waterreporter_blue);
+
+        // Fetch organizations
+
+        organizationListContainer.setRefreshing(true);
+
+        buildList(1, 20, true);
 
     }
 
@@ -85,32 +131,51 @@ public class GroupActionListActivity extends AppCompatActivity {
 
     // This needs to be in its own utility service
 
-    private void connectionStatus() {
+//    private void connectionStatus() {
+//
+//        ConnectivityManager connMgr = (ConnectivityManager)
+//                getSystemService(Context.CONNECTIVITY_SERVICE);
+//
+//        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+//
+//        if (networkInfo != null && networkInfo.isConnected()) {
+//
+//            organizationListContainer.setRefreshing(true);
+//
+//            buildList(1, 20, true);
+//
+//        } else {
+//
+//            CharSequence text = "Looks like you're not connected to the internet, so we couldn't retrieve your site collection.";
+//
+//            int duration = Toast.LENGTH_SHORT;
+//
+//            Toast toast = Toast.makeText(getBaseContext(), text, duration);
+//
+//            toast.show();
+//
+//        }
+//
+//    }
 
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
+    private void attachScrollListener() {
 
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        listView.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
 
-        if (networkInfo != null && networkInfo.isConnected()) {
+                // Triggered only when new data needs to be appended to the list
 
-            buildList();
+                buildList(page, 20, false);
 
-        } else {
+                return true; // ONLY if more data is actually being loaded; false otherwise.
 
-            CharSequence text = "Looks like you're not connected to the internet, so we couldn't retrieve your site collection.";
-
-            int duration = Toast.LENGTH_SHORT;
-
-            Toast toast = Toast.makeText(getBaseContext(), text, duration);
-
-            toast.show();
-
-        }
+            }
+        });
 
     }
 
-    private void buildList() {
+    private void buildList(int page, int limit, final boolean refresh) {
 
         SharedPreferences prefs =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
@@ -135,7 +200,9 @@ public class GroupActionListActivity extends AppCompatActivity {
 
         Log.d("URL", query);
 
-        service.getOrganizations(access_token, "application/json", 100, query, new Callback<OrganizationFeatureCollection>() {
+//        organizationListContainer.setRefreshing(true);
+
+        service.getOrganizations(access_token, "application/json", page, limit, query, new Callback<OrganizationFeatureCollection>() {
 
             @Override
             public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
@@ -144,28 +211,54 @@ public class GroupActionListActivity extends AppCompatActivity {
 
                 Log.v("list", features.toString());
 
-                if (!features.isEmpty()) {
+                if (refresh) {
 
-//                    progressBar.setVisibility(View.GONE);
+                    organizations = features;
 
-                    if (response != null) {
+                    populateOrganizations(organizations);
 
-                        populateOrganizations(features);
+                } else {
+
+                    organizations.addAll(features);
+
+                    try {
+
+                        adapter.notifyDataSetChanged();
+
+                    } catch (NullPointerException ne) {
+
+                        populateOrganizations(organizations);
 
                     }
 
                 }
+
+                organizationListContainer.setRefreshing(false);
 
             }
 
             @Override
             public void failure(RetrofitError error) {
 
-                Response response = error.getResponse();
+                organizationListContainer.setRefreshing(false);
 
-                int status = response.getStatus();
+                if (error == null) return;
 
-                error.printStackTrace();
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(GroupActionListActivity.this, SignInActivity.class));
+
+                    }
+
+                }
 
             }
 
@@ -175,7 +268,7 @@ public class GroupActionListActivity extends AppCompatActivity {
 
     private void populateOrganizations(ArrayList<Organization> orgs) {
 
-        final GroupActionListAdapter adapter = new GroupActionListAdapter(this, orgs, true);
+        adapter = new GroupActionListAdapter(this, orgs, true);
 
         listFilter.addTextChangedListener(new TextWatcher() {
 
@@ -201,19 +294,36 @@ public class GroupActionListActivity extends AppCompatActivity {
 
         listView.setTextFilterEnabled(true);
 
+        attachScrollListener();
+
     }
 
     public void toFeed(View view) {
 
-//        int id = item.getItemIdemId();
-//
-//        if (id == R.id.skip) {
-
         startActivity(new Intent(this, MainActivity.class));
 
-//        }
-//
-//        return true;
+    }
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+
+    }
+
+    @Override
+    protected void onPause() {
+
+        super.onPause();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+
+        ButterKnife.unbind(this);
 
     }
 

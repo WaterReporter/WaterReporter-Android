@@ -134,7 +134,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
     public void manageGroups(View view) {
 
-        startActivity(new Intent(this, OrganizationListActivity.class));
+        startActivity(new Intent(this, GroupActionListActivity.class));
 
     }
 

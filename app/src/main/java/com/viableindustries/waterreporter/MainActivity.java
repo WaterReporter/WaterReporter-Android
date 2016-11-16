@@ -153,14 +153,6 @@ public class MainActivity extends AppCompatActivity {
 
                 if (!reports.isEmpty()) {
 
-                    // If the submission view was requested
-
-                    if (transition) {
-
-                        startActivity(new Intent(MainActivity.this, SubmissionsActivity.class));
-
-                    }
-
                     reportCollection.addAll(reports);
 
                     try {
@@ -303,13 +295,13 @@ public class MainActivity extends AppCompatActivity {
 
     // Transition to the organization list view
 
-    public void viewGroups(View v) {
-
-        startActivity(new Intent(this, OrganizationListActivity.class));
-
-        finish();
-
-    }
+//    public void viewGroups(View v) {
+//
+//        startActivity(new Intent(this, OrganizationListActivity.class));
+//
+//        finish();
+//
+//    }
 
     private void attachScrollListener() {
 

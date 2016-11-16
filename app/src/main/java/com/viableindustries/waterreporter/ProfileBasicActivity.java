@@ -132,8 +132,6 @@ public class ProfileBasicActivity extends AppCompatActivity {
 
                 if (resultCode == RESULT_OK) {
 
-//                    Bundle bundle = data.getParcelableExtra("bundle");
-
                     mTempImagePath = data.getStringExtra("file_path");
 
                     if (mTempImagePath != null) {
@@ -147,24 +145,6 @@ public class ProfileBasicActivity extends AppCompatActivity {
                         File photo = new File(mTempImagePath);
 
                         Picasso.with(this).load(photo).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(userAvatar);
-
-//                        Log.d("location", location.getLatitude() + "");
-//
-//                        longitude = location.getLongitude();
-//
-//                        latitude = location.getLatitude();
-//
-//                        Log.d("position", longitude + latitude + "");
-//
-//                        locationButton.setText("Edit location");
-//
-//                        locationButton.setBackgroundResource(R.drawable.green_button);
-//
-//                        CharSequence text = "Location saved successfully";
-//
-//                        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-//
-//                        toast.show();
 
                     }
 
@@ -183,23 +163,6 @@ public class ProfileBasicActivity extends AppCompatActivity {
             savingMessage.setVisibility(View.VISIBLE);
 
             savingMessage.setText(getResources().getString(R.string.saving_profile));
-//
-//            int colorFrom = ContextCompat.getColor(this, R.color.base_blue);
-//            int colorTo = ContextCompat.getColor(this, R.color.green_1);
-//
-//            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-//            colorAnimation.setDuration(400); // milliseconds
-//
-//            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//
-//                @Override
-//                public void onAnimationUpdate(ValueAnimator animator) {
-//                    saveProfileButton.setBackgroundColor((int) animator.getAnimatedValue());
-//                }
-//
-//            });
-//
-//            colorAnimation.start();
 
             final String firstName = String.valueOf(firstNameInput.getText());
 
@@ -326,32 +289,17 @@ public class ProfileBasicActivity extends AppCompatActivity {
 
                                             }
 
-                                            //coreProfile.appl
-
-//                                            for(User user : user)
-
-//                                            Map<String,?> keys = userProfile.getAll();
-//
-//                for(Map.Entry<String,?> entry : keys.entrySet()){
-//                    Log.d("map values",entry.getKey() + ": " +
-//                            entry.getValue().toString());
-//                }
-
-                                            // Clear any stored group associations
-
-//                                        groupPrefs.edit().clear().apply();
-
-                                            //progressBar.setVisibility(View.GONE);
-
-//                                        saveStatus.setText(getResources().getString(R.string.report_received));
-
                                             final Handler handler = new Handler();
 
                                             handler.postDelayed(new Runnable() {
                                                 @Override
                                                 public void run() {
 
-                                                    startActivity(new Intent(ProfileBasicActivity.this, GroupActionListActivity.class));
+                                                    Intent intent = new Intent(ProfileBasicActivity.this, GroupActionListActivity.class);
+
+                                                    intent.putExtra("POST_REGISTER", true);
+
+                                                    startActivity(intent);
 
                                                 }
 
@@ -363,23 +311,6 @@ public class ProfileBasicActivity extends AppCompatActivity {
                                         public void failure(RetrofitError error) {
                                             savingMessage.setVisibility(View.GONE);
                                             savingMessage.setText(getResources().getString(R.string.save));
-////                                        onPostError();
-//                                            int colorFrom = ContextCompat.getColor(ProfileBasicActivity.this, R.color.green_1);
-//                                            int colorTo = ContextCompat.getColor(ProfileBasicActivity.this, R.color.base_blue);
-//
-//                                            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-//                                            colorAnimation.setDuration(400); // milliseconds
-//
-//                                            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//
-//                                                @Override
-//                                                public void onAnimationUpdate(ValueAnimator animator) {
-//                                                    saveProfileButton.setBackgroundColor((int) animator.getAnimatedValue());
-//                                                }
-//
-//                                            });
-//
-//                                            colorAnimation.start();
                                         }
 
                                     });
@@ -390,23 +321,6 @@ public class ProfileBasicActivity extends AppCompatActivity {
                         public void failure(RetrofitError error) {
                             savingMessage.setVisibility(View.GONE);
                             savingMessage.setText(getResources().getString(R.string.save));
-////                        onPostError();
-//                            int colorFrom = ContextCompat.getColor(ProfileBasicActivity.this, R.color.green_1);
-//                            int colorTo = ContextCompat.getColor(ProfileBasicActivity.this, R.color.base_blue);
-//
-//                            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-//                            colorAnimation.setDuration(400); // milliseconds
-//
-//                            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//
-//                                @Override
-//                                public void onAnimationUpdate(ValueAnimator animator) {
-//                                    saveProfileButton.setBackgroundColor((int) animator.getAnimatedValue());
-//                                }
-//
-//                            });
-//
-//                            colorAnimation.start();
                         }
 
                     });

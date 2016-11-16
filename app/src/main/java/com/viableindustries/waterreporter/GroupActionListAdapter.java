@@ -53,9 +53,9 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
     protected SharedPreferences prefs;
 
-    private String[] userGroups;
+    protected SharedPreferences groupPrefs;
 
-//    private Button groupMembershipButton;
+    private String[] userGroups;
 
     private boolean showLeaveButton;
 
@@ -70,6 +70,8 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
         this.context = context;
 
         prefs = context.getSharedPreferences(context.getPackageName(), 0);
+
+        groupPrefs = context.getSharedPreferences(context.getString(R.string.associated_group_key), 0);
 
         showLeaveButton = aShowLeaveButton;
 
@@ -152,8 +154,6 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
             @Override
             public void success(User user, Response response) {
 
-                upDatePrefs(user);
-
                 String action;
 
                 if (operation.equals("add")) {
@@ -166,6 +166,8 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
                     view.setTag("leave_group");
 
+                    groupPrefs.edit().putInt(organization.properties.name, organization.properties.id).apply();
+
                 } else {
 
                     action = "left";
@@ -175,6 +177,8 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
                     view.setBackgroundResource(R.drawable.green_button);
 
                     view.setTag("join_group");
+
+                    groupPrefs.edit().putInt(organization.properties.name, 0).apply();
 
                 }
 
@@ -234,21 +238,27 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
         Picasso.with(context).load(organization.properties.picture).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(viewHolder.organizationLogo);
 
-        // Add click listeners to layout elements
+        // Check group membership
 
-//        viewHolder.organizationItem.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                OrganizationHolder.setOrganization(organization);
-//
-//                context.startActivity(new Intent(context, OrganizationProfileActivity.class));
-//
-//            }
-//        });
-        // Add click listener to membership button
+        int selected = groupPrefs.getInt(organization.properties.name, 0);
 
-        viewHolder.groupMembershipButton.setTag("join_group");
+        if (selected > 0) {
+
+            viewHolder.groupMembershipButton.setTag("leave_group");
+
+            viewHolder.groupMembershipButton.setText(R.string.leave_button);
+
+            viewHolder.groupMembershipButton.setBackgroundResource(R.drawable.orange_button);
+
+        } else {
+
+            viewHolder.groupMembershipButton.setTag("join_group");
+
+            viewHolder.groupMembershipButton.setText(R.string.join_button);
+
+            viewHolder.groupMembershipButton.setBackgroundResource(R.drawable.green_button);
+
+        }
 
         viewHolder.groupMembershipButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -258,13 +268,6 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
             }
         });
-
-        // Lookup view for data population
-//        TextView siteName = (TextView) convertView.findViewById(R.id.organization_name);
-
-//        viewHolder.organizationItem.setTag(organization.id);
-
-//        siteName.setText(name);
 
         return convertView;
 

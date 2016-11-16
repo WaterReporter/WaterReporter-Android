@@ -22,6 +22,7 @@ public interface OrganizationService {
     @GET("/data/organization")
     public void getOrganizations(@Header("Authorization") String authorization,
                                  @Header("Content-Type") String contentType,
+                                 @Query("page") int page,
                                  @Query("results_per_page") int numResults,
                                  @Query("q") String q,
                                  Callback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
