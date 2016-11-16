@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.viableindustries.waterreporter.data.AbbreviatedOrganization;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserOrgPatch;
@@ -37,7 +38,7 @@ import retrofit.client.Response;
 /**
  * Created by brendanmcintyre on 2/8/16.
  */
-public class OrganizationCheckListAdapter extends ArrayAdapter<Organization> {
+public class OrganizationCheckListAdapter extends ArrayAdapter<AbbreviatedOrganization> {
 
     private final Context context;
 
@@ -45,7 +46,7 @@ public class OrganizationCheckListAdapter extends ArrayAdapter<Organization> {
 
     protected int id;
 
-    private ArrayList<Organization> sourceList;
+    private ArrayList<AbbreviatedOrganization> sourceList;
 
     protected SwitchCompat associateGroup;
 
@@ -53,7 +54,7 @@ public class OrganizationCheckListAdapter extends ArrayAdapter<Organization> {
 
     protected SharedPreferences groupPrefs;
 
-    public OrganizationCheckListAdapter(Context context, ArrayList<Organization> features) {
+    public OrganizationCheckListAdapter(Context context, ArrayList<AbbreviatedOrganization> features) {
 
         super(context, 0, features);
 
@@ -73,7 +74,7 @@ public class OrganizationCheckListAdapter extends ArrayAdapter<Organization> {
 
     }
 
-    public Organization getItem(int position) {
+    public AbbreviatedOrganization getItem(int position) {
 
         return sourceList.get(position);
 
@@ -100,9 +101,9 @@ public class OrganizationCheckListAdapter extends ArrayAdapter<Organization> {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
-        final Organization feature = sourceList.get(position);
+        final AbbreviatedOrganization feature = sourceList.get(position);
 
-        name = feature.properties.name;
+        name = feature.name;
 
         id = feature.id;
 
@@ -131,15 +132,15 @@ public class OrganizationCheckListAdapter extends ArrayAdapter<Organization> {
 
                 Log.d("Button Event", "Clicked the associate group button.");
 
-                int selected = groupPrefs.getInt(feature.properties.name, 0);
+                int selected = groupPrefs.getInt(feature.name, 0);
 
                 if (selected > 0) {
 
-                    groupPrefs.edit().putInt(feature.properties.name, 0).apply();
+                    groupPrefs.edit().putInt(feature.name, 0).apply();
 
                 } else {
 
-                    groupPrefs.edit().putInt(feature.properties.name, feature.properties.id).apply();
+                    groupPrefs.edit().putInt(feature.name, feature.id).apply();
 
                 }
 

@@ -34,6 +34,7 @@ import android.widget.Toast;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.AbbreviatedOrganization;
 import com.viableindustries.waterreporter.data.DisplayDecimal;
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.GeometryResponse;
@@ -155,6 +156,8 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
     private SharedPreferences groupPrefs;
 
+    protected SharedPreferences associatedGroups;
+
     private String access_token;
 
     private GeometryResponse geometryResponse;
@@ -174,7 +177,9 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        groupPrefs = getSharedPreferences(getString(R.string.associated_group_key), MODE_PRIVATE);
+        groupPrefs = getSharedPreferences(getString(R.string.group_membership_key), 0);
+
+        associatedGroups = getSharedPreferences(getString(R.string.associated_group_key), 0);
 
         // Instantiate API services
 
@@ -593,7 +598,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                         try {
 
-                            Map<String, ?> groupKeys = groupPrefs.getAll();
+                            Map<String, ?> groupKeys = associatedGroups.getAll();
 
                             for (Map.Entry<String, ?> entry : groupKeys.entrySet()) {
 
@@ -638,7 +643,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                                         // Clear any stored group associations
 
-                                        groupPrefs.edit().clear().apply();
+                                        associatedGroups.edit().clear().apply();
 
                                         final Handler handler = new Handler();
 
@@ -706,7 +711,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
         try {
 
-            Map<String, ?> groupKeys = groupPrefs.getAll();
+            Map<String, ?> groupKeys = associatedGroups.getAll();
 
             for (Map.Entry<String, ?> entry : groupKeys.entrySet()) {
 
@@ -741,7 +746,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                         // Clear any stored group associations
 
-                        groupPrefs.edit().clear().apply();
+                        associatedGroups.edit().clear().apply();
 
                         final Handler handler = new Handler();
 
@@ -788,63 +793,27 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
     protected void fetchUserGroups() {
 
-        final SharedPreferences prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        ArrayList<AbbreviatedOrganization> abbreviatedOrganizations = new ArrayList<>();
 
-        final String access_token = prefs.getString("access_token", "");
+        Map<String, ?> keys = groupPrefs.getAll();
 
-        Log.d("", access_token);
+        for (Map.Entry<String, ?> entry : keys.entrySet()) {
 
-        // We shouldn't need to retrieve this value again, but we'll deal with that issue later
-        int user_id = prefs.getInt("user_id", 0);
+            int status = Integer.valueOf(entry.getValue().toString());
 
-        UserService service = UserService.restAdapter.create(UserService.class);
+            if (status > 0) {
 
-        service.getUserOrganization(access_token, "application/json", user_id, new Callback<OrganizationFeatureCollection>() {
-
-            @Override
-            public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
-
-                ArrayList<Organization> organizations = organizationCollectionResponse.getFeatures();
-
-                if (organizations.size() > 0) {
-
-                    Collections.sort(organizations, new GroupNameComparator());
-
-                    populateOrganizations(organizations);
-
-                }
+                abbreviatedOrganizations.add(new AbbreviatedOrganization(status, entry.getKey()));
 
             }
 
-            @Override
-            public void failure(RetrofitError error) {
+        }
 
-                if (error == null) return;
-
-                Response errorResponse = error.getResponse();
-
-                // If we have a valid response object, check the status code and redirect to log in view if necessary
-
-                if (errorResponse != null) {
-
-                    int status = errorResponse.getStatus();
-
-                    if (status == 403) {
-
-                        startActivity(new Intent(PhotoMetaActivity.this, SignInActivity.class));
-
-                    }
-
-                }
-
-            }
-
-        });
+        populateOrganizations(abbreviatedOrganizations);
 
     }
 
-    private void populateOrganizations(ArrayList<Organization> orgs) {
+    private void populateOrganizations(ArrayList<AbbreviatedOrganization> orgs) {
 
         if (!orgs.isEmpty()) {
 

@@ -49,6 +49,8 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
     protected SharedPreferences groupPrefs;
 
+    protected SharedPreferences associatedGroups;
+
     private User user;
 
     @Override
@@ -64,7 +66,9 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
         coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
-        groupPrefs = getSharedPreferences(getString(R.string.associated_group_key), 0);
+        groupPrefs = getSharedPreferences(getString(R.string.group_membership_key), 0);
+
+        associatedGroups = getSharedPreferences(getString(R.string.associated_group_key), 0);
 
         user = UserHolder.getUser();
 
@@ -156,6 +160,10 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         // Clear stored group memberships
 
         groupPrefs.edit().clear().apply();
+
+        // Clear stored group memberships available to report tagging
+
+        associatedGroups.edit().clear().apply();
 
         startActivity(new Intent(this, SignInActivity.class));
 
