@@ -128,8 +128,6 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
     public void editProfile(View view) {
 
-//        setCurrentUser(userId, coreProfile);
-
         startActivity(new Intent(this, EditProfileActivity.class));
 
     }
@@ -163,8 +161,6 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
-//        setCurrentUser(userId, coreProfile);
 
         startActivity(new Intent(this, UserProfileActivity.class));
 
