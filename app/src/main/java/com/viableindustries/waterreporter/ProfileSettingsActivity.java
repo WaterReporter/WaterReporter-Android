@@ -1,5 +1,6 @@
 package com.viableindustries.waterreporter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.NotificationSetting;
+import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserHolder;
 import com.viableindustries.waterreporter.data.UserProperties;
@@ -45,7 +47,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
     private SharedPreferences coreProfile;
 
-    private int userId;
+    protected SharedPreferences groupPrefs;
 
     private User user;
 
@@ -61,6 +63,8 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+        groupPrefs = getSharedPreferences(getString(R.string.associated_group_key), 0);
 
         user = UserHolder.getUser();
 
@@ -149,6 +153,10 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
         coreProfile.edit().clear().apply();
 
+        // Clear stored group memberships
+
+        groupPrefs.edit().clear().apply();
+
         startActivity(new Intent(this, SignInActivity.class));
 
     }
@@ -156,7 +164,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
     public void composeEmail(View view) {
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:")); // only email apps should handle this
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@waterreporter.org"});
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"support@waterreporter.org"});
         intent.putExtra(Intent.EXTRA_SUBJECT, "Water Reporter for Android");
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
