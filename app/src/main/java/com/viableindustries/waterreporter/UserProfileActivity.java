@@ -159,7 +159,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
-        Log.d("avatar", coreProfile.getString("picture", ""));
+        Log.d("storedavatar", coreProfile.getString("picture", ""));
 
         // Retrieve stored User object
 
@@ -276,7 +276,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         }
 
-        Log.d("avatar", userAvatarUrl + "");
+//        Log.d("avatar", userAvatarUrl + "");
 
         Picasso.with(this).load(userAvatarUrl).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(userAvatar);
 

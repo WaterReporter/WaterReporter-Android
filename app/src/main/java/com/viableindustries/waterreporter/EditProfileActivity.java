@@ -157,6 +157,13 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
 
+        addPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addProfilePic();
+            }
+        });
+
     }
 
     private void addProfilePic() {
@@ -333,7 +340,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
                         coreProfile.edit()
                                 .putInt("id", user.id)
-                                .putString("picture", user.properties.images.get(0).properties.icon_retina)
+//                                .putString("picture", user.properties.images.get(0).properties.icon_retina)
                                 .apply();
 
                         // Update stored values of user's string type attributes

@@ -171,7 +171,7 @@ public class SignInActivity extends AppCompatActivity {
 
                                                                 coreProfile.edit()
                                                                         .putInt("id", user.id)
-                                                                        .putString("picture", user.properties.images.get(0).properties.icon_retina)
+//                                                                        .putString("picture", user.properties.images.get(0).properties.icon_retina)
                                                                         .apply();
 
                                                                 Log.d("avatar", user.properties.images.get(0).properties.icon_retina);

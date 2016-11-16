@@ -68,12 +68,11 @@
             android:layout_marginTop="0dp"
             android:background="@drawable/green_button"
             android:gravity="center"
-            android:onClick="addProfilePic"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
             android:text="Add photo"
             android:textAllCaps="true"
-            android:textColor="@color/white"
+            android:textColor="#FFFFFF"
             android:textSize="@dimen/small_text"
             android:textStyle="bold" />
 
@@ -357,21 +356,6 @@
 
     </LinearLayout>
 
-    <!--<Button-->
-    <!--android:id="@+id/save_profile"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="bottom"-->
-    <!--android:layout_marginBottom="0dp"-->
-    <!--android:layout_marginTop="0dp"-->
-    <!--android:background="@color/base_blue"-->
-    <!--android:gravity="center"-->
-    <!--android:onClick="saveProfile"-->
-    <!--android:paddingBottom="20dp"-->
-    <!--android:paddingTop="20dp"-->
-    <!--android:text="Save"-->
-    <!--android:textColor="#FFFFFF"-->
-    <!--android:textSize="@dimen/base_text" />-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
