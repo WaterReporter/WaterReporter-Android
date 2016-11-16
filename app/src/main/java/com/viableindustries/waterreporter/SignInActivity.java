@@ -198,7 +198,7 @@ public class SignInActivity extends AppCompatActivity {
 
                                                                 // Update stored values of user's group memberships
 
-                                                                final SharedPreferences groupPrefs = getSharedPreferences(getString(R.string.associated_group_key), 0);
+                                                                final SharedPreferences groupPrefs = getSharedPreferences(getString(R.string.group_membership_key), 0);
 
                                                                 for (Organization organization : user.properties.organizations) {
 

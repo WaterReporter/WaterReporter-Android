@@ -172,8 +172,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
         // Instantiate SharedPreference references
 
-        prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         groupPrefs = getSharedPreferences(getString(R.string.associated_group_key), MODE_PRIVATE);
 

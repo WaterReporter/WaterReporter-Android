@@ -96,9 +96,6 @@ public class ProfileBasicActivity extends AppCompatActivity {
     @Bind(R.id.user_avatar)
     ImageView userAvatar;
 
-//    @Bind(R.id.add_photo)
-//    Button addPhoto;
-
     @Bind(R.id.save_profile)
     ImageButton saveProfileButton;
 
@@ -134,16 +131,6 @@ public class ProfileBasicActivity extends AppCompatActivity {
 
         int avatarId = getResources().getIdentifier(randomImage, "drawable", getPackageName());
 
-//        InputStream inputStream = getResources().openRawResource(avatarId);
-//
-//        Bitmap b = BitmapFactory.decodeStream(inputStream);
-//
-//        b.setDensity(Bitmap.DENSITY_NONE);
-//
-//        Drawable d = getResources().getDrawable(avatarId);
-
-//        holder.mImageView.setImageDrawable(d);
-
         // Create new image file and path reference
 
         try {
@@ -165,6 +152,8 @@ public class ProfileBasicActivity extends AppCompatActivity {
             out.close();
 
             inputStream.close();
+
+            photoCaptured = true;
 
         } catch (Exception e) {
 

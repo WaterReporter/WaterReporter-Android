@@ -71,7 +71,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
         prefs = context.getSharedPreferences(context.getPackageName(), 0);
 
-        groupPrefs = context.getSharedPreferences(context.getString(R.string.associated_group_key), 0);
+        groupPrefs = context.getSharedPreferences(context.getString(R.string.group_membership_key), 0);
 
         showLeaveButton = aShowLeaveButton;
 
