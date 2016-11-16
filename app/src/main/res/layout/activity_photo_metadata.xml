@@ -345,6 +345,11 @@
                 android:text="@string/report_groups_prompt"
                 android:textSize="@dimen/base_text" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/gray_232" />
+
         </LinearLayout>
 
     </LinearLayout>

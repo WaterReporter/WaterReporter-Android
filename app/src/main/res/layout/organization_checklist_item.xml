@@ -1,49 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/group_item"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:weightSum="5">
+    android:layout_marginBottom="0dp"
+    android:layout_marginTop="16dp"
+    android:paddingEnd="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingStart="16dp">
 
     <TextView
         android:id="@+id/organization_name"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_margin="0dp"
-        android:layout_weight="4"
-        android:gravity="center_vertical"
-        android:text="This is a long group name"
-        android:textSize="16sp"
-        android:typeface="sans" />
-
-    <LinearLayout
-        android:id="@+id/button_group"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="visible">
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/associate_group"
+        android:layout_toStartOf="@+id/associate_group"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingEnd="16dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="16dp"
+        android:paddingStart="0dp"
+        android:text="This is a long group name"
+        android:textSize="@dimen/small_text" />
 
-        <Button
-            android:id="@+id/associate_group"
-            android:layout_width="64dp"
-            android:layout_height="32dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/green_button"
-            android:text="@string/add_group"
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:textSize="@dimen/small_text"
-            android:textStyle="bold"
-            android:visibility="visible"
-            android:onClick="updateGroupAssociation"/>
+    <!--<Button-->
+    <!--android:id="@+id/associate_group"-->
+    <!--android:layout_width="64dp"-->
+    <!--android:layout_height="32dp"-->
+    <!--android:layout_gravity="center_vertical"-->
+    <!--android:background="@drawable/green_button"-->
+    <!--android:text="@string/add_group"-->
+    <!--android:textAllCaps="true"-->
+    <!--android:textColor="@color/white"-->
+    <!--android:textSize="@dimen/small_text"-->
+    <!--android:textStyle="bold"-->
+    <!--android:visibility="visible" />-->
 
-    </LinearLayout>
+    <android.support.v7.widget.SwitchCompat
+        android:id="@+id/associate_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:checked="false" />
 
-</LinearLayout>
+</RelativeLayout>

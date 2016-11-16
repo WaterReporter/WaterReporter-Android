@@ -3,6 +3,7 @@ package com.viableindustries.waterreporter;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,7 +47,7 @@ public class OrganizationCheckListAdapter extends ArrayAdapter<Organization> {
 
     private ArrayList<Organization> sourceList;
 
-    protected Button associateGroup;
+    protected SwitchCompat associateGroup;
 
     protected SharedPreferences prefs;
 
@@ -117,7 +118,7 @@ public class OrganizationCheckListAdapter extends ArrayAdapter<Organization> {
 
         // Layout elements
 
-        associateGroup = (Button) convertView.findViewById(R.id.associate_group);
+        associateGroup = (SwitchCompat) convertView.findViewById(R.id.associate_group);
 
         associateGroup.setTag(String.format("%s__%s", name, id));
 
