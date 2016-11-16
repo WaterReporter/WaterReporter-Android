@@ -64,33 +64,64 @@
             android:textColor="@color/gray_186"
             android:textSize="14sp" />
 
-        <Button
-            android:id="@+id/add_photo"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="0dp"
-            android:background="@drawable/green_button"
-            android:gravity="center"
-            android:onClick="addProfilePic"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp"
-            android:text="Add photo"
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:textSize="@dimen/small_text"
-            android:textStyle="bold" />
+        <!--<Button-->
+            <!--android:id="@+id/add_photo"-->
+            <!--android:layout_width="120dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:layout_marginBottom="20dp"-->
+            <!--android:layout_marginTop="0dp"-->
+            <!--android:background="@drawable/green_button"-->
+            <!--android:gravity="center"-->
+            <!--android:onClick="addProfilePic"-->
+            <!--android:paddingBottom="8dp"-->
+            <!--android:paddingTop="8dp"-->
+            <!--android:text="Add photo"-->
+            <!--android:textAllCaps="true"-->
+            <!--android:textColor="@color/white"-->
+            <!--android:textSize="@dimen/small_text"-->
+            <!--android:textStyle="bold" />-->
 
-        <ImageView
-            android:id="@+id/user_avatar"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+        <!--<ImageView-->
+            <!--android:id="@+id/user_avatar"-->
+            <!--android:layout_width="80dp"-->
+            <!--android:layout_height="80dp"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:layout_marginBottom="16dp"-->
+            <!--android:layout_marginTop="0dp"-->
+            <!--android:scaleType="fitXY"-->
+            <!--android:visibility="gone" />-->
+
+        <FrameLayout
+            android:id="@+id/avatarPreview"
+            android:layout_width="112dp"
+            android:layout_height="112dp"
             android:layout_gravity="center"
-            android:layout_marginBottom="16dp"
-            android:layout_marginTop="0dp"
-            android:scaleType="fitXY"
-            android:visibility="gone" />
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/user_avatar"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:scaleType="fitXY" />
+
+            <ImageButton
+                android:id="@+id/change_image"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="bottom|end"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/floating_action_green"
+                android:clickable="true"
+                android:elevation="1dp"
+                android:padding="4dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_edit_white_24dp" />
+
+        </FrameLayout>
 
     </LinearLayout>
 

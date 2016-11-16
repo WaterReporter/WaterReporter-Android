@@ -7,6 +7,9 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
@@ -35,12 +38,20 @@ import com.viableindustries.waterreporter.data.UserBasicResponse;
 import com.viableindustries.waterreporter.data.UserService;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -85,14 +96,16 @@ public class ProfileBasicActivity extends AppCompatActivity {
     @Bind(R.id.user_avatar)
     ImageView userAvatar;
 
-    @Bind(R.id.add_photo)
-    Button addPhoto;
+//    @Bind(R.id.add_photo)
+//    Button addPhoto;
 
     @Bind(R.id.save_profile)
     ImageButton saveProfileButton;
 
     @Bind(R.id.saving_message)
     TextView savingMessage;
+
+    private File image;
 
     private String mGalleryPath;
 
@@ -101,6 +114,10 @@ public class ProfileBasicActivity extends AppCompatActivity {
     protected boolean photoCaptured = false;
 
     private static final int ACTION_ADD_PHOTO = 1;
+
+    private static final String JPEG_FILE_PREFIX = "IMG_";
+
+    private static final String JPEG_FILE_SUFFIX = ".jpg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,9 +128,81 @@ public class ProfileBasicActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        //prevent sign-in window from being closed by clicking outside of it
-        //this forces the user to actually sign-in
-//        this.setFinishOnTouchOutside(false);
+        String[] array = getResources().getStringArray(R.array.default_avatars);
+
+        String randomImage = array[new Random().nextInt(array.length)];
+
+        int avatarId = getResources().getIdentifier(randomImage, "drawable", getPackageName());
+
+//        InputStream inputStream = getResources().openRawResource(avatarId);
+//
+//        Bitmap b = BitmapFactory.decodeStream(inputStream);
+//
+//        b.setDensity(Bitmap.DENSITY_NONE);
+//
+//        Drawable d = getResources().getDrawable(avatarId);
+
+//        holder.mImageView.setImageDrawable(d);
+
+        // Create new image file and path reference
+
+        try {
+
+            image = createImageFile(true);
+
+            mTempImagePath = image.getAbsolutePath();
+
+            InputStream inputStream = getResources().openRawResource(avatarId);
+
+            OutputStream out = new FileOutputStream(image);
+
+            byte buf[] = new byte[1024];
+            int len;
+
+            while ((len = inputStream.read(buf)) > 0)
+                out.write(buf, 0, len);
+
+            out.close();
+
+            inputStream.close();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            Log.d(null, "Save file error!");
+
+            mTempImagePath = null;
+
+            return;
+
+        }
+
+        Picasso.with(this).load(image).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(userAvatar);
+
+        // Set click listeners
+
+        userAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addProfilePic(view);
+            }
+        });
+
+    }
+
+    private File createImageFile(boolean temp) throws IOException {
+
+        File outputDir;
+
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+
+        String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
+
+        outputDir = this.getCacheDir();
+
+        return File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, outputDir);
 
     }
 
@@ -137,8 +226,6 @@ public class ProfileBasicActivity extends AppCompatActivity {
                     if (mTempImagePath != null) {
 
                         photoCaptured = true;
-
-                        addPhoto.setVisibility(View.GONE);
 
                         userAvatar.setVisibility(View.VISIBLE);
 
@@ -283,7 +370,7 @@ public class ProfileBasicActivity extends AppCompatActivity {
                                                     "last_name", "organization_name", //"picture",
                                                     "public_email", "title"};
 
-                                            for (String key : KEYS){
+                                            for (String key : KEYS) {
 
                                                 coreProfile.edit().putString(key, user.properties.getStringProperties().get(key)).apply();
 

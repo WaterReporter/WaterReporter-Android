@@ -16,4 +16,11 @@
         <item><![CDATA[<b>Edit this report</b>]]></item>
         <item><![CDATA[<b>Delete this report</b>]]></item>
     </string-array>
+    <string-array name="default_avatars">
+        <item>calidris_canutus</item>
+        <item>gavia_immer</item>
+        <item>glyptemys_muhlenbergii</item>
+        <item>hudson_bay_sunset</item>
+        <item>lophodytes_cucullatus</item>
+    </string-array>
 </resources>
