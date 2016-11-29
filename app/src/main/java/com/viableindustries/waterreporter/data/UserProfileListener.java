@@ -24,9 +24,9 @@ public class UserProfileListener implements View.OnClickListener {
     @Override
     public void onClick(View view) {
 
-        Intent intent = new Intent(context, UserProfileActivity.class);
-
         UserHolder.setUser(user);
+
+        Intent intent = new Intent(context, UserProfileActivity.class);
 
         context.startActivity(intent);
 

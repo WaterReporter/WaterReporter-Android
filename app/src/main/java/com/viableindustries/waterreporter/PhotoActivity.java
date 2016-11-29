@@ -193,12 +193,11 @@ public class PhotoActivity extends AppCompatActivity
 
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
 
-            storageDir = new File(
-                    Environment.getExternalStorageDirectory()
-                            + CAMERA_DIR
-                            + getString(R.string.album_name)
-            );
+//            storageDir = new File(Environment.getExternalStoragePublicDirectory(
+//                    Environment.DIRECTORY_PICTURES), getString(R.string.album_name));
 
+            storageDir = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES), getString(R.string.album_name));
 
             if (!storageDir.mkdirs()) {
                 if (!storageDir.exists()) {
@@ -210,6 +209,24 @@ public class PhotoActivity extends AppCompatActivity
         return storageDir;
 
     }
+
+//    private File getAlbumStorageDir(String albumName) {
+//
+//        File file = null;
+//
+//        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+//
+//        }
+//        // Get the directory for the user's public pictures directory.
+//        file = new File(Environment.getExternalStoragePublicDirectory(
+//                Environment.DIRECTORY_PICTURES), getString(R.string.album_name));
+//        if (!file.mkdirs()) {
+//            Log.e("no directory", "Directory not created");
+//        }
+//    }
+//
+//    return file;
+//}
 
     private File createImageFile(boolean temp) throws IOException {
 
@@ -373,123 +390,127 @@ public class PhotoActivity extends AppCompatActivity
 
         Bitmap scaledBitmap = decodeSampledBitmapFromResource(filePath, 1080, 1080);
 
-        try {
-
-            // Create new image file and path reference
-
-            File file = createImageFile(true);
-
-            newFilePath = file.getAbsolutePath();
-
-            FileOutputStream fOut = new FileOutputStream(file);
-
-            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
-
-            fOut.flush();
-
-            fOut.close();
-
-            // Create instances of ExifInterface for new and existing image files
-
-            ExifInterface oldExif = new ExifInterface(filePath);
-
-            ExifInterface newExif = new ExifInterface(newFilePath);
-
-            String exifOrientation = oldExif.getAttribute(ExifInterface.TAG_ORIENTATION);
-
-            if (exifOrientation != null) {
-
-                Log.d("orientation", exifOrientation);
-                newExif.setAttribute(ExifInterface.TAG_ORIENTATION, exifOrientation);
-                newExif.saveAttributes();
-
-            }
-
-            String exifDateTime = oldExif.getAttribute(ExifInterface.TAG_DATETIME);
-
-            if (exifDateTime != null) {
-
-                Log.d("iso", exifDateTime);
-                newExif.setAttribute(ExifInterface.TAG_DATETIME, exifDateTime);
-                newExif.saveAttributes();
-
-            }
-
-            String exifMake = oldExif.getAttribute(ExifInterface.TAG_MAKE);
-
-            if (exifMake != null) {
-
-                Log.d("make", exifMake);
-                newExif.setAttribute(ExifInterface.TAG_MAKE, exifMake);
-                newExif.saveAttributes();
-
-            }
-
-            String exifModel = oldExif.getAttribute(ExifInterface.TAG_MODEL);
-
-            if (exifModel != null) {
-
-                Log.d("model", exifModel);
-                newExif.setAttribute(ExifInterface.TAG_MODEL, exifModel);
-                newExif.saveAttributes();
-
-            }
-
-            String exifLatitude = oldExif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
-
-            if (exifLatitude != null) {
-
-                Log.d("lat", exifLatitude);
-                newExif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, exifLatitude);
-                newExif.saveAttributes();
-
-            }
-
-            // Don't forget to check for and retrieve the latitude ref ("S", "N")
-
-            String exifLatitudeRef = oldExif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF);
-
-            if (exifLatitudeRef != null) {
-
-                Log.d("latRef", exifLatitudeRef);
-                newExif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, exifLatitudeRef);
-                newExif.saveAttributes();
-
-            }
-
-            // Don't forget to check for and retrieve the longitude ref ("E", "W")
-
-            String exifLongitude = oldExif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
-
-            if (exifLongitude != null) {
-
-                Log.d("long", exifLongitude);
-                newExif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, exifLongitude);
-                newExif.saveAttributes();
-
-            }
-
-            String exifLongitudeRef = oldExif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF);
-
-            if (exifLongitudeRef != null) {
-
-                Log.d("longRef", exifLongitudeRef);
-                newExif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, exifLongitude);
-                newExif.saveAttributes();
-
-            }
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-
-            Log.d(null, "Save file error!");
-
-            newFilePath = null;
-
-            return;
-
-        }
+//        try {
+//
+//            // Create new image file and path reference
+//
+//            File file = createImageFile(true);
+//
+//            Log.d("newFile", file.toString());
+//
+//            newFilePath = file.getAbsolutePath();
+//
+//            Uri contentUri = FileProvider.getUriForFile(this, "com.viableindustries.waterreporter.fileprovider", file);
+//
+//            FileOutputStream fOut = new FileOutputStream(file);
+//
+//            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+//
+//            fOut.flush();
+//
+//            fOut.close();
+//
+//            // Create instances of ExifInterface for new and existing image files
+//
+//            ExifInterface oldExif = new ExifInterface(filePath);
+//
+//            ExifInterface newExif = new ExifInterface(newFilePath);
+//
+//            String exifOrientation = oldExif.getAttribute(ExifInterface.TAG_ORIENTATION);
+//
+//            if (exifOrientation != null) {
+//
+//                Log.d("orientation", exifOrientation);
+//                newExif.setAttribute(ExifInterface.TAG_ORIENTATION, exifOrientation);
+//                newExif.saveAttributes();
+//
+//            }
+//
+//            String exifDateTime = oldExif.getAttribute(ExifInterface.TAG_DATETIME);
+//
+//            if (exifDateTime != null) {
+//
+//                Log.d("iso", exifDateTime);
+//                newExif.setAttribute(ExifInterface.TAG_DATETIME, exifDateTime);
+//                newExif.saveAttributes();
+//
+//            }
+//
+//            String exifMake = oldExif.getAttribute(ExifInterface.TAG_MAKE);
+//
+//            if (exifMake != null) {
+//
+//                Log.d("make", exifMake);
+//                newExif.setAttribute(ExifInterface.TAG_MAKE, exifMake);
+//                newExif.saveAttributes();
+//
+//            }
+//
+//            String exifModel = oldExif.getAttribute(ExifInterface.TAG_MODEL);
+//
+//            if (exifModel != null) {
+//
+//                Log.d("model", exifModel);
+//                newExif.setAttribute(ExifInterface.TAG_MODEL, exifModel);
+//                newExif.saveAttributes();
+//
+//            }
+//
+//            String exifLatitude = oldExif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
+//
+//            if (exifLatitude != null) {
+//
+//                Log.d("lat", exifLatitude);
+//                newExif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, exifLatitude);
+//                newExif.saveAttributes();
+//
+//            }
+//
+//            // Don't forget to check for and retrieve the latitude ref ("S", "N")
+//
+//            String exifLatitudeRef = oldExif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF);
+//
+//            if (exifLatitudeRef != null) {
+//
+//                Log.d("latRef", exifLatitudeRef);
+//                newExif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, exifLatitudeRef);
+//                newExif.saveAttributes();
+//
+//            }
+//
+//            // Don't forget to check for and retrieve the longitude ref ("E", "W")
+//
+//            String exifLongitude = oldExif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
+//
+//            if (exifLongitude != null) {
+//
+//                Log.d("long", exifLongitude);
+//                newExif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, exifLongitude);
+//                newExif.saveAttributes();
+//
+//            }
+//
+//            String exifLongitudeRef = oldExif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF);
+//
+//            if (exifLongitudeRef != null) {
+//
+//                Log.d("longRef", exifLongitudeRef);
+//                newExif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, exifLongitude);
+//                newExif.saveAttributes();
+//
+//            }
+//
+//        } catch (Exception e) {
+//
+//            e.printStackTrace();
+//
+//            Log.d(null, "Save file error!");
+//
+//            newFilePath = null;
+//
+//            return;
+//
+//        }
 
         mImageView.setImageBitmap(scaledBitmap);
 
@@ -501,7 +522,7 @@ public class PhotoActivity extends AppCompatActivity
 
     private void galleryAddPic(String filePath) {
 
-        Intent mediaScanIntent = new Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE");
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 
         File f = new File(filePath);
 
@@ -510,6 +531,8 @@ public class PhotoActivity extends AppCompatActivity
         // https://developer.android.com/reference/android/os/FileUriExposedException.html
 
         Uri contentUri = FileProvider.getUriForFile(this, "com.viableindustries.waterreporter.fileprovider", f);
+
+        Log.d("addToGallery", contentUri.toString());
 
         mediaScanIntent.setData(contentUri);
 
@@ -520,6 +543,8 @@ public class PhotoActivity extends AppCompatActivity
     private void handleBigCameraPhoto() {
 
         if (mCurrentPhotoPath != null) {
+
+            galleryAddPic(mCurrentPhotoPath);
 
             setPic(mCurrentPhotoPath);
 
@@ -598,9 +623,20 @@ public class PhotoActivity extends AppCompatActivity
 
                         Uri selectedImageUri = data.getData();
 
+//                        mCurrentPhotoPath = selectedImageUri.getPath();
+
+                        Log.d("storeImage", selectedImageUri.toString());
+
                         try {
 
-                            Bitmap scaledBitmap = decodeSampledBitmapFromStream(selectedImageUri, 1080, 1080);
+//                            Cursor returnCursor =
+//                                    getContentResolver().query(selectedImageUri, null, null, null, null);
+
+                            InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
+
+                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+//                            Bitmap scaledBitmap = decodeSampledBitmapFromStream(selectedImageUri, 1080, 1080);
 
                             try {
 
@@ -608,11 +644,11 @@ public class PhotoActivity extends AppCompatActivity
 
                                 File file = createImageFile(true);
 
-                                newFilePath = file.getAbsolutePath();
+                                mCurrentPhotoPath = file.getAbsolutePath();
 
                                 FileOutputStream fOut = new FileOutputStream(file);
 
-                                scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
 
                                 fOut.flush();
 
@@ -622,7 +658,7 @@ public class PhotoActivity extends AppCompatActivity
 
                                 ExifInterface oldExif = new ExifInterface(selectedImageUri.getPath());
 
-                                ExifInterface newExif = new ExifInterface(newFilePath);
+                                ExifInterface newExif = new ExifInterface(mCurrentPhotoPath);
 
                                 String exifOrientation = oldExif.getAttribute(ExifInterface.TAG_ORIENTATION);
 
@@ -640,13 +676,13 @@ public class PhotoActivity extends AppCompatActivity
 
                                 Log.d(null, "Save file error!");
 
-                                newFilePath = null;
+                                mCurrentPhotoPath = null;
 
                                 return;
 
                             }
 
-                            mImageView.setImageBitmap(scaledBitmap);
+                            mImageView.setImageBitmap(bitmap);
 
                             mImageView.setVisibility(View.VISIBLE);
 
@@ -661,6 +697,10 @@ public class PhotoActivity extends AppCompatActivity
                         }
 
                     }
+
+                } else {
+
+                    Log.d("image", "no image data");
 
                 }
 
@@ -743,7 +783,6 @@ public class PhotoActivity extends AppCompatActivity
 
                     } catch (Exception e) {
 
-                        //Toast.makeText(PhotoActivity.this, "Can\'t connect to the camera. Please select an image from your photo gallery instead.", Toast.LENGTH_LONG).show();
                         Snackbar.make(parentLayout, "Can\'t connect to the camera. Please select an image from your photo gallery instead.",
                                 Snackbar.LENGTH_SHORT)
                                 .show();
@@ -881,7 +920,8 @@ public class PhotoActivity extends AppCompatActivity
         if (photoCaptured) {
 
             Intent resultData = new Intent();
-            resultData.putExtra("file_path", newFilePath);
+            //resultData.putExtra("file_path", newFilePath);
+            resultData.putExtra("file_path", mCurrentPhotoPath);
             setResult(Activity.RESULT_OK, resultData);
             finish();
 
@@ -900,7 +940,10 @@ public class PhotoActivity extends AppCompatActivity
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
 
-        Intent photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        //Intent photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
+
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
         photoPickerIntent.setType("image/*");
 

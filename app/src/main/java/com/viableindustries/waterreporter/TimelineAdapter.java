@@ -327,6 +327,26 @@ public class TimelineAdapter extends ArrayAdapter {
 
         } else {
 
+            // Here we're inside the profile context
+
+            // Even within the profile context, we need to account for the fact that users will
+            // take action on reports that they don't own. Therefore, profile routing should be
+            // enabled when viewing a person's "actions" feed. We can determine the condition by
+            // comparing the transient user id stored in the UserHolder class and the `owner_id`
+            // field of the current report.
+
+            if (UserHolder.getUser().properties.id != feature.properties.owner_id) {
+
+                viewHolder.ownerAvatar.setOnClickListener(new UserProfileListener(getContext(), feature.properties.owner));
+
+                viewHolder.reportOwner.setOnClickListener(new UserProfileListener(getContext(), feature.properties.owner));
+
+            }
+
+            // Determine whether or not we can expose the "additional actions" ellipsis for access to edit/delete.
+            // This is a slightly different condition from the above because the id comparison must be against
+            // the id of the authenticated user.
+
             final SharedPreferences prefs = context.getSharedPreferences(context.getPackageName(), MODE_PRIVATE);
 
             if (prefs.getInt("user_id", 0) == feature.properties.owner_id) {
@@ -372,14 +392,6 @@ public class TimelineAdapter extends ArrayAdapter {
                 });
 
             } else {
-
-                // Even within the profile context, we need to account for the fact that users will
-                // take action on reports that they don't own. Therefore, profile routing should be
-                // enabled when viewing a person's "actions" feed.
-
-                viewHolder.ownerAvatar.setOnClickListener(new UserProfileListener(getContext(), feature.properties.owner));
-
-                viewHolder.reportOwner.setOnClickListener(new UserProfileListener(getContext(), feature.properties.owner));
 
                 viewHolder.actionsEllipsis.setVisibility(View.GONE);
 
