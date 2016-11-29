@@ -439,7 +439,7 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
     public void addPhoto() {
 
-        startActivityForResult(new Intent(this, PhotoActivity.class), ACTION_ADD_PHOTO);
+//        startActivityForResult(new Intent(this, PhotoActivity.class), ACTION_ADD_PHOTO);
 
     }
 
@@ -688,7 +688,7 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
         if (index == 0) {
 
-            startActivityForResult(new Intent(this, PhotoActivity.class), ACTION_ADD_PHOTO);
+//            startActivityForResult(new Intent(this, PhotoActivity.class), ACTION_ADD_PHOTO);
 
         } else {
 

@@ -196,7 +196,7 @@ public class ProfileBasicActivity extends AppCompatActivity {
 
     public void addProfilePic(View v) {
 
-        startActivityForResult(new Intent(this, PhotoActivity.class), ACTION_ADD_PHOTO);
+//        startActivityForResult(new Intent(this, PhotoActivity.class), ACTION_ADD_PHOTO);
 
     }
 

@@ -226,7 +226,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void addProfilePic() {
 
-        startActivityForResult(new Intent(this, PhotoActivity.class), ACTION_ADD_PHOTO);
+//        startActivityForResult(new Intent(this, PhotoActivity.class), ACTION_ADD_PHOTO);
 
     }
 

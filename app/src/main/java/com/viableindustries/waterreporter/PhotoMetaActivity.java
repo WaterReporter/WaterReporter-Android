@@ -1,17 +1,26 @@
 package com.viableindustries.waterreporter;
 
+import android.Manifest;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
@@ -56,6 +65,7 @@ import com.viableindustries.waterreporter.data.UserService;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.text.DecimalFormat;
@@ -79,10 +89,11 @@ import retrofit.mime.TypedFile;
  * Created by Ryan Hamley on 10/28/14.
  * This activity handles all of the report functionality.
  */
-public class PhotoMetaActivity extends AppCompatActivity {
+public class PhotoMetaActivity extends AppCompatActivity
+        implements PhotoPickerDialogFragment.PhotoPickerDialogListener {
 
     @Bind(R.id.scrollView)
-    ScrollView scrollView;
+    ScrollView parentLayout;
 
     @Bind(R.id.date_input)
     EditText dateField;
@@ -164,6 +175,28 @@ public class PhotoMetaActivity extends AppCompatActivity {
     private Report report;
 
     private String reportState;
+
+    private static final int ACTION_TAKE_PHOTO = 1;
+    private static final int ACTION_SELECT_PHOTO = 2;
+
+    private static final int PERMISSIONS_REQUEST_USE_CAMERA = 1;
+
+    private static final int PERMISSIONS_REQUEST_USE_STORAGE = 2;
+
+    protected boolean photoCaptured = false;
+
+//    private String mCurrentPhotoPath;
+//    private String newFilePath;
+
+    protected Bitmap mImageBitmap;
+
+    private static final String CAMERA_DIR = "/dcim/";
+    private static final String JPEG_FILE_PREFIX = "IMG_";
+    private static final String JPEG_FILE_SUFFIX = ".jpg";
+
+    final private String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
+
+    private Uri imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -374,6 +407,16 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
     }
 
+    protected void showPhotoPickerDialog() {
+
+        DialogFragment newFragment = new PhotoPickerDialogFragment();
+
+        FragmentManager fragmentManager = getFragmentManager();
+
+        newFragment.show(fragmentManager, "photoPickerDialog");
+
+    }
+
     protected void initializeDateField() {
 
         UtilityMethods utilityMethods = new UtilityMethods();
@@ -427,21 +470,103 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
                 break;
 
-            case ACTION_ADD_PHOTO:
+            case ACTION_TAKE_PHOTO:
 
-                if (resultCode == RESULT_OK) {
+                if (resultCode == RESULT_OK && data != null) {
 
-                    mTempImagePath = data.getStringExtra("file_path");
+                    FileUtils.galleryAddPic(this, mTempImagePath);
 
-                    if (mTempImagePath != null) {
+                    // Display thumbnail
+
+                    try {
+
+//                        InputStream inputStream = getContentResolver().openInputStream(imageUri);
+//
+//                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+//                        mImageView.setImageBitmap(bitmap);
 
                         mImageView.setVisibility(View.VISIBLE);
 
-                        File photo = new File(mTempImagePath);
+                        Picasso.with(this)
+                                .load(new File(mTempImagePath))
+                                .placeholder(R.drawable.square_placeholder)
+                                .into(mImageView);
 
-                        Picasso.with(this).load(photo).placeholder(R.drawable.user_avatar_placeholder).into(mImageView);
+                        photoCaptured = true;
+
+                    } catch (Exception e) {
+
+                        e.printStackTrace();
+
+                        Log.d(null, "Save file error!");
+
+                        mTempImagePath = null;
+
+                        return;
 
                     }
+
+                }
+
+                break;
+
+            case ACTION_SELECT_PHOTO:
+
+                if (resultCode == RESULT_OK) {
+
+                    if (data != null) {
+
+                        try {
+
+                            File f = FileUtils.createImageFile(this);
+
+                            mTempImagePath = f.getAbsolutePath();
+
+                            Log.d("filepath", mTempImagePath);
+
+                            // Use FileProvider to comply with Android security requirements.
+                            // See: https://developer.android.com/training/camera/photobasics.html
+                            // https://developer.android.com/reference/android/os/FileUriExposedException.html
+
+                            imageUri = data.getData();
+
+                            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+
+                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+                            FileOutputStream fOut = new FileOutputStream(f);
+
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+
+                            fOut.flush();
+
+                            fOut.close();
+
+//                            mImageView.setImageBitmap(bitmap);
+
+                            mImageView.setVisibility(View.VISIBLE);
+
+                            Picasso.with(this)
+                                    .load(f)
+                                    .placeholder(R.drawable.square_placeholder)
+                                    .into(mImageView);
+
+                            photoCaptured = true;
+
+                        } catch (Exception e) {
+
+                            Snackbar.make(parentLayout, "Unable to read image.",
+                                    Snackbar.LENGTH_SHORT)
+                                    .show();
+
+                        }
+
+                    }
+
+                } else {
+
+                    Log.d("image", "no image data");
 
                 }
 
@@ -462,7 +587,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
     public void addImage(View v) {
 
-        startActivityForResult(new Intent(this, PhotoActivity.class), ACTION_ADD_PHOTO);
+        showPhotoPickerDialog();
 
     }
 
@@ -509,7 +634,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
         }
 
-        scrollView.smoothScrollTo(0, 0);
+        parentLayout.smoothScrollTo(0, 0);
 
         access_token = prefs.getString("access_token", "");
 
@@ -843,6 +968,104 @@ public class PhotoMetaActivity extends AppCompatActivity {
                 groupList.addView(item);
 
             }
+
+        }
+
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+
+        // For compatibility with Android 6.0 (Marshmallow, API 23), we need to check permissions before
+        // dispatching takePictureIntent, otherwise the app will crash.
+
+        PermissionUtil.verifyPermission(this, Manifest.permission.CAMERA);
+
+        PermissionUtil.verifyPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        try {
+
+            File f = FileUtils.createImageFile(this);
+
+            mTempImagePath = f.getAbsolutePath();
+
+            Log.d("filepath", mTempImagePath);
+
+            // Use FileProvider to comply with Android security requirements.
+            // See: https://developer.android.com/training/camera/photobasics.html
+            // https://developer.android.com/reference/android/os/FileUriExposedException.html
+
+            imageUri = FileProvider.getUriForFile(this, FILE_PROVIDER_AUTHORITY, f);
+
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                startActivityForResult(takePictureIntent, ACTION_TAKE_PHOTO);
+            }
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+
+            mTempImagePath = null;
+
+        }
+
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+
+        PermissionUtil.verifyPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        Intent photoPickerIntent;
+
+        if (Build.VERSION.SDK_INT < 19) {
+
+            photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
+
+        } else {
+
+            photoPickerIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+
+            photoPickerIntent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        }
+
+//        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK,
+//                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+        photoPickerIntent.setType("image/*");
+
+        try {
+
+            File f = FileUtils.createImageFile(this);
+
+            mTempImagePath = f.getAbsolutePath();
+
+            Log.d("filepath", mTempImagePath);
+
+            // Use FileProvider to comply with Android security requirements.
+            // See: https://developer.android.com/training/camera/photobasics.html
+            // https://developer.android.com/reference/android/os/FileUriExposedException.html
+
+            imageUri = FileProvider.getUriForFile(this, FILE_PROVIDER_AUTHORITY, f);
+
+            photoPickerIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+
+            if (photoPickerIntent.resolveActivity(getPackageManager()) != null) {
+
+                startActivityForResult(photoPickerIntent, ACTION_SELECT_PHOTO);
+
+            }
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+
+            mTempImagePath = null;
 
         }
 
