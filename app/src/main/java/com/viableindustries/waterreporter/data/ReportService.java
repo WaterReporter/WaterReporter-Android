@@ -25,7 +25,7 @@ import retrofit.http.Query;
  * Created by Ryan Hamley on 10/6/14.
  * This class defines the Retrofit interface with all the methods used to interact with the API
  * The top-level data classes returned from the API are:
- * TemplateResponse and ReportPostResponse
+ * ReportPostResponse
  */
 public interface ReportService {
 

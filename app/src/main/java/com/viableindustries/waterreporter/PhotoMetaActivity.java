@@ -48,7 +48,6 @@ import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.ReportPatchBody;
 import com.viableindustries.waterreporter.data.ReportPostBody;
 import com.viableindustries.waterreporter.data.ReportService;
-import com.viableindustries.waterreporter.data.Submission;
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserHolder;
 import com.viableindustries.waterreporter.data.UserProperties;
@@ -163,6 +162,8 @@ public class PhotoMetaActivity extends AppCompatActivity {
     private GeometryResponse geometryResponse;
 
     private Report report;
+
+    private String reportState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -546,11 +547,21 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
         }
 
+        // Execute the correct action and set the value of the `reportState` string
+        // to the appropriate value. This should not be set universally because
+        // existing reports may be edited at any time ("closing" a report doesn't lock
+        // its state). A user may edit a closed report, therefore passing "open" as
+        // the default value of `reportState` would not be correct.
+
         if (editMode) {
+
+            reportState = report.properties.state;
 
             patchReport();
 
         } else {
+
+            reportState = "open";
 
             postReport();
 
@@ -623,7 +634,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
                         }
 
                         ReportPostBody reportPostBody = new ReportPostBody(geometryResponse, groups,
-                                images, true, dateText, commentsText, "public");
+                                images, true, dateText, commentsText, reportState);
 
                         Log.d("groups", groups.toString());
 
@@ -735,7 +746,7 @@ public class PhotoMetaActivity extends AppCompatActivity {
 
         }
 
-        ReportPatchBody reportPatchBody = new ReportPatchBody(geometryResponse, groups, dateText, commentsText, "public");
+        ReportPatchBody reportPatchBody = new ReportPatchBody(geometryResponse, groups, dateText, commentsText, reportState);
 
         Log.d("groups", groups.toString());
 

@@ -27,12 +27,20 @@ import com.viableindustries.waterreporter.data.UserProperties;
 import com.viableindustries.waterreporter.data.UserService;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -67,14 +75,8 @@ public class EditProfileActivity extends AppCompatActivity {
     @Bind(R.id.user_bio)
     EditText userBioInput;
 
-    @Bind(R.id.avatarPreview)
-    FrameLayout avatarPreview;
-
     @Bind(R.id.user_avatar)
     ImageView userAvatar;
-
-    @Bind(R.id.add_photo)
-    Button addPhoto;
 
     @Bind(R.id.change_image)
     ImageButton editPhoto;
@@ -84,6 +86,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
     @Bind(R.id.saving_message)
     TextView savingMessage;
+
+    private File image;
 
     private String mGalleryPath;
 
@@ -96,6 +100,10 @@ public class EditProfileActivity extends AppCompatActivity {
     private User coreUser;
 
     private String access_token;
+
+    private static final String JPEG_FILE_PREFIX = "IMG_";
+
+    private static final String JPEG_FILE_SUFFIX = ".jpg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,15 +137,57 @@ public class EditProfileActivity extends AppCompatActivity {
 
         userBioInput.setText(coreUser.properties.description);
 
-        // Load avatar if it exists
+        // Load avatar if it exists, otherwise provide a randomized default image.
 
         if (coreUser.properties.picture != null) {
 
-            addPhoto.setVisibility(View.GONE);
-
-            avatarPreview.setVisibility(View.VISIBLE);
-
             Picasso.with(this).load(coreUser.properties.picture).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(userAvatar);
+
+        } else {
+
+            String[] array = getResources().getStringArray(R.array.default_avatars);
+
+            String randomImage = array[new Random().nextInt(array.length)];
+
+            int avatarId = getResources().getIdentifier(randomImage, "drawable", getPackageName());
+
+            // Create new image file and path reference
+
+            try {
+
+                image = createImageFile(true);
+
+                mTempImagePath = image.getAbsolutePath();
+
+                InputStream inputStream = getResources().openRawResource(avatarId);
+
+                OutputStream out = new FileOutputStream(image);
+
+                byte buf[] = new byte[1024];
+                int len;
+
+                while ((len = inputStream.read(buf)) > 0)
+                    out.write(buf, 0, len);
+
+                out.close();
+
+                inputStream.close();
+
+                photoCaptured = true;
+
+                Picasso.with(this).load(image).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(userAvatar);
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+                Log.d(null, "Save file error!");
+
+                mTempImagePath = null;
+
+                return;
+
+            }
 
         }
 
@@ -157,12 +207,20 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
 
-        addPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addProfilePic();
-            }
-        });
+    }
+
+    private File createImageFile(boolean temp) throws IOException {
+
+        File outputDir;
+
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+
+        String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
+
+        outputDir = this.getCacheDir();
+
+        return File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, outputDir);
 
     }
 
@@ -186,10 +244,6 @@ public class EditProfileActivity extends AppCompatActivity {
                     if (mTempImagePath != null) {
 
                         photoCaptured = true;
-
-                        addPhoto.setVisibility(View.GONE);
-
-                        avatarPreview.setVisibility(View.VISIBLE);
 
                         File photo = new File(mTempImagePath);
 
@@ -253,6 +307,12 @@ public class EditProfileActivity extends AppCompatActivity {
                         images.add(image_id);
 
                         userPatch.put("images", images);
+
+                        // The value of the `picture` attribute must be supplied
+                        // manually as the system doesn't populate this field
+                        // automatically.
+
+                        userPatch.put("picture", imageProperties.icon_retina);
 
                         // Complete request body and send PATCH request
 

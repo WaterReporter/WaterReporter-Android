@@ -177,7 +177,6 @@ public class ProfileBasicActivity extends AppCompatActivity {
                 addProfilePic(view);
             }
         });
-
     }
 
     private File createImageFile(boolean temp) throws IOException {
@@ -307,6 +306,12 @@ public class ProfileBasicActivity extends AppCompatActivity {
 
                             userPatch.put("first_name", firstName);
                             userPatch.put("last_name", lastName);
+
+                            // The value of the `picture` attribute must be supplied
+                            // manually as the system doesn't populate this field
+                            // automatically.
+
+                            userPatch.put("picture", imageProperties.icon_retina);
 
                             if (!title.isEmpty()) userPatch.put("title", title);
                             if (!organizationName.isEmpty())

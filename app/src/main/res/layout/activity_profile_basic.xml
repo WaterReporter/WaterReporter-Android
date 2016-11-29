@@ -42,11 +42,6 @@
         android:layout_marginTop="-1dp"
         android:background="@color/gray_224" />
 
-    <!--<View-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="1dp"-->
-    <!--android:background="@color/gray_224" />-->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,34 +58,6 @@
             android:text="@string/user_avatar"
             android:textColor="@color/gray_186"
             android:textSize="14sp" />
-
-        <!--<Button-->
-            <!--android:id="@+id/add_photo"-->
-            <!--android:layout_width="120dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:layout_marginBottom="20dp"-->
-            <!--android:layout_marginTop="0dp"-->
-            <!--android:background="@drawable/green_button"-->
-            <!--android:gravity="center"-->
-            <!--android:onClick="addProfilePic"-->
-            <!--android:paddingBottom="8dp"-->
-            <!--android:paddingTop="8dp"-->
-            <!--android:text="Add photo"-->
-            <!--android:textAllCaps="true"-->
-            <!--android:textColor="@color/white"-->
-            <!--android:textSize="@dimen/small_text"-->
-            <!--android:textStyle="bold" />-->
-
-        <!--<ImageView-->
-            <!--android:id="@+id/user_avatar"-->
-            <!--android:layout_width="80dp"-->
-            <!--android:layout_height="80dp"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:layout_marginBottom="16dp"-->
-            <!--android:layout_marginTop="0dp"-->
-            <!--android:scaleType="fitXY"-->
-            <!--android:visibility="gone" />-->
 
         <FrameLayout
             android:id="@+id/avatarPreview"
@@ -372,21 +339,6 @@
 
     </LinearLayout>
 
-    <!--<Button-->
-    <!--android:id="@+id/save_profile"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="bottom"-->
-    <!--android:layout_marginBottom="0dp"-->
-    <!--android:layout_marginTop="0dp"-->
-    <!--android:background="@color/base_blue"-->
-    <!--android:gravity="center"-->
-    <!--android:onClick="saveProfile"-->
-    <!--android:paddingBottom="20dp"-->
-    <!--android:paddingTop="20dp"-->
-    <!--android:text="Save"-->
-    <!--android:textColor="#FFFFFF"-->
-    <!--android:textSize="@dimen/base_text" />-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

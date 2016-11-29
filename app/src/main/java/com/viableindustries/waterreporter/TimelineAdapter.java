@@ -373,6 +373,14 @@ public class TimelineAdapter extends ArrayAdapter {
 
             } else {
 
+                // Even within the profile context, we need to account for the fact that users will
+                // take action on reports that they don't own. Therefore, profile routing should be
+                // enabled when viewing a person's "actions" feed.
+
+                viewHolder.ownerAvatar.setOnClickListener(new UserProfileListener(getContext(), feature.properties.owner));
+
+                viewHolder.reportOwner.setOnClickListener(new UserProfileListener(getContext(), feature.properties.owner));
+
                 viewHolder.actionsEllipsis.setVisibility(View.GONE);
 
             }

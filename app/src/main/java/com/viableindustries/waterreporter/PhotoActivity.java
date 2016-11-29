@@ -31,6 +31,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -70,6 +71,8 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import retrofit.RestAdapter;
+
+import static android.provider.MediaStore.AUTHORITY;
 
 /**
  * Created by Brendan McIntyre on 2015-09-01.
@@ -502,7 +505,11 @@ public class PhotoActivity extends AppCompatActivity
 
         File f = new File(filePath);
 
-        Uri contentUri = Uri.fromFile(f);
+        // Use FileProvider to comply with Android security requirements.
+        // See: https://developer.android.com/training/camera/photobasics.html
+        // https://developer.android.com/reference/android/os/FileUriExposedException.html
+
+        Uri contentUri = FileProvider.getUriForFile(this, "com.viableindustries.waterreporter.fileprovider", f);
 
         mediaScanIntent.setData(contentUri);
 
@@ -730,7 +737,9 @@ public class PhotoActivity extends AppCompatActivity
 
                     try {
 
-                        startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), ACTION_TAKE_PHOTO);
+                        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                        startActivityForResult(cameraIntent, ACTION_TAKE_PHOTO);
 
                     } catch (Exception e) {
 
@@ -802,7 +811,11 @@ public class PhotoActivity extends AppCompatActivity
 
             Log.d("filepath", mCurrentPhotoPath);
 
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+            // Use FileProvider to comply with Android security requirements.
+            // See: https://developer.android.com/training/camera/photobasics.html
+            // https://developer.android.com/reference/android/os/FileUriExposedException.html
+
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(this, "com.viableindustries.waterreporter.fileprovider", f));
 
         } catch (IOException e) {
 
@@ -823,7 +836,6 @@ public class PhotoActivity extends AppCompatActivity
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(PhotoActivity.this, Manifest.permission.CAMERA)) {
 
-                //Toast.makeText(PhotoActivity.this, "Water Reporter needs to access your camera.", Toast.LENGTH_LONG).show();
                 Snackbar.make(parentLayout, "Camera permission is need to capture an image for your report.",
                         Snackbar.LENGTH_INDEFINITE)
                         .setAction("OK", new View.OnClickListener() {
@@ -912,11 +924,27 @@ public class PhotoActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onPause() {
+
+        super.onPause();
+
+    }
+
+    @Override
     public void onResume() {
 
         super.onResume();
 
         if (newFilePath != null && !newFilePath.isEmpty()) photoCaptured = true;
+
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+
+        ButterKnife.unbind(this);
 
     }
 
