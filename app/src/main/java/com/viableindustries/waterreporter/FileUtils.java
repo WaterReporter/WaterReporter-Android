@@ -3,15 +3,19 @@ package com.viableindustries.waterreporter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 
 //import org.apache.commons.io.IOUtils;
 
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -250,6 +254,96 @@ public class FileUtils {
         }
     }
 
+    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+
+        // Raw height and width of image
+        final int height = options.outHeight;
+
+        final int width = options.outWidth;
+
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+
+                inSampleSize *= 2;
+
+            }
+
+        }
+
+        Log.d("sampleSize", String.valueOf(inSampleSize));
+
+        return inSampleSize;
+
+    }
+
+    public static Bitmap decodeSampledBitmapFromStream(Activity activity, Uri uri, int reqWidth, int reqHeight) {
+
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+
+        Bitmap bitmap = null;
+
+        ParcelFileDescriptor parcelFD = null;
+
+        InputStream inputStream;
+
+        try {
+
+            parcelFD = activity.getContentResolver().openFileDescriptor(uri, "r");
+
+            if (parcelFD != null) {
+
+                FileDescriptor imageSource = parcelFD.getFileDescriptor();
+
+                options.inJustDecodeBounds = true;
+
+                BitmapFactory.decodeFileDescriptor(imageSource, null, options);
+
+                // Calculate inSampleSize
+                options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+                // Decode bitmap with inSampleSize set
+                options.inJustDecodeBounds = false;
+
+                bitmap = BitmapFactory.decodeFileDescriptor(imageSource, null, options);
+
+            }
+
+        } catch (Exception e) {
+
+            return null;
+
+        } finally {
+
+            if (parcelFD != null) {
+
+                try {
+
+                    parcelFD.close();
+
+                    //return bitmap;
+
+                } catch (IOException e) {
+
+                    // ignored
+
+                }
+
+            }
+
+        }
+
+        return bitmap;
+
+    }
 
 }
 

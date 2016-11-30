@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
+import android.media.ThumbnailUtils;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -73,6 +74,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -101,7 +103,7 @@ public class PhotoMetaActivity extends AppCompatActivity
     @Bind(R.id.comment_input)
     EditText commentsField;
 
-    @Bind(R.id.preview)
+    @Bind(R.id.report_image_preview)
     ImageView mImageView;
 
     @Bind(R.id.groups)
@@ -112,6 +114,9 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     @Bind(R.id.camera_button_container)
     RelativeLayout cameraButtonContainer;
+
+    @Bind(R.id.add_report_image)
+    ImageView addImageIcon;
 
     @Bind(R.id.date_component)
     LinearLayout dateComponent;
@@ -164,7 +169,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     private SharedPreferences prefs;
 
-    private SharedPreferences groupPrefs;
+    private SharedPreferences groupMemberships;
 
     protected SharedPreferences associatedGroups;
 
@@ -179,20 +184,7 @@ public class PhotoMetaActivity extends AppCompatActivity
     private static final int ACTION_TAKE_PHOTO = 1;
     private static final int ACTION_SELECT_PHOTO = 2;
 
-    private static final int PERMISSIONS_REQUEST_USE_CAMERA = 1;
-
-    private static final int PERMISSIONS_REQUEST_USE_STORAGE = 2;
-
     protected boolean photoCaptured = false;
-
-//    private String mCurrentPhotoPath;
-//    private String newFilePath;
-
-    protected Bitmap mImageBitmap;
-
-    private static final String CAMERA_DIR = "/dcim/";
-    private static final String JPEG_FILE_PREFIX = "IMG_";
-    private static final String JPEG_FILE_SUFFIX = ".jpg";
 
     final private String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
 
@@ -211,7 +203,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        groupPrefs = getSharedPreferences(getString(R.string.group_membership_key), 0);
+        groupMemberships = getSharedPreferences(getString(R.string.group_membership_key), 0);
 
         associatedGroups = getSharedPreferences(getString(R.string.associated_group_key), 0);
 
@@ -344,6 +336,10 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             // Load image
 
+            addImageIcon.setVisibility(View.GONE);
+
+            mImageView.setVisibility(View.VISIBLE);
+
             Picasso.with(this).load(report.properties.images.get(0).properties.square_retina).placeholder(R.drawable.user_avatar_placeholder).into(mImageView);
 
             // Set date text
@@ -472,25 +468,47 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             case ACTION_TAKE_PHOTO:
 
-                if (resultCode == RESULT_OK && data != null) {
+                if (resultCode == RESULT_OK) {
 
                     FileUtils.galleryAddPic(this, mTempImagePath);
+
+                    Log.d("path", mTempImagePath);
 
                     // Display thumbnail
 
                     try {
 
-//                        InputStream inputStream = getContentResolver().openInputStream(imageUri);
-//
-//                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                        File f = new File(mTempImagePath);
 
-//                        mImageView.setImageBitmap(bitmap);
+                        String thumbName = String.format("%s-%s.jpg", Math.random(), new Date());
+
+                        File thumb = File.createTempFile(thumbName, null, this.getCacheDir());
+
+                        Log.d("taken path", f.getAbsolutePath());
+                        Log.d("taken path", f.toString());
+                        Log.d("taken path", f.toURI().toString());
+
+                        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+
+                        Bitmap bitmap = BitmapFactory.decodeFile(f.getAbsolutePath(), bmOptions);
+
+                        bitmap = ThumbnailUtils.extractThumbnail(bitmap, 96, 96);
+
+                        FileOutputStream fOut = new FileOutputStream(thumb);
+
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+
+                        fOut.flush();
+
+                        fOut.close();
+
+                        addImageIcon.setVisibility(View.GONE);
 
                         mImageView.setVisibility(View.VISIBLE);
 
                         Picasso.with(this)
-                                .load(new File(mTempImagePath))
-                                .placeholder(R.drawable.square_placeholder)
+                                .load(thumb)
+                                .placeholder(R.drawable.user_avatar_placeholder)
                                 .into(mImageView);
 
                         photoCaptured = true;
@@ -499,9 +517,15 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                         e.printStackTrace();
 
-                        Log.d(null, "Save file error!");
+                        Log.d("path error", "Save file error!");
 
                         mTempImagePath = null;
+
+                        addImageIcon.setVisibility(View.VISIBLE);
+
+                        mImageView.setVisibility(View.GONE);
+
+                        photoCaptured = false;
 
                         return;
 
@@ -533,7 +557,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                             InputStream inputStream = getContentResolver().openInputStream(imageUri);
 
-                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                            Bitmap bitmap = FileUtils.decodeSampledBitmapFromStream(this, imageUri, 1080, 1080);
 
                             FileOutputStream fOut = new FileOutputStream(f);
 
@@ -543,13 +567,13 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                             fOut.close();
 
-//                            mImageView.setImageBitmap(bitmap);
+                            addImageIcon.setVisibility(View.GONE);
 
                             mImageView.setVisibility(View.VISIBLE);
 
                             Picasso.with(this)
                                     .load(f)
-                                    .placeholder(R.drawable.square_placeholder)
+                                    .placeholder(R.drawable.user_avatar_placeholder)
                                     .into(mImageView);
 
                             photoCaptured = true;
@@ -559,6 +583,14 @@ public class PhotoMetaActivity extends AppCompatActivity
                             Snackbar.make(parentLayout, "Unable to read image.",
                                     Snackbar.LENGTH_SHORT)
                                     .show();
+
+                            addImageIcon.setVisibility(View.VISIBLE);
+
+                            mImageView.setVisibility(View.GONE);
+
+                            mTempImagePath = null;
+
+                            photoCaptured = false;
 
                         }
 
@@ -669,6 +701,45 @@ public class PhotoMetaActivity extends AppCompatActivity
             toast.show();
 
             return;
+
+        }
+
+        // Need an explicit location check so the user is reminded to confirm
+
+        if (location != null) {
+
+            latitude = location.getLatitude();
+
+            longitude = location.getLongitude();
+
+            if (latitude == 0 || longitude == 0) {
+
+                CharSequence text = "Please verify your location.";
+                Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+                toast.show();
+
+                return;
+
+            }
+
+        } else {
+
+            SharedPreferences prefs =
+                    getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+            latitude = prefs.getFloat("latitude", 0);
+
+            longitude = prefs.getFloat("longitude", 0);
+
+            if (latitude == 0 || longitude == 0) {
+
+                CharSequence text = "Please verify your location.";
+                Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+                toast.show();
+
+                return;
+
+            }
 
         }
 
@@ -849,7 +920,11 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             Map<String, ?> groupKeys = associatedGroups.getAll();
 
+            Log.d("associated groups", associatedGroups.getAll().toString());
+
             for (Map.Entry<String, ?> entry : groupKeys.entrySet()) {
+
+                Log.d("associated groups", entry.getValue().toString() + entry.getKey());
 
                 Integer value = (Integer) entry.getValue();
 
@@ -931,7 +1006,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         ArrayList<AbbreviatedOrganization> abbreviatedOrganizations = new ArrayList<>();
 
-        Map<String, ?> keys = groupPrefs.getAll();
+        Map<String, ?> keys = groupMemberships.getAll();
 
         for (Map.Entry<String, ?> entry : keys.entrySet()) {
 
@@ -944,6 +1019,32 @@ public class PhotoMetaActivity extends AppCompatActivity
             }
 
         }
+
+        // If editing an existing report, we need to iterate the array of organizations
+        // associated with the report and persist references in preferences
+
+        if (editMode) {
+
+            for (Organization organization : report.properties.groups) {
+
+                int selected = groupMemberships.getInt(organization.properties.name, 0);
+                
+                if (selected == 0) {
+
+                    abbreviatedOrganizations.add(new AbbreviatedOrganization(organization.properties.id, organization.properties.name));
+
+                }
+                
+                // Track entry in associated groups preference.
+                // IMPORTANT: This is NOT the preference that records group memberships!
+
+                associatedGroups.edit().putInt(organization.properties.name, organization.properties.id).apply();
+
+            }
+
+        }
+
+        Log.d("associated groups", associatedGroups.getAll().toString());
 
         populateOrganizations(abbreviatedOrganizations);
 
@@ -1033,9 +1134,6 @@ public class PhotoMetaActivity extends AppCompatActivity
             photoPickerIntent.addCategory(Intent.CATEGORY_OPENABLE);
 
         }
-
-//        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK,
-//                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
         photoPickerIntent.setType("image/*");
 

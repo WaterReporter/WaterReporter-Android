@@ -21,6 +21,8 @@ import android.widget.Toast;
 
 import com.viableindustries.waterreporter.data.AbbreviatedOrganization;
 import com.viableindustries.waterreporter.data.Organization;
+import com.viableindustries.waterreporter.data.Report;
+import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserOrgPatch;
 import com.viableindustries.waterreporter.data.UserService;
@@ -52,7 +54,7 @@ public class OrganizationCheckListAdapter extends ArrayAdapter<AbbreviatedOrgani
 
     protected SharedPreferences prefs;
 
-    protected SharedPreferences groupPrefs;
+    protected SharedPreferences associatedGroups;
 
     public OrganizationCheckListAdapter(Context context, ArrayList<AbbreviatedOrganization> features) {
 
@@ -64,7 +66,7 @@ public class OrganizationCheckListAdapter extends ArrayAdapter<AbbreviatedOrgani
 
         prefs = context.getSharedPreferences(context.getPackageName(), 0);
 
-        groupPrefs = context.getSharedPreferences(context.getString(R.string.associated_group_key), 0);
+        associatedGroups = context.getSharedPreferences(context.getString(R.string.associated_group_key), 0);
 
     }
 
@@ -82,15 +84,15 @@ public class OrganizationCheckListAdapter extends ArrayAdapter<AbbreviatedOrgani
 
     private void updateGroupSelection(final Organization organization) {
 
-        int selected = groupPrefs.getInt(organization.properties.name, 0);
+        int selected = associatedGroups.getInt(organization.properties.name, 0);
 
         if (selected > 0) {
 
-            groupPrefs.edit().putInt(organization.properties.name, 0).apply();
+            associatedGroups.edit().putInt(organization.properties.name, 0).apply();
 
         } else {
 
-            groupPrefs.edit().putInt(organization.properties.name, organization.properties.id).apply();
+            associatedGroups.edit().putInt(organization.properties.name, organization.properties.id).apply();
 
         }
 
@@ -123,6 +125,20 @@ public class OrganizationCheckListAdapter extends ArrayAdapter<AbbreviatedOrgani
 
         associateGroup.setTag(String.format("%s__%s", name, id));
 
+        // If editing an existing report, we need to set the selected state of the SelectCompat element
+
+        int existingId = associatedGroups.getInt(feature.name, 0);
+
+        if (existingId == feature.id) {
+
+            associateGroup.setChecked(true);
+
+        } else {
+
+            associateGroup.setChecked(false);
+
+        }
+
         // Set click listener
 
         associateGroup.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -132,19 +148,22 @@ public class OrganizationCheckListAdapter extends ArrayAdapter<AbbreviatedOrgani
 
                 Log.d("Button Event", "Clicked the associate group button.");
 
-                int selected = groupPrefs.getInt(feature.name, 0);
+                int selected = associatedGroups.getInt(feature.name, 0);
+
+                Log.d("associated groups", selected + feature.name);
 
                 if (selected > 0) {
 
-                    groupPrefs.edit().putInt(feature.name, 0).apply();
+                    associatedGroups.edit().putInt(feature.name, 0).apply();
 
                 } else {
 
-                    groupPrefs.edit().putInt(feature.name, feature.id).apply();
+                    associatedGroups.edit().putInt(feature.name, feature.id).apply();
 
                 }
 
             }
+
         });
 
         // Lookup view for data population

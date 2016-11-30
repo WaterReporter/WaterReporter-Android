@@ -89,7 +89,7 @@
                     android:background="@color/gray_232" />
 
                 <ImageView
-                    android:id="@+id/add_image"
+                    android:id="@+id/add_report_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
@@ -97,7 +97,7 @@
                     android:src="@drawable/ic_camera_alt_black_24dp" />
 
                 <ImageView
-                    android:id="@+id/preview"
+                    android:id="@+id/report_image_preview"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_centerInParent="true"
