@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
@@ -469,6 +470,8 @@ public class PhotoMetaActivity extends AppCompatActivity
             case ACTION_TAKE_PHOTO:
 
                 if (resultCode == RESULT_OK) {
+
+                    this.revokeUriPermission(imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
                     FileUtils.galleryAddPic(this, mTempImagePath);
 
@@ -1101,6 +1104,19 @@ public class PhotoMetaActivity extends AppCompatActivity
             imageUri = FileProvider.getUriForFile(this, FILE_PROVIDER_AUTHORITY, f);
 
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+
+            // Using v4 Support Library FileProvider and Camera intent on pre-Marshmallow devices
+            // requires granting FileUri permissions at runtime
+
+            List<ResolveInfo> resolvedIntentActivities = this.getPackageManager().queryIntentActivities(takePictureIntent, PackageManager.MATCH_DEFAULT_ONLY);
+
+            for (ResolveInfo resolvedIntentInfo : resolvedIntentActivities) {
+
+                String packageName = resolvedIntentInfo.activityInfo.packageName;
+
+                this.grantUriPermission(packageName, imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                
+            }
 
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                 startActivityForResult(takePictureIntent, ACTION_TAKE_PHOTO);

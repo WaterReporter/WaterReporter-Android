@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -450,6 +452,8 @@ public class EditProfileActivity extends AppCompatActivity implements
 
                 if (resultCode == RESULT_OK) {
 
+                    this.revokeUriPermission(imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
                     FileUtils.galleryAddPic(this, mTempImagePath);
 
                     Log.d("path", mTempImagePath);
@@ -578,6 +582,17 @@ public class EditProfileActivity extends AppCompatActivity implements
             imageUri = FileProvider.getUriForFile(this, FILE_PROVIDER_AUTHORITY, f);
 
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+
+            // Using v4 Support Library FileProvider and Camera intent on pre-Marshmallow devices
+            // requires granting FileUri permissions at runtime
+
+            List<ResolveInfo> resolvedIntentActivities = this.getPackageManager().queryIntentActivities(takePictureIntent, PackageManager.MATCH_DEFAULT_ONLY);
+
+            for (ResolveInfo resolvedIntentInfo : resolvedIntentActivities) {
+                String packageName = resolvedIntentInfo.activityInfo.packageName;
+
+                this.grantUriPermission(packageName, imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            }
 
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                 startActivityForResult(takePictureIntent, ACTION_TAKE_PHOTO);
