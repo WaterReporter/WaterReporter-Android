@@ -1115,7 +1115,7 @@ public class PhotoMetaActivity extends AppCompatActivity
                 String packageName = resolvedIntentInfo.activityInfo.packageName;
 
                 this.grantUriPermission(packageName, imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                
+
             }
 
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
