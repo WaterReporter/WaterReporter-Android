@@ -374,28 +374,6 @@
                 android:indeterminateDrawable="@drawable/custom_progress_compat"
                 android:visibility="invisible" />
 
-            <!--<ImageButton-->
-                <!--android:id="@+id/post_success"-->
-                <!--android:layout_width="56dp"-->
-                <!--android:layout_height="56dp"-->
-                <!--android:layout_gravity="center"-->
-                <!--android:background="@drawable/floating_action_green"-->
-                <!--android:clickable="false"-->
-                <!--android:src="@drawable/ic_done_white_24dp"-->
-                <!--android:visibility="gone" />-->
-
-            <!--<android.support.design.widget.FloatingActionButton-->
-                <!--android:id="@+id/post_success"-->
-                <!--android:layout_width="56dp"-->
-                <!--android:layout_height="56dp"-->
-                <!--android:layout_gravity="center"-->
-                <!--android:clickable="false"-->
-                <!--android:src="@drawable/ic_done_white_24dp"-->
-                <!--android:visibility="gone"-->
-                <!--app:fabSize="normal"-->
-                <!--app:rippleColor="@color/blue_green"-->
-                <!--app:useCompatPadding="true" />-->
-
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/post_report"
                 android:layout_width="56dp"
@@ -417,17 +395,8 @@
                 android:src="@drawable/ic_done_white_24dp"
                 android:visibility="gone"
                 app:fabSize="normal"
-                app:rippleColor="@color/green_1"
+                app:rippleColor="@color/blue_green"
                 app:useCompatPadding="true" />
-
-            <!--<ImageButton-->
-            <!--android:id="@+id/button_capture"-->
-            <!--android:layout_width="56dp"-->
-            <!--android:layout_height="56dp"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:background="@drawable/floating_action_green"-->
-            <!--android:clickable="false"-->
-            <!--android:src="@drawable/ic_done_white_24dp" />-->
 
         </FrameLayout>
 

@@ -228,9 +228,11 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         progressBar.setIndeterminateDrawable(ContextCompat.getDrawable(this, R.drawable.custom_progress_compat));
 
-        // Set FloatingActionButton color
+        // Set FloatingActionButton colors
 
         postReport.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.base_blue)));
+
+        postSuccess.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.blue_green)));
 
         // Instantiate SharedPreference references
 
