@@ -174,8 +174,6 @@ public class SignInActivity extends AppCompatActivity {
                                                                         .putInt("id", user.id)
                                                                         .apply();
 
-                                                                Log.d("avatar", user.properties.images.get(0).properties.icon_retina);
-
                                                                 // Update stored values of user's string type attributes
 
                                                                 Map<String, String> userStringProperties = user.properties.getStringProperties();

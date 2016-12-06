@@ -165,7 +165,13 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
         associatedGroups.edit().clear().apply();
 
-        startActivity(new Intent(this, SignInActivity.class));
+        Intent logOutIntent = new Intent(this, SignInActivity.class);
+
+        logOutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        startActivity(logOutIntent);
+
+        finish();
 
     }
 

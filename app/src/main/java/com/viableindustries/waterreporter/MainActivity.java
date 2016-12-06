@@ -1,11 +1,15 @@
 package com.viableindustries.waterreporter;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -36,12 +40,16 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements
+        EasyPermissions.PermissionCallbacks {
 
     @Bind(R.id.timeline)
     SwipeRefreshLayout timeline;
@@ -68,6 +76,12 @@ public class MainActivity extends AppCompatActivity {
     protected boolean connectionActive = false;
 
     protected Response errorResponse;
+
+    private static final int RC_ALL_PERMISSIONS = 100;
+
+    private static final int RC_SETTINGS_SCREEN = 125;
+
+    private static final String TAG = "MainActivity";
 
     protected void connectionStatus() {
 
@@ -293,16 +307,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    // Transition to the organization list view
-
-//    public void viewGroups(View v) {
-//
-//        startActivity(new Intent(this, OrganizationListActivity.class));
-//
-//        finish();
-//
-//    }
-
     private void attachScrollListener() {
 
         listView.setOnScrollListener(new EndlessScrollListener() {
@@ -316,6 +320,76 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    protected void verifyPermissions() {
+
+        String[] permissions = {
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        };
+
+        if (EasyPermissions.hasPermissions(this, permissions)) {
+
+            requestData(10, 1, false, false);
+
+        } else {
+
+            // Ask for all permissions since the app is useless without them
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_all_permissions),
+                    RC_ALL_PERMISSIONS, permissions);
+
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // EasyPermissions handles the request result.
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+
+        Log.d(TAG, "onPermissionsGranted:" + requestCode + ":" + perms.size());
+
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+
+        Log.d(TAG, "onPermissionsDenied:" + requestCode + ":" + perms.size());
+
+        // (Optional) Check whether the user denied any permissions and checked "NEVER ASK AGAIN."
+        // This will display a dialog directing them to enable the permission in app settings.
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            new AppSettingsDialog.Builder(this, getString(R.string.rationale_ask_again))
+                    .setTitle(getString(R.string.title_settings_dialog))
+                    .setPositiveButton(getString(R.string.setting))
+                    .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            // At this point the user has had several opportunities to grant
+                            // the necessary permissions. Stop tolerating rogue user behaviors here.
+
+                            Intent a = new Intent(Intent.ACTION_MAIN);
+                            a.addCategory(Intent.CATEGORY_HOME);
+                            a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(a);
+
+                            ActivityCompat.finishAffinity(MainActivity.this);
+
+                        }
+                    })
+                    .setRequestCode(RC_SETTINGS_SCREEN)
+                    .build()
+                    .show();
+        }
 
     }
 
@@ -345,6 +419,8 @@ public class MainActivity extends AppCompatActivity {
         // Set color of swipe refresh arrow animation
 
         timeline.setColorSchemeResources(R.color.waterreporter_blue);
+
+        verifyPermissions();
 
     }
 
@@ -399,7 +475,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Check which request we're responding to
+
+        if (requestCode == RC_SETTINGS_SCREEN) {
+            // Do something after user returned from app settings screen, like showing a Toast.
+            Toast.makeText(this, R.string.returned_from_app_settings_to_activity, Toast.LENGTH_SHORT)
+                    .show();
+        } else {
+            // Check which request we're responding to
 //        if (requestCode == REGISTRATION_REQUEST) {
 //            // Make sure the request was successful
 //            if (resultCode == RESULT_OK) {
@@ -424,14 +506,17 @@ public class MainActivity extends AppCompatActivity {
 //
 //        }
 
-        if (resultCode == RESULT_OK) {
+            if (resultCode == RESULT_OK) {
 
-            // The user is logged in and may already have reports in the system.
-            // Let's attempt to fetch the user's report collection and, if none exist,
-            // direct the user to submit their first report.
-            requestData(10, 1, false, false);
+                // The user is logged in and may already have reports in the system.
+                // Let's attempt to fetch the user's report collection and, if none exist,
+                // direct the user to submit their first report.
+//                requestData(10, 1, false, false);
+                verifyPermissions();
 
-            fetchUserGroups();
+                fetchUserGroups();
+
+            }
 
         }
 

@@ -179,4 +179,16 @@
     <string name="can_notify_admin_user_submits_report_in_group">Alert me when someone tags my organization in a report.</string>
     <string name="can_notify_admin_user_submits_report_in_territory">Alert me when someone submits a report in my geographic area of interest.</string>
 
+    <!-- Permission notices -->
+
+    <string name="rationale_camera">Water Reporter needs access to your camera so you can take pictures.</string>
+    <string name="rationale_all_permissions">Water Reporter needs access to your location, camera, photos and files in order to function properly.</string>
+    <string name="rationale_camera_files">Water Reporter needs access to your camera, photos and files in order to function properly.</string>
+    <string name="rationale_ask_again">Water Reporter will not work correctly without the requested permissions. Open the app settings screen to modify app permissions.</string>
+    <string name="title_settings_dialog">Permissions Required</string>
+    <string name="setting">Settings</string>
+    <string name="cancel">Cancel</string>
+    <string name="settings_dialog_canceled">Settings dialog canceled</string>
+    <string name="returned_from_app_settings_to_activity">Returned from app settings to MainActivity</string>
+
 </resources>

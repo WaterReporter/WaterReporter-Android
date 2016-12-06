@@ -2,6 +2,7 @@ package com.viableindustries.waterreporter;
 
 import android.Manifest;
 import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.CacheManager;
 import com.viableindustries.waterreporter.data.ImageProperties;
 import com.viableindustries.waterreporter.data.ImageService;
 import com.viableindustries.waterreporter.data.User;
@@ -53,13 +56,17 @@ import java.util.Random;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedFile;
 
 public class EditProfileActivity extends AppCompatActivity implements
-        PhotoPickerDialogFragment.PhotoPickerDialogListener {
+        PhotoPickerDialogFragment.PhotoPickerDialogListener,
+        EasyPermissions.PermissionCallbacks {
 
     @Bind(R.id.new_user_profile)
     LinearLayout parentLayout;
@@ -123,6 +130,12 @@ public class EditProfileActivity extends AppCompatActivity implements
 
     private Uri imageUri;
 
+    private static final int RC_ALL_PERMISSIONS = 100;
+
+    private static final int RC_SETTINGS_SCREEN = 125;
+
+    private static final String TAG = "ProfileBasicActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -154,6 +167,13 @@ public class EditProfileActivity extends AppCompatActivity implements
         userPublicEmailInput.setText(coreUser.properties.public_email);
 
         userBioInput.setText(coreUser.properties.description);
+
+        verifyPermissions();
+
+    }
+
+    @AfterPermissionGranted(RC_ALL_PERMISSIONS)
+    private void loadRandomAvatar() {
 
         // Load avatar if it exists, otherwise provide a randomized default image.
 
@@ -267,6 +287,10 @@ public class EditProfileActivity extends AppCompatActivity implements
                         boolean imageDeleted = tempFile.delete();
 
                         Log.w("Delete Check", "File deleted: " + tempFile + imageDeleted);
+
+                        // Clear the app data cache
+
+                        CacheManager.deleteCache(getBaseContext());
 
                         // Retrieve the image id and add relation to PATCH request body
 
@@ -561,10 +585,6 @@ public class EditProfileActivity extends AppCompatActivity implements
         // For compatibility with Android 6.0 (Marshmallow, API 23), we need to check permissions before
         // dispatching takePictureIntent, otherwise the app will crash.
 
-        PermissionUtil.verifyPermission(this, Manifest.permission.CAMERA);
-
-        PermissionUtil.verifyPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         try {
@@ -610,8 +630,6 @@ public class EditProfileActivity extends AppCompatActivity implements
 
     @Override
     public void onDialogNegativeClick(android.app.DialogFragment dialog) {
-
-        PermissionUtil.verifyPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         Intent photoPickerIntent;
 
@@ -668,6 +686,79 @@ public class EditProfileActivity extends AppCompatActivity implements
         FragmentManager fragmentManager = getFragmentManager();
 
         newFragment.show(fragmentManager, "photoPickerDialog");
+
+    }
+
+    protected void verifyPermissions() {
+
+        String[] permissions = {
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        };
+
+        if (EasyPermissions.hasPermissions(this, permissions)) {
+
+            loadRandomAvatar();
+
+        } else {
+
+            // Ask for all permissions since the app is useless without them
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera_files),
+                    RC_ALL_PERMISSIONS, permissions);
+
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // EasyPermissions handles the request result.
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+
+        Log.d(TAG, "onPermissionsGranted:" + requestCode + ":" + perms.size());
+
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+
+        Log.d(TAG, "onPermissionsDenied:" + requestCode + ":" + perms.size());
+
+        // (Optional) Check whether the user denied any permissions and checked "NEVER ASK AGAIN."
+        // This will display a dialog directing them to enable the permission in app settings.
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            new AppSettingsDialog.Builder(this, getString(R.string.rationale_ask_again))
+                    .setTitle(getString(R.string.title_settings_dialog))
+                    .setPositiveButton(getString(R.string.setting))
+                    .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            // If the user really doesn't want to play ball, at least them browse reports
+
+                            startActivity(new Intent(getBaseContext(), MainActivity.class));
+
+                        }
+                    })
+                    .setRequestCode(RC_SETTINGS_SCREEN)
+                    .build()
+                    .show();
+
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+
+        verifyPermissions();
 
     }
 

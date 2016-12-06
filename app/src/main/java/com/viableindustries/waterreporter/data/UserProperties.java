@@ -103,9 +103,20 @@ public class UserProperties implements Serializable {
         stringProperties.put("first_name", this.first_name);
         stringProperties.put("last_name", this.last_name);
         stringProperties.put("organization_name", this.organization_name);
-        stringProperties.put("picture", this.images.get(0).properties.icon_retina);
         stringProperties.put("public_email", this.public_email);
         stringProperties.put("title", this.title);
+
+        // Must account for existing users without profile pictures
+
+        try {
+
+            stringProperties.put("picture", this.images.get(0).properties.icon_retina);
+
+        } catch (IndexOutOfBoundsException ib) {
+
+            stringProperties.put("picture", null);
+
+        }
 
         return stringProperties;
 

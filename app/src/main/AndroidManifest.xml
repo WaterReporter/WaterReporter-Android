@@ -14,7 +14,6 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <uses-feature
@@ -44,7 +43,7 @@
 
         <meta-data
             android:name="DATABASE"
-            android:value="reports_001.db" />
+            android:value="water_reporter_reports_002.db" />
         <meta-data
             android:name="VERSION"
             android:value="2" />
@@ -95,17 +94,6 @@
         <activity
             android:name=".SignInActivity"
             android:label="@string/title_activity_sign_in"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.viableindustries.waterreporter.MainActivity" />
-        </activity>
-
-        <activity
-            android:name=".PhotoActivity"
-            android:label="@string/title_activity_photo"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">

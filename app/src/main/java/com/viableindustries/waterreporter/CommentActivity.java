@@ -4,6 +4,7 @@ import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -21,6 +22,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
@@ -54,6 +56,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.internal.Streams;
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.CacheManager;
 import com.viableindustries.waterreporter.data.Comment;
 import com.viableindustries.waterreporter.data.CommentCollection;
 import com.viableindustries.waterreporter.data.CommentPost;
@@ -102,6 +105,9 @@ import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -111,8 +117,11 @@ import static com.viableindustries.waterreporter.data.ReportService.restAdapter;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
-public class CommentActivity extends AppCompatActivity implements CommentPhotoDialogListener, CommentActionDialogListener,
-        PhotoPickerDialogFragment.PhotoPickerDialogListener {
+public class CommentActivity extends AppCompatActivity implements
+        CommentPhotoDialogListener,
+        CommentActionDialogListener,
+        PhotoPickerDialogFragment.PhotoPickerDialogListener,
+        EasyPermissions.PermissionCallbacks {
 
     @Bind(R.id.commentListContainer)
     SwipeRefreshLayout commentListContainer;
@@ -168,6 +177,12 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
     private Uri imageUri;
 
+    private static final int RC_ALL_PERMISSIONS = 100;
+
+    private static final int RC_SETTINGS_SCREEN = 125;
+
+    private static final String TAG = "ProfileBasicActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -180,6 +195,13 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
         report = ReportHolder.getReport();
 
         addListViewHeader(report);
+
+        verifyPermissions();
+
+    }
+
+    @AfterPermissionGranted(RC_ALL_PERMISSIONS)
+    private void completeSetUp() {
 
         cameraButtonContainer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -534,6 +556,10 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
                         boolean imageDeleted = tempFile.delete();
 
                         Log.w("Delete Check", "File deleted: " + tempFile + imageDeleted);
+
+                        // Clear the app data cache
+
+                        CacheManager.deleteCache(getBaseContext());
 
                         mTempImagePath = null;
 
@@ -890,10 +916,6 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
         // For compatibility with Android 6.0 (Marshmallow, API 23), we need to check permissions before
         // dispatching takePictureIntent, otherwise the app will crash.
 
-        PermissionUtil.verifyPermission(this, Manifest.permission.CAMERA);
-
-        PermissionUtil.verifyPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         try {
@@ -921,10 +943,13 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
                 String packageName = resolvedIntentInfo.activityInfo.packageName;
 
                 this.grantUriPermission(packageName, imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
             }
 
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+
                 startActivityForResult(takePictureIntent, ACTION_TAKE_PHOTO);
+
             }
 
         } catch (IOException e) {
@@ -939,8 +964,6 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
     @Override
     public void onDialogNegativeClick(android.app.DialogFragment dialog) {
-
-        PermissionUtil.verifyPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         Intent photoPickerIntent;
 
@@ -1000,10 +1023,75 @@ public class CommentActivity extends AppCompatActivity implements CommentPhotoDi
 
     }
 
+    protected void verifyPermissions() {
+
+        String[] permissions = {
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        };
+
+        if (EasyPermissions.hasPermissions(this, permissions)) {
+
+            completeSetUp();
+
+        } else {
+
+            // Ask for all permissions since the app is useless without them
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera_files),
+                    RC_ALL_PERMISSIONS, permissions);
+
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // EasyPermissions handles the request result.
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+
+        Log.d(TAG, "onPermissionsGranted:" + requestCode + ":" + perms.size());
+
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+
+        Log.d(TAG, "onPermissionsDenied:" + requestCode + ":" + perms.size());
+
+        // (Optional) Check whether the user denied any permissions and checked "NEVER ASK AGAIN."
+        // This will display a dialog directing them to enable the permission in app settings.
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            new AppSettingsDialog.Builder(this, getString(R.string.rationale_ask_again))
+                    .setTitle(getString(R.string.title_settings_dialog))
+                    .setPositiveButton(getString(R.string.setting))
+                    .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            // If the user really doesn't want to play ball, at least them browse reports
+
+                            startActivity(new Intent(getBaseContext(), MainActivity.class));
+
+                        }
+                    })
+                    .setRequestCode(RC_SETTINGS_SCREEN)
+                    .build()
+                    .show();
+        }
+
+    }
+
     @Override
     protected void onResume() {
 
         super.onResume();
+
+        verifyPermissions();
 
     }
 

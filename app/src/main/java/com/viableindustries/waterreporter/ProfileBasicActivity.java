@@ -7,6 +7,7 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -19,7 +20,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
@@ -35,6 +38,7 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.AuthResponse;
+import com.viableindustries.waterreporter.data.CacheManager;
 import com.viableindustries.waterreporter.data.ImageProperties;
 import com.viableindustries.waterreporter.data.ImageService;
 import com.viableindustries.waterreporter.data.LogInBody;
@@ -67,6 +71,9 @@ import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -78,7 +85,8 @@ import static java.security.AccessController.getContext;
 // Activity shown as dialog to handle final step in first-time user registration.
 
 public class ProfileBasicActivity extends AppCompatActivity implements
-        PhotoPickerDialogFragment.PhotoPickerDialogListener {
+        PhotoPickerDialogFragment.PhotoPickerDialogListener,
+        EasyPermissions.PermissionCallbacks{
 
     @Bind(R.id.new_user_profile)
     LinearLayout parentLayout;
@@ -127,6 +135,12 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
     private Uri imageUri;
 
+    private static final int RC_ALL_PERMISSIONS = 100;
+
+    private static final int RC_SETTINGS_SCREEN = 125;
+
+    private static final String TAG = "ProfileBasicActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -135,6 +149,13 @@ public class ProfileBasicActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_profile_basic);
 
         ButterKnife.bind(this);
+
+        verifyPermissions();
+
+    }
+
+    @AfterPermissionGranted(RC_ALL_PERMISSIONS)
+    protected void loadRandomAvatar() {
 
         String[] array = getResources().getStringArray(R.array.default_avatars);
 
@@ -188,6 +209,7 @@ public class ProfileBasicActivity extends AppCompatActivity implements
                 addProfilePic(view);
             }
         });
+
     }
 
     public void addProfilePic(View v) {
@@ -315,6 +337,10 @@ public class ProfileBasicActivity extends AppCompatActivity implements
                                             boolean imageDeleted = tempFile.delete();
 
                                             Log.w("Delete Check", "File deleted: " + tempFile + imageDeleted);
+
+                                            // Clear the app data cache
+
+                                            CacheManager.deleteCache(getBaseContext());
 
                                             final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
@@ -499,10 +525,6 @@ public class ProfileBasicActivity extends AppCompatActivity implements
         // For compatibility with Android 6.0 (Marshmallow, API 23), we need to check permissions before
         // dispatching takePictureIntent, otherwise the app will crash.
 
-        PermissionUtil.verifyPermission(this, Manifest.permission.CAMERA);
-
-        PermissionUtil.verifyPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         try {
@@ -550,8 +572,6 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
     @Override
     public void onDialogNegativeClick(android.app.DialogFragment dialog) {
-
-        PermissionUtil.verifyPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         Intent photoPickerIntent;
 
@@ -611,11 +631,105 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
     }
 
+    protected void verifyPermissions() {
+
+        String[] permissions = {
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        };
+
+        if (EasyPermissions.hasPermissions(this, permissions)) {
+
+            loadRandomAvatar();
+
+        } else {
+
+            // Ask for all permissions since the app is useless without them
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_all_permissions),
+                    RC_ALL_PERMISSIONS, permissions);
+
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // EasyPermissions handles the request result.
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+
+        Log.d(TAG, "onPermissionsGranted:" + requestCode + ":" + perms.size());
+
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+
+        Log.d(TAG, "onPermissionsDenied:" + requestCode + ":" + perms.size());
+
+        // (Optional) Check whether the user denied any permissions and checked "NEVER ASK AGAIN."
+        // This will display a dialog directing them to enable the permission in app settings.
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+
+            new AppSettingsDialog.Builder(this, getString(R.string.rationale_ask_again))
+                    .setTitle(getString(R.string.title_settings_dialog))
+                    .setPositiveButton(getString(R.string.setting))
+                    .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            // In this context we really cannot continue without the required permissions.
+                            // Close the application and set an `incomplete` flag on the authenticated
+                            // user's profile.
+
+                            resetStoredUserData();
+
+                            Intent a = new Intent(Intent.ACTION_MAIN);
+                            a.addCategory(Intent.CATEGORY_HOME);
+                            a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(a);
+
+                            ActivityCompat.finishAffinity(ProfileBasicActivity.this);
+
+                        }
+                    })
+                    .setRequestCode(RC_SETTINGS_SCREEN)
+                    .build()
+                    .show();
+
+        }
+
+    }
+
+    private void resetStoredUserData() {
+
+        final SharedPreferences prefs =
+                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        prefs.edit().clear().apply();
+
+    }
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+
+        verifyPermissions();
+
+    }
+
     @Override
     protected void onPause() {
 
         super.onPause();
 
+        //resetStoredUserData();
     }
 
     @Override
@@ -624,6 +738,8 @@ public class ProfileBasicActivity extends AppCompatActivity implements
         super.onDestroy();
 
         ButterKnife.unbind(this);
+
+        //resetStoredUserData();
 
     }
 

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -19,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -46,6 +48,7 @@ import android.widget.Toast;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.AbbreviatedOrganization;
+import com.viableindustries.waterreporter.data.CacheManager;
 import com.viableindustries.waterreporter.data.DisplayDecimal;
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.GeometryResponse;
@@ -83,6 +86,8 @@ import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -93,7 +98,8 @@ import retrofit.mime.TypedFile;
  * This activity handles all of the report functionality.
  */
 public class PhotoMetaActivity extends AppCompatActivity
-        implements PhotoPickerDialogFragment.PhotoPickerDialogListener {
+        implements PhotoPickerDialogFragment.PhotoPickerDialogListener,
+        EasyPermissions.PermissionCallbacks {
 
     @Bind(R.id.scrollView)
     ScrollView parentLayout;
@@ -190,6 +196,12 @@ public class PhotoMetaActivity extends AppCompatActivity
     final private String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
 
     private Uri imageUri;
+
+    private static final int RC_ALL_PERMISSIONS = 100;
+
+    private static final int RC_SETTINGS_SCREEN = 125;
+
+    private static final String TAG = "PhotoMetaActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -715,7 +727,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             longitude = location.getLongitude();
 
-            if (latitude == 0 || longitude == 0) {
+            if ((latitude == 0 || longitude == 0) && !editMode) {
 
                 CharSequence text = "Please verify your location.";
                 Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
@@ -734,7 +746,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             longitude = prefs.getFloat("longitude", 0);
 
-            if (latitude == 0 || longitude == 0) {
+            if ((latitude == 0 || longitude == 0) && !editMode) {
 
                 CharSequence text = "Please verify your location.";
                 Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
@@ -850,6 +862,10 @@ public class PhotoMetaActivity extends AppCompatActivity
                                         boolean imageDeleted = tempFile.delete();
 
                                         Log.w("Delete Check", "File deleted: " + tempFile + imageDeleted);
+
+                                        // Clear the app data cache
+
+                                        CacheManager.deleteCache(getBaseContext());
 
                                         // Clear any stored group associations
 
@@ -1083,10 +1099,6 @@ public class PhotoMetaActivity extends AppCompatActivity
         // For compatibility with Android 6.0 (Marshmallow, API 23), we need to check permissions before
         // dispatching takePictureIntent, otherwise the app will crash.
 
-        PermissionUtil.verifyPermission(this, Manifest.permission.CAMERA);
-
-        PermissionUtil.verifyPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         try {
@@ -1135,8 +1147,6 @@ public class PhotoMetaActivity extends AppCompatActivity
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
 
-        PermissionUtil.verifyPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
         Intent photoPickerIntent;
 
         if (Build.VERSION.SDK_INT < 19) {
@@ -1181,6 +1191,72 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             mTempImagePath = null;
 
+        }
+
+    }
+
+    protected boolean verifyPermissions() {
+
+        String[] permissions = {
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        };
+
+        if (EasyPermissions.hasPermissions(this, permissions)) {
+
+            return true;
+
+        } else {
+
+            // Ask for all permissions since the app is useless without them
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_all_permissions),
+                    RC_ALL_PERMISSIONS, permissions);
+
+            return false;
+
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // EasyPermissions handles the request result.
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+
+        Log.d(TAG, "onPermissionsGranted:" + requestCode + ":" + perms.size());
+
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+
+        Log.d(TAG, "onPermissionsDenied:" + requestCode + ":" + perms.size());
+
+        // (Optional) Check whether the user denied any permissions and checked "NEVER ASK AGAIN."
+        // This will display a dialog directing them to enable the permission in app settings.
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            new AppSettingsDialog.Builder(this, getString(R.string.rationale_ask_again))
+                    .setTitle(getString(R.string.title_settings_dialog))
+                    .setPositiveButton(getString(R.string.setting))
+                    .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            // If the user really doesn't want to play ball, at least them browse reports
+
+                            startActivity(new Intent(getBaseContext(), MainActivity.class));
+
+                        }
+                    })
+                    .setRequestCode(RC_SETTINGS_SCREEN)
+                    .build()
+                    .show();
         }
 
     }
@@ -1296,6 +1372,10 @@ public class PhotoMetaActivity extends AppCompatActivity
             startActivity(new Intent(this, MainActivity.class));
 
             finish();
+
+        } else {
+
+            verifyPermissions();
 
         }
 
