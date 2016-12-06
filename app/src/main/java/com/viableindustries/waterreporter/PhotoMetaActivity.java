@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
@@ -21,6 +22,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -36,6 +38,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -146,6 +149,15 @@ public class PhotoMetaActivity extends AppCompatActivity
     @Bind(R.id.location_output)
     TextView locationOutput;
 
+    @Bind(R.id.post_report)
+    FloatingActionButton postReport;
+
+    @Bind(R.id.post_success)
+    FloatingActionButton postSuccess;
+
+    @Bind(R.id.progress_bar)
+    ProgressBar progressBar;
+
     private static final int ACTION_SET_LOCATION = 0;
 
     private static final int ACTION_ADD_PHOTO = 1;
@@ -211,6 +223,14 @@ public class PhotoMetaActivity extends AppCompatActivity
         setContentView(R.layout.activity_photo_metadata);
 
         ButterKnife.bind(this);
+
+        // Set ProgressBar appearance
+
+        progressBar.setIndeterminateDrawable(ContextCompat.getDrawable(this, R.drawable.custom_progress_compat));
+
+        // Set FloatingActionButton color
+
+        postReport.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.base_blue)));
 
         // Instantiate SharedPreference references
 
@@ -653,6 +673,8 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     protected void onPostError() {
 
+        progressBar.setVisibility(View.INVISIBLE);
+
         CharSequence text =
                 "Error posting report. Please try again later.";
 
@@ -784,6 +806,8 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     private void postReport() {
 
+        progressBar.setVisibility(View.VISIBLE);
+
         CharSequence text = "Posting report...";
 
         Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
@@ -854,6 +878,22 @@ public class PhotoMetaActivity extends AppCompatActivity
                                     @Override
                                     public void success(Report report,
                                                         Response response) {
+
+                                        // Hide ProgressBar
+
+                                        progressBar.setVisibility(View.INVISIBLE);
+
+//                                        postReport.setVisibility(View.GONE);
+
+                                        // Show success indicator
+
+                                        postSuccess.setVisibility(View.VISIBLE);
+
+                                        // Change FloatingActionButton appearance
+
+//                                        postReport.setImageResource(R.drawable.ic_done_white_24dp);
+//
+//                                        postReport.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(PhotoMetaActivity.this, R.color.blue_green)));
 
                                         // Immediately delete the cached image file now that we no longer need it
 
@@ -927,6 +967,8 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     private void patchReport() {
 
+        progressBar.setVisibility(View.VISIBLE);
+
         CharSequence text = "Updating report...";
 
         Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
@@ -973,6 +1015,22 @@ public class PhotoMetaActivity extends AppCompatActivity
                 new Callback<Report>() {
                     @Override
                     public void success(Report report, Response response) {
+
+                        // Hide ProgressBar
+
+                        progressBar.setVisibility(View.INVISIBLE);
+
+//                        postReport.setVisibility(View.GONE);
+
+                        // Show success indicator
+
+                        postSuccess.setVisibility(View.VISIBLE);
+
+                        // Change FloatingActionButton appearance
+
+//                        postReport.setImageResource(R.drawable.ic_done_white_24dp);
+//
+//                        postReport.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(PhotoMetaActivity.this, R.color.base_green)));
 
                         // Clear any stored group associations
 
@@ -1047,13 +1105,13 @@ public class PhotoMetaActivity extends AppCompatActivity
             for (Organization organization : report.properties.groups) {
 
                 int selected = groupMemberships.getInt(organization.properties.name, 0);
-                
+
                 if (selected == 0) {
 
                     abbreviatedOrganizations.add(new AbbreviatedOrganization(organization.properties.id, organization.properties.name));
 
                 }
-                
+
                 // Track entry in associated groups preference.
                 // IMPORTANT: This is NOT the preference that records group memberships!
 

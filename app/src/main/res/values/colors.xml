@@ -10,6 +10,8 @@
 
     <color name="base_green">#14e049</color>
 
+    <color name="blue_green">#14d36f</color>
+
     <color name="green_1">#0ad570</color>
     <color name="green_canvas">#e0feef</color>
 
@@ -17,6 +19,10 @@
     <color name="dark_blue">#1087b1</color>
 
     <color name="orange">#f0770a</color>
+
+    <color name="yellow_orange">#f0aa0a</color>
+
+    <color name="yellow_orange_light">#fad889</color>
 
     <!-- Grays -->
     <color name="gray_224">#e0e0e0</color>

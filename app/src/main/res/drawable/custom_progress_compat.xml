@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?><!--<layer-list>-->
+<rotate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fromDegrees="0"
+    android:toDegrees="360">
+    <layer-list>
+        <item>
+            <rotate xmlns:android="http://schemas.android.com/apk/res/android"
+                android:fromDegrees="-90"
+                android:toDegrees="-90">
+                <shape
+                    android:innerRadiusRatio="2.5"
+                    android:shape="ring"
+                    android:thickness="4dp"
+                    android:useLevel="true"><!-- this line fixes the issue for lollipop api 21 -->
+
+                    <gradient
+                        android:angle="0"
+                        android:endColor="@color/yellow_orange_light"
+                        android:startColor="@color/yellow_orange_light"
+                        android:type="sweep"
+                        android:useLevel="false" />
+                </shape>
+            </rotate>
+        </item>
+        <item>
+            <rotate xmlns:android="http://schemas.android.com/apk/res/android"
+                android:fromDegrees="0"
+                android:toDegrees="270">
+                <shape
+                    android:innerRadiusRatio="2.6"
+                    android:shape="ring"
+                    android:thickness="8dp"
+                    android:useLevel="true"><!-- this line fixes the issue for lollipop api 21 -->
+                    <gradient
+                        android:angle="0"
+                        android:centerColor="@color/gray_250.50.52"
+                        android:endColor="@color/gray_250.50.52"
+                        android:startColor="@color/gray_250.50.52"
+                        android:useLevel="false" />
+                </shape>
+            </rotate>
+        </item>
+    </layer-list>
+</rotate>
