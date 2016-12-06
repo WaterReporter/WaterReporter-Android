@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -492,9 +494,56 @@ public class EditProfileActivity extends AppCompatActivity implements
                         Log.d("taken path", f.toString());
                         Log.d("taken path", f.toURI().toString());
 
+//                        InputStream inputStream = getContentResolver().openInputStream(imageUri);
+//
+//                        Bitmap bitmap = FileUtils.decodeSampledBitmapFromStream(this, imageUri, 192, 192);
+//
+//                        FileOutputStream fOut = new FileOutputStream(f);
+//
+//                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+//
+//                        fOut.flush();
+//
+//                        fOut.close();
+//
+//                        Picasso.with(this)
+//                                .load(f)
+//                                .placeholder(R.drawable.user_avatar_placeholder)
+//                                .transform(new CircleTransform())
+//                                .into(userAvatar);
+
+                        String thumbName = String.format("%s-%s.jpg", Math.random(), new Date());
+
+                        File thumb = File.createTempFile(thumbName, null, this.getCacheDir());
+
+                        Log.d("taken path", f.getAbsolutePath());
+                        Log.d("taken path", f.toString());
+                        Log.d("taken path", f.toURI().toString());
+
+                        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+
+                        Bitmap bitmap = BitmapFactory.decodeFile(mTempImagePath, bmOptions);
+
+                        bitmap = ThumbnailUtils.extractThumbnail(bitmap, 192, 192);
+
+                        FileOutputStream fOut = new FileOutputStream(thumb);
+
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+
+                        fOut.flush();
+
+                        fOut.close();
+
+//                        addImageIcon.setVisibility(View.GONE);
+//
+//                        mImageView.setVisibility(View.VISIBLE);
+
                         Picasso.with(this)
-                                .load(new File(mTempImagePath))
+                                .load(thumb)
                                 .placeholder(R.drawable.user_avatar_placeholder)
+//                        Picasso.with(this)
+//                                .load(f)
+//                                .placeholder(R.drawable.user_avatar_placeholder)
                                 .transform(new CircleTransform())
                                 .into(userAvatar);
 
@@ -504,7 +553,9 @@ public class EditProfileActivity extends AppCompatActivity implements
 
                         e.printStackTrace();
 
-                        Log.d(null, "Save file error!");
+                        Log.d("bad image path", e.toString());
+
+                        Log.d("bad image path", "Save file error!" + mTempImagePath);
 
                         mTempImagePath = null;
 
@@ -520,55 +571,55 @@ public class EditProfileActivity extends AppCompatActivity implements
 
                 if (resultCode == RESULT_OK) {
 
-                    if (data != null) {
+                    try {
 
-                        try {
+                        File f = FileUtils.createImageFile(this);
 
-                            File f = FileUtils.createImageFile(this);
+                        mTempImagePath = f.getAbsolutePath();
 
-                            mTempImagePath = f.getAbsolutePath();
+                        Log.d("filepath", mTempImagePath);
 
-                            Log.d("filepath", mTempImagePath);
+                        // Use FileProvider to comply with Android security requirements.
+                        // See: https://developer.android.com/training/camera/photobasics.html
+                        // https://developer.android.com/reference/android/os/FileUriExposedException.html
 
-                            // Use FileProvider to comply with Android security requirements.
-                            // See: https://developer.android.com/training/camera/photobasics.html
-                            // https://developer.android.com/reference/android/os/FileUriExposedException.html
+                        imageUri = data.getData();
 
-                            imageUri = data.getData();
+                        InputStream inputStream = getContentResolver().openInputStream(imageUri);
 
-                            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+                        Bitmap bitmap = FileUtils.decodeSampledBitmapFromStream(this, imageUri, 192, 192);
 
-                            Bitmap bitmap = FileUtils.decodeSampledBitmapFromStream(this, imageUri, 1080, 1080);
+                        FileOutputStream fOut = new FileOutputStream(f);
 
-                            FileOutputStream fOut = new FileOutputStream(f);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
 
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+                        fOut.flush();
 
-                            fOut.flush();
+                        fOut.close();
 
-                            fOut.close();
+                        Picasso.with(this)
+                                .load(f)
+                                .placeholder(R.drawable.user_avatar_placeholder)
+                                .transform(new CircleTransform())
+                                .into(userAvatar);
 
-                            Picasso.with(this)
-                                    .load(f)
-                                    .placeholder(R.drawable.user_avatar_placeholder)
-                                    .transform(new CircleTransform())
-                                    .into(userAvatar);
+                        photoCaptured = true;
 
-                            photoCaptured = true;
+                    } catch (Exception e) {
 
-                        } catch (Exception e) {
+                        e.printStackTrace();
 
-                            Snackbar.make(parentLayout, "Unable to read image.",
-                                    Snackbar.LENGTH_SHORT)
-                                    .show();
+                        Log.d("bad image path", e.toString());
 
-                        }
+                        Snackbar.make(parentLayout, "Unable to read image.",
+                                Snackbar.LENGTH_SHORT)
+                                .show();
 
                     }
 
                 } else {
 
-                    Log.d("image", "no image data");
+                    Log.d("no image path", "no image data");
 
                 }
 
@@ -609,13 +660,17 @@ public class EditProfileActivity extends AppCompatActivity implements
             List<ResolveInfo> resolvedIntentActivities = this.getPackageManager().queryIntentActivities(takePictureIntent, PackageManager.MATCH_DEFAULT_ONLY);
 
             for (ResolveInfo resolvedIntentInfo : resolvedIntentActivities) {
+
                 String packageName = resolvedIntentInfo.activityInfo.packageName;
 
                 this.grantUriPermission(packageName, imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
             }
 
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+
                 startActivityForResult(takePictureIntent, ACTION_TAKE_PHOTO);
+
             }
 
         } catch (IOException e) {

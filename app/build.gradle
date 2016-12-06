@@ -13,7 +13,7 @@ android {
         applicationId "com.viableindustries.waterreporter"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 9
+        versionCode 10
         versionName "2.0.0"
         multiDexEnabled true
     }
