@@ -131,7 +131,7 @@ public class UserListAdapter extends ArrayAdapter<User> implements Filterable {
 
         viewHolder.userName.setText(String.format("%s %s", user.properties.first_name, user.properties.last_name));
 
-        Picasso.with(context).load(user.properties.picture).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(viewHolder.userAvatar);
+        Picasso.with(context).load(user.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(viewHolder.userAvatar);
 
         // Add click listeners to layout elements
 

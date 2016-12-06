@@ -275,7 +275,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         }
 
-        Picasso.with(this).load(userAvatarUrl).placeholder(R.drawable.user_avatar_placeholder_002).transform(new CircleTransform()).into(userAvatar);
+        Picasso.with(this).load(userAvatarUrl).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(userAvatar);
 
         userName.setText(userNameText);
 
