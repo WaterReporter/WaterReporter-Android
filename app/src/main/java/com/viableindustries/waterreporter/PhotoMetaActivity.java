@@ -20,6 +20,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -71,6 +72,7 @@ import com.viableindustries.waterreporter.data.UserProperties;
 import com.viableindustries.waterreporter.data.UserService;
 
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -505,8 +507,6 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                 if (resultCode == RESULT_OK) {
 
-                    this.revokeUriPermission(imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
                     FileUtils.galleryAddPic(this, mTempImagePath);
 
                     Log.d("path", mTempImagePath);
@@ -542,6 +542,11 @@ public class PhotoMetaActivity extends AppCompatActivity
                         addImageIcon.setVisibility(View.GONE);
 
                         mImageView.setVisibility(View.VISIBLE);
+
+                        Log.d("thumb", thumb.toString());
+                        Log.d("thumb", thumb.toURI().toString());
+                        Log.d("thumb", thumb.getAbsolutePath());
+                        Log.d("thumb", thumb.getPath());
 
                         Picasso.with(this)
                                 .load(thumb)
@@ -580,11 +585,11 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                         try {
 
-                            File f = FileUtils.createImageFile(this);
-
-                            mTempImagePath = f.getAbsolutePath();
-
-                            Log.d("filepath", mTempImagePath);
+//                            File f = FileUtils.createImageFile(this);
+//
+//                            mTempImagePath = f.getAbsolutePath();
+//
+//                            Log.d("filepath", mTempImagePath);
 
                             // Use FileProvider to comply with Android security requirements.
                             // See: https://developer.android.com/training/camera/photobasics.html
@@ -592,28 +597,58 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                             imageUri = data.getData();
 
-                            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+                            String thumbName = String.format("%s-%s.jpg", Math.random(), new Date());
 
-                            Bitmap bitmap = FileUtils.decodeSampledBitmapFromStream(this, imageUri, 1080, 1080);
+                            File thumb = File.createTempFile(thumbName, null, this.getCacheDir());
 
-                            FileOutputStream fOut = new FileOutputStream(f);
+                            try {
 
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+                                ParcelFileDescriptor parcelFileDescriptor =
+                                        getContentResolver().openFileDescriptor(imageUri, "r");
 
-                            fOut.flush();
+                                if (parcelFileDescriptor != null) {
 
-                            fOut.close();
+                                    FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
 
-                            addImageIcon.setVisibility(View.GONE);
+                                    Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
 
-                            mImageView.setVisibility(View.VISIBLE);
+                                    parcelFileDescriptor.close();
 
-                            Picasso.with(this)
-                                    .load(f)
-                                    .placeholder(R.drawable.user_avatar_placeholder)
-                                    .into(mImageView);
+                                    image = ThumbnailUtils.extractThumbnail(image, 192, 192);
 
-                            photoCaptured = true;
+                                    FileOutputStream fOut = new FileOutputStream(thumb);
+
+                                    image.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+
+                                    fOut.flush();
+
+                                    fOut.close();
+
+                                    Log.d("thumb", thumb.toString());
+                                    Log.d("thumb", thumb.toURI().toString());
+                                    Log.d("thumb", thumb.getAbsolutePath());
+                                    Log.d("thumb", thumb.getPath());
+
+                                    Log.d("thumb bitmap", image.toString());
+
+                                    addImageIcon.setVisibility(View.GONE);
+
+                                    mImageView.setVisibility(View.VISIBLE);
+
+                                    Picasso.with(this)
+                                            .load(thumb)
+                                            .placeholder(R.drawable.user_avatar_placeholder)
+                                            .into(mImageView);
+
+                                    photoCaptured = true;
+
+                                }
+
+                            } catch (IOException e) {
+
+                                e.printStackTrace();
+
+                            }
 
                         } catch (Exception e) {
 
@@ -705,8 +740,6 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         }
 
-        parentLayout.smoothScrollTo(0, 0);
-
         access_token = prefs.getString("access_token", "");
 
         dateText = String.valueOf(dateField.getText());
@@ -733,7 +766,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         geometryResponse = new GeometryResponse(geometryList, type);
 
-        if (commentsText.isEmpty() || mTempImagePath == null) {
+        if ((commentsText.isEmpty() || imageUri == null) && !editMode) {
 
             CharSequence text = "Please add a photo and comment.";
             Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
@@ -816,152 +849,150 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         toast.show();
 
-        Log.d("filepath", mTempImagePath);
+        String filePath = mTempImagePath;
 
-        File photo = new File(mTempImagePath);
+        if (filePath == null) {
 
-        FileNameMap fileNameMap = URLConnection.getFileNameMap();
+            filePath = FileUtils.getPathFromUri(this, imageUri);
 
-        String mimeType = fileNameMap.getContentTypeFor(mTempImagePath);
+        }
 
-        TypedFile typedPhoto = new TypedFile(mimeType, photo);
+        if (filePath != null) {
 
-        imageService.postImage(access_token, typedPhoto,
-                new Callback<ImageProperties>() {
-                    @Override
-                    public void success(ImageProperties imageProperties,
-                                        Response response) {
+            final File photo = new File(filePath);
 
-                        // Retrieve the image id and create a new report
+            FileNameMap fileNameMap = URLConnection.getFileNameMap();
 
-                        final Map<String, Integer> image_id = new HashMap<String, Integer>();
+            String mimeType = fileNameMap.getContentTypeFor(filePath);
 
-                        image_id.put("id", imageProperties.id);
+            TypedFile typedPhoto = new TypedFile(mimeType, photo);
 
-                        List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
+            imageService.postImage(access_token, typedPhoto,
+                    new Callback<ImageProperties>() {
+                        @Override
+                        public void success(ImageProperties imageProperties,
+                                            Response response) {
 
-                        images.add(image_id);
+                            // Revoke Uri permissions
 
-                        List<Map<String, Integer>> groups = new ArrayList<Map<String, Integer>>();
+                            getBaseContext().revokeUriPermission(imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                        try {
+                            // Retrieve the image id and create a new report
 
-                            Map<String, ?> groupKeys = associatedGroups.getAll();
+                            final Map<String, Integer> image_id = new HashMap<String, Integer>();
 
-                            for (Map.Entry<String, ?> entry : groupKeys.entrySet()) {
+                            image_id.put("id", imageProperties.id);
 
-                                Integer value = (Integer) entry.getValue();
+                            List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
 
-                                if (value > 0) {
+                            images.add(image_id);
 
-                                    Map<String, Integer> groupId = new HashMap<String, Integer>();
+                            List<Map<String, Integer>> groups = new ArrayList<Map<String, Integer>>();
 
-                                    groupId.put("id", value);
+                            try {
 
-                                    groups.add(groupId);
+                                Map<String, ?> groupKeys = associatedGroups.getAll();
+
+                                for (Map.Entry<String, ?> entry : groupKeys.entrySet()) {
+
+                                    Integer value = (Integer) entry.getValue();
+
+                                    if (value > 0) {
+
+                                        Map<String, Integer> groupId = new HashMap<String, Integer>();
+
+                                        groupId.put("id", value);
+
+                                        groups.add(groupId);
+
+                                    }
 
                                 }
 
+                            } catch (NullPointerException ne) {
+
+                                Log.d("groups", "No groups selected.");
+
                             }
 
-                        } catch (NullPointerException ne) {
+                            ReportPostBody reportPostBody = new ReportPostBody(geometryResponse, groups,
+                                    images, true, dateText, commentsText, reportState);
 
-                            Log.d("groups", "No groups selected.");
+                            Log.d("groups", groups.toString());
+
+                            reportService.postReport(access_token, "application/json", reportPostBody,
+                                    new Callback<Report>() {
+                                        @Override
+                                        public void success(Report report,
+                                                            Response response) {
+
+                                            // Hide ProgressBar
+
+                                            progressBar.setVisibility(View.INVISIBLE);
+
+                                            // Show success indicator
+
+                                            postSuccess.setVisibility(View.VISIBLE);
+
+                                            // Clear the app data cache
+
+                                            CacheManager.deleteCache(getBaseContext());
+
+                                            // Clear any stored group associations
+
+                                            associatedGroups.edit().clear().apply();
+
+                                            final Handler handler = new Handler();
+
+                                            handler.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+
+                                                    final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+                                                    int coreId = coreProfile.getInt("id", 0);
+
+                                                    UserProperties userProperties = new UserProperties(coreId, coreProfile.getString("description", ""),
+                                                            coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
+                                                            coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
+                                                            coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null);
+
+                                                    User coreUser = User.createUser(coreId, userProperties);
+
+                                                    UserHolder.setUser(coreUser);
+
+                                                    // Re-direct user to main activity feed, which has the effect of preventing
+                                                    // unwanted access to the history stack
+
+                                                    Intent intent = new Intent(PhotoMetaActivity.this, MainActivity.class);
+
+                                                    startActivity(intent);
+
+                                                    finish();
+
+                                                }
+
+                                            }, 2000);
+
+                                        }
+
+                                        @Override
+                                        public void failure(RetrofitError error) {
+                                            onPostError();
+                                        }
+
+                                    });
 
                         }
 
-                        ReportPostBody reportPostBody = new ReportPostBody(geometryResponse, groups,
-                                images, true, dateText, commentsText, reportState);
+                        @Override
+                        public void failure(RetrofitError error) {
+                            onPostError();
+                        }
 
-                        Log.d("groups", groups.toString());
+                    });
 
-                        reportService.postReport(access_token, "application/json", reportPostBody,
-                                new Callback<Report>() {
-                                    @Override
-                                    public void success(Report report,
-                                                        Response response) {
-
-                                        // Hide ProgressBar
-
-                                        progressBar.setVisibility(View.INVISIBLE);
-
-//                                        postReport.setVisibility(View.GONE);
-
-                                        // Show success indicator
-
-                                        postSuccess.setVisibility(View.VISIBLE);
-
-                                        // Change FloatingActionButton appearance
-
-//                                        postReport.setImageResource(R.drawable.ic_done_white_24dp);
-//
-//                                        postReport.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(PhotoMetaActivity.this, R.color.blue_green)));
-
-                                        // Immediately delete the cached image file now that we no longer need it
-
-                                        File tempFile = new File(mTempImagePath);
-
-                                        boolean imageDeleted = tempFile.delete();
-
-                                        Log.w("Delete Check", "File deleted: " + tempFile + imageDeleted);
-
-                                        // Clear the app data cache
-
-                                        CacheManager.deleteCache(getBaseContext());
-
-                                        // Clear any stored group associations
-
-                                        associatedGroups.edit().clear().apply();
-
-                                        final Handler handler = new Handler();
-
-                                        handler.postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-
-                                                final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
-
-                                                int coreId = coreProfile.getInt("id", 0);
-
-                                                UserProperties userProperties = new UserProperties(coreId, coreProfile.getString("description", ""),
-                                                        coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
-                                                        coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
-                                                        coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null);
-
-                                                User coreUser = User.createUser(coreId, userProperties);
-
-                                                UserHolder.setUser(coreUser);
-
-                                                // Re-direct user to main activity feed, which has the effect of preventing
-                                                // unwanted access to the history stack
-
-                                                Intent intent = new Intent(PhotoMetaActivity.this, MainActivity.class);
-
-                                                startActivity(intent);
-
-                                                finish();
-
-                                            }
-
-                                        }, 2000);
-
-                                    }
-
-                                    @Override
-                                    public void failure(RetrofitError error) {
-                                        onPostError();
-                                    }
-
-                                });
-
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        onPostError();
-                    }
-
-                });
+        }
 
     }
 
@@ -1022,17 +1053,9 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                         progressBar.setVisibility(View.INVISIBLE);
 
-//                        postReport.setVisibility(View.GONE);
-
                         // Show success indicator
 
                         postSuccess.setVisibility(View.VISIBLE);
-
-                        // Change FloatingActionButton appearance
-
-//                        postReport.setImageResource(R.drawable.ic_done_white_24dp);
-//
-//                        postReport.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(PhotoMetaActivity.this, R.color.base_green)));
 
                         // Clear any stored group associations
 
@@ -1191,7 +1214,9 @@ public class PhotoMetaActivity extends AppCompatActivity
             }
 
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+
                 startActivityForResult(takePictureIntent, ACTION_TAKE_PHOTO);
+
             }
 
         } catch (IOException e) {
@@ -1207,51 +1232,45 @@ public class PhotoMetaActivity extends AppCompatActivity
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
 
-        Intent photoPickerIntent;
-
-        if (Build.VERSION.SDK_INT < 19) {
-
-            photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
-
-        } else {
-
-            photoPickerIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-
-            photoPickerIntent.addCategory(Intent.CATEGORY_OPENABLE);
-
-        }
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
 
         photoPickerIntent.setType("image/*");
 
-        try {
+        if (photoPickerIntent.resolveActivity(getPackageManager()) != null) {
 
-            File f = FileUtils.createImageFile(this);
-
-            mTempImagePath = f.getAbsolutePath();
-
-            Log.d("filepath", mTempImagePath);
-
-            // Use FileProvider to comply with Android security requirements.
-            // See: https://developer.android.com/training/camera/photobasics.html
-            // https://developer.android.com/reference/android/os/FileUriExposedException.html
-
-            imageUri = FileProvider.getUriForFile(this, FILE_PROVIDER_AUTHORITY, f);
-
-            photoPickerIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-
-            if (photoPickerIntent.resolveActivity(getPackageManager()) != null) {
-
-                startActivityForResult(photoPickerIntent, ACTION_SELECT_PHOTO);
-
-            }
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-
-            mTempImagePath = null;
+            startActivityForResult(photoPickerIntent, ACTION_SELECT_PHOTO);
 
         }
+
+//        try {
+//
+//            File f = FileUtils.createImageFile(this);
+//
+//            mTempImagePath = f.getAbsolutePath();
+//
+//            Log.d("filepath", mTempImagePath);
+//
+//            // Use FileProvider to comply with Android security requirements.
+//            // See: https://developer.android.com/training/camera/photobasics.html
+//            // https://developer.android.com/reference/android/os/FileUriExposedException.html
+//
+//            imageUri = FileProvider.getUriForFile(this, FILE_PROVIDER_AUTHORITY, f);
+//
+//            photoPickerIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+//
+//            if (photoPickerIntent.resolveActivity(getPackageManager()) != null) {
+//
+//                startActivityForResult(photoPickerIntent, ACTION_SELECT_PHOTO);
+//
+//            }
+//
+//        } catch (IOException e) {
+//
+//            e.printStackTrace();
+//
+//            mTempImagePath = null;
+//
+//        }
 
     }
 

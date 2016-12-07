@@ -3,12 +3,14 @@ package com.viableindustries.waterreporter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 
@@ -52,8 +54,10 @@ public class FileUtils {
 
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
 
-            storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + CAMERA_DIR
-                    + context.getResources().getString(R.string.album_name));
+//            storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + CAMERA_DIR
+//                    + context.getResources().getString(R.string.album_name));
+
+            storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 
             if (!storageDir.mkdirs()) {
                 if (!storageDir.exists()) {
@@ -68,9 +72,10 @@ public class FileUtils {
         }
 
         return storageDir;
+
     }
 
-    public static void galleryAddPic(Activity activity, String filePath) {
+    public static void galleryAddPic(Context context, String filePath) {
 
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 
@@ -80,15 +85,15 @@ public class FileUtils {
         // See: https://developer.android.com/training/camera/photobasics.html
         // https://developer.android.com/reference/android/os/FileUriExposedException.html
 
-        Uri contentUri = FileProvider.getUriForFile(activity, "com.viableindustries.waterreporter.fileprovider", f);
+        Uri contentUri = FileProvider.getUriForFile(context, "com.viableindustries.waterreporter.fileprovider", f);
 
         Log.d("addToGallery", contentUri.toString());
 
         mediaScanIntent.setData(contentUri);
 
-        activity.sendBroadcast(mediaScanIntent);
+        context.sendBroadcast(mediaScanIntent);
 
-        MediaScannerConnection.scanFile(activity,
+        MediaScannerConnection.scanFile(context,
                 new String[]{f.getAbsolutePath()}, null, null);
 
     }
@@ -342,6 +347,43 @@ public class FileUtils {
         }
 
         return bitmap;
+
+    }
+
+    public static String getPathFromUri(Context context, final Uri uri) {
+
+        final String[] projection = { MediaStore.Images.Media.DATA };
+
+        Cursor cursor = null;
+
+        try {
+
+            cursor = context.getContentResolver().query(uri, projection, null, null, null);
+
+            if (cursor != null) {
+
+                final int data_column = cursor
+                        .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
+                cursor.moveToFirst();
+
+                return cursor.getString(data_column);
+
+            } else {
+
+                return null;
+
+            }
+
+        } finally {
+
+            if (cursor != null) {
+
+                cursor.close();
+
+            }
+
+        }
 
     }
 

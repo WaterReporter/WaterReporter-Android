@@ -196,7 +196,13 @@ public class CommentActivity extends AppCompatActivity implements
 
         addListViewHeader(report);
 
+        // Check permissions
+
         verifyPermissions();
+
+        // Load comments
+
+        fetchComments(50, 1);
 
     }
 
@@ -268,8 +274,6 @@ public class CommentActivity extends AppCompatActivity implements
         // Set color of swipe refresh arrow animation
 
         commentListContainer.setColorSchemeResources(R.color.waterreporter_blue);
-
-        fetchComments(50, 1);
 
     }
 
@@ -965,49 +969,13 @@ public class CommentActivity extends AppCompatActivity implements
     @Override
     public void onDialogNegativeClick(android.app.DialogFragment dialog) {
 
-        Intent photoPickerIntent;
-
-        if (Build.VERSION.SDK_INT < 19) {
-
-            photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
-
-        } else {
-
-            photoPickerIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-
-            photoPickerIntent.addCategory(Intent.CATEGORY_OPENABLE);
-
-        }
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
 
         photoPickerIntent.setType("image/*");
 
-        try {
+        if (photoPickerIntent.resolveActivity(getPackageManager()) != null) {
 
-            File f = FileUtils.createImageFile(this);
-
-            mTempImagePath = f.getAbsolutePath();
-
-            Log.d("filepath", mTempImagePath);
-
-            // Use FileProvider to comply with Android security requirements.
-            // See: https://developer.android.com/training/camera/photobasics.html
-            // https://developer.android.com/reference/android/os/FileUriExposedException.html
-
-            imageUri = FileProvider.getUriForFile(this, FILE_PROVIDER_AUTHORITY, f);
-
-            photoPickerIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-
-            if (photoPickerIntent.resolveActivity(getPackageManager()) != null) {
-
-                startActivityForResult(photoPickerIntent, ACTION_SELECT_PHOTO);
-
-            }
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-
-            mTempImagePath = null;
+            startActivityForResult(photoPickerIntent, ACTION_SELECT_PHOTO);
 
         }
 

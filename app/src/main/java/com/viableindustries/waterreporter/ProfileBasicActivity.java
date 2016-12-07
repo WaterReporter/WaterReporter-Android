@@ -6,6 +6,7 @@ import android.accounts.AccountManager;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,10 +16,12 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -52,6 +55,7 @@ import com.viableindustries.waterreporter.dialogs.CommentActionDialogListener;
 import com.viableindustries.waterreporter.dialogs.CommentPhotoDialogListener;
 
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -112,7 +116,7 @@ public class ProfileBasicActivity extends AppCompatActivity implements
     @Bind(R.id.user_bio)
     EditText userBioInput;
 
-    @Bind(R.id.user_avatar)
+    @Bind(R.id.new_user_avatar)
     ImageView userAvatar;
 
     @Bind(R.id.save_profile)
@@ -261,141 +265,147 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
             final String access_token = prefs.getString("access_token", "");
 
-            File photo = new File(mTempImagePath);
+            String filePath = mTempImagePath;
 
-            FileNameMap fileNameMap = URLConnection.getFileNameMap();
+            if (filePath == null) {
 
-            String mimeType = fileNameMap.getContentTypeFor(mTempImagePath);
+                filePath = FileUtils.getPathFromUri(this, imageUri);
 
-            TypedFile typedPhoto = new TypedFile(mimeType, photo);
+            }
 
-            imageService.postImage(access_token, typedPhoto,
-                    new Callback<ImageProperties>() {
-                        @Override
-                        public void success(ImageProperties imageProperties,
-                                            Response response) {
+            if (filePath != null) {
 
-                            // Retrieve the image id and add relation to PATCH request body
+                final File photo = new File(filePath);
 
-                            Map<String, Object> userPatch = new HashMap<String, Object>();
+                FileNameMap fileNameMap = URLConnection.getFileNameMap();
 
-                            final Map<String, Integer> image_id = new HashMap<String, Integer>();
+                String mimeType = fileNameMap.getContentTypeFor(filePath);
 
-                            image_id.put("id", imageProperties.id);
+                TypedFile typedPhoto = new TypedFile(mimeType, photo);
 
-                            List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
+                imageService.postImage(access_token, typedPhoto,
+                        new Callback<ImageProperties>() {
+                            @Override
+                            public void success(ImageProperties imageProperties,
+                                                Response response) {
 
-                            images.add(image_id);
+                                // Retrieve the image id and add relation to PATCH request body
 
-                            userPatch.put("images", images);
+                                Map<String, Object> userPatch = new HashMap<String, Object>();
 
-                            // Build out remaining values
+                                final Map<String, Integer> image_id = new HashMap<String, Integer>();
 
-                            userPatch.put("first_name", firstName);
-                            userPatch.put("last_name", lastName);
+                                image_id.put("id", imageProperties.id);
 
-                            // The value of the `picture` attribute must be supplied
-                            // manually as the system doesn't populate this field
-                            // automatically.
+                                List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
 
-                            userPatch.put("picture", imageProperties.icon_retina);
+                                images.add(image_id);
 
-                            if (!title.isEmpty()) userPatch.put("title", title);
-                            if (!organizationName.isEmpty())
-                                userPatch.put("organization_name", organizationName);
-                            if (!publicEmail.isEmpty()) userPatch.put("public_email", publicEmail);
+                                userPatch.put("images", images);
 
-                            if (!description.isEmpty()) userPatch.put("description", description);
+                                // Build out remaining values
 
-                            if (!telephone.isEmpty()) {
+                                userPatch.put("first_name", firstName);
+                                userPatch.put("last_name", lastName);
 
-                                List<Map<String, String>> telephones = new ArrayList<>();
+                                // The value of the `picture` attribute must be supplied
+                                // manually as the system doesn't populate this field
+                                // automatically.
 
-                                Map<String, String> phoneNumber = new HashMap<String, String>();
+                                userPatch.put("picture", imageProperties.icon_retina);
 
-                                phoneNumber.put("number", telephone);
+                                if (!title.isEmpty()) userPatch.put("title", title);
+                                if (!organizationName.isEmpty())
+                                    userPatch.put("organization_name", organizationName);
+                                if (!publicEmail.isEmpty())
+                                    userPatch.put("public_email", publicEmail);
 
-                                telephones.add(phoneNumber);
+                                if (!description.isEmpty())
+                                    userPatch.put("description", description);
 
-                                userPatch.put("telephone", telephones);
+                                if (!telephone.isEmpty()) {
 
-                            }
+                                    List<Map<String, String>> telephones = new ArrayList<>();
 
-                            userService.updateUser(access_token,
-                                    "application/json",
-                                    userId,
-                                    userPatch,
-                                    new Callback<User>() {
-                                        @Override
-                                        public void success(User user,
-                                                            Response response) {
+                                    Map<String, String> phoneNumber = new HashMap<String, String>();
 
-                                            // Immediately delete the cached image file now that we no longer need it
+                                    phoneNumber.put("number", telephone);
 
-                                            File tempFile = new File(mTempImagePath);
+                                    telephones.add(phoneNumber);
 
-                                            boolean imageDeleted = tempFile.delete();
+                                    userPatch.put("telephone", telephones);
 
-                                            Log.w("Delete Check", "File deleted: " + tempFile + imageDeleted);
+                                }
 
-                                            // Clear the app data cache
+                                userService.updateUser(access_token,
+                                        "application/json",
+                                        userId,
+                                        userPatch,
+                                        new Callback<User>() {
+                                            @Override
+                                            public void success(User user,
+                                                                Response response) {
 
-                                            CacheManager.deleteCache(getBaseContext());
+                                                // Clear the app data cache
 
-                                            final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+                                                CacheManager.deleteCache(getBaseContext());
 
-                                            coreProfile.edit()
-                                                    //.putBoolean("active", user.properties.active)
-                                                    .putInt("id", user.id)
-                                                    .putString("picture", user.properties.images.get(0).properties.icon_retina)
-                                                    .apply();
+                                                final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
-                                            // Model strings
-                                            String[] KEYS = {"description", "first_name",
-                                                    "last_name", "organization_name", //"picture",
-                                                    "public_email", "title"};
+                                                coreProfile.edit()
+                                                        //.putBoolean("active", user.properties.active)
+                                                        .putInt("id", user.id)
+                                                        .putString("picture", user.properties.images.get(0).properties.icon_retina)
+                                                        .apply();
 
-                                            for (String key : KEYS) {
+                                                // Model strings
+                                                String[] KEYS = {"description", "first_name",
+                                                        "last_name", "organization_name", //"picture",
+                                                        "public_email", "title"};
 
-                                                coreProfile.edit().putString(key, user.properties.getStringProperties().get(key)).apply();
+                                                for (String key : KEYS) {
 
-                                            }
-
-                                            final Handler handler = new Handler();
-
-                                            handler.postDelayed(new Runnable() {
-                                                @Override
-                                                public void run() {
-
-                                                    Intent intent = new Intent(ProfileBasicActivity.this, GroupActionListActivity.class);
-
-                                                    intent.putExtra("POST_REGISTER", true);
-
-                                                    startActivity(intent);
+                                                    coreProfile.edit().putString(key, user.properties.getStringProperties().get(key)).apply();
 
                                                 }
 
-                                            }, 100);
+                                                final Handler handler = new Handler();
 
-                                        }
+                                                handler.postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
 
-                                        @Override
-                                        public void failure(RetrofitError error) {
-                                            savingMessage.setVisibility(View.GONE);
-                                            savingMessage.setText(getResources().getString(R.string.save));
-                                        }
+                                                        Intent intent = new Intent(ProfileBasicActivity.this, GroupActionListActivity.class);
 
-                                    });
+                                                        intent.putExtra("POST_REGISTER", true);
 
-                        }
+                                                        startActivity(intent);
 
-                        @Override
-                        public void failure(RetrofitError error) {
-                            savingMessage.setVisibility(View.GONE);
-                            savingMessage.setText(getResources().getString(R.string.save));
-                        }
+                                                    }
 
-                    });
+                                                }, 100);
+
+                                            }
+
+                                            @Override
+                                            public void failure(RetrofitError error) {
+                                                savingMessage.setVisibility(View.GONE);
+                                                savingMessage.setText(getResources().getString(R.string.save));
+                                            }
+
+                                        });
+
+                            }
+
+                            @Override
+                            public void failure(RetrofitError error) {
+                                savingMessage.setVisibility(View.GONE);
+                                savingMessage.setText(getResources().getString(R.string.save));
+                            }
+
+                        });
+
+            }
 
         } else {
 
@@ -416,8 +426,6 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
                 if (resultCode == RESULT_OK) {
 
-                    this.revokeUriPermission(imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
                     FileUtils.galleryAddPic(this, mTempImagePath);
 
                     Log.d("path", mTempImagePath);
@@ -432,8 +440,33 @@ public class ProfileBasicActivity extends AppCompatActivity implements
                         Log.d("taken path", f.toString());
                         Log.d("taken path", f.toURI().toString());
 
+                        String thumbName = String.format("%s-%s.jpg", Math.random(), new Date());
+
+                        File thumb = File.createTempFile(thumbName, null, this.getCacheDir());
+
+                        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+
+                        Bitmap bitmap = BitmapFactory.decodeFile(mTempImagePath, bmOptions);
+
+                        bitmap = ThumbnailUtils.extractThumbnail(bitmap, 192, 192);
+
+                        FileOutputStream fOut = new FileOutputStream(thumb);
+
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+
+                        fOut.flush();
+
+                        fOut.close();
+
+                        Log.d("thumb", thumb.toString());
+                        Log.d("thumb", thumb.toURI().toString());
+                        Log.d("thumb", thumb.getAbsolutePath());
+                        Log.d("thumb", thumb.getPath());
+
+                        Log.d("thumb bitmap", bitmap.toString());
+
                         Picasso.with(this)
-                                .load(new File(mTempImagePath))
+                                .load(thumb)
                                 .placeholder(R.drawable.user_avatar_placeholder)
                                 .transform(new CircleTransform())
                                 .into(userAvatar);
@@ -444,7 +477,9 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
                         e.printStackTrace();
 
-                        Log.d(null, "Save file error!");
+                        Log.d("bad image path", e.toString());
+
+                        Log.d("bad image path", "Save file error!" + mTempImagePath);
 
                         mTempImagePath = null;
 
@@ -460,55 +495,85 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
                 if (resultCode == RESULT_OK) {
 
-                    if (data != null) {
+                    try {
+
+                        // Use FileProvider to comply with Android security requirements.
+                        // See: https://developer.android.com/training/camera/photobasics.html
+                        // https://developer.android.com/reference/android/os/FileUriExposedException.html
+
+                        imageUri = data.getData();
+
+                        String thumbName = String.format("%s-%s.jpg", Math.random(), new Date());
+
+                        File thumb = File.createTempFile(thumbName, null, this.getCacheDir());
+
+                        Log.d("taken path", thumb.getAbsolutePath());
+                        Log.d("taken path", thumb.toString());
+                        Log.d("taken path", thumb.toURI().toString());
 
                         try {
 
-                            File f = FileUtils.createImageFile(this);
+                            ParcelFileDescriptor parcelFileDescriptor =
+                                    getContentResolver().openFileDescriptor(imageUri, "r");
 
-                            mTempImagePath = f.getAbsolutePath();
+                            if (parcelFileDescriptor != null) {
 
-                            Log.d("filepath", mTempImagePath);
+                                FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
 
-                            // Use FileProvider to comply with Android security requirements.
-                            // See: https://developer.android.com/training/camera/photobasics.html
-                            // https://developer.android.com/reference/android/os/FileUriExposedException.html
+                                Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
 
-                            imageUri = data.getData();
+                                parcelFileDescriptor.close();
 
-                            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+                                image = ThumbnailUtils.extractThumbnail(image, 192, 192);
 
-                            Bitmap bitmap = FileUtils.decodeSampledBitmapFromStream(this, imageUri, 1080, 1080);
+                                FileOutputStream fOut = new FileOutputStream(thumb);
 
-                            FileOutputStream fOut = new FileOutputStream(f);
+                                image.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
 
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+                                fOut.flush();
 
-                            fOut.flush();
+                                fOut.close();
 
-                            fOut.close();
+                                Log.d("thumb", thumb.toString());
+                                Log.d("thumb", thumb.toURI().toString());
+                                Log.d("thumb", thumb.getAbsolutePath());
+                                Log.d("thumb", thumb.getPath());
 
-                            Picasso.with(this)
-                                    .load(f)
-                                    .placeholder(R.drawable.user_avatar_placeholder)
-                                    .transform(new CircleTransform())
-                                    .into(userAvatar);
+                                Log.d("thumb bitmap", image.toString());
 
-                            photoCaptured = true;
+                                userAvatar.setImageBitmap(image);
 
-                        } catch (Exception e) {
+                                Picasso.with(this)
+                                        .load(thumb)
+                                        .placeholder(R.drawable.user_avatar_placeholder)
+                                        .transform(new CircleTransform())
+                                        .into(userAvatar);
 
-                            Snackbar.make(parentLayout, "Unable to read image.",
-                                    Snackbar.LENGTH_SHORT)
-                                    .show();
+                                photoCaptured = true;
+
+                            }
+
+                        } catch (IOException e) {
+
+                            e.printStackTrace();
 
                         }
+
+                    } catch (Exception e) {
+
+                        e.printStackTrace();
+
+                        Log.d("bad image path", e.toString());
+
+                        Snackbar.make(parentLayout, "Unable to read image.",
+                                Snackbar.LENGTH_SHORT)
+                                .show();
 
                     }
 
                 } else {
 
-                    Log.d("image", "no image data");
+                    Log.d("no image path", "no image data");
 
                 }
 
@@ -518,9 +583,8 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
     }
 
-
     @Override
-    public void onDialogPositiveClick(android.app.DialogFragment dialog) {
+    public void onDialogPositiveClick(DialogFragment dialog) {
 
         // For compatibility with Android 6.0 (Marshmallow, API 23), we need to check permissions before
         // dispatching takePictureIntent, otherwise the app will crash.
@@ -545,7 +609,6 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
             // Using v4 Support Library FileProvider and Camera intent on pre-Marshmallow devices
             // requires granting FileUri permissions at runtime
-            // See: https://medium.com/@a1cooke/using-v4-support-library-fileprovider-and-camera-intent-a45f76879d61#.d8gcmwxx9
 
             List<ResolveInfo> resolvedIntentActivities = this.getPackageManager().queryIntentActivities(takePictureIntent, PackageManager.MATCH_DEFAULT_ONLY);
 
@@ -554,10 +617,13 @@ public class ProfileBasicActivity extends AppCompatActivity implements
                 String packageName = resolvedIntentInfo.activityInfo.packageName;
 
                 this.grantUriPermission(packageName, imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
             }
 
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+
                 startActivityForResult(takePictureIntent, ACTION_TAKE_PHOTO);
+
             }
 
         } catch (IOException e) {
@@ -573,49 +639,13 @@ public class ProfileBasicActivity extends AppCompatActivity implements
     @Override
     public void onDialogNegativeClick(android.app.DialogFragment dialog) {
 
-        Intent photoPickerIntent;
-
-        if (Build.VERSION.SDK_INT < 19) {
-
-            photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
-
-        } else {
-
-            photoPickerIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-
-            photoPickerIntent.addCategory(Intent.CATEGORY_OPENABLE);
-
-        }
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
 
         photoPickerIntent.setType("image/*");
 
-        try {
+        if (photoPickerIntent.resolveActivity(getPackageManager()) != null) {
 
-            File f = FileUtils.createImageFile(this);
-
-            mTempImagePath = f.getAbsolutePath();
-
-            Log.d("filepath", mTempImagePath);
-
-            // Use FileProvider to comply with Android security requirements.
-            // See: https://developer.android.com/training/camera/photobasics.html
-            // https://developer.android.com/reference/android/os/FileUriExposedException.html
-
-            imageUri = FileProvider.getUriForFile(this, FILE_PROVIDER_AUTHORITY, f);
-
-            photoPickerIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-
-            if (photoPickerIntent.resolveActivity(getPackageManager()) != null) {
-
-                startActivityForResult(photoPickerIntent, ACTION_SELECT_PHOTO);
-
-            }
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-
-            mTempImagePath = null;
+            startActivityForResult(photoPickerIntent, ACTION_SELECT_PHOTO);
 
         }
 
