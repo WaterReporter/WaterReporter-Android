@@ -64,6 +64,7 @@
             android:layout_width="112dp"
             android:layout_height="112dp"
             android:layout_gravity="center"
+            android:animateLayoutChanges="true"
             android:visibility="visible">
 
             <ImageView
@@ -72,6 +73,14 @@
                 android:layout_height="80dp"
                 android:layout_gravity="center"
                 android:scaleType="fitXY" />
+
+            <ImageView
+                android:id="@+id/new_user_avatar_preview"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:scaleType="fitXY"
+                android:visibility="gone" />
 
             <ImageButton
                 android:id="@+id/change_image"

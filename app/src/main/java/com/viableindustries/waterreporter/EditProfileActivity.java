@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.CacheManager;
+import com.viableindustries.waterreporter.data.DisplayDecimal;
 import com.viableindustries.waterreporter.data.ImageProperties;
 import com.viableindustries.waterreporter.data.ImageService;
 import com.viableindustries.waterreporter.data.User;
@@ -100,6 +101,9 @@ public class EditProfileActivity extends AppCompatActivity implements
 
     @Bind(R.id.current_user_avatar)
     ImageView userAvatar;
+
+    @Bind(R.id.current_user_avatar_preview)
+    ImageView avatarPreview;
 
     @Bind(R.id.change_image)
     ImageButton editPhoto;
@@ -489,70 +493,66 @@ public class EditProfileActivity extends AppCompatActivity implements
 
                 if (resultCode == RESULT_OK) {
 
-                    if (data != null) {
+                    FileUtils.galleryAddPic(this, mTempImagePath);
 
-                        FileUtils.galleryAddPic(this, mTempImagePath);
+                    Log.d("path", mTempImagePath);
 
-                        Log.d("path", mTempImagePath);
+                    // Display thumbnail
 
-                        // Display thumbnail
+                    try {
 
-                        try {
+                        File f = new File(mTempImagePath);
 
-                            File f = new File(mTempImagePath);
+                        String thumbName = String.format("%s-%s.jpg", Math.random(), new Date());
 
-                            Log.d("taken path", f.getAbsolutePath());
-                            Log.d("taken path", f.toString());
-                            Log.d("taken path", f.toURI().toString());
+                        File thumb = File.createTempFile(thumbName, null, this.getCacheDir());
 
-                            Bitmap thumbNail = FileUtils.decodeSampledBitmapFromStream(this, imageUri, 192, 192);
+                        Log.d("taken path", f.getAbsolutePath());
+                        Log.d("taken path", f.toString());
+                        Log.d("taken path", f.toURI().toString());
 
-                            String thumbName = String.format("%s-%s.jpg", Math.random(), new Date());
+                        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
 
-                            File thumb = File.createTempFile(thumbName, null, this.getCacheDir());
+                        Bitmap bitmap = BitmapFactory.decodeFile(f.getAbsolutePath(), bmOptions);
 
-//                        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                        bitmap = ThumbnailUtils.extractThumbnail(bitmap, 192, 192);
 
-//                        Bitmap bitmap = BitmapFactory.decodeFile(mTempImagePath, bmOptions);
+                        FileOutputStream fOut = new FileOutputStream(thumb);
 
-//                        thumbNail = ThumbnailUtils.extractThumbnail(bitmap, 192, 192);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
 
-                            FileOutputStream fOut = new FileOutputStream(thumb);
+                        fOut.flush();
 
-                            thumbNail.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+                        fOut.close();
 
-                            fOut.flush();
+                        Log.d("thumb", thumb.toString());
+                        Log.d("thumb", thumb.toURI().toString());
+                        Log.d("thumb", thumb.getAbsolutePath());
+                        Log.d("thumb", thumb.getPath());
 
-                            fOut.close();
-//
-//                        Log.d("thumb", thumb.toString());
-//                        Log.d("thumb", thumb.toURI().toString());
-//                        Log.d("thumb", thumb.getAbsolutePath());
-//                        Log.d("thumb", thumb.getPath());
-//
-//                        Log.d("thumb bitmap", bitmap.toString());
+                        userAvatar.setVisibility(View.GONE);
 
-                            Picasso.with(this)
-                                    .load(f)
-                                    .placeholder(R.drawable.user_avatar_placeholder)
-                                    .transform(new CircleTransform())
-                                    .into(userAvatar);
+                        avatarPreview.setVisibility(View.VISIBLE);
 
-                            photoCaptured = true;
+                        Picasso.with(EditProfileActivity.this)
+                                .load(thumb)
+                                .placeholder(R.drawable.user_avatar_placeholder)
+                                .transform(new CircleTransform())
+                                .into(avatarPreview);
 
-                        } catch (Exception e) {
+                        photoCaptured = true;
 
-                            e.printStackTrace();
+                    } catch (Exception e) {
 
-                            Log.d("bad image path", e.toString());
+                        e.printStackTrace();
 
-                            Log.d("bad image path", "Save file error!" + mTempImagePath);
+                        Log.d("path error", "Save file error!");
 
-                            mTempImagePath = null;
+                        mTempImagePath = null;
 
-                            return;
+                        photoCaptured = false;
 
-                        }
+                        return;
 
                     }
 
@@ -564,91 +564,83 @@ public class EditProfileActivity extends AppCompatActivity implements
 
                 if (resultCode == RESULT_OK) {
 
-                    try {
-
-                        // Use FileProvider to comply with Android security requirements.
-                        // See: https://developer.android.com/training/camera/photobasics.html
-                        // https://developer.android.com/reference/android/os/FileUriExposedException.html
-
-                        imageUri = data.getData();
-
-//                        String thumbName = String.format("%s-%s.jpg", Math.random(), new Date());
-//
-//                        File thumb = File.createTempFile(thumbName, null, this.getCacheDir());
-
-                        Bitmap thumbNail = FileUtils.decodeSampledBitmapFromStream(this, imageUri, 192, 192);
-
-                        String thumbName = String.format("%s-%s.jpg", Math.random(), new Date());
-
-                        File thumb = File.createTempFile(thumbName, null, this.getCacheDir());
-
-                        Log.d("taken path", thumb.getAbsolutePath());
-                        Log.d("taken path", thumb.toString());
-                        Log.d("taken path", thumb.toURI().toString());
+                    if (data != null) {
 
                         try {
 
-//                            ParcelFileDescriptor parcelFileDescriptor =
-//                                    getContentResolver().openFileDescriptor(imageUri, "r");
-//
-//                            if (parcelFileDescriptor != null) {
-//
-//                                FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-//
-//                                Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
-//
-//                                parcelFileDescriptor.close();
-//
-//                                image = ThumbnailUtils.extractThumbnail(image, 192, 192);
+                            imageUri = data.getData();
 
-                                FileOutputStream fOut = new FileOutputStream(thumb);
+                            String thumbName = String.format("%s-%s.jpg", Math.random(), new Date());
 
-                                thumbNail.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+                            File thumb = File.createTempFile(thumbName, null, this.getCacheDir());
 
-                                fOut.flush();
+                            try {
 
-                                fOut.close();
+                                ParcelFileDescriptor parcelFileDescriptor =
+                                        getContentResolver().openFileDescriptor(imageUri, "r");
 
-                                Log.d("thumb", thumb.toString());
-                                Log.d("thumb", thumb.toURI().toString());
-                                Log.d("thumb", thumb.getAbsolutePath());
-                                Log.d("thumb", thumb.getPath());
+                                if (parcelFileDescriptor != null) {
 
-                                Log.d("thumb bitmap", image.toString());
+                                    FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
 
-//                                userAvatar.setImageBitmap(image);
+                                    Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
 
-                                Picasso.with(this)
-                                        .load(thumb)
-                                        .placeholder(R.drawable.user_avatar_placeholder)
-                                        .transform(new CircleTransform())
-                                        .into(userAvatar);
+                                    parcelFileDescriptor.close();
 
-                                photoCaptured = true;
+                                    image = ThumbnailUtils.extractThumbnail(image, 192, 192);
 
-//                            }
+                                    FileOutputStream fOut = new FileOutputStream(thumb);
 
-                        } catch (IOException e) {
+                                    image.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
 
-                            e.printStackTrace();
+                                    fOut.flush();
+
+                                    fOut.close();
+
+                                    Log.d("thumb", thumb.toString());
+                                    Log.d("thumb", thumb.toURI().toString());
+                                    Log.d("thumb", thumb.getAbsolutePath());
+                                    Log.d("thumb", thumb.getPath());
+
+                                    Log.d("thumb bitmap", image.toString());
+
+                                    userAvatar.setVisibility(View.GONE);
+
+                                    avatarPreview.setVisibility(View.VISIBLE);
+
+                                    Picasso.with(EditProfileActivity.this)
+                                            .load(thumb)
+                                            .placeholder(R.drawable.user_avatar_placeholder)
+                                            .transform(new CircleTransform())
+                                            .into(avatarPreview);
+
+                                    photoCaptured = true;
+
+                                }
+
+                            } catch (IOException e) {
+
+                                e.printStackTrace();
+
+                            }
+
+                        } catch (Exception e) {
+
+                            Snackbar.make(parentLayout, "Unable to read image.",
+                                    Snackbar.LENGTH_SHORT)
+                                    .show();
+
+                            mTempImagePath = null;
+
+                            photoCaptured = false;
 
                         }
-
-                    } catch (Exception e) {
-
-                        e.printStackTrace();
-
-                        Log.d("bad image path", e.toString());
-
-                        Snackbar.make(parentLayout, "Unable to read image.",
-                                Snackbar.LENGTH_SHORT)
-                                .show();
 
                     }
 
                 } else {
 
-                    Log.d("no image path", "no image data");
+                    Log.d("image", "no image data");
 
                 }
 
@@ -712,7 +704,7 @@ public class EditProfileActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onDialogNegativeClick(android.app.DialogFragment dialog) {
+    public void onDialogNegativeClick(DialogFragment dialog) {
 
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
 

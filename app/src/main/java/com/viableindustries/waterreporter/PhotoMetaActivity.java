@@ -585,16 +585,6 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                         try {
 
-//                            File f = FileUtils.createImageFile(this);
-//
-//                            mTempImagePath = f.getAbsolutePath();
-//
-//                            Log.d("filepath", mTempImagePath);
-
-                            // Use FileProvider to comply with Android security requirements.
-                            // See: https://developer.android.com/training/camera/photobasics.html
-                            // https://developer.android.com/reference/android/os/FileUriExposedException.html
-
                             imageUri = data.getData();
 
                             String thumbName = String.format("%s-%s.jpg", Math.random(), new Date());
@@ -614,7 +604,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                                     parcelFileDescriptor.close();
 
-                                    image = ThumbnailUtils.extractThumbnail(image, 192, 192);
+                                    image = ThumbnailUtils.extractThumbnail(image, 96, 96);
 
                                     FileOutputStream fOut = new FileOutputStream(thumb);
 
@@ -1241,36 +1231,6 @@ public class PhotoMetaActivity extends AppCompatActivity
             startActivityForResult(photoPickerIntent, ACTION_SELECT_PHOTO);
 
         }
-
-//        try {
-//
-//            File f = FileUtils.createImageFile(this);
-//
-//            mTempImagePath = f.getAbsolutePath();
-//
-//            Log.d("filepath", mTempImagePath);
-//
-//            // Use FileProvider to comply with Android security requirements.
-//            // See: https://developer.android.com/training/camera/photobasics.html
-//            // https://developer.android.com/reference/android/os/FileUriExposedException.html
-//
-//            imageUri = FileProvider.getUriForFile(this, FILE_PROVIDER_AUTHORITY, f);
-//
-//            photoPickerIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-//
-//            if (photoPickerIntent.resolveActivity(getPackageManager()) != null) {
-//
-//                startActivityForResult(photoPickerIntent, ACTION_SELECT_PHOTO);
-//
-//            }
-//
-//        } catch (IOException e) {
-//
-//            e.printStackTrace();
-//
-//            mTempImagePath = null;
-//
-//        }
 
     }
 
