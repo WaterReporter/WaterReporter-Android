@@ -169,6 +169,17 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
             image = FileUtils.createImageFile(this);
 
+            // Use FileProvider to comply with Android security requirements.
+            // See: https://developer.android.com/training/camera/photobasics.html
+            // https://developer.android.com/reference/android/os/FileUriExposedException.html
+
+            imageUri = FileProvider.getUriForFile(this, FILE_PROVIDER_AUTHORITY, image);
+
+            // Using v4 Support Library FileProvider and Camera intent on pre-Marshmallow devices
+            // requires granting FileUri permissions at runtime
+
+            this.grantUriPermission(getPackageName(), imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
             mTempImagePath = image.getAbsolutePath();
 
             InputStream inputStream = getResources().openRawResource(avatarId);
@@ -226,10 +237,6 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
         if (photoCaptured) {
 
-            savingMessage.setVisibility(View.VISIBLE);
-
-            savingMessage.setText(getResources().getString(R.string.saving_profile));
-
             final String firstName = String.valueOf(firstNameInput.getText());
 
             final String lastName = String.valueOf(lastNameInput.getText());
@@ -245,6 +252,10 @@ public class ProfileBasicActivity extends AppCompatActivity implements
                 return;
 
             }
+
+            savingMessage.setVisibility(View.VISIBLE);
+
+            savingMessage.setText(getResources().getString(R.string.saving_profile));
 
             final ImageService imageService = ImageService.restAdapter.create(ImageService.class);
 
@@ -728,7 +739,6 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
         super.onPause();
 
-        //resetStoredUserData();
     }
 
     @Override
@@ -737,8 +747,6 @@ public class ProfileBasicActivity extends AppCompatActivity implements
         super.onDestroy();
 
         ButterKnife.unbind(this);
-
-        //resetStoredUserData();
 
     }
 

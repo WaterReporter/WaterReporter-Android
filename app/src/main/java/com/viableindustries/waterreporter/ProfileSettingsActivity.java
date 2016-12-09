@@ -72,7 +72,17 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
         user = UserHolder.getUser();
 
-        configureNotificationSettings();
+        if (user.id > 0) {
+
+            configureNotificationSettings();
+
+        } else {
+
+            startActivity(new Intent(this, MainActivity.class));
+
+            finish();
+
+        }
 
     }
 

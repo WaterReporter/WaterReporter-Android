@@ -140,6 +140,10 @@ public class EditProfileActivity extends AppCompatActivity implements
 
     private static final String TAG = "ProfileBasicActivity";
 
+    private String firstName;
+
+    private String lastName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -205,6 +209,17 @@ public class EditProfileActivity extends AppCompatActivity implements
 
                 image = FileUtils.createImageFile(this);
 
+                // Use FileProvider to comply with Android security requirements.
+                // See: https://developer.android.com/training/camera/photobasics.html
+                // https://developer.android.com/reference/android/os/FileUriExposedException.html
+
+                imageUri = FileProvider.getUriForFile(this, FILE_PROVIDER_AUTHORITY, image);
+
+                // Using v4 Support Library FileProvider and Camera intent on pre-Marshmallow devices
+                // requires granting FileUri permissions at runtime
+
+                this.grantUriPermission(getPackageName(), imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
                 mTempImagePath = image.getAbsolutePath();
 
                 InputStream inputStream = getResources().openRawResource(avatarId);
@@ -268,6 +283,10 @@ public class EditProfileActivity extends AppCompatActivity implements
     }
 
     private void postImage() {
+
+        savingMessage.setVisibility(View.VISIBLE);
+
+        savingMessage.setText(getResources().getString(R.string.saving_profile));
 
         final ImageService imageService = ImageService.restAdapter.create(ImageService.class);
 
@@ -349,9 +368,9 @@ public class EditProfileActivity extends AppCompatActivity implements
 
     public void updateProfile(Map<String, Object> userPatch) {
 
-        final String firstName = String.valueOf(firstNameInput.getText());
+        savingMessage.setVisibility(View.VISIBLE);
 
-        final String lastName = String.valueOf(lastNameInput.getText());
+        savingMessage.setText(getResources().getString(R.string.saving_profile));
 
         final String title = String.valueOf(userTitleInput.getText());
 
@@ -464,11 +483,21 @@ public class EditProfileActivity extends AppCompatActivity implements
 
     public void saveProfile(View view) {
 
+        firstName = String.valueOf(firstNameInput.getText());
+
+        lastName = String.valueOf(lastNameInput.getText());
+
+        if (firstName.isEmpty() || lastName.isEmpty()) {
+
+            CharSequence text = "Please enter both your first and last names.";
+            Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+            toast.show();
+
+            return;
+
+        }
+
         accessToken = prefs.getString("access_token", "");
-
-        savingMessage.setVisibility(View.VISIBLE);
-
-        savingMessage.setText(getResources().getString(R.string.saving_profile));
 
         if (photoCaptured) {
 
