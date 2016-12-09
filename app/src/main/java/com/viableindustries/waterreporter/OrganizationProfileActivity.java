@@ -136,6 +136,8 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     private Organization organization;
 
+    private SharedPreferences prefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -144,6 +146,8 @@ public class OrganizationProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_organization_profile);
 
         ButterKnife.bind(this);
+
+        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         context = this;
 
@@ -370,16 +374,13 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     protected void countReports(String query, final String filterName) {
 
-        final SharedPreferences prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
-
-        final String access_token = prefs.getString("access_token", "");
+        final String accessToken = prefs.getString("access_token", "");
 
         RestAdapter restAdapter = ReportService.restAdapter;
 
         ReportService service = restAdapter.create(ReportService.class);
 
-        service.getReports(access_token, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
+        service.getReports(accessToken, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
 
             @Override
             public void success(FeatureCollection featureCollection, Response response) {
@@ -432,16 +433,13 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     protected void fetchOrganizationMembers(int limit, int page, int organizationId) {
 
-        final SharedPreferences prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        final String accessToken = prefs.getString("access_token", "");
 
-        final String access_token = prefs.getString("access_token", "");
-
-        Log.d("", access_token);
+        Log.d("", accessToken);
 
         OrganizationService service = OrganizationService.restAdapter.create(OrganizationService.class);
 
-        service.getOrganizationMembers(access_token, "application/json", organizationId, page, limit, null, new Callback<UserCollection>() {
+        service.getOrganizationMembers(accessToken, "application/json", organizationId, page, limit, null, new Callback<UserCollection>() {
 
             @Override
             public void success(UserCollection userCollection, Response response) {
@@ -562,11 +560,9 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     private void fetchReports(int limit, int page, String query, final boolean refresh, final boolean replace) {
 
-        SharedPreferences prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        final String accessToken = prefs.getString("access_token", "");
 
-        final String access_token = prefs.getString("access_token", "");
-
-        Log.d("", access_token);
+        Log.d("", accessToken);
 
         Log.d("URL", query);
 
@@ -574,7 +570,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         ReportService service = restAdapter.create(ReportService.class);
 
-        service.getReports(access_token, "application/json", page, limit, query, new Callback<FeatureCollection>() {
+        service.getReports(accessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
 
             @Override
             public void success(FeatureCollection featureCollection, Response response) {

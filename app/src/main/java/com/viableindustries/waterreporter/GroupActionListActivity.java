@@ -180,7 +180,7 @@ public class GroupActionListActivity extends AppCompatActivity {
         SharedPreferences prefs =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        final String access_token = prefs.getString("access_token", "");
+        final String accessToken = prefs.getString("access_token", "");
 
         OrganizationService service = OrganizationService.restAdapter.create(OrganizationService.class);
 
@@ -202,7 +202,7 @@ public class GroupActionListActivity extends AppCompatActivity {
 
 //        organizationListContainer.setRefreshing(true);
 
-        service.getOrganizations(access_token, "application/json", page, limit, query, new Callback<OrganizationFeatureCollection>() {
+        service.getOrganizations(accessToken, "application/json", page, limit, query, new Callback<OrganizationFeatureCollection>() {
 
             @Override
             public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {

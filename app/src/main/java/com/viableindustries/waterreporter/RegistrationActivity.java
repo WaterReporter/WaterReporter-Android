@@ -63,6 +63,8 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private Pattern emailPattern;
 
+    private SharedPreferences prefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -71,6 +73,8 @@ public class RegistrationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registration);
 
         ButterKnife.bind(this);
+
+        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         emailPattern = android.util.Patterns.EMAIL_ADDRESS;
 
@@ -87,9 +91,6 @@ public class RegistrationActivity extends AppCompatActivity {
         RestAdapter restAdapter = SecurityService.restAdapter;
 
         final SecurityService securityService = restAdapter.create(SecurityService.class);
-
-        final SharedPreferences prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         final String password = String.valueOf(password_text.getText());
 
@@ -207,9 +208,6 @@ public class RegistrationActivity extends AppCompatActivity {
 
         final SecurityService securityService = restAdapter.create(SecurityService.class);
 
-        final SharedPreferences prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
-
         String password = String.valueOf(password_text.getText());
 
         String email = String.valueOf(email_text.getText());
@@ -240,9 +238,9 @@ public class RegistrationActivity extends AppCompatActivity {
                         public void success(AuthResponse authResponse,
                                             Response response) {
 
-                            String access_token = "Bearer " + authResponse.getAccessToken();
+                            String accessToken = "Bearer " + authResponse.getAccessToken();
 
-                            prefs.edit().putString("access_token", access_token).apply();
+                            prefs.edit().putString("access_token", accessToken).apply();
 
                             // This method was triggered by the user successfully completing both the email
                             // and password fields, and then tapping "I already have an account" rather than
@@ -254,7 +252,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
                             UserService userService = restAdapter.create(UserService.class);
 
-                            userService.getActiveUser(access_token, "application/json",
+                            userService.getActiveUser(accessToken, "application/json",
                                     new Callback<UserBasicResponse>() {
                                         @Override
                                         public void success(UserBasicResponse userBasicResponse,

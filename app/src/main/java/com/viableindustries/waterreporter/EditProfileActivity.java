@@ -120,7 +120,9 @@ public class EditProfileActivity extends AppCompatActivity implements
 
     private User coreUser;
 
-    private String access_token;
+    private SharedPreferences prefs;
+
+    private String accessToken;
 
     private static final int ACTION_TAKE_PHOTO = 1;
 
@@ -146,6 +148,8 @@ public class EditProfileActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_edit_profile);
 
         ButterKnife.bind(this);
+
+        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
@@ -269,12 +273,9 @@ public class EditProfileActivity extends AppCompatActivity implements
 
         final UserService userService = UserService.restAdapter.create(UserService.class);
 
-        final SharedPreferences prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
-
         final int userId = prefs.getInt("user_id", 0);
 
-        final String access_token = prefs.getString("access_token", "");
+        accessToken = prefs.getString("access_token", "");
 
         String filePath = mTempImagePath;
 
@@ -294,7 +295,7 @@ public class EditProfileActivity extends AppCompatActivity implements
 
             TypedFile typedPhoto = new TypedFile(mimeType, photo);
 
-            imageService.postImage(access_token, typedPhoto,
+            imageService.postImage(accessToken, typedPhoto,
                     new Callback<ImageProperties>() {
                         @Override
                         public void success(ImageProperties imageProperties,
@@ -402,7 +403,7 @@ public class EditProfileActivity extends AppCompatActivity implements
 
         final UserService userService = UserService.restAdapter.create(UserService.class);
 
-        userService.updateUser(access_token,
+        userService.updateUser(accessToken,
                 "application/json",
                 coreUser.id,
                 userPatch,
@@ -463,10 +464,7 @@ public class EditProfileActivity extends AppCompatActivity implements
 
     public void saveProfile(View view) {
 
-        final SharedPreferences prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
-
-        access_token = prefs.getString("access_token", "");
+        accessToken = prefs.getString("access_token", "");
 
         savingMessage.setVisibility(View.VISIBLE);
 

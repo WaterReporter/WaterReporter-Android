@@ -149,6 +149,8 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
     private static final String TAG = "ProfileBasicActivity";
 
+    private SharedPreferences prefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -157,6 +159,8 @@ public class ProfileBasicActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_profile_basic);
 
         ButterKnife.bind(this);
+
+        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         verifyPermissions();
 
@@ -262,12 +266,9 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
             final UserService userService = UserService.restAdapter.create(UserService.class);
 
-            final SharedPreferences prefs =
-                    getSharedPreferences(getPackageName(), MODE_PRIVATE);
-
             final int userId = prefs.getInt("user_id", 0);
 
-            final String access_token = prefs.getString("access_token", "");
+            final String accessToken = prefs.getString("access_token", "");
 
             String filePath = mTempImagePath;
 
@@ -287,7 +288,7 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
                 TypedFile typedPhoto = new TypedFile(mimeType, photo);
 
-                imageService.postImage(access_token, typedPhoto,
+                imageService.postImage(accessToken, typedPhoto,
                         new Callback<ImageProperties>() {
                             @Override
                             public void success(ImageProperties imageProperties,
@@ -341,7 +342,7 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
                                 }
 
-                                userService.updateUser(access_token,
+                                userService.updateUser(accessToken,
                                         "application/json",
                                         userId,
                                         userPatch,

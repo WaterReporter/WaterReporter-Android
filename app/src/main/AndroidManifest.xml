@@ -43,10 +43,7 @@
 
         <meta-data
             android:name="DATABASE"
-            android:value="water_reporter_reports_002.db" />
-        <meta-data
-            android:name="VERSION"
-            android:value="2" />
+            android:value="water_reporter_reports_004.db" />
         <meta-data
             android:name="QUERY_LOG"
             android:value="true" />

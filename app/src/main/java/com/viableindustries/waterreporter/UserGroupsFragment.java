@@ -54,13 +54,13 @@ public class UserGroupsFragment extends android.support.v4.app.Fragment {
         final SharedPreferences prefs =
                 getActivity().getSharedPreferences(getActivity().getPackageName(), MODE_PRIVATE);
 
-        final String access_token = prefs.getString("access_token", "");
+        final String accessToken = prefs.getString("access_token", "");
 
-        Log.d("", access_token);
+        Log.d("", accessToken);
 
         UserService service = UserService.restAdapter.create(UserService.class);
 
-        service.getUserOrganization(access_token, "application/json", userId, new Callback<OrganizationFeatureCollection>() {
+        service.getUserOrganization(accessToken, "application/json", userId, new Callback<OrganizationFeatureCollection>() {
 
             @Override
             public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {

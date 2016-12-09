@@ -144,13 +144,13 @@
 //        SharedPreferences prefs =
 //                getSharedPreferences(getPackageName(), MODE_PRIVATE);
 //
-//        final String access_token = prefs.getString("access_token", "");
+//        final String accessToken = prefs.getString("access_token", "");
 //
 //        RestAdapter restAdapter = ReportService.restAdapter;
 //
 //        ReportService service = restAdapter.create(ReportService.class);
 //
-//        service.getSingleReport(access_token, "application/json", id, new Callback<Report>() {
+//        service.getSingleReport(accessToken, "application/json", id, new Callback<Report>() {
 //
 //            @Override
 //            public void success(Report report, Response response) {
@@ -250,7 +250,7 @@
 //        SharedPreferences prefs =
 //                getSharedPreferences(getPackageName(), MODE_PRIVATE);
 //
-//        final String access_token = prefs.getString("access_token", "");
+//        final String accessToken = prefs.getString("access_token", "");
 //
 //        RestAdapter restAdapter = ReportService.restAdapter;
 //

@@ -76,9 +76,9 @@ public class UserFeedFragment extends Fragment {
         SharedPreferences prefs =
                 getActivity().getSharedPreferences(getActivity().getPackageName(), MODE_PRIVATE);
 
-        final String access_token = prefs.getString("access_token", "");
+        final String accessToken = prefs.getString("access_token", "");
 
-        Log.d("", access_token);
+        Log.d("", accessToken);
 
         // Create order_by list and add a sort parameter
 
@@ -104,7 +104,7 @@ public class UserFeedFragment extends Fragment {
 
         Log.d("URL", query);
 
-        service.getReports(access_token, "application/json", page, limit, query, new Callback<FeatureCollection>() {
+        service.getReports(accessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
 
             @Override
             public void success(FeatureCollection featureCollection, Response response) {

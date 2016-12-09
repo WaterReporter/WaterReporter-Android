@@ -183,6 +183,8 @@ public class CommentActivity extends AppCompatActivity implements
 
     private static final String TAG = "ProfileBasicActivity";
 
+    private SharedPreferences prefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -191,6 +193,8 @@ public class CommentActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_comment);
 
         ButterKnife.bind(this);
+
+        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         report = ReportHolder.getReport();
 
@@ -375,12 +379,9 @@ public class CommentActivity extends AppCompatActivity implements
 
     private void fetchComments(int limit, int page) {
 
-        SharedPreferences prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        final String accessToken = prefs.getString("access_token", "");
 
-        final String access_token = prefs.getString("access_token", "");
-
-        Log.d("", access_token);
+        Log.d("", accessToken);
 
         // Create order_by list and add a sort parameter
 
@@ -402,7 +403,7 @@ public class CommentActivity extends AppCompatActivity implements
 
         commentListContainer.setRefreshing(true);
 
-        service.getReportComments(access_token, "application/json", report.id, page, limit, query, new Callback<CommentCollection>() {
+        service.getReportComments(accessToken, "application/json", report.id, page, limit, query, new Callback<CommentCollection>() {
 
             @Override
             public void success(CommentCollection commentCollection, Response response) {
@@ -532,10 +533,7 @@ public class CommentActivity extends AppCompatActivity implements
 
         final ImageService imageService = ImageService.restAdapter.create(ImageService.class);
 
-        SharedPreferences prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
-
-        final String access_token = prefs.getString("access_token", "");
+        final String accessToken = prefs.getString("access_token", "");
 
         FileNameMap fileNameMap = URLConnection.getFileNameMap();
 
@@ -547,7 +545,7 @@ public class CommentActivity extends AppCompatActivity implements
 
         TypedFile typedPhoto = new TypedFile(mimeType, photo);
 
-        imageService.postImage(access_token, typedPhoto,
+        imageService.postImage(accessToken, typedPhoto,
                 new Callback<ImageProperties>() {
                     @Override
                     public void success(ImageProperties imageProperties,
@@ -600,16 +598,13 @@ public class CommentActivity extends AppCompatActivity implements
 
         working = true;
 
-        SharedPreferences prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        final String accessToken = prefs.getString("access_token", "");
 
-        final String access_token = prefs.getString("access_token", "");
-
-        Log.d("", access_token);
+        Log.d("", accessToken);
 
         CommentService service = CommentService.restAdapter.create(CommentService.class);
 
-        service.postComment(access_token, "application/json", commentPost, new Callback<Comment>() {
+        service.postComment(accessToken, "application/json", commentPost, new Callback<Comment>() {
 
             @Override
             public void success(Comment comment, Response response) {
@@ -657,18 +652,15 @@ public class CommentActivity extends AppCompatActivity implements
 
     private void patchReport(int reportId, String state) {
 
-        SharedPreferences prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        final String accessToken = prefs.getString("access_token", "");
 
-        final String access_token = prefs.getString("access_token", "");
-
-        Log.d("", access_token);
+        Log.d("", accessToken);
 
         ReportService service = ReportService.restAdapter.create(ReportService.class);
 
         ReportStateBody reportStateBody = new ReportStateBody(reportId, state);
 
-        service.setReportState(access_token, "application/json", reportId, reportStateBody, new Callback<Report>() {
+        service.setReportState(accessToken, "application/json", reportId, reportStateBody, new Callback<Report>() {
 
             @Override
             public void success(Report report, Response response) {

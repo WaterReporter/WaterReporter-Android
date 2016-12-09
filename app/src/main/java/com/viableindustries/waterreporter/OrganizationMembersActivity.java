@@ -185,13 +185,13 @@ public class OrganizationMembersActivity extends AppCompatActivity {
         final SharedPreferences prefs =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        final String access_token = prefs.getString("access_token", "");
+        final String accessToken = prefs.getString("access_token", "");
 
-        Log.d("", access_token);
+        Log.d("", accessToken);
 
         OrganizationService service = OrganizationService.restAdapter.create(OrganizationService.class);
 
-        service.getOrganizationMembers(access_token, "application/json", organizationId, page, limit, query, new Callback<UserCollection>() {
+        service.getOrganizationMembers(accessToken, "application/json", organizationId, page, limit, query, new Callback<UserCollection>() {
 
             @Override
             public void success(UserCollection userCollection, Response response) {

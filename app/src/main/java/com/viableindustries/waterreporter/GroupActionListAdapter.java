@@ -137,7 +137,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
         // Retrieve API token
 
-        final String access_token = prefs.getString("access_token", "");
+        final String accessToken = prefs.getString("access_token", "");
 
         // Retrieve user ID
 
@@ -149,7 +149,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
         UserService service = UserService.restAdapter.create(UserService.class);
 
-        service.updateUserOrganization(access_token, "application/json", id, userPatch, new Callback<User>() {
+        service.updateUserOrganization(accessToken, "application/json", id, userPatch, new Callback<User>() {
 
             @Override
             public void success(User user, Response response) {

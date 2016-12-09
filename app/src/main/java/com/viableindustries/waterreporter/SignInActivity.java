@@ -65,6 +65,8 @@ public class SignInActivity extends AppCompatActivity {
 
     private Pattern emailPattern;
 
+    private SharedPreferences prefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -73,6 +75,8 @@ public class SignInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_in);
 
         ButterKnife.bind(this);
+
+        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         emailPattern = android.util.Patterns.EMAIL_ADDRESS;
 
@@ -137,9 +141,9 @@ public class SignInActivity extends AppCompatActivity {
                         public void success(AuthResponse authResponse,
                                             Response response) {
 
-                            final String access_token = "Bearer " + authResponse.getAccessToken();
+                            final String accessToken = "Bearer " + authResponse.getAccessToken();
 
-                            prefs.edit().putString("access_token", access_token).apply();
+                            prefs.edit().putString("access_token", accessToken).apply();
 
                             // Since the user may have arrived here after re-installing the app and
                             // bypassing the registration dialog, we need to check for the presence of
@@ -152,7 +156,7 @@ public class SignInActivity extends AppCompatActivity {
 
                                 final UserService userService = restAdapter.create(UserService.class);
 
-                                userService.getActiveUser(access_token, "application/json",
+                                userService.getActiveUser(accessToken, "application/json",
                                         new Callback<UserBasicResponse>() {
                                             @Override
                                             public void success(UserBasicResponse userBasicResponse,
@@ -160,7 +164,7 @@ public class SignInActivity extends AppCompatActivity {
 
                                                 prefs.edit().putInt("user_id", userBasicResponse.getUserId()).apply();
 
-                                                userService.getUser(access_token,
+                                                userService.getUser(accessToken,
                                                         "application/json",
                                                         userBasicResponse.getUserId(),
                                                         new Callback<User>() {

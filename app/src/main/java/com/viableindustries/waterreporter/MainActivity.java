@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -35,6 +37,8 @@ import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.UserService;
 
+import com.viableindustries.waterreporter.BuildConfig;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,7 +65,9 @@ public class MainActivity extends AppCompatActivity implements
 
     static final int LOGIN_REQUEST = 2;
 
-    protected SharedPreferences prefs = null;
+    private SharedPreferences prefs;
+
+    private SharedPreferences coreProfile;
 
     protected int user_id;
 
@@ -94,11 +100,34 @@ public class MainActivity extends AppCompatActivity implements
 
         if (ConnectionUtility.connectionActive(this)) {
 
-            String access_token = prefs.getString("access_token", "");
+            String accessToken = prefs.getString("access_token", "");
 
             user_id = prefs.getInt("user_id", 0);
 
-            if (user_id == 0 || access_token.equals("")) {
+            // We need to force legacy users to log into a fresh session
+            // to ensure that the new version can collect and store the
+            // information it needs to function correctly.
+
+            Log.d("versionCode", BuildConfig.VERSION_CODE + "");
+            Log.d("versionName", BuildConfig.VERSION_NAME);
+
+            int versionCode;
+
+            try {
+
+                PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+
+                versionCode = packageInfo.versionCode;
+
+            } catch (PackageManager.NameNotFoundException e) {
+
+                versionCode = 0;
+
+            }
+
+            Log.d("packageVersion", String.valueOf(versionCode));
+
+            if (user_id == 0 || "".equals(accessToken) || versionCode < 14) {
 
                 startActivityForResult(new Intent(this, SignInActivity.class), LOGIN_REQUEST);
 
@@ -128,12 +157,9 @@ public class MainActivity extends AppCompatActivity implements
 
     protected void requestData(int limit, int page, final boolean transition, final boolean refresh) {
 
-        SharedPreferences prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        final String accessToken = prefs.getString("access_token", "");
 
-        final String access_token = prefs.getString("access_token", "");
-
-        Log.d("", access_token);
+        Log.d("", accessToken);
 
         // We shouldn't need to retrieve this value again, but we'll deal with that issue later
         user_id = prefs.getInt("user_id", 0);
@@ -156,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements
 
         timeline.setRefreshing(true);
 
-        service.getReports(access_token, "application/json", page, limit, query, new Callback<FeatureCollection>() {
+        service.getReports(accessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
 
             @Override
             public void success(FeatureCollection featureCollection, Response response) {
@@ -243,19 +269,16 @@ public class MainActivity extends AppCompatActivity implements
 
     protected void fetchUserGroups() {
 
-        final SharedPreferences prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        final String accessToken = prefs.getString("access_token", "");
 
-        final String access_token = prefs.getString("access_token", "");
-
-        Log.d("", access_token);
+        Log.d("", accessToken);
 
         // We shouldn't need to retrieve this value again, but we'll deal with that issue later
         user_id = prefs.getInt("user_id", 0);
 
         UserService service = UserService.restAdapter.create(UserService.class);
 
-        service.getUserOrganization(access_token, "application/json", user_id, new Callback<OrganizationFeatureCollection>() {
+        service.getUserOrganization(accessToken, "application/json", user_id, new Callback<OrganizationFeatureCollection>() {
 
             @Override
             public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
@@ -403,6 +426,8 @@ public class MainActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
         timeline.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {

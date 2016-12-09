@@ -312,9 +312,9 @@
 //
 //        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 //
-//        final String access_token = prefs.getString("access_token", "");
+//        final String accessToken = prefs.getString("access_token", "");
 //
-//        Log.d("", access_token);
+//        Log.d("", accessToken);
 //
 //        // Retrieve the user id
 //
@@ -347,7 +347,7 @@
 //
 //        ReportService service = ReportService.restAdapter.create(ReportService.class);
 //
-//        service.getReports(access_token, "application/json", 1, 500, query, new Callback<FeatureCollection>() {
+//        service.getReports(accessToken, "application/json", 1, 500, query, new Callback<FeatureCollection>() {
 //
 //            @Override
 //            public void success(FeatureCollection featureCollection, Response response) {

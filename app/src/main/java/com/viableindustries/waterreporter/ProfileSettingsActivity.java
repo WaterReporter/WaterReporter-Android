@@ -150,8 +150,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
         // Clear stored token and user id values
 
-        prefs.edit().putString("access_token", "")
-                .putInt("user_id", 0).apply();
+        prefs.edit().clear().apply();
 
         // Clear stored active user profile
 

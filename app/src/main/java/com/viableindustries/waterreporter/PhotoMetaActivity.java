@@ -194,7 +194,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     protected SharedPreferences associatedGroups;
 
-    private String access_token;
+    private String accessToken;
 
     private GeometryResponse geometryResponse;
 
@@ -730,7 +730,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         }
 
-        access_token = prefs.getString("access_token", "");
+        accessToken = prefs.getString("access_token", "");
 
         dateText = String.valueOf(dateField.getText());
 
@@ -785,9 +785,6 @@ public class PhotoMetaActivity extends AppCompatActivity
             }
 
         } else {
-
-            SharedPreferences prefs =
-                    getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
             latitude = prefs.getFloat("latitude", 0);
 
@@ -857,7 +854,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             TypedFile typedPhoto = new TypedFile(mimeType, photo);
 
-            imageService.postImage(access_token, typedPhoto,
+            imageService.postImage(accessToken, typedPhoto,
                     new Callback<ImageProperties>() {
                         @Override
                         public void success(ImageProperties imageProperties,
@@ -910,7 +907,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                             Log.d("groups", groups.toString());
 
-                            reportService.postReport(access_token, "application/json", reportPostBody,
+                            reportService.postReport(accessToken, "application/json", reportPostBody,
                                     new Callback<Report>() {
                                         @Override
                                         public void success(Report report,
@@ -1034,7 +1031,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         Log.d("groups", groups.toString());
 
-        reportService.updateReport(access_token, "application/json", report.id, reportPatchBody,
+        reportService.updateReport(accessToken, "application/json", report.id, reportPatchBody,
                 new Callback<Report>() {
                     @Override
                     public void success(Report report, Response response) {
@@ -1365,9 +1362,6 @@ public class PhotoMetaActivity extends AppCompatActivity
                 }
 
             } else {
-
-                SharedPreferences prefs =
-                        getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
                 latitude = prefs.getFloat("latitude", 0);
 

@@ -409,16 +409,13 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     protected void countReports(String query, final String filterName) {
 
-        final SharedPreferences prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
-
-        final String access_token = prefs.getString("access_token", "");
+        final String accessToken = prefs.getString("access_token", "");
 
         RestAdapter restAdapter = ReportService.restAdapter;
 
         ReportService service = restAdapter.create(ReportService.class);
 
-        service.getReports(access_token, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
+        service.getReports(accessToken, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
 
             @Override
             public void success(FeatureCollection featureCollection, Response response) {
@@ -472,16 +469,13 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     protected void fetchUserGroups(int userId) {
 
-        final SharedPreferences prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        final String accessToken = prefs.getString("access_token", "");
 
-        final String access_token = prefs.getString("access_token", "");
-
-        Log.d("", access_token);
+        Log.d("", accessToken);
 
         UserService service = UserService.restAdapter.create(UserService.class);
 
-        service.getUserOrganization(access_token, "application/json", userId, new Callback<OrganizationFeatureCollection>() {
+        service.getUserOrganization(accessToken, "application/json", userId, new Callback<OrganizationFeatureCollection>() {
 
             @Override
             public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
@@ -602,11 +596,9 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     private void fetchReports(int limit, int page, String query, final boolean refresh, final boolean replace) {
 
-        SharedPreferences prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        final String accessToken = prefs.getString("access_token", "");
 
-        final String access_token = prefs.getString("access_token", "");
-
-        Log.d("", access_token);
+        Log.d("", accessToken);
 
         Log.d("URL", query);
 
@@ -614,7 +606,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         ReportService service = restAdapter.create(ReportService.class);
 
-        service.getReports(access_token, "application/json", page, limit, query, new Callback<FeatureCollection>() {
+        service.getReports(accessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
 
             @Override
             public void success(FeatureCollection featureCollection, Response response) {
@@ -765,18 +757,15 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         timeLineContainer.setRefreshing(true);
 
-        SharedPreferences prefs =
-                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        final String accessToken = prefs.getString("access_token", "");
 
-        final String access_token = prefs.getString("access_token", "");
-
-        Log.d("", access_token);
+        Log.d("", accessToken);
 
         ReportService service = ReportService.restAdapter.create(ReportService.class);
 
         final Report report = ReportHolder.getReport();
 
-        service.deleteSingleReport(access_token, report.id, new Callback<Response>() {
+        service.deleteSingleReport(accessToken, report.id, new Callback<Response>() {
 
             @Override
             public void success(Response response, Response response_) {

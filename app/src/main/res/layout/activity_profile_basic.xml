@@ -38,7 +38,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:layout_marginTop="-1dp"
         android:background="@color/gray_224" />
 
@@ -103,7 +103,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:background="@color/gray_224" />
 
     <LinearLayout
@@ -173,148 +173,148 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:background="@color/gray_224" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:padding="8dp">
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:baselineAligned="false"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:padding="8dp">-->
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
+        <!--<RelativeLayout-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1">-->
 
-            <TextView
-                android:id="@+id/user_title_label"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@null"
-                android:text="@string/user_title"
-                android:textColor="@color/gray_186"
-                android:textSize="14sp" />
+            <!--<TextView-->
+                <!--android:id="@+id/user_title_label"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:background="@null"-->
+                <!--android:text="@string/user_title"-->
+                <!--android:textColor="@color/gray_186"-->
+                <!--android:textSize="14sp" />-->
 
-            <EditText
-                android:id="@+id/user_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/user_title_label"
-                android:layout_gravity="center"
-                android:background="@null"
-                android:inputType="textCapWords"
-                android:paddingTop="8dp"
-                android:textSize="@dimen/base_text" />
+            <!--<EditText-->
+                <!--android:id="@+id/user_title"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@+id/user_title_label"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:background="@null"-->
+                <!--android:inputType="textCapWords"-->
+                <!--android:paddingTop="8dp"-->
+                <!--android:textSize="@dimen/base_text" />-->
 
-        </RelativeLayout>
+        <!--</RelativeLayout>-->
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
+        <!--<RelativeLayout-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1">-->
 
-            <TextView
-                android:id="@+id/user_organization_label"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@null"
-                android:text="@string/user_organization_name"
-                android:textColor="@color/gray_186"
-                android:textSize="14sp" />
+            <!--<TextView-->
+                <!--android:id="@+id/user_organization_label"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:background="@null"-->
+                <!--android:text="@string/user_organization_name"-->
+                <!--android:textColor="@color/gray_186"-->
+                <!--android:textSize="14sp" />-->
 
-            <EditText
-                android:id="@+id/user_organization_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/user_organization_label"
-                android:layout_gravity="center"
-                android:background="@null"
-                android:inputType="textCapWords"
-                android:paddingTop="8dp"
-                android:textSize="@dimen/base_text" />
+            <!--<EditText-->
+                <!--android:id="@+id/user_organization_name"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@+id/user_organization_label"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:background="@null"-->
+                <!--android:inputType="textCapWords"-->
+                <!--android:paddingTop="8dp"-->
+                <!--android:textSize="@dimen/base_text" />-->
 
-        </RelativeLayout>
+        <!--</RelativeLayout>-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/gray_224" />
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@color/gray_224" />-->
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:padding="8dp">
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:baselineAligned="false"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:padding="8dp">-->
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
+        <!--<RelativeLayout-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1">-->
 
-            <TextView
-                android:id="@+id/user_email_label"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@null"
-                android:text="@string/user_email"
-                android:textColor="@color/gray_186"
-                android:textSize="14sp" />
+            <!--<TextView-->
+                <!--android:id="@+id/user_email_label"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:background="@null"-->
+                <!--android:text="@string/user_email"-->
+                <!--android:textColor="@color/gray_186"-->
+                <!--android:textSize="14sp" />-->
 
-            <EditText
-                android:id="@+id/user_public_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/user_email_label"
-                android:layout_gravity="center"
-                android:background="@null"
-                android:inputType="textEmailAddress"
-                android:paddingTop="8dp"
-                android:textSize="@dimen/base_text" />
+            <!--<EditText-->
+                <!--android:id="@+id/user_public_email"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@+id/user_email_label"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:background="@null"-->
+                <!--android:inputType="textEmailAddress"-->
+                <!--android:paddingTop="8dp"-->
+                <!--android:textSize="@dimen/base_text" />-->
 
-        </RelativeLayout>
+        <!--</RelativeLayout>-->
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
+        <!--<RelativeLayout-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1">-->
 
-            <TextView
-                android:id="@+id/user_telephone_label"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@null"
-                android:text="@string/user_telephone"
-                android:textColor="@color/gray_186"
-                android:textSize="14sp" />
+            <!--<TextView-->
+                <!--android:id="@+id/user_telephone_label"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:background="@null"-->
+                <!--android:text="@string/user_telephone"-->
+                <!--android:textColor="@color/gray_186"-->
+                <!--android:textSize="14sp" />-->
 
-            <EditText
-                android:id="@+id/user_telephone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/user_telephone_label"
-                android:layout_gravity="center"
-                android:background="@null"
-                android:inputType="phone"
-                android:paddingTop="8dp"
-                android:textSize="@dimen/base_text" />
+            <!--<EditText-->
+                <!--android:id="@+id/user_telephone"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@+id/user_telephone_label"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:background="@null"-->
+                <!--android:inputType="phone"-->
+                <!--android:paddingTop="8dp"-->
+                <!--android:textSize="@dimen/base_text" />-->
 
-        </RelativeLayout>
+        <!--</RelativeLayout>-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/gray_224" />
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@color/gray_224" />-->
 
     <LinearLayout
         android:layout_width="match_parent"

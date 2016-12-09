@@ -104,7 +104,7 @@ public class NotificationSettingAdapter extends ArrayAdapter {
 
                 // Retrieve API token
 
-                final String access_token = prefs.getString("access_token", "");
+                final String accessToken = prefs.getString("access_token", "");
 
                 // Retrieve user ID
 
@@ -122,7 +122,7 @@ public class NotificationSettingAdapter extends ArrayAdapter {
 
                 UserService service = UserService.restAdapter.create(UserService.class);
 
-                service.updateUser(access_token, "application/json", id, notificationPatchBody.settings, new Callback<User>() {
+                service.updateUser(accessToken, "application/json", id, notificationPatchBody.settings, new Callback<User>() {
 
                     @Override
                     public void success(User user, Response response) {

@@ -115,11 +115,11 @@
 //        SharedPreferences prefs =
 //                getSharedPreferences(getPackageName(), MODE_PRIVATE);
 //
-//        final String access_token = prefs.getString("access_token", "");
+//        final String accessToken = prefs.getString("access_token", "");
 //
 //        OrganizationService service = OrganizationService.restAdapter.create(OrganizationService.class);
 //
-//        service.getOrganizations(access_token, "application/json", 100, null, new Callback<OrganizationFeatureCollection>() {
+//        service.getOrganizations(accessToken, "application/json", 100, null, new Callback<OrganizationFeatureCollection>() {
 //
 //            @Override
 //            public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
