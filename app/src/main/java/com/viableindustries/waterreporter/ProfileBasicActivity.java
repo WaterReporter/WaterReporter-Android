@@ -102,18 +102,6 @@ public class ProfileBasicActivity extends AppCompatActivity implements
     @Bind(R.id.last_name)
     EditText lastNameInput;
 
-    @Bind(R.id.user_title)
-    EditText userTitleInput;
-
-    @Bind(R.id.user_organization_name)
-    EditText userOrganizationNameInput;
-
-    @Bind(R.id.user_public_email)
-    EditText userPublicEmailInput;
-
-    @Bind(R.id.user_telephone)
-    EditText userTelephoneInput;
-
     @Bind(R.id.user_bio)
     EditText userBioInput;
 

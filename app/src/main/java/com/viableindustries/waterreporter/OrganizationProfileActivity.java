@@ -237,7 +237,18 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         profileStats = (LinearLayout) header.findViewById(R.id.profileStats);
 
-        organizationId = organization.id;
+        try {
+
+            organizationId = organization.id;
+
+        } catch (NullPointerException e) {
+
+            startActivity(new Intent(this, MainActivity.class));
+
+            finish();
+
+        }
+
         organizationDescriptionText = organization.properties.description;
         organizationNameText = organization.properties.name;
         organizationLogoUrl = organization.properties.picture;

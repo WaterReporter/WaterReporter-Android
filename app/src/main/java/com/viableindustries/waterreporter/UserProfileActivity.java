@@ -165,7 +165,17 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         user = UserHolder.getUser();
 
-        userId = user.properties.id;
+        try {
+
+            userId = user.properties.id;
+
+        } catch (NullPointerException e) {
+
+            startActivity(new Intent(this, MainActivity.class));
+
+            finish();
+
+        }
 
         if (prefs.getInt("user_id", 0) == userId) {
 
@@ -265,17 +275,12 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         // Locate valid avatar field
 
-        try {
+        userAvatarUrl = user.properties.picture;
 
-            userAvatarUrl = user.properties.images.get(0).properties.icon_retina;
-
-        } catch (NullPointerException ne) {
-
-            userAvatarUrl = user.properties.picture;
-
-        }
-
-        Picasso.with(this).load(userAvatarUrl).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(userAvatar);
+        Picasso.with(this)
+                .load(userAvatarUrl)
+                .placeholder(R.drawable.user_avatar_placeholder_003)
+                .transform(new CircleTransform()).into(userAvatar);
 
         userName.setText(userNameText);
 

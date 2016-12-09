@@ -132,7 +132,7 @@ public class SignInActivity extends AppCompatActivity {
             progressBar.setVisibility(View.VISIBLE);
 
             LogInBody logInBody = new LogInBody(email, password, getString(R.string.response_type),
-                    "Ru8hamw7ixuCtsHs23Twf4UB12fyIijdQcLssqpd", "http://stg.waterreporter.org/authorize",
+                    getString(R.string.client_id), getString(R.string.redirect_uri),
                     getString(R.string.scope), getString(R.string.state));
 
             securityService.save(logInBody,

@@ -16,12 +16,14 @@ import android.widget.Toast;
 
 import com.viableindustries.waterreporter.data.AuthResponse;
 import com.viableindustries.waterreporter.data.LogInBody;
+import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.RegistrationBody;
 import com.viableindustries.waterreporter.data.RegistrationResponse;
 import com.viableindustries.waterreporter.data.SecurityService;
 import com.viableindustries.waterreporter.data.UserBasicResponse;
 import com.viableindustries.waterreporter.data.UserService;
 
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -138,14 +140,35 @@ public class RegistrationActivity extends AppCompatActivity {
 
                             } else {
 
-                                // Store user id
+                                // Store user:id in global preferences file
+
+                                int userId = registrationResponse.getUserId();
+
                                 prefs.edit()
-                                        .putInt("user_id", registrationResponse.getUserId())
+                                        .putInt("user_id", userId)
+                                        .apply();
+
+                                // Store user:id again in a separate preference that holds metadata
+                                // about the authenticated user. This is necessary because we later
+                                // build a valid User object when navigating to the authenticated users'
+                                // profile via the navigation bar. In that situation, we need access
+                                // to an ID for comparison against the one stored in the global preferences
+                                // file in order to determine whether or not to display the account settings
+                                // button. This failsafe is in place to account for the edge case in which
+                                // a user quits the sign up process without completing their profile by
+                                // tapping the back button while on the initial profile screen. This will
+                                // allow that person to access Water Reporter and/or edit their profile.
+
+                                final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+                                coreProfile.edit()
+                                        .putInt("id", userId)
                                         .apply();
 
                                 // Silently log-in with new credentials
+
                                 LogInBody logInBody = new LogInBody(email, password, getString(R.string.response_type),
-                                        "Ru8hamw7ixuCtsHs23Twf4UB12fyIijdQcLssqpd", "http://stg.waterreporter.org/authorize",
+                                        getString(R.string.client_id), getString(R.string.redirect_uri),
                                         getString(R.string.scope), getString(R.string.state));
 
                                 securityService.save(logInBody,
@@ -159,7 +182,12 @@ public class RegistrationActivity extends AppCompatActivity {
                                                 registrationButton.setVisibility(View.VISIBLE);
 
                                                 // Store API access token
+
                                                 prefs.edit().putString("access_token", "Bearer " + authResponse.getAccessToken()).apply();
+
+                                                // Set flag confirming successful registration
+
+                                                prefs.edit().putBoolean("clean_slate", true).apply();
 
                                                 startActivity(new Intent(RegistrationActivity.this, ProfileBasicActivity.class));
 
@@ -190,114 +218,6 @@ public class RegistrationActivity extends AppCompatActivity {
                             registrationButton.setVisibility(View.VISIBLE);
 
                         }
-                    });
-
-        } else {
-
-            email_text.setText("");
-
-            email_text.setHint("Enter a valid email address");
-
-        }
-
-    }
-
-    public void existingAccount(View v) {
-
-        final RestAdapter restAdapter = SecurityService.restAdapter;
-
-        final SecurityService securityService = restAdapter.create(SecurityService.class);
-
-        String password = String.valueOf(password_text.getText());
-
-        String email = String.valueOf(email_text.getText());
-
-        if (password.isEmpty() || email.isEmpty()) {
-
-            startActivity(new Intent(this, SignInActivity.class));
-
-            finish();
-
-        }
-
-        Matcher matcher = emailPattern.matcher(email);
-
-        if (matcher.matches()) {
-
-            registrationButton.setVisibility(View.GONE);
-
-            progressBar.setVisibility(View.VISIBLE);
-
-            LogInBody logInBody = new LogInBody(email, password, getString(R.string.response_type),
-                    getString(R.string.client_id), getString(R.string.redirect_uri),
-                    getString(R.string.scope), getString(R.string.state));
-
-            securityService.save(logInBody,
-                    new Callback<AuthResponse>() {
-                        @Override
-                        public void success(AuthResponse authResponse,
-                                            Response response) {
-
-                            String accessToken = "Bearer " + authResponse.getAccessToken();
-
-                            prefs.edit().putString("access_token", accessToken).apply();
-
-                            // This method was triggered by the user successfully completing both the email
-                            // and password fields, and then tapping "I already have an account" rather than
-                            // "Join". Because we're in the Registration context, we don't have a user id in
-                            // storage and therefore need to retrieve it via the UserService by including
-                            // the token obtained just now upon successful log-in.
-
-                            // Keep in mind that users could be re-installing the app or setting up a new device. 
-
-                            UserService userService = restAdapter.create(UserService.class);
-
-                            userService.getActiveUser(accessToken, "application/json",
-                                    new Callback<UserBasicResponse>() {
-                                        @Override
-                                        public void success(UserBasicResponse userBasicResponse,
-                                                            Response response) {
-
-                                            progressBar.setVisibility(View.GONE);
-
-                                            registrationButton.setVisibility(View.VISIBLE);
-
-                                            prefs.edit().putInt("user_id", userBasicResponse.getUserId()).apply();
-
-                                            // Set flag confirming successful registration
-
-                                            prefs.edit().putBoolean("clean_slate", true).apply();
-
-                                            Intent intent = new Intent();
-
-                                            setResult(RESULT_OK, intent);
-
-                                            finish();
-
-                                        }
-
-                                        @Override
-                                        public void failure(RetrofitError error) {
-
-                                            progressBar.setVisibility(View.GONE);
-
-                                            registrationButton.setVisibility(View.VISIBLE);
-
-                                        }
-
-                                    });
-
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-
-                            progressBar.setVisibility(View.GONE);
-
-                            registrationButton.setVisibility(View.VISIBLE);
-
-                        }
-
                     });
 
         } else {

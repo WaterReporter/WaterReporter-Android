@@ -24,6 +24,24 @@ public class UserProfileListener implements View.OnClickListener {
     @Override
     public void onClick(View view) {
 
+        if (user.properties.picture == null) {
+
+            if (user.properties.images != null) {
+
+                try {
+
+                    user.properties.picture = user.properties.images.get(0).properties.icon_retina;
+
+                } catch (IndexOutOfBoundsException e) {
+
+                    user.properties.picture = null;
+
+                }
+
+            }
+
+        }
+
         UserHolder.setUser(user);
 
         Intent intent = new Intent(context, UserProfileActivity.class);
