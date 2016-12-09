@@ -264,6 +264,10 @@ public class RegistrationActivity extends AppCompatActivity {
 
                                             prefs.edit().putInt("user_id", userBasicResponse.getUserId()).apply();
 
+                                            // Set flag confirming successful registration
+
+                                            prefs.edit().putBoolean("clean_slate", true).apply();
+
                                             Intent intent = new Intent();
 
                                             setResult(RESULT_OK, intent);

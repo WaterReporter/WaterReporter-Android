@@ -172,6 +172,10 @@ public class SignInActivity extends AppCompatActivity {
                                                             public void success(User user,
                                                                                 Response response) {
 
+                                                                // Set flag confirming successful sign-in
+
+                                                                prefs.edit().putBoolean("clean_slate", true).apply();
+
                                                                 final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
                                                                 coreProfile.edit()

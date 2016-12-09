@@ -100,6 +100,8 @@ public class MainActivity extends AppCompatActivity implements
 
         if (ConnectionUtility.connectionActive(this)) {
 
+            boolean cleanSlate = prefs.getBoolean("clean_slate", false);
+
             String accessToken = prefs.getString("access_token", "");
 
             user_id = prefs.getInt("user_id", 0);
@@ -108,26 +110,11 @@ public class MainActivity extends AppCompatActivity implements
             // to ensure that the new version can collect and store the
             // information it needs to function correctly.
 
-            Log.d("versionCode", BuildConfig.VERSION_CODE + "");
-            Log.d("versionName", BuildConfig.VERSION_NAME);
+            // If user_id is 0, then the user hasn't registered
 
-            int versionCode;
+            if (user_id == 0 || "".equals(accessToken) || !cleanSlate) {
 
-            try {
-
-                PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-
-                versionCode = packageInfo.versionCode;
-
-            } catch (PackageManager.NameNotFoundException e) {
-
-                versionCode = 0;
-
-            }
-
-            Log.d("packageVersion", String.valueOf(versionCode));
-
-            if (user_id == 0 || "".equals(accessToken) || versionCode < 14) {
+                prefs.edit().clear().apply();
 
                 startActivityForResult(new Intent(this, SignInActivity.class), LOGIN_REQUEST);
 

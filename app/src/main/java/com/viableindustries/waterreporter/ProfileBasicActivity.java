@@ -211,7 +211,11 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
         }
 
-        Picasso.with(this).load(image).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(userAvatar);
+        Picasso.with(this)
+                .load(image)
+                .placeholder(R.drawable.user_avatar_placeholder)
+                .transform(new CircleTransform())
+                .into(userAvatar);
 
         // Set click listeners
 
@@ -241,14 +245,6 @@ public class ProfileBasicActivity extends AppCompatActivity implements
             final String firstName = String.valueOf(firstNameInput.getText());
 
             final String lastName = String.valueOf(lastNameInput.getText());
-
-            final String title = String.valueOf(userTitleInput.getText());
-
-            final String organizationName = String.valueOf(userOrganizationNameInput.getText());
-
-            final String publicEmail = String.valueOf(userPublicEmailInput.getText());
-
-            final String telephone = String.valueOf(userTelephoneInput.getText());
 
             final String description = String.valueOf(userBioInput.getText());
 
@@ -319,28 +315,8 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
                                 userPatch.put("picture", imageProperties.icon_retina);
 
-                                if (!title.isEmpty()) userPatch.put("title", title);
-                                if (!organizationName.isEmpty())
-                                    userPatch.put("organization_name", organizationName);
-                                if (!publicEmail.isEmpty())
-                                    userPatch.put("public_email", publicEmail);
-
                                 if (!description.isEmpty())
                                     userPatch.put("description", description);
-
-                                if (!telephone.isEmpty()) {
-
-                                    List<Map<String, String>> telephones = new ArrayList<>();
-
-                                    Map<String, String> phoneNumber = new HashMap<String, String>();
-
-                                    phoneNumber.put("number", telephone);
-
-                                    telephones.add(phoneNumber);
-
-                                    userPatch.put("telephone", telephones);
-
-                                }
 
                                 userService.updateUser(accessToken,
                                         "application/json",
