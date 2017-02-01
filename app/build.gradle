@@ -11,9 +11,9 @@ android {
 
     defaultConfig {
         applicationId "com.viableindustries.waterreporter"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 25
-        versionCode 17
+        versionCode 18
         versionName "2.0.1"
         multiDexEnabled true
     }
@@ -38,8 +38,8 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.jakewharton:butterknife:7.0.1'
-    compile 'com.android.support:appcompat-v7:25.0.1'
+    compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.google.android.gms:play-services-location:10.0.1'
-    compile 'com.android.support:design:25.0.1'
+    compile 'com.android.support:design:25.1.0'
     compile 'pub.devrel:easypermissions:0.2.1'
 }

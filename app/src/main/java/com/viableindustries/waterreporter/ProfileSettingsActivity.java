@@ -62,6 +62,13 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+//        View decorView = getWindow().getDecorView();
+//
+//        // Hide the status bar.
+//
+//        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+//        decorView.setSystemUiVisibility(uiOptions);
+
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);

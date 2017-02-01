@@ -104,6 +104,7 @@
     <string name="title_activity_profile_settings">Options</string>
 
     <!-- Join a group -->
+
     <string name="join_button">Join</string>
     <string name="leave_button">Leave</string>
     <string name="group_dialog_title">New Feature!</string>
@@ -117,12 +118,15 @@
     <string name="remove_group">Remove</string>
 
     <!-- Shared preference key for active user profile -->
+
     <string name="active_user_profile_key">com.viableindustries.waterreporter.ACTIVE_USER_PROFILE</string>
 
     <!-- Shared preference key for groups associated with a report -->
+
     <string name="associated_group_key">com.viableindustries.waterreporter.ASSOCIATED_GROUPS</string>
 
     <!-- Shared preference key for groups to which a user belongs -->
+
     <string name="group_membership_key">com.viableindustries.waterreporter.GROUP_MEMBERSHIP</string>
 
     <string name="title_activity_map_detail">MapDetailActivity</string>
@@ -148,6 +152,7 @@
     <string name="user_avatar">Photo</string>
 
     <!-- Profile settings -->
+
     <string name="notification_options">Notifications</string>
     <string name="account_options">Account</string>
     <string name="edit_profile">Edit profile</string>
@@ -163,11 +168,13 @@
     <string name="title_activity_comment">CommentActivity</string>
 
     <!-- Commenting -->
+
     <string name="action_taken">Action taken by</string>
     <string name="add_comment">Add a comment&#8230;</string>
     <string name="title_activity_edit_profile">EditProfileActivity</string>
 
     <!-- Notification settings -->
+
     <string name="can_notify_owner_comment_on_owned_report">Let me know when people comment on my reports.</string>
     <string name="can_notify_owner_admin_closes_owned_report">Let me know when someone takes action on my reports.</string>
     <string name="can_notify_admin_admin_closes_report_in_group">Alert me when another admin takes action on a report linked to my organization.</string>
@@ -189,5 +196,11 @@
     <string name="cancel">Cancel</string>
     <string name="settings_dialog_canceled">Settings dialog canceled</string>
     <string name="returned_from_app_settings_to_activity">Returned from app settings to MainActivity</string>
+
+    <!-- Share report chooser and text body -->
+
+    <string name="share_report_chooser_title">Share report to&#8230;</string>
+    <string name="share_report_text_body" formatted="false">%1$s %2$s&#8230; View full report: https://www.waterreporter.org/reports/%3$s.</string>
+    <string name="share_report_email_subject" formatted="false">Someone shared a post from Water Reporter.</string>
 
 </resources>

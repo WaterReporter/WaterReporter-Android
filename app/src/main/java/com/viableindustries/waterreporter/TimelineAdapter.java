@@ -89,6 +89,7 @@ public class TimelineAdapter extends ArrayAdapter {
         RelativeLayout locationIcon;
         RelativeLayout directionsIcon;
         RelativeLayout commentIcon;
+        RelativeLayout shareIcon;
         RelativeLayout actionsEllipsis;
         TextView tracker;
     }
@@ -117,6 +118,7 @@ public class TimelineAdapter extends ArrayAdapter {
             viewHolder.locationIcon = (RelativeLayout) convertView.findViewById(R.id.location_icon);
             viewHolder.directionsIcon = (RelativeLayout) convertView.findViewById(R.id.directions_icon);
             viewHolder.commentIcon = (RelativeLayout) convertView.findViewById(R.id.comment_icon);
+            viewHolder.shareIcon = (RelativeLayout) convertView.findViewById(R.id.share_icon);
             viewHolder.actionsEllipsis = (RelativeLayout) convertView.findViewById(R.id.action_ellipsis);
             viewHolder.tracker = (TextView) convertView.findViewById(R.id.tracker);
 
@@ -237,6 +239,36 @@ public class TimelineAdapter extends ArrayAdapter {
                 // Start an activity if it's safe
                 if (isIntentSafe) {
                     getContext().startActivity(mapIntent);
+                }
+
+            }
+        });
+
+        // Allow user to share report content with other applications
+
+        viewHolder.shareIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // Build the intent
+
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, getContext().getResources().getString(R.string.share_report_email_subject));
+                shareIntent.putExtra(Intent.EXTRA_TEXT, String.format(getContext().getResources().getString(R.string.share_report_text_body),
+                        imagePath, feature.properties.report_description.substring(0, 49), String.valueOf(feature.id)));
+                shareIntent.setType("text/plain");
+
+                // Verify it resolves
+                PackageManager packageManager = getContext().getPackageManager();
+                List<ResolveInfo> activities = packageManager.queryIntentActivities(shareIntent, 0);
+                boolean isIntentSafe = activities.size() > 0;
+
+                // Start an activity if it's safe
+                if (isIntentSafe) {
+
+                    getContext().startActivity(Intent.createChooser(shareIntent, getContext().getResources().getText(R.string.share_report_chooser_title)));
+
                 }
 
             }
