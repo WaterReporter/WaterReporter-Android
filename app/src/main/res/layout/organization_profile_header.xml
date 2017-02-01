@@ -20,23 +20,40 @@
 
         <RelativeLayout
             android:layout_width="0dp"
-            android:layout_height="64dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1">
 
             <ImageView
                 android:id="@+id/organizationLogo"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center_vertical"
+                android:layout_alignParentTop="true"
+                android:layout_centerVertical="false"
                 android:scaleType="fitXY" />
+
+            <Button
+                android:id="@+id/group_membership_button"
+                android:layout_width="64dp"
+                android:layout_height="32dp"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@id/organizationLogo"
+                android:layout_centerHorizontal="false"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/green_button"
+                android:gravity="center"
+                android:text="@string/join_button"
+                android:textAllCaps="true"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/small_text"
+                android:textStyle="bold"
+                android:visibility="gone" />
 
         </RelativeLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="top"
             android:layout_weight="4"
             android:animateLayoutChanges="true"
             android:orientation="vertical">

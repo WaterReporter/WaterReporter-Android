@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.AbsListView;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -52,10 +53,12 @@ import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserCollection;
 import com.viableindustries.waterreporter.data.UserFeatureCollection;
 import com.viableindustries.waterreporter.data.UserGroupList;
+import com.viableindustries.waterreporter.data.UserOrgPatch;
 import com.viableindustries.waterreporter.data.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -96,6 +99,8 @@ public class OrganizationProfileActivity extends AppCompatActivity {
     TextView organizationDescription;
 
     ImageView organizationLogo;
+
+    Button joinOrganization;
 
     @Bind(R.id.timeline)
     SwipeRefreshLayout timeLineContainer;
@@ -138,6 +143,8 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     private SharedPreferences prefs;
 
+    private SharedPreferences groupPrefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -148,6 +155,8 @@ public class OrganizationProfileActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        groupPrefs = getSharedPreferences(getString(R.string.group_membership_key), 0);
 
         context = this;
 
@@ -203,6 +212,58 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     }
 
+    private void joinOrganization(final Organization organization) {
+
+        // Retrieve API token
+
+        final String accessToken = prefs.getString("access_token", "");
+
+        // Retrieve user ID
+
+        int id = prefs.getInt("user_id", 0);
+
+        // Build request object
+
+        Map<String, Map> userPatch = UserOrgPatch.buildRequest(organization.id, "add");
+
+        UserService service = UserService.restAdapter.create(UserService.class);
+
+        service.updateUserOrganization(accessToken, "application/json", id, userPatch, new Callback<User>() {
+
+            @Override
+            public void success(User user, Response response) {
+
+                String action;
+
+                action = "joined";
+
+                joinOrganization.setVisibility(View.GONE);
+
+                groupPrefs.edit().putInt(organization.properties.name, organization.properties.id).apply();
+
+                CharSequence text = String.format("Successfully %s %s", action, organization.properties.name);
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                Response response = error.getResponse();
+
+                int status = response.getStatus();
+
+                error.printStackTrace();
+
+            }
+
+        });
+
+    }
+
     protected void addListViewHeader() {
 
         LayoutInflater inflater = getLayoutInflater();
@@ -214,6 +275,8 @@ public class OrganizationProfileActivity extends AppCompatActivity {
         organizationDescription = (TextView) header.findViewById(R.id.organizationDescription);
 
         organizationLogo = (ImageView) header.findViewById(R.id.organizationLogo);
+
+        joinOrganization = (Button) header.findViewById(R.id.group_membership_button);
 
         reportCounter = (TextView) header.findViewById(R.id.reportCount);
 
@@ -246,6 +309,26 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             startActivity(new Intent(this, MainActivity.class));
 
             finish();
+
+        }
+
+        // Check group membership
+
+        int selected = groupPrefs.getInt(organization.properties.name, 0);
+
+        if (selected == 0) {
+
+            joinOrganization.setVisibility(View.VISIBLE);
+
+            joinOrganization.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    joinOrganization(organization);
+
+                }
+
+            });
 
         }
 
