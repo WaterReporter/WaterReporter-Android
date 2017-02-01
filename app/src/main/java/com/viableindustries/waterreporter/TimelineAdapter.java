@@ -8,12 +8,15 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,6 +44,10 @@ import com.viableindustries.waterreporter.dialogs.CommentActionDialogListener;
 import com.viableindustries.waterreporter.dialogs.ReportActionDialog;
 import com.viableindustries.waterreporter.dialogs.ReportActionDialogListener;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -48,6 +55,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.viableindustries.waterreporter.R.id.imageView;
 
 public class TimelineAdapter extends ArrayAdapter {
 
@@ -68,6 +76,8 @@ public class TimelineAdapter extends ArrayAdapter {
     protected String groupList;
 
     protected String commentCount;
+
+    final private String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
 
     public TimelineAdapter(Context context, List features, boolean isProfile) {
         super(context, 0, features);
@@ -97,7 +107,7 @@ public class TimelineAdapter extends ArrayAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        ViewHolder viewHolder;
+        final ViewHolder viewHolder;
 
         if (convertView == null) {
 
@@ -250,14 +260,122 @@ public class TimelineAdapter extends ArrayAdapter {
             @Override
             public void onClick(View v) {
 
+                Log.d("Click Event", "Share button clicked.");
+
+                Uri imageUri = null;
+
+                try {
+
+                    File image = FileUtils.createImageFile(context);
+
+                    // Use FileProvider to comply with Android security requirements.
+                    // See: https://developer.android.com/training/camera/photobasics.html
+                    // https://developer.android.com/reference/android/os/FileUriExposedException.html
+
+                    imageUri = FileProvider.getUriForFile(context, FILE_PROVIDER_AUTHORITY, image);
+
+                    // Using v4 Support Library FileProvider and Camera intent on pre-Marshmallow devices
+                    // requires granting FileUri permissions at runtime
+
+                    context.grantUriPermission(context.getPackageName(), imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                    BitmapDrawable drawable = (BitmapDrawable) viewHolder.reportThumb.getDrawable();
+
+                    Bitmap bitmap = drawable.getBitmap();
+
+                    Log.d("BitmapDrawable", bitmap.toString());
+
+//                    FileOutputStream stream = new FileOutputStream(image + "/shared_image.jpg"); // overwrites this image every time
+
+                    FileOutputStream stream = new FileOutputStream(image); // overwrites this image every time
+
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+
+                    stream.close();
+
+//                    mTempImagePath = image.getAbsolutePath();
+//
+//                    InputStream inputStream = getResources().openRawResource(avatarId);
+//
+//                    OutputStream out = new FileOutputStream(image);
+//
+//                    byte buf[] = new byte[1024];
+//                    int len;
+//
+//                    while ((len = inputStream.read(buf)) > 0)
+//                        out.write(buf, 0, len);
+//
+//                    out.close();
+//
+//                    inputStream.close();
+
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+
+                    Log.d(null, "Save file error!");
+
+                    return;
+
+                }
+
+//                BitmapDrawable drawable = (BitmapDrawable) viewHolder.reportThumb.getDrawable();
+//
+//                Bitmap bitmap = drawable.getBitmap();
+//
+//                Log.d("BitmapDrawable", bitmap.toString());
+
                 // Build the intent
 
                 Intent shareIntent = new Intent();
                 shareIntent.setAction(Intent.ACTION_SEND);
+
+                // Set MIME type of content
+
+                shareIntent.setType("*/*");
+
+                // Set flag for temporary read Uri permission
+
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // temp permission for receiving app to read this file
+//                shareIntent.setDataAndType(contentUri, getContentResolver().getType(contentUri));
+
+                // Add image content
+
+                shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+
+                // Add text body
+
+                String snippet = (feature.properties.report_description != null) ? feature.properties.report_description.trim() : null;
+
+                if (snippet != null && !snippet.isEmpty()) {
+
+                    int snippetLength = snippet.length();
+
+                    if (snippetLength > 100) {
+
+                        snippet = String.format("%s\u2026", snippet.substring(0, 99).trim());
+
+                    } else {
+
+                        if (".".equals(snippet.substring(snippetLength - 1))) {
+
+                            snippet = String.format("%s\u2026", snippet.substring(0, snippetLength - 1).trim());
+
+                        } else {
+
+                            snippet = String.format("%s\u2026", snippet);
+
+                        }
+
+                    }
+
+                }
+
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT, getContext().getResources().getString(R.string.share_report_email_subject));
                 shareIntent.putExtra(Intent.EXTRA_TEXT, String.format(getContext().getResources().getString(R.string.share_report_text_body),
-                        imagePath, feature.properties.report_description.substring(0, 49), String.valueOf(feature.id)));
-                shareIntent.setType("text/plain");
+                        snippet, String.valueOf(feature.id)));
+
+//                shareIntent.setType("text/plain");
 
                 // Verify it resolves
                 PackageManager packageManager = getContext().getPackageManager();
