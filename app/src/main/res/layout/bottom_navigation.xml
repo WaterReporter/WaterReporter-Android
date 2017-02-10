@@ -45,6 +45,44 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/search"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingTop="0dp">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray_224" />
+
+        <ImageView
+            android:id="@+id/activity_search_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="6dp"
+            android:alpha="0.7"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_search_black_24dp" />
+
+        <TextView
+            android:id="@+id/search_tab_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Search"
+            android:textColor="@color/gray_186"
+            android:textSize="@dimen/small_text" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/submit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

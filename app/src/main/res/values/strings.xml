@@ -203,5 +203,6 @@
     <string name="share_report_text_body" formatted="false">%1$shttps://www.waterreporter.org/reports/%2$s.</string>
     <!--<string name="share_report_text_body" formatted="false">https://www.waterreporter.org/reports/%1$s.</string>-->
     <string name="share_report_email_subject" formatted="false">Someone shared a post from Water Reporter.</string>
+    <string name="title_activity_search">SearchActivity</string>
 
 </resources>

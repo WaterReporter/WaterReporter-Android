@@ -29,6 +29,14 @@ public interface UserService {
                         Callback<UserBasicResponse> userResponseCallback);
 
     @GET("/data/user")
+    public void getMany(@Header("Authorization") String authorization,
+                         @Header("Content-Type") String contentType,
+                         @Query("page") int page,
+                         @Query("results_per_page") int numResults,
+                         @Query("q") String q,
+                         Callback<UserCollection> userCollectionCallback);
+
+    @GET("/data/user")
     public void getUsers(@Header("Authorization") String authorization,
                            @Header("Content-Type") String contentType,
                            @Query("page") int page,

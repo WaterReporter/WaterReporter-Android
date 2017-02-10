@@ -11,8 +11,7 @@
     <!-- These permissions require run time checks in Android 6.0 and above -->
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -62,8 +61,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
         <activity
             android:name=".PhotoMetaActivity"
             android:label="@string/title_activity_report"
@@ -76,18 +73,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.viableindustries.waterreporter.MainActivity" />
         </activity>
-
         <activity
             android:name=".LocationActivity"
             android:label="@string/title_activity_map"
             android:parentActivityName=".PhotoMetaActivity"
             android:screenOrientation="portrait">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".PhotoMetaActivity" />
         </activity>
-
         <activity
             android:name=".SignInActivity"
             android:label="@string/title_activity_sign_in"
@@ -98,7 +92,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.viableindustries.waterreporter.MainActivity" />
         </activity>
-
         <activity
             android:name=".RegistrationActivity"
             android:label="@string/title_activity_registration"
@@ -109,7 +102,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.viableindustries.waterreporter.MainActivity" />
         </activity>
-
         <activity
             android:name=".ProfileBasicActivity"
             android:label="@string/title_activity_profile_basic"
@@ -120,7 +112,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.viableindustries.waterreporter.RegistrationActivity" />
         </activity>
-
         <activity
             android:name=".RegistrationForkActivity"
             android:label="@string/title_activity_registration_fork"
@@ -141,7 +132,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.viableindustries.waterreporter.SignInActivity" />
         </activity>
-
         <activity
             android:name=".MapDetailActivity"
             android:label="@string/title_activity_map_detail"
@@ -151,7 +141,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.viableindustries.waterreporter.MainActivity" />
         </activity>
-
         <activity
             android:name=".UserProfileActivity"
             android:label="@string/title_activity_user_profile"
@@ -161,7 +150,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.viableindustries.waterreporter.MainActivity" />
         </activity>
-
         <activity
             android:name=".UserGroupsActivity"
             android:label="@string/title_activity_user_groups"
@@ -171,17 +159,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.viableindustries.waterreporter.UserProfileActivity" />
         </activity>
-
         <activity
             android:name=".OrganizationProfileActivity"
             android:label="@string/title_activity_organization_profile"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name=".OrganizationMembersActivity"
             android:label="@string/title_activity_organization_members"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name=".GroupActionListActivity"
             android:label="@string/title_activity_group_action_list"
@@ -192,12 +177,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.viableindustries.waterreporter.ProfileBasicActivity" />
         </activity>
-
         <activity
             android:name=".CommentActivity"
             android:label="@string/title_activity_comment"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name=".ProfileSettingsActivity"
             android:label="@string/title_activity_profile_settings"
@@ -207,7 +190,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.viableindustries.waterreporter.UserProfileActivity" />
         </activity>
-
         <activity
             android:name=".EditProfileActivity"
             android:label="@string/title_activity_edit_profile"
@@ -217,7 +199,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.viableindustries.waterreporter.ProfileSettingsActivity" />
         </activity>
-
+        <activity
+            android:name=".SearchActivity"
+            android:label="@string/title_activity_search"></activity>
     </application>
 
 </manifest>

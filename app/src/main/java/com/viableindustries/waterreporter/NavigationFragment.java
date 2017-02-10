@@ -39,6 +39,7 @@ public class NavigationFragment extends Fragment {
         // Setup any handles to view objects here
 
         LinearLayout feedTab = (LinearLayout) view.findViewById(R.id.feed);
+        LinearLayout searchTab = (LinearLayout) view.findViewById(R.id.search);
         LinearLayout submitTab = (LinearLayout) view.findViewById(R.id.submit);
         LinearLayout profileTab = (LinearLayout) view.findViewById(R.id.profile);
 
@@ -68,6 +69,13 @@ public class NavigationFragment extends Fragment {
 
                 }
 
+            }
+        });
+
+        searchTab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), SearchActivity.class));
             }
         });
 
