@@ -17,6 +17,7 @@
         android:background="#FFFFFF"
         android:hint="Search"
         android:inputType="text"
+        android:imeOptions="actionSearch"
         android:maxLines="1"
         android:padding="16dp" />
 
@@ -25,26 +26,112 @@
         android:layout_height="0.5dp"
         android:background="@color/gray_232" />
 
+    <LinearLayout
+        android:id="@+id/groupStat"
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/search_people"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:text="People"
+            android:textAllCaps="true"
+            android:textColor="@color/material_blue_grey950" />
+
+        <Button
+            android:id="@+id/search_organizations"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:text="Organizations"
+            android:textAllCaps="true"
+            android:textColor="@color/material_blue_grey950" />
+
+        <!--<Button-->
+        <!--android:id="@+id/register"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="20dp"-->
+        <!--android:layout_marginLeft="20dp"-->
+        <!--android:layout_marginRight="20dp"-->
+        <!--android:layout_marginTop="20dp"-->
+        <!--android:background="@drawable/blue_button"-->
+        <!--android:gravity="center"-->
+        <!--android:onClick="saveAccount"-->
+        <!--android:paddingBottom="20dp"-->
+        <!--android:paddingTop="20dp"-->
+        <!--android:text="Sign up"-->
+        <!--android:textAllCaps="true"-->
+        <!--android:textColor="#FFFFFF"-->
+        <!--android:textSize="@dimen/base_text" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/groupCount"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center_vertical"-->
+        <!--android:gravity="center"-->
+        <!--android:paddingBottom="0dp"-->
+        <!--android:paddingLeft="0dp"-->
+        <!--android:paddingRight="0dp"-->
+        <!--android:paddingTop="0dp"-->
+        <!--android:text="0"-->
+        <!--android:textColor="@color/material_blue_grey950"-->
+        <!--android:textSize="20sp"-->
+        <!--android:textStyle="bold" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/groupCountLabel"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center_vertical"-->
+        <!--android:gravity="center"-->
+        <!--android:paddingBottom="0dp"-->
+        <!--android:paddingLeft="0dp"-->
+        <!--android:paddingRight="0dp"-->
+        <!--android:paddingTop="2dp"-->
+        <!--android:text="Groups"-->
+        <!--android:textColor="@color/material_blue_grey950"-->
+        <!--android:textSize="14sp" />-->
+
+    </LinearLayout>
+
     <!--<com.viableindustries.waterreporter.SlidingTabLayout-->
     <!--android:id="@+id/search_categories"-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="wrap_content" />-->
 
-    <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+    <!--<android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:id="@+id/search_results"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:fadingEdgeLength="0dp"-->
+    <!--android:overScrollMode="never"-->
+    <!--android:scrollbars="none">-->
+
+    <!--<android.support.design.widget.TabLayout-->
+    <!--android:id="@+id/search_categories"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="top"-->
+    <!--app:tabIndicatorColor="@color/base_blue" />-->
+
+    <!--</android.support.v4.view.ViewPager>-->
+
+    <ListView
         android:id="@+id/search_results"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fadingEdgeLength="0dp"
-        android:overScrollMode="never"
-        android:scrollbars="none">
-
-        <android.support.design.widget.TabLayout
-            android:id="@+id/search_categories"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            app:tabIndicatorColor="@color/base_blue" />
-
-    </android.support.v4.view.ViewPager>
+        android:layout_height="wrap_content"
+        android:scrollbars="none" />
 
 </LinearLayout>
