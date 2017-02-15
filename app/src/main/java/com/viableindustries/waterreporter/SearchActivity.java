@@ -94,15 +94,9 @@ public class SearchActivity extends FragmentActivity {
 
     ArrayList<User> userMatches;
 
-//    ListView resultList;
-
     private int activeTab = 0;
 
     private String query;
-
-//    private ViewPager mPager;
-
-//    private PagerAdapter mPagerAdapter;
 
     private static final String[] TITLES = {
             "People",
@@ -113,108 +107,11 @@ public class SearchActivity extends FragmentActivity {
 
     public static final int NUM_TITLES = TITLES.length;
 
-//    private class PagerAdapter extends FragmentPagerAdapter {
-//
-//        Context ctxt = null;
-//
-//        public PagerAdapter(Context ctxt, FragmentManager fm) {
-//            super(fm);
-//            this.ctxt = ctxt;
-//        }
+    Handler handler;
 
-//        @Override
-//        public Fragment getItem(int position) {
-//
-//            Log.d("Tab position", String.valueOf(position));
-//
-////            final String accessToken = prefs.getString("access_token", "");
-////
-////            if (accessToken.isEmpty()) {
-////
-////                startActivity(new Intent(SearchActivity.this, MainActivity.class));
-////
-////                finish();
-////
-////            }
-////
-////            RestAdapter restAdapter;
-////
-////            UserService service;
-////
-////            Map<String, Object> params = new HashMap<>();
-//
-//            switch (position) {
-//
-//                case 0:
-//
-////                    restAdapter = UserService.restAdapter;
-////
-////                    service = restAdapter.create(UserService.class);
-////
-////                    params.put("collection", "user");
-////
-////                    params.put("service", service);
-//
-//                    return UserSearchFragment.newInstance();
-//
-//                case 1:
-//
-////                    restAdapter = UserService.restAdapter;
-////
-////                    service = restAdapter.create(UserService.class);
-////
-////                    params.put("collection", "user");
-////
-////                    params.put("service", service);
-//
-//                    return OrganizationSearchFragment.newInstance();
-//
-//                case 2:
-//
-////                    restAdapter = UserService.restAdapter;
-////
-////                    service = restAdapter.create(UserService.class);
-////
-////                    params.put("collection", "user");
-////
-////                    params.put("service", service);
-//
-//                    return OrganizationSearchFragment.newInstance();
-//
-//                default:
-//
-//                    return null;
-//
-//            }
-//
-//        }
-//
-//        @Override
-//        public int getCount() {
-//            return NUM_TITLES;
-//        }
-//
-//        @Override
-//        public String getPageTitle(int position) {
-//
-//            return TITLES[position % NUM_TITLES].toUpperCase();
-//
-//        }
-//
-//    }
+    Runnable userSearchRunnable;
 
-    // Observe changes in search input
-
-//    @OnTextChanged(R.id.search_box)
-//    void onSearchTextChanged(CharSequence q, int start, int count, int after) {
-//
-//        query = q.toString();
-//
-//        fetchUsers(10, 1, buildQuery("user", "last_name", "asc", query), true);
-//
-//        fetchOrganizations(10, 1, buildQuery("organization", "name", "asc", query), false);
-//
-//    }
+    Runnable orgSearchRunnable;
 
     private String buildQuery(String collection, String sortField, String sortDirection, String searchChars) {
 
@@ -256,12 +153,6 @@ public class SearchActivity extends FragmentActivity {
 
         }
 
-//        QueryFilter complexVal = new QueryFilter("id", "eq", organization.id);
-//
-//        QueryFilter userFilter = new QueryFilter("organization", "any", complexVal);
-//
-//        queryFilters.add(userFilter);
-
         // Create query string from new QueryParams
 
         QueryParams queryParams = new QueryParams(queryFilters, queryOrder);
@@ -287,8 +178,6 @@ public class SearchActivity extends FragmentActivity {
 
                 ArrayList<Organization> organizations = organizationFeatureCollection.getFeatures();
 
-//                searchAction = switchCollection ? 1 : searchAction;
-
                 if (!organizations.isEmpty()) {
 
                     if (!filterResults) {
@@ -302,10 +191,6 @@ public class SearchActivity extends FragmentActivity {
                         orgListAdapter = new OrganizationListAdapter(SearchActivity.this, organizations, true);
 
                     }
-
-//                    baseOrganizationList.addAll(organizations);
-//
-//                    orgListAdapter = new OrganizationListAdapter(SearchActivity.this, organizations, true);
 
                     if (switchCollection || activeTab == 1) {
 
@@ -360,8 +245,6 @@ public class SearchActivity extends FragmentActivity {
             public void success(UserCollection userCollection, Response response) {
 
                 ArrayList<User> users = userCollection.getFeatures();
-
-//                searchAction = switchCollection ? 0 : searchAction;
 
                 if (!users.isEmpty()) {
 
@@ -441,11 +324,17 @@ public class SearchActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
 
-                searchResults.setAdapter(null);
-
                 Log.d("Switch tab", "users");
 
-                if (baseUserList.isEmpty()) {
+                searchResults.setAdapter(null);
+
+                activeTab = 0;
+
+                if (query != null && !query.isEmpty()) {
+
+                    fetchUsers(10, 1, buildQuery("user", "last_name", "asc", query), true, true);
+
+                } else if (baseUserList.isEmpty()) {
 
                     Log.d("Switch tab", "User list is empty");
 
@@ -468,13 +357,17 @@ public class SearchActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
 
+                Log.d("Switch tab", "orgs");
+
                 searchResults.setAdapter(null);
 
                 activeTab = 1;
 
-                Log.d("Switch tab", "orgs");
+                if (query != null && !query.isEmpty()) {
 
-                if (baseOrganizationList.isEmpty()) {
+                    fetchOrganizations(10, 1, buildQuery("organization", "name", "asc", query), true, true);
+
+                } else if (baseOrganizationList.isEmpty()) {
 
                     Log.d("Switch tab", "Org list is empty");
 
@@ -491,13 +384,12 @@ public class SearchActivity extends FragmentActivity {
                 }
 
             }
+
         });
 
         clearSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                //query = null;
 
                 searchBox.setText("");
 
@@ -506,16 +398,16 @@ public class SearchActivity extends FragmentActivity {
 
         // Observe changes in search input and respond accordingly
 
-        final Handler handler = new Handler(Looper.getMainLooper());
+        handler = new Handler(Looper.getMainLooper());
 
-        final Runnable userSearchRunnable = new Runnable() {
+        userSearchRunnable = new Runnable() {
             @Override
             public void run() {
                 fetchUsers(10, 1, buildQuery("user", "last_name", "asc", query), true, true);
             }
         };
 
-        final Runnable orgSearchRunnable = new Runnable() {
+        orgSearchRunnable = new Runnable() {
             @Override
             public void run() {
                 fetchOrganizations(10, 1, buildQuery("organization", "name", "asc", query), true, false);
@@ -526,13 +418,8 @@ public class SearchActivity extends FragmentActivity {
 
             @Override
             public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
-//                seq = cs;
 
                 query = cs.toString();
-
-//                fetchUsers(10, 1, buildQuery("user", "last_name", "asc", query), true);
-//
-//                fetchOrganizations(10, 1, buildQuery("organization", "name", "asc", query), false);
 
             }
 
@@ -543,25 +430,20 @@ public class SearchActivity extends FragmentActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-//                new SearchTask().execute(seq.toString().trim());
-//
-//                query = q.toString();
-
-                handler.removeCallbacks(userSearchRunnable);
-
-                handler.removeCallbacks(orgSearchRunnable);
-
-//                workRunnable = () -> fetchUsers(10, 1, buildQuery("user", "last_name", "asc", query), true);
 
                 switch (activeTab) {
 
                     case 0:
+
+                        handler.removeCallbacks(userSearchRunnable);
 
                         handler.postDelayed(userSearchRunnable, 300 /*delay*/);
 
                         break;
 
                     case 1:
+
+                        handler.removeCallbacks(orgSearchRunnable);
 
                         handler.postDelayed(orgSearchRunnable, 300 /*delay*/);
 
@@ -572,25 +454,6 @@ public class SearchActivity extends FragmentActivity {
             }
 
         });
-
-//        @Override public void afterTextChanged(Editable s) {
-//            handler.removeCallbacks(workRunnable);
-//            workRunnable = () -> doSmth(s.toString());
-//            handler.postDelayed(workRunnable, 500 /*delay*/);
-//        }
-
-
-        // Instantiate a ViewPager and a PagerAdapter.
-//        mPager = (ViewPager) findViewById(R.id.search_results);
-//        mPagerAdapter = new PagerAdapter(this, getSupportFragmentManager());
-//        mPager.setAdapter(mPagerAdapter);
-//        mPager.setPageTransformer(true, new DepthPageTransformer());
-
-        // Add tabs for navigating the ViewPager
-//        SlidingTabLayout mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.search_categories);
-//        mSlidingTabLayout.setDistributeEvenly(true);
-//        mSlidingTabLayout.setViewPager(mPager);
-//        tabLayout.setupWithViewPager(mPager);
 
     }
 
