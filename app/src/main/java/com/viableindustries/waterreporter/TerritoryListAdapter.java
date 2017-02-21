@@ -112,7 +112,7 @@ public class TerritoryListAdapter extends ArrayAdapter<Territory> {
 
         // Populate layout elements
 
-        viewHolder.territoryName.setText(territory.properties.huc_10_name);
+        viewHolder.territoryName.setText(territory.properties.huc_8_name);
 
 //        Picasso.with(context).load(territory.properties.picture).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(viewHolder.organizationLogo);
 
@@ -124,7 +124,7 @@ public class TerritoryListAdapter extends ArrayAdapter<Territory> {
 
                 TerritoryHolder.setTerritory(territory);
 
-                context.startActivity(new Intent(context, OrganizationProfileActivity.class));
+                context.startActivity(new Intent(context, TerritoryActivity.class));
 
             }
         });

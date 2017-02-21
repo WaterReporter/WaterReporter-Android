@@ -24,4 +24,10 @@ public class OrganizationFeatureCollection {
 
     }
 
+    public CollectionProperties getProperties() {
+
+        return properties;
+
+    }
+
 }

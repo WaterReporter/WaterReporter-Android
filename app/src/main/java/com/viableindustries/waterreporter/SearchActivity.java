@@ -346,7 +346,7 @@ public class SearchActivity extends FragmentActivity {
 
                     }
 
-                    if (switchCollection || activeTab == 0) {
+                    if (switchCollection || activeTab == 2) {
 
                         searchResults.setAdapter(territoryListAdapter);
 

@@ -201,7 +201,11 @@
         </activity>
         <activity
             android:name=".SearchActivity"
-            android:label="@string/title_activity_search"></activity>
+            android:label="@string/title_activity_search" />
+        <activity
+            android:name=".TerritoryActivity"
+            android:label="@string/title_activity_territory"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>
