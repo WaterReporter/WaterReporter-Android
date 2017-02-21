@@ -35,6 +35,9 @@ import com.viableindustries.waterreporter.data.QueryFilter;
 import com.viableindustries.waterreporter.data.QueryParams;
 import com.viableindustries.waterreporter.data.QuerySort;
 import com.viableindustries.waterreporter.data.ReportService;
+import com.viableindustries.waterreporter.data.Territory;
+import com.viableindustries.waterreporter.data.TerritoryCollection;
+import com.viableindustries.waterreporter.data.TerritoryService;
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserCollection;
 import com.viableindustries.waterreporter.data.UserService;
@@ -69,6 +72,9 @@ public class SearchActivity extends FragmentActivity {
     @Bind(R.id.search_organizations)
     Button searchOrgs;
 
+    @Bind(R.id.search_watersheds)
+    Button searchWatersheds;
+
     @Bind(R.id.search_results)
     ListView searchResults;
 
@@ -82,17 +88,17 @@ public class SearchActivity extends FragmentActivity {
 
     OrganizationService service;
 
+    protected TerritoryListAdapter territoryListAdapter;
+
     protected OrganizationListAdapter orgListAdapter;
 
     protected UserListAdapter userListAdapter;
 
     ArrayList<Organization> baseOrganizationList;
 
-    ArrayList<Organization> orgMatches;
+    ArrayList<Territory> baseTerritoryList;
 
     ArrayList<User> baseUserList;
-
-    ArrayList<User> userMatches;
 
     private int activeTab = 0;
 
@@ -112,6 +118,8 @@ public class SearchActivity extends FragmentActivity {
     Runnable userSearchRunnable;
 
     Runnable orgSearchRunnable;
+
+    Runnable territorySearchRunnable;
 
     private String buildQuery(String collection, String sortField, String sortDirection, String searchChars) {
 
@@ -148,6 +156,16 @@ public class SearchActivity extends FragmentActivity {
                 QueryFilter orgNameFilter = new QueryFilter("name", "ilike", String.format("%s%s", searchChars, "%"));
 
                 queryFilters.add(orgNameFilter);
+
+            }
+
+        } else {
+
+            if (searchChars != null) {
+
+                QueryFilter territoryNameFilter = new QueryFilter("huc_8_name", "ilike", String.format("%s%s", searchChars, "%"));
+
+                queryFilters.add(territoryNameFilter);
 
             }
 
@@ -297,6 +315,74 @@ public class SearchActivity extends FragmentActivity {
 
     }
 
+    protected void fetchTerritories(int limit, int page, final String query, final boolean filterResults, final boolean switchCollection) {
+
+        final String accessToken = prefs.getString("access_token", "");
+
+        Log.d("", accessToken);
+
+        RestAdapter restAdapter = TerritoryService.restAdapter;
+
+        TerritoryService service = restAdapter.create(TerritoryService.class);
+
+        service.getMany(accessToken, "application/json", page, limit, query, new Callback<TerritoryCollection>() {
+
+            @Override
+            public void success(TerritoryCollection territoryCollection, Response response) {
+
+                ArrayList<Territory> territories = territoryCollection.getFeatures();
+
+                if (!territories.isEmpty()) {
+
+                    if (!filterResults) {
+
+                        baseTerritoryList.addAll(territories);
+
+                        territoryListAdapter = new TerritoryListAdapter(SearchActivity.this, baseTerritoryList, true);
+
+                    } else {
+
+                        territoryListAdapter = new TerritoryListAdapter(SearchActivity.this, territories, true);
+
+                    }
+
+                    if (switchCollection || activeTab == 0) {
+
+                        searchResults.setAdapter(territoryListAdapter);
+
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(context, SignInActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -316,9 +402,15 @@ public class SearchActivity extends FragmentActivity {
 
         baseUserList = new ArrayList<User>();
 
+        // Initialize empty list to hold territories
+
+        baseTerritoryList = new ArrayList<Territory>();
+
         fetchUsers(10, 1, buildQuery("user", "last_name", "asc", null), false, true);
 
         fetchOrganizations(10, 1, buildQuery("organization", "name", "asc", null), false, false);
+
+        fetchTerritories(10, 1, buildQuery("territory", "huc_8_name", "asc", null), false, false);
 
         searchPeople.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -387,6 +479,40 @@ public class SearchActivity extends FragmentActivity {
 
         });
 
+        searchWatersheds.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.d("Switch tab", "territories");
+
+                searchResults.setAdapter(null);
+
+                activeTab = 2;
+
+                if (query != null && !query.isEmpty()) {
+
+                    fetchTerritories(10, 1, buildQuery("territory", "huc_8_name", "asc", query), true, true);
+
+                } else if (baseTerritoryList.isEmpty()) {
+
+                    Log.d("Switch tab", "Territory list is empty");
+
+                    fetchTerritories(10, 1, buildQuery("territory", "huc_8_name", "asc", null), false, true);
+
+                } else {
+
+                    Log.d("Switch tab", "Territory list not empty");
+
+                    territoryListAdapter = new TerritoryListAdapter(SearchActivity.this, baseTerritoryList, true);
+
+                    searchResults.setAdapter(territoryListAdapter);
+
+                }
+
+            }
+
+        });
+
         clearSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -414,12 +540,29 @@ public class SearchActivity extends FragmentActivity {
             }
         };
 
+        territorySearchRunnable = new Runnable() {
+            @Override
+            public void run() {
+                fetchTerritories(10, 1, buildQuery("territory", "huc_8_name", "asc", query), true, false);
+            }
+        };
+
         searchBox.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
 
                 query = cs.toString();
+
+                if (query.isEmpty()) {
+
+                    clearSearch.setVisibility(View.GONE);
+
+                } else {
+
+                    clearSearch.setVisibility(View.VISIBLE);
+
+                }
 
             }
 
@@ -446,6 +589,14 @@ public class SearchActivity extends FragmentActivity {
                         handler.removeCallbacks(orgSearchRunnable);
 
                         handler.postDelayed(orgSearchRunnable, 300 /*delay*/);
+
+                        break;
+
+                    case 2:
+
+                        handler.removeCallbacks(territorySearchRunnable);
+
+                        handler.postDelayed(territorySearchRunnable, 300 /*delay*/);
 
                         break;
 

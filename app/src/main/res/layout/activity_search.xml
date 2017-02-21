@@ -35,7 +35,8 @@
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_close_black_24dp" />
+            android:src="@drawable/ic_close_black_24dp"
+            android:visibility="gone" />
 
     </RelativeLayout>
 
@@ -72,7 +73,19 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:gravity="center"
-            android:text="Organizations"
+            android:text="Groups"
+            android:textAllCaps="true"
+            android:textColor="@color/material_blue_grey950" />
+
+        <Button
+            android:id="@+id/search_watersheds"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:text="Watersheds"
             android:textAllCaps="true"
             android:textColor="@color/material_blue_grey950" />
 

@@ -75,7 +75,7 @@ public class AttributeTransformUtility {
 
         try {
 
-            return String.format("%s Watershed", territory.properties.huc_6_name);
+            return String.format("%s Watershed", territory.properties.huc_8_name);
 
         } catch (NullPointerException ne) {
 
