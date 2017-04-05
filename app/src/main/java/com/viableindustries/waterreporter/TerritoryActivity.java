@@ -628,7 +628,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
     private void populateTimeline(List list) {
 
-        timelineAdapter = new TimelineAdapter(context, list, false);
+        timelineAdapter = new TimelineAdapter(this, list, false);
 
         // Attach the adapter to a ListView
         timeLine.setAdapter(timelineAdapter);

@@ -274,152 +274,138 @@ public class TimelineAdapter extends ArrayAdapter {
 
                 Log.d("Click Event", "Share button clicked.");
 
-                if (ShareDialog.canShow(ShareLinkContent.class)) {
-                    ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                            .setContentTitle("Hello Facebook")
-                            .setContentDescription(
-                                    "The 'Hello Facebook' sample  showcases simple Facebook integration")
-                            .setContentUrl(Uri.parse("http://developers.facebook.com/android"))
-                            .build();
+                String body;
 
-                    shareDialog.show(linkContent);
+                String description;
+
+                String userName;
+
+                String watershedName;
+
+                String title;
+
+                try {
+
+                    userName = String.format("%s %s", feature.properties.owner.properties.first_name, feature.properties.owner.properties.last_name);
+
+                } catch (NullPointerException e) {
+
+                    userName = "A citizen";
+
                 }
 
-                //Uri imageUri = null;
+                description = String.format("A post by %s on Water Reporter.", userName);
 
-                //try {
+                try {
 
-                    //File image = FileUtils.createImageFile(context);
+                    body = feature.properties.report_description.trim();
 
-                    // Use FileProvider to comply with Android security requirements.
-                    // See: https://developer.android.com/training/camera/photobasics.html
-                    // https://developer.android.com/reference/android/os/FileUriExposedException.html
-
-                    //imageUri = FileProvider.getUriForFile(context, FILE_PROVIDER_AUTHORITY, image);
-
-                    // Using v4 Support Library FileProvider and Camera intent on pre-Marshmallow devices
-                    // requires granting FileUri permissions at runtime
-
-                    //context.grantUriPermission(context.getPackageName(), imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                    //BitmapDrawable drawable = (BitmapDrawable) viewHolder.reportThumb.getDrawable();
-
-                    //Bitmap bitmap = drawable.getBitmap();
-
-                    //Log.d("BitmapDrawable", bitmap.toString());
-
-                    //FileOutputStream stream = new FileOutputStream(image); // overwrites this image every time
-
-                    //bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-
-                    //stream.close();
-
-                //} catch (Exception e) {
-
-                    //e.printStackTrace();
-
-                    //Log.d(null, "Save file error!");
-
-                    //return;
-
-                //}
-
-                // Build the intent
-
-                Intent shareIntent = new Intent();
-                shareIntent.setAction(Intent.ACTION_SEND);
-
-                // Set MIME type of content
-
-                //shareIntent.setType("*/*");
-
-                // Set flag for temporary read Uri permission
-
-                //shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // temp permission for receiving app to read this file
-
-                // Add image content
-
-                //shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
-
-                // Add text body
-
-                String snippet = (feature.properties.report_description != null) ? feature.properties.report_description.trim() : null;
-
-                if (snippet != null && !snippet.isEmpty()) {
-
-                    int snippetLength = snippet.length();
+                    int snippetLength = body.length();
 
                     if (snippetLength > 100) {
 
-                        snippet = String.format("%s\u2026", snippet.substring(0, 99).trim());
+                        body = String.format("%s\u2026", body.substring(0, 99).trim());
 
                     } else {
 
-                        if (".".equals(snippet.substring(snippetLength - 1))) {
+                        if (".".equals(body.substring(snippetLength - 1))) {
 
-                            snippet = String.format("%s\u2026", snippet.substring(0, snippetLength - 1).trim());
+                            body = String.format("%s\u2026", body.substring(0, snippetLength - 1).trim());
 
                         } else {
 
-                            snippet = String.format("%s\u2026", snippet);
+                            body = String.format("%s\u2026", body);
 
                         }
 
                     }
 
+                    title = String.format("%s on Water Reporter: \"%s\"", userName, body);
+
+                } catch (NullPointerException e) {
+
+                    title = String.format("%s posted on Water Reporter.", userName);
+
                 }
 
-                shareIntent.putExtra(Intent.EXTRA_SUBJECT, getContext().getResources().getString(R.string.share_report_email_subject));
-                shareIntent.putExtra(Intent.EXTRA_TEXT, String.format(getContext().getResources().getString(R.string.share_report_text_body),
-                        snippet, String.valueOf(feature.id)));
+                if (ShareDialog.canShow(ShareLinkContent.class)) {
+                    ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                            .setContentTitle(title)
+                            .setContentDescription(description)
+                            .setImageUrl(Uri.parse(imagePath))
+                            .setContentUrl(Uri.parse(String.format("https://www.waterreporter.org/community/reports/%s", feature.id)))
+                            .build();
 
+                    shareDialog.show(linkContent);
+                }
+
+//                // Build the intent
+//
+//                Intent shareIntent = new Intent();
+//                shareIntent.setAction(Intent.ACTION_SEND);
+//
+//                // Set MIME type of content
+//
 //                shareIntent.setType("text/plain");
-
-                // Verify it resolves
-                PackageManager packageManager = getContext().getPackageManager();
-                List<ResolveInfo> activities = packageManager.queryIntentActivities(shareIntent, 0);
-                boolean isIntentSafe = activities.size() > 0;
-
-                // Start an activity if it's safe
-                if (isIntentSafe) {
-
-                    getContext().startActivity(Intent.createChooser(shareIntent, getContext().getResources().getText(R.string.share_report_chooser_title)));
-
-                }
-
-                try {
-
-                    ApplicationInfo info = getContext().getPackageManager().getApplicationInfo("com.twitter.android", 0);
-
-                    shareIntent.setPackage("com.twitter.android");
-
-                    getContext().startActivity(Intent.createChooser(shareIntent, getContext().getResources().getText(R.string.share_report_chooser_title)));
-
-                    //return true;
-
-                } catch (PackageManager.NameNotFoundException e) {
-
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse("https://twitter.com/intent/tweet"));
-                    getContext().startActivity(i);
-
-                    //return false;
-
-                }
-
-//                String packageName = "com.facebook.katana";
-//                String fullUrl = "https://m.facebook.com/sharer.php?u=..";
-//                Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
-//                if (intent == null) {
+//
+//                // Add text body
+//
+//                String snippet = (feature.properties.report_description != null) ? feature.properties.report_description.trim() : null;
+//
+//                if (snippet != null && !snippet.isEmpty()) {
+//
+//                    int snippetLength = snippet.length();
+//
+//                    if (snippetLength > 100) {
+//
+//                        snippet = String.format("%s\u2026", snippet.substring(0, 99).trim());
+//
+//                    } else {
+//
+//                        if (".".equals(snippet.substring(snippetLength - 1))) {
+//
+//                            snippet = String.format("%s\u2026", snippet.substring(0, snippetLength - 1).trim());
+//
+//                        } else {
+//
+//                            snippet = String.format("%s\u2026", snippet);
+//
+//                        }
+//
+//                    }
+//
+//                }
+//
+//                shareIntent.putExtra(Intent.EXTRA_SUBJECT, getContext().getResources().getString(R.string.share_report_email_subject));
+//                shareIntent.putExtra(Intent.EXTRA_TEXT, String.format(getContext().getResources().getString(R.string.share_report_text_body),
+//                        snippet, String.valueOf(feature.id)));
+//
+//                // Verify it resolves
+//                PackageManager packageManager = getContext().getPackageManager();
+//                List<ResolveInfo> activities = packageManager.queryIntentActivities(shareIntent, 0);
+//                boolean isIntentSafe = activities.size() > 0;
+//
+//                // Start an activity if it's safe
+//                if (isIntentSafe) {
+//
+//                    getContext().startActivity(Intent.createChooser(shareIntent, getContext().getResources().getText(R.string.share_report_chooser_title)));
+//
+//                }
+//
+//                try {
+//
+//                    ApplicationInfo info = getContext().getPackageManager().getApplicationInfo("com.twitter.android", 0);
+//
+//                    shareIntent.setPackage("com.twitter.android");
+//
+//                    getContext().startActivity(Intent.createChooser(shareIntent, getContext().getResources().getText(R.string.share_report_chooser_title)));
+//
+//                } catch (PackageManager.NameNotFoundException e) {
+//
 //                    Intent i = new Intent(Intent.ACTION_VIEW);
-//                    i.setData(Uri.parse(fullUrl));
-//                    startActivity(i);
-//                } else {
-//                    Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-//                    sharingIntent.setClassName(packageName ,
-//                            "com.facebook.katana.ShareLinkActivity");
-//                    sharingIntent.putExtra(Intent.EXTRA_TEXT, "your title text");
-//                    startActivity(sharingIntent);
+//                    i.setData(Uri.parse("https://twitter.com/intent/tweet"));
+//                    getContext().startActivity(i);
+//
 //                }
 
             }
