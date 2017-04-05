@@ -1,10 +1,12 @@
 package com.viableindustries.waterreporter;
 
+import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
@@ -28,6 +30,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.facebook.CallbackManager;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.viableindustries.waterreporter.data.Comment;
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.HtmlCompat;
@@ -61,6 +66,10 @@ public class TimelineAdapter extends ArrayAdapter {
 
     private final Context context;
 
+    private CallbackManager callbackManager;
+
+    private ShareDialog shareDialog;
+
     private final boolean isProfile;
 
     protected String creationDate;
@@ -79,10 +88,13 @@ public class TimelineAdapter extends ArrayAdapter {
 
     final private String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
 
-    public TimelineAdapter(Context context, List features, boolean isProfile) {
-        super(context, 0, features);
-        this.context = context;
+    public TimelineAdapter(Activity activity, List features, boolean isProfile) {
+        super(activity, 0, features);
+        this.context = activity;
         this.isProfile = isProfile;
+
+        this.callbackManager = CallbackManager.Factory.create();
+        this.shareDialog = new ShareDialog(activity);
     }
 
     protected static class ViewHolder {
@@ -262,68 +274,55 @@ public class TimelineAdapter extends ArrayAdapter {
 
                 Log.d("Click Event", "Share button clicked.");
 
-                Uri imageUri = null;
+                if (ShareDialog.canShow(ShareLinkContent.class)) {
+                    ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                            .setContentTitle("Hello Facebook")
+                            .setContentDescription(
+                                    "The 'Hello Facebook' sample  showcases simple Facebook integration")
+                            .setContentUrl(Uri.parse("http://developers.facebook.com/android"))
+                            .build();
 
-                try {
+                    shareDialog.show(linkContent);
+                }
 
-                    File image = FileUtils.createImageFile(context);
+                //Uri imageUri = null;
+
+                //try {
+
+                    //File image = FileUtils.createImageFile(context);
 
                     // Use FileProvider to comply with Android security requirements.
                     // See: https://developer.android.com/training/camera/photobasics.html
                     // https://developer.android.com/reference/android/os/FileUriExposedException.html
 
-                    imageUri = FileProvider.getUriForFile(context, FILE_PROVIDER_AUTHORITY, image);
+                    //imageUri = FileProvider.getUriForFile(context, FILE_PROVIDER_AUTHORITY, image);
 
                     // Using v4 Support Library FileProvider and Camera intent on pre-Marshmallow devices
                     // requires granting FileUri permissions at runtime
 
-                    context.grantUriPermission(context.getPackageName(), imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    //context.grantUriPermission(context.getPackageName(), imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                    BitmapDrawable drawable = (BitmapDrawable) viewHolder.reportThumb.getDrawable();
+                    //BitmapDrawable drawable = (BitmapDrawable) viewHolder.reportThumb.getDrawable();
 
-                    Bitmap bitmap = drawable.getBitmap();
+                    //Bitmap bitmap = drawable.getBitmap();
 
-                    Log.d("BitmapDrawable", bitmap.toString());
+                    //Log.d("BitmapDrawable", bitmap.toString());
 
-//                    FileOutputStream stream = new FileOutputStream(image + "/shared_image.jpg"); // overwrites this image every time
+                    //FileOutputStream stream = new FileOutputStream(image); // overwrites this image every time
 
-                    FileOutputStream stream = new FileOutputStream(image); // overwrites this image every time
+                    //bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
 
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    //stream.close();
 
-                    stream.close();
+                //} catch (Exception e) {
 
-//                    mTempImagePath = image.getAbsolutePath();
-//
-//                    InputStream inputStream = getResources().openRawResource(avatarId);
-//
-//                    OutputStream out = new FileOutputStream(image);
-//
-//                    byte buf[] = new byte[1024];
-//                    int len;
-//
-//                    while ((len = inputStream.read(buf)) > 0)
-//                        out.write(buf, 0, len);
-//
-//                    out.close();
-//
-//                    inputStream.close();
+                    //e.printStackTrace();
 
-                } catch (Exception e) {
+                    //Log.d(null, "Save file error!");
 
-                    e.printStackTrace();
+                    //return;
 
-                    Log.d(null, "Save file error!");
-
-                    return;
-
-                }
-
-//                BitmapDrawable drawable = (BitmapDrawable) viewHolder.reportThumb.getDrawable();
-//
-//                Bitmap bitmap = drawable.getBitmap();
-//
-//                Log.d("BitmapDrawable", bitmap.toString());
+                //}
 
                 // Build the intent
 
@@ -332,16 +331,15 @@ public class TimelineAdapter extends ArrayAdapter {
 
                 // Set MIME type of content
 
-                shareIntent.setType("*/*");
+                //shareIntent.setType("*/*");
 
                 // Set flag for temporary read Uri permission
 
-                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // temp permission for receiving app to read this file
-//                shareIntent.setDataAndType(contentUri, getContentResolver().getType(contentUri));
+                //shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // temp permission for receiving app to read this file
 
                 // Add image content
 
-                shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+                //shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
 
                 // Add text body
 
@@ -388,6 +386,41 @@ public class TimelineAdapter extends ArrayAdapter {
                     getContext().startActivity(Intent.createChooser(shareIntent, getContext().getResources().getText(R.string.share_report_chooser_title)));
 
                 }
+
+                try {
+
+                    ApplicationInfo info = getContext().getPackageManager().getApplicationInfo("com.twitter.android", 0);
+
+                    shareIntent.setPackage("com.twitter.android");
+
+                    getContext().startActivity(Intent.createChooser(shareIntent, getContext().getResources().getText(R.string.share_report_chooser_title)));
+
+                    //return true;
+
+                } catch (PackageManager.NameNotFoundException e) {
+
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse("https://twitter.com/intent/tweet"));
+                    getContext().startActivity(i);
+
+                    //return false;
+
+                }
+
+//                String packageName = "com.facebook.katana";
+//                String fullUrl = "https://m.facebook.com/sharer.php?u=..";
+//                Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
+//                if (intent == null) {
+//                    Intent i = new Intent(Intent.ACTION_VIEW);
+//                    i.setData(Uri.parse(fullUrl));
+//                    startActivity(i);
+//                } else {
+//                    Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+//                    sharingIntent.setClassName(packageName ,
+//                            "com.facebook.katana.ShareLinkActivity");
+//                    sharingIntent.putExtra(Intent.EXTRA_TEXT, "your title text");
+//                    startActivity(sharingIntent);
+//                }
 
             }
         });
