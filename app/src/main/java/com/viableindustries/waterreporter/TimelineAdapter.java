@@ -280,8 +280,6 @@ public class TimelineAdapter extends ArrayAdapter {
 
                 String userName;
 
-                String watershedName;
-
                 String title;
 
                 try {
@@ -332,7 +330,7 @@ public class TimelineAdapter extends ArrayAdapter {
                     ShareLinkContent linkContent = new ShareLinkContent.Builder()
                             .setContentTitle(title)
                             .setContentDescription(description)
-                            .setImageUrl(Uri.parse(imagePath))
+                            .setImageUrl(Uri.parse(viewHolder.reportThumb.getTag().toString()))
                             .setContentUrl(Uri.parse(String.format("https://www.waterreporter.org/community/reports/%s", feature.id)))
                             .build();
 
@@ -483,6 +481,8 @@ public class TimelineAdapter extends ArrayAdapter {
         Picasso.with(context).load(feature.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(viewHolder.ownerAvatar);
 
         Picasso.with(context).load(imagePath).fit().centerCrop().into(viewHolder.reportThumb);
+
+        viewHolder.reportThumb.setTag(imagePath);
 
         // Context-dependent configuration
 

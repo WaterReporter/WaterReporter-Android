@@ -16,6 +16,16 @@
         <item><![CDATA[<b>Edit this report</b>]]></item>
         <item><![CDATA[<b>Delete this report</b>]]></item>
     </string-array>
+    <string-array name="report_share_options_all">
+        <item name="fb"><![CDATA[<b>Share on Facebook</b>]]></item>
+        <item name="tt"><![CDATA[<b>Share on Twitter</b>]]></item>
+    </string-array>
+    <string-array name="report_share_options_fb">
+        <item name="fb"><![CDATA[<b>Share on Facebook</b>]]></item>
+    </string-array>
+    <string-array name="report_share_options_tt">
+        <item name="tt"><![CDATA[<b>Share on Twitter</b>]]></item>
+    </string-array>
     <string-array name="default_avatars">
         <item>calidris_canutus</item>
         <item>gavia_immer</item>

@@ -4,7 +4,14 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Handler;
@@ -13,6 +20,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
@@ -37,8 +45,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import com.viableindustries.waterreporter.data.Comment;
 import com.viableindustries.waterreporter.data.CommentPost;
 import com.viableindustries.waterreporter.data.CommentService;
@@ -50,6 +62,7 @@ import com.viableindustries.waterreporter.data.QueryParams;
 import com.viableindustries.waterreporter.data.QuerySort;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportHolder;
+import com.viableindustries.waterreporter.data.ReportPhoto;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserGroupList;
@@ -58,7 +71,10 @@ import com.viableindustries.waterreporter.data.UserService;
 import com.viableindustries.waterreporter.dialogs.CommentActionDialogListener;
 import com.viableindustries.waterreporter.dialogs.CommentPhotoDialogListener;
 import com.viableindustries.waterreporter.dialogs.ReportActionDialogListener;
+import com.viableindustries.waterreporter.dialogs.ShareActionDialogListener;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,7 +88,7 @@ import retrofit.client.Response;
 import static java.lang.Boolean.TRUE;
 import static java.security.AccessController.getContext;
 
-public class UserProfileActivity extends AppCompatActivity implements ReportActionDialogListener {
+public class UserProfileActivity extends AppCompatActivity implements ReportActionDialogListener, ShareActionDialogListener {
 
     TextView userTitle;
 
@@ -145,6 +161,10 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
     private SharedPreferences coreProfile;
 
     private User user;
+
+    final private String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
+
+    private Uri shareImageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -850,6 +870,259 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     @Override
     public void onSelectAction(int index) {
+
+        if (index == 1) {
+
+            deleteReport();
+
+        } else {
+
+            editReport();
+
+        }
+
+    }
+
+    protected void shareOnTwitter(int position) {
+
+        Report feature = ReportHolder.getReport();
+
+        ReportPhoto img = (ReportPhoto) feature.properties.images.get(0);
+
+        String imagePath = (String) img.properties.square_retina;
+
+//        Uri shareImageUri;
+
+//        try {
+
+        Picasso.with(this).load(imagePath).into(new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+//                    Intent i = new Intent(Intent.ACTION_SEND);
+//                    i.setType("image/*");
+//                    i.putExtra(Intent.EXTRA_STREAM, getLocalBitmapUri(bitmap));
+//                    startActivity(Intent.createChooser(i, "Share Image"));
+
+                try {
+
+                    File image = FileUtils.createImageFile(UserProfileActivity.this);
+
+                    // Use FileProvider to comply with Android security requirements.
+                    // See: https://developer.android.com/training/camera/photobasics.html
+                    // https://developer.android.com/reference/android/os/FileUriExposedException.html
+
+                    shareImageUri = FileProvider.getUriForFile(UserProfileActivity.this, FILE_PROVIDER_AUTHORITY, image);
+
+                    // Using v4 Support Library FileProvider and Camera intent on pre-Marshmallow devices
+                    // requires granting FileUri permissions at runtime
+
+                    UserProfileActivity.this.grantUriPermission(getPackageName(), shareImageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                    //BitmapDrawable drawable = (BitmapDrawable) viewHolder.reportThumb.getDrawable();
+
+                    //Bitmap bitmap = drawable.getBitmap();
+
+                    //Log.d("BitmapDrawable", bitmap.toString());
+
+                    FileOutputStream stream = new FileOutputStream(image); // overwrites this image every time
+
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+
+                    stream.close();
+
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+
+                    Log.d(null, "Save file error!");
+
+//                    return;
+
+                }
+
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+            }
+        });
+
+//            File image = FileUtils.createImageFile(this);
+//
+//            // Use FileProvider to comply with Android security requirements.
+//            // See: https://developer.android.com/training/camera/photobasics.html
+//            // https://developer.android.com/reference/android/os/FileUriExposedException.html
+//
+//            imageUri = FileProvider.getUriForFile(this, FILE_PROVIDER_AUTHORITY, image);
+//
+//            // Using v4 Support Library FileProvider and Camera intent on pre-Marshmallow devices
+//            // requires granting FileUri permissions at runtime
+//
+//            this.grantUriPermission(getPackageName(), imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//
+//            //BitmapDrawable drawable = (BitmapDrawable) viewHolder.reportThumb.getDrawable();
+//
+//            //Bitmap bitmap = drawable.getBitmap();
+//
+//            //Log.d("BitmapDrawable", bitmap.toString());
+//
+//            FileOutputStream stream = new FileOutputStream(image); // overwrites this image every time
+//
+//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+//
+//            stream.close();
+
+//        } catch (Exception e) {
+//
+//            e.printStackTrace();
+//
+//            Log.d(null, "Save file error!");
+//
+//            return;
+//
+//        }
+
+        // Build the intent
+
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+
+        // Set MIME type of content
+
+        shareIntent.setType("*/*");
+
+        // Set flag for temporary read Uri permission
+
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // temp permission for receiving app to read this file
+
+        // Add image content
+
+        shareIntent.putExtra(Intent.EXTRA_STREAM, shareImageUri);
+
+        // Add text body
+
+        String snippet = (feature.properties.report_description != null) ? feature.properties.report_description.trim() : null;
+
+        if (snippet != null && !snippet.isEmpty()) {
+
+            int snippetLength = snippet.length();
+
+            if (snippetLength > 100) {
+
+                snippet = String.format("%s\u2026", snippet.substring(0, 99).trim());
+
+            } else {
+
+                if (".".equals(snippet.substring(snippetLength - 1))) {
+
+                    snippet = String.format("%s\u2026", snippet.substring(0, snippetLength - 1).trim());
+
+                } else {
+
+                    snippet = String.format("%s\u2026", snippet);
+
+                }
+
+            }
+
+        }
+
+        //shareIntent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.share_report_email_subject));
+        shareIntent.putExtra(Intent.EXTRA_TEXT, String.format(getResources().getString(R.string.share_report_text_body),
+                snippet, String.valueOf(feature.id)));
+
+        // Set the target application to Twitter.
+        // A prior check confirmed that the user has
+        // the app installed so it's safe to proceed.
+        shareIntent.setPackage("com.twitter.android");
+
+        startActivity(shareIntent);
+
+    }
+
+    protected void shareOnFacebook() {
+
+        Report feature = ReportHolder.getReport();
+
+        ReportPhoto image = (ReportPhoto) feature.properties.images.get(0);
+
+        String imagePath = (String) image.properties.square_retina;
+
+        ShareDialog shareDialog = new ShareDialog(this);
+
+        CallbackManager callbackManager = CallbackManager.Factory.create();
+
+        String body;
+
+        String description;
+
+        String userName;
+
+        String title;
+
+        try {
+
+            userName = String.format("%s %s", feature.properties.owner.properties.first_name, feature.properties.owner.properties.last_name);
+
+        } catch (NullPointerException e) {
+
+            userName = "A citizen";
+
+        }
+
+        description = String.format("A post by %s on Water Reporter.", userName);
+
+        try {
+
+            body = feature.properties.report_description.trim();
+
+            int snippetLength = body.length();
+
+            if (snippetLength > 100) {
+
+                body = String.format("%s\u2026", body.substring(0, 99).trim());
+
+            } else {
+
+                if (".".equals(body.substring(snippetLength - 1))) {
+
+                    body = String.format("%s\u2026", body.substring(0, snippetLength - 1).trim());
+
+                } else {
+
+                    body = String.format("%s\u2026", body);
+
+                }
+
+            }
+
+            title = String.format("%s on Water Reporter: \"%s\"", userName, body);
+
+        } catch (NullPointerException e) {
+
+            title = String.format("%s posted on Water Reporter.", userName);
+
+        }
+
+        if (ShareDialog.canShow(ShareLinkContent.class)) {
+            ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                    .setContentTitle(title)
+                    .setContentDescription(description)
+                    .setImageUrl(Uri.parse(imagePath))
+                    .setContentUrl(Uri.parse(String.format("https://www.waterreporter.org/community/reports/%s", feature.id)))
+                    .build();
+
+            shareDialog.show(linkContent);
+        }
+
+    }
+
+    @Override
+    public void onSelectShareAction(int index) {
 
         if (index == 1) {
 
