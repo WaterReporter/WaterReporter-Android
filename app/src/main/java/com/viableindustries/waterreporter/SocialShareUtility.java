@@ -179,35 +179,47 @@ public class SocialShareUtility {
 
                     // Add text body
 
-                    String snippet = (feature.properties.report_description != null) ? feature.properties.report_description.trim() : null;
+//                    String body;
 
-                    if (snippet != null && !snippet.isEmpty()) {
+                    String userName = SocialShareUtility.buildDisplayName(feature);
 
-                        int snippetLength = snippet.length();
+                    String title = String.format("Check out this post from %s on Water Reporter: ", userName);
 
-                        if (snippetLength > 100) {
-
-                            snippet = String.format("%s\u2026", snippet.substring(0, 99).trim());
-
-                        } else {
-
-                            if (".".equals(snippet.substring(snippetLength - 1))) {
-
-                                snippet = String.format("%s\u2026", snippet.substring(0, snippetLength - 1).trim());
-
-                            } else {
-
-                                snippet = String.format("%s\u2026", snippet);
-
-                            }
-
-                        }
-
-                    }
+//                    try {
+//
+//                        body = feature.properties.report_description.trim();
+//
+//                        int snippetLength = body.length();
+//
+//                        if (snippetLength > 100) {
+//
+//                            body = String.format("%s\u2026", body.substring(0, 80).trim());
+//
+//                        } else {
+//
+//                            if (".".equals(body.substring(snippetLength - 1))) {
+//
+//                                body = String.format("%s\u2026", body.substring(0, snippetLength - 1).trim());
+//
+//                            } else {
+//
+//                                body = String.format("%s\u2026", body);
+//
+//                            }
+//
+//                        }
+//
+//                        title = String.format("%s on Water Reporter: \"%s\"", userName, body);
+//
+//                    } catch (NullPointerException e) {
+//
+//                        title = String.format("%s posted on Water Reporter.", userName);
+//
+//                    }
 
                     //shareIntent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.share_report_email_subject));
                     shareIntent.putExtra(Intent.EXTRA_TEXT, String.format(context.getResources().getString(R.string.share_report_text_body),
-                            snippet, String.valueOf(feature.id)));
+                            title, String.valueOf(feature.id)));
 
                     // Set the target application to Twitter.
                     // A prior check confirmed that the user has
