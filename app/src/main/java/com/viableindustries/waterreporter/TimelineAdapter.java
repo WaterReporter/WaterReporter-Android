@@ -48,6 +48,7 @@ import com.viableindustries.waterreporter.dialogs.CommentActionDialog;
 import com.viableindustries.waterreporter.dialogs.CommentActionDialogListener;
 import com.viableindustries.waterreporter.dialogs.ReportActionDialog;
 import com.viableindustries.waterreporter.dialogs.ReportActionDialogListener;
+import com.viableindustries.waterreporter.dialogs.ShareActionDialogListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -274,137 +275,36 @@ public class TimelineAdapter extends ArrayAdapter {
 
                 Log.d("Click Event", "Share button clicked.");
 
-                String body;
+                Resources res = context.getResources();
 
-                String description;
+                String[] options = res.getStringArray(R.array.report_share_options_all);
 
-                String userName;
+                CharSequence[] renders = new CharSequence[2];
 
-                String title;
+                for (int i = 0; i < options.length; i++) {
 
-                try {
-
-                    userName = String.format("%s %s", feature.properties.owner.properties.first_name, feature.properties.owner.properties.last_name);
-
-                } catch (NullPointerException e) {
-
-                    userName = "A citizen";
+                    renders[i] = HtmlCompat.fromHtml(options[i]);
 
                 }
 
-                description = String.format("A post by %s on Water Reporter.", userName);
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-                try {
+                builder.setItems(renders, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
 
-                    body = feature.properties.report_description.trim();
+                        ReportHolder.setReport(feature);
 
-                    int snippetLength = body.length();
+                        // The 'which' argument contains the index position
+                        // of the selected item
+                        ShareActionDialogListener activity = (ShareActionDialogListener) context;
 
-                    if (snippetLength > 100) {
-
-                        body = String.format("%s\u2026", body.substring(0, 99).trim());
-
-                    } else {
-
-                        if (".".equals(body.substring(snippetLength - 1))) {
-
-                            body = String.format("%s\u2026", body.substring(0, snippetLength - 1).trim());
-
-                        } else {
-
-                            body = String.format("%s\u2026", body);
-
-                        }
+                        activity.onSelectShareAction(which);
 
                     }
+                });
 
-                    title = String.format("%s on Water Reporter: \"%s\"", userName, body);
-
-                } catch (NullPointerException e) {
-
-                    title = String.format("%s posted on Water Reporter.", userName);
-
-                }
-
-                if (ShareDialog.canShow(ShareLinkContent.class)) {
-                    ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                            .setContentTitle(title)
-                            .setContentDescription(description)
-                            .setImageUrl(Uri.parse(viewHolder.reportThumb.getTag().toString()))
-                            .setContentUrl(Uri.parse(String.format("https://www.waterreporter.org/community/reports/%s", feature.id)))
-                            .build();
-
-                    shareDialog.show(linkContent);
-                }
-
-//                // Build the intent
-//
-//                Intent shareIntent = new Intent();
-//                shareIntent.setAction(Intent.ACTION_SEND);
-//
-//                // Set MIME type of content
-//
-//                shareIntent.setType("text/plain");
-//
-//                // Add text body
-//
-//                String snippet = (feature.properties.report_description != null) ? feature.properties.report_description.trim() : null;
-//
-//                if (snippet != null && !snippet.isEmpty()) {
-//
-//                    int snippetLength = snippet.length();
-//
-//                    if (snippetLength > 100) {
-//
-//                        snippet = String.format("%s\u2026", snippet.substring(0, 99).trim());
-//
-//                    } else {
-//
-//                        if (".".equals(snippet.substring(snippetLength - 1))) {
-//
-//                            snippet = String.format("%s\u2026", snippet.substring(0, snippetLength - 1).trim());
-//
-//                        } else {
-//
-//                            snippet = String.format("%s\u2026", snippet);
-//
-//                        }
-//
-//                    }
-//
-//                }
-//
-//                shareIntent.putExtra(Intent.EXTRA_SUBJECT, getContext().getResources().getString(R.string.share_report_email_subject));
-//                shareIntent.putExtra(Intent.EXTRA_TEXT, String.format(getContext().getResources().getString(R.string.share_report_text_body),
-//                        snippet, String.valueOf(feature.id)));
-//
-//                // Verify it resolves
-//                PackageManager packageManager = getContext().getPackageManager();
-//                List<ResolveInfo> activities = packageManager.queryIntentActivities(shareIntent, 0);
-//                boolean isIntentSafe = activities.size() > 0;
-//
-//                // Start an activity if it's safe
-//                if (isIntentSafe) {
-//
-//                    getContext().startActivity(Intent.createChooser(shareIntent, getContext().getResources().getText(R.string.share_report_chooser_title)));
-//
-//                }
-//
-//                try {
-//
-//                    ApplicationInfo info = getContext().getPackageManager().getApplicationInfo("com.twitter.android", 0);
-//
-//                    shareIntent.setPackage("com.twitter.android");
-//
-//                    getContext().startActivity(Intent.createChooser(shareIntent, getContext().getResources().getText(R.string.share_report_chooser_title)));
-//
-//                } catch (PackageManager.NameNotFoundException e) {
-//
-//                    Intent i = new Intent(Intent.ACTION_VIEW);
-//                    i.setData(Uri.parse("https://twitter.com/intent/tweet"));
-//                    getContext().startActivity(i);
-//
-//                }
+                // Create the AlertDialog object and return it
+                builder.create().show();
 
             }
         });

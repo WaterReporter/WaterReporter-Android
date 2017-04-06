@@ -39,6 +39,7 @@ import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.UserService;
 
 import com.viableindustries.waterreporter.BuildConfig;
+import com.viableindustries.waterreporter.dialogs.ShareActionDialogListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +55,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity implements
-        EasyPermissions.PermissionCallbacks {
+        EasyPermissions.PermissionCallbacks, ShareActionDialogListener {
 
     @Bind(R.id.timeline)
     SwipeRefreshLayout timeline;
@@ -530,6 +531,23 @@ public class MainActivity extends AppCompatActivity implements
                 fetchUserGroups();
 
             }
+
+        }
+
+    }
+
+    @Override
+    public void onSelectShareAction(int index) {
+
+        String target = getResources().getStringArray(R.array.report_share_options_all)[index];
+
+        if (target.toLowerCase().contains("facebook")) {
+
+            SocialShareUtility.shareOnFacebook(this);
+
+        } else {
+
+            SocialShareUtility.shareOnTwitter(this);
 
         }
 

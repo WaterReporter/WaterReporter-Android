@@ -55,6 +55,7 @@ import com.viableindustries.waterreporter.data.UserFeatureCollection;
 import com.viableindustries.waterreporter.data.UserGroupList;
 import com.viableindustries.waterreporter.data.UserOrgPatch;
 import com.viableindustries.waterreporter.data.UserService;
+import com.viableindustries.waterreporter.dialogs.ShareActionDialogListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +71,7 @@ import retrofit.client.Response;
 import static java.lang.Boolean.TRUE;
 import static java.security.AccessController.getContext;
 
-public class OrganizationProfileActivity extends AppCompatActivity {
+public class OrganizationProfileActivity extends AppCompatActivity implements ShareActionDialogListener {
 
     LinearLayout profileMeta;
 
@@ -786,6 +787,23 @@ public class OrganizationProfileActivity extends AppCompatActivity {
         timeLine.setAdapter(timelineAdapter);
 
         attachScrollListener();
+
+    }
+
+    @Override
+    public void onSelectShareAction(int index) {
+
+        String target = getResources().getStringArray(R.array.report_share_options_all)[index];
+
+        if (target.toLowerCase().contains("facebook")) {
+
+            SocialShareUtility.shareOnFacebook(this);
+
+        } else {
+
+            SocialShareUtility.shareOnTwitter(this);
+
+        }
 
     }
 
