@@ -40,7 +40,7 @@ public class SocialShareUtility {
 
     final private static String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
 
-    protected static String buildDisplayName(Report report) {
+    protected static String buildDisplayName(Report report, boolean lowerCase) {
 
         String userName;
 
@@ -52,7 +52,7 @@ public class SocialShareUtility {
 
         } catch (NullPointerException e) {
 
-            userName = "A citizen";
+            userName = lowerCase ? "a citizen" : "A citizen";
 
         }
 
@@ -76,7 +76,7 @@ public class SocialShareUtility {
 
         String description;
 
-        String userName = SocialShareUtility.buildDisplayName(feature);
+        String userName = SocialShareUtility.buildDisplayName(feature, false);
 
         String title;
 
@@ -179,43 +179,9 @@ public class SocialShareUtility {
 
                     // Add text body
 
-//                    String body;
+                    String userName = SocialShareUtility.buildDisplayName(feature, true);
 
-                    String userName = SocialShareUtility.buildDisplayName(feature);
-
-                    String title = String.format("Check out this post from %s on Water Reporter: ", userName);
-
-//                    try {
-//
-//                        body = feature.properties.report_description.trim();
-//
-//                        int snippetLength = body.length();
-//
-//                        if (snippetLength > 100) {
-//
-//                            body = String.format("%s\u2026", body.substring(0, 80).trim());
-//
-//                        } else {
-//
-//                            if (".".equals(body.substring(snippetLength - 1))) {
-//
-//                                body = String.format("%s\u2026", body.substring(0, snippetLength - 1).trim());
-//
-//                            } else {
-//
-//                                body = String.format("%s\u2026", body);
-//
-//                            }
-//
-//                        }
-//
-//                        title = String.format("%s on Water Reporter: \"%s\"", userName, body);
-//
-//                    } catch (NullPointerException e) {
-//
-//                        title = String.format("%s posted on Water Reporter.", userName);
-//
-//                    }
+                    String title = userName.equals("a citizen") ? "Check out this Water Reporter post: " : String.format("Check out this Water Reporter post from %s: ", userName);
 
                     //shareIntent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.share_report_email_subject));
                     shareIntent.putExtra(Intent.EXTRA_TEXT, String.format(context.getResources().getString(R.string.share_report_text_body),
