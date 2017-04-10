@@ -139,36 +139,51 @@ public class SearchActivity extends FragmentActivity {
 
         if ("user".equals(collection)) {
 
-            //QueryFilter userPictureFilter = new QueryFilter("picture", "is_not_null", null);
-
-            //queryFilters.add(userPictureFilter);
-
-            if (searchChars != null) {
+            if (searchChars != null && searchChars.length() > 0) {
 
                 List<Object> nameFilters = new ArrayList<>();
 
-                //BooleanQueryFilter booleanNameFilters = new BooleanQueryFilter(nameFilters);
+                String[] names = searchChars.trim().split("\\s+");
 
-                QueryFilter userFirstNameFilter = new QueryFilter("first_name", "ilike", String.format("%s%s%s", "%", searchChars, "%"));
+                for (String name : names) {
 
-                QueryFilter userLastNameFilter = new QueryFilter("last_name", "ilike", String.format("%s%s%s", "%", searchChars, "%"));
+                    Log.d("name", name);
+
+                }
+
+                QueryFilter userFirstNameFilter = new QueryFilter("first_name", "ilike", String.format("%s%s%s", "%", names[0], "%"));
 
                 nameFilters.add(userFirstNameFilter);
-                nameFilters.add(userLastNameFilter);
 
-                List<QueryFilter> additionalConditions = new ArrayList<QueryFilter>();
+                if (names.length > 1) {
 
-                //QueryFilter userPictureFilter = new QueryFilter("picture", "is_not_null", null);
+                    QueryFilter userLastNameFilter = new QueryFilter("last_name", "ilike", String.format("%s%s%s", "%", names[1], "%"));
 
-                //additionalConditions.add(userPictureFilter);
+                    nameFilters.add(userLastNameFilter);
 
-                //CompoundQueryFilter compoundNameFilter = new CompoundQueryFilter(additionalConditions);
+                    queryFilters = nameFilters;
 
-                //nameFilters.add(compoundNameFilter);
+                } else {
 
-                BooleanQueryFilter booleanNameFilters = new BooleanQueryFilter(nameFilters);
+                    QueryFilter userLastNameFilter = new QueryFilter("last_name", "ilike", String.format("%s%s%s", "%", names[0], "%"));
 
-                queryFilters.add(booleanNameFilters);
+                    nameFilters.add(userLastNameFilter);
+
+                    BooleanQueryFilter booleanNameFilter = new BooleanQueryFilter(nameFilters);
+
+                    queryFilters.add(booleanNameFilter);
+
+                }
+
+            } else {
+
+                QueryFilter nullNameFilter = new QueryFilter("first_name", "is_not_null", null);
+
+                queryFilters.add(nullNameFilter);
+
+                QueryFilter pictureFilter = new QueryFilter("picture", "is_not_null", null);
+
+                queryFilters.add(pictureFilter);
 
             }
 
@@ -176,7 +191,7 @@ public class SearchActivity extends FragmentActivity {
 
             if (searchChars != null) {
 
-                QueryFilter orgNameFilter = new QueryFilter("name", "ilike", String.format("%s%s", searchChars, "%"));
+                QueryFilter orgNameFilter = new QueryFilter("name", "ilike", String.format("%s%s%s", "%", searchChars, "%"));
 
                 queryFilters.add(orgNameFilter);
 
@@ -186,7 +201,7 @@ public class SearchActivity extends FragmentActivity {
 
             if (searchChars != null) {
 
-                QueryFilter territoryNameFilter = new QueryFilter("huc_8_name", "ilike", String.format("%s%s", searchChars, "%"));
+                QueryFilter territoryNameFilter = new QueryFilter("huc_8_name", "ilike", String.format("%s%s%s", "%", searchChars, "%"));
 
                 queryFilters.add(territoryNameFilter);
 
