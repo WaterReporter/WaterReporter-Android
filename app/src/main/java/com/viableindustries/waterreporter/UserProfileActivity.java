@@ -589,7 +589,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         // Create filter list and add a filter parameter
 
-        List<QueryFilter> queryFilters = new ArrayList<QueryFilter>();
+        List<Object> queryFilters = new ArrayList<>();
 
         QueryFilter userFilter = new QueryFilter("owner_id", "eq", userId);
 

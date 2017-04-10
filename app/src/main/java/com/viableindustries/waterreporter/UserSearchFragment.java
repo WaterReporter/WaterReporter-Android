@@ -93,7 +93,7 @@ public class UserSearchFragment extends Fragment {
 
         // Create filter list and add a filter parameter
 
-        List<QueryFilter> queryFilters = new ArrayList<QueryFilter>();
+        List<Object> queryFilters = new ArrayList<>();
 
 //        QueryFilter complexVal = new QueryFilter("id", "eq", organization.id);
 //

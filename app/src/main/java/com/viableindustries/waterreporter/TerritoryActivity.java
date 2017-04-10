@@ -472,7 +472,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
         // Create filter list and add a filter parameter
 
-        List<QueryFilter> queryFilters = new ArrayList<QueryFilter>();
+        List<Object> queryFilters = new ArrayList<>();
 
         QueryFilter complexVal = new QueryFilter("huc_8_name", "eq", territory.properties.huc_8_name);
 

@@ -28,6 +28,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.viableindustries.waterreporter.data.BooleanQueryFilter;
+import com.viableindustries.waterreporter.data.CompoundQueryFilter;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.data.OrganizationService;
@@ -133,19 +135,40 @@ public class SearchActivity extends FragmentActivity {
 
         // Create filter list and add a filter parameter
 
-        List<QueryFilter> queryFilters = new ArrayList<QueryFilter>();
+        List<Object> queryFilters = new ArrayList<>();
 
         if ("user".equals(collection)) {
 
-            QueryFilter userPictureFilter = new QueryFilter("picture", "is_not_null", null);
+            //QueryFilter userPictureFilter = new QueryFilter("picture", "is_not_null", null);
 
-            queryFilters.add(userPictureFilter);
+            //queryFilters.add(userPictureFilter);
 
             if (searchChars != null) {
 
-                QueryFilter userFirstNameFilter = new QueryFilter("last_name", "ilike", String.format("%s%s", searchChars, "%"));
+                List<Object> nameFilters = new ArrayList<>();
 
-                queryFilters.add(userFirstNameFilter);
+                //BooleanQueryFilter booleanNameFilters = new BooleanQueryFilter(nameFilters);
+
+                QueryFilter userFirstNameFilter = new QueryFilter("first_name", "ilike", String.format("%s%s%s", "%", searchChars, "%"));
+
+                QueryFilter userLastNameFilter = new QueryFilter("last_name", "ilike", String.format("%s%s%s", "%", searchChars, "%"));
+
+                nameFilters.add(userFirstNameFilter);
+                nameFilters.add(userLastNameFilter);
+
+                List<QueryFilter> additionalConditions = new ArrayList<QueryFilter>();
+
+                //QueryFilter userPictureFilter = new QueryFilter("picture", "is_not_null", null);
+
+                //additionalConditions.add(userPictureFilter);
+
+                //CompoundQueryFilter compoundNameFilter = new CompoundQueryFilter(additionalConditions);
+
+                //nameFilters.add(compoundNameFilter);
+
+                BooleanQueryFilter booleanNameFilters = new BooleanQueryFilter(nameFilters);
+
+                queryFilters.add(booleanNameFilters);
 
             }
 
@@ -261,6 +284,8 @@ public class SearchActivity extends FragmentActivity {
 
             @Override
             public void success(UserCollection userCollection, Response response) {
+
+                Log.d("RESPONSE", response.toString());
 
                 ArrayList<User> users = userCollection.getFeatures();
 

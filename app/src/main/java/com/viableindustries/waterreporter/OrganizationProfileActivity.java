@@ -627,7 +627,7 @@ public class OrganizationProfileActivity extends AppCompatActivity implements Sh
 
         // Create filter list and add a filter parameter
 
-        List<QueryFilter> queryFilters = new ArrayList<QueryFilter>();
+        List<Object> queryFilters = new ArrayList<>();
 
         QueryFilter userFilter = new QueryFilter("groups__id", "any", organizationId);
 

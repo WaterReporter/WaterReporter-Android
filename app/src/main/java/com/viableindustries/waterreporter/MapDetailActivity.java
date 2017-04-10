@@ -423,7 +423,7 @@ public class MapDetailActivity extends AppCompatActivity {
         // Add query filters to retrieve the user's reports
         // Create filters list and add a filter for owner_id
 
-        List<QueryFilter> queryFilters = new ArrayList<QueryFilter>();
+        List<Object> queryFilters = new ArrayList<>();
 
         QueryFilter geometryFilter = new QueryFilter("geometry", "intersects", polygon);
 

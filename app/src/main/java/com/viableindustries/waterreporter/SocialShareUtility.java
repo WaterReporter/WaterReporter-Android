@@ -183,7 +183,6 @@ public class SocialShareUtility {
 
                     String title = userName.equals("a citizen") ? "Check out this Water Reporter post: " : String.format("Check out this Water Reporter post from %s: ", userName);
 
-                    //shareIntent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.share_report_email_subject));
                     shareIntent.putExtra(Intent.EXTRA_TEXT, String.format(context.getResources().getString(R.string.share_report_text_body),
                             title, String.valueOf(feature.id)));
 
