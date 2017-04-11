@@ -212,33 +212,6 @@ public class TimelineAdapter extends ArrayAdapter {
 
                 Intent intent = new Intent(context, MapDetailActivity.class);
 
-                Geometry geometry = feature.geometry.geometries.get(0);
-
-//                Log.d("geometry", geometry.toString());
-//
-//                intent.putExtra("REPORT_LATITUDE", geometry.coordinates.get(1));
-//                intent.putExtra("REPORT_LONGITUDE", geometry.coordinates.get(0));
-//
-//                intent.putExtra("REPORT_ID", feature.id);
-//                intent.putExtra("THUMBNAIL_URL", feature.properties.images.get(0).properties.icon_retina);
-//                intent.putExtra("FULL_IMAGE_URL", feature.properties.images.get(0).properties.square_retina);
-//                intent.putExtra("REPORT_CREATED", creationDate);
-
-//                try {
-//
-//                    intent.putExtra("REPORT_DESCRIPTION", feature.properties.report_description.trim());
-//
-//                } catch (NullPointerException ne) {
-//
-//                    intent.putExtra("REPORT_DESCRIPTION", "");
-//                }
-//                intent.putExtra("REPORT_WATERSHED", watershedName);
-//                intent.putExtra("REPORT_GROUPS", groupList);
-//                intent.putExtra("COMMENT_COUNT", commentCount);
-//                intent.putExtra("USER_NAME", String.format("%s %s", feature.properties.owner.properties.first_name, feature.properties.owner.properties.last_name));
-//                intent.putExtra("USER_AVATAR", feature.properties.owner.properties.picture);
-//                intent.putExtra("STATUS", feature.properties.state);
-
                 context.startActivity(intent);
 
             }

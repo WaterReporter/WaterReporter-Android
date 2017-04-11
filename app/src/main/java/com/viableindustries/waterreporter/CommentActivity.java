@@ -337,7 +337,7 @@ public class CommentActivity extends AppCompatActivity implements
 
         Picasso.with(this).
                 load(avatarUrl)
-                .placeholder(R.drawable.user_avatar_placeholder)
+                .placeholder(R.drawable.user_avatar_placeholder_003)
                 .transform(new CircleTransform())
                 .into(ownerAvatar);
 
@@ -807,7 +807,7 @@ public class CommentActivity extends AppCompatActivity implements
 
                         Picasso.with(this)
                                 .load(thumb)
-                                .placeholder(R.drawable.user_avatar_placeholder)
+                                .placeholder(R.drawable.user_avatar_placeholder_003)
                                 .into(mImageView);
 
                         photoCaptured = true;
@@ -872,7 +872,7 @@ public class CommentActivity extends AppCompatActivity implements
 
                             Picasso.with(this)
                                     .load(f)
-                                    .placeholder(R.drawable.user_avatar_placeholder)
+                                    .placeholder(R.drawable.user_avatar_placeholder_003)
                                     .into(mImageView);
 
                             photoCaptured = true;

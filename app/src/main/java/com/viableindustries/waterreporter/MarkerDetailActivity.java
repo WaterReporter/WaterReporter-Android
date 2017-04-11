@@ -121,7 +121,8 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
     }
 
-    private void populateOrganizations(ArrayList<Organization> orgs) {}
+    private void populateOrganizations(ArrayList<Organization> orgs) {
+    }
 
     private void populateView(final Report report) {
 
@@ -273,6 +274,10 @@ public class MarkerDetailActivity extends AppCompatActivity {
         Picasso.with(this).cancelRequest(ownerAvatar);
 
         ButterKnife.unbind(this);
+
+        SharedPreferences prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        prefs.edit().putBoolean("markerDetailOpen", false).apply();
 
     }
 
