@@ -122,6 +122,8 @@ public class TerritoryActivity extends AppCompatActivity {
 
     private SharedPreferences groupPrefs;
 
+    private int socialOptions;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -136,6 +138,11 @@ public class TerritoryActivity extends AppCompatActivity {
         groupPrefs = getSharedPreferences(getString(R.string.group_membership_key), 0);
 
         context = this;
+
+        // Determine which (if any) of Facebook and Twitter
+        // can be displayed in the social sharing dialog
+
+        socialOptions = SocialShareUtility.getShareOptions(this);
 
         territory = TerritoryHolder.getTerritory();
 
@@ -628,7 +635,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
     private void populateTimeline(List list) {
 
-        timelineAdapter = new TimelineAdapter(this, list, false);
+        timelineAdapter = new TimelineAdapter(this, list, false, socialOptions);
 
         // Attach the adapter to a ListView
         timeLine.setAdapter(timelineAdapter);

@@ -162,6 +162,8 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     private User user;
 
+    private int socialOptions;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -176,6 +178,11 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
         coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
         Log.d("storedavatar", coreProfile.getString("picture", ""));
+
+        // Determine which (if any) of Facebook and Twitter
+        // can be displayed in the social sharing dialog
+
+        socialOptions = SocialShareUtility.getShareOptions(this);
 
         // Retrieve stored User object
 
@@ -743,7 +750,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     private void populateTimeline(List list) {
 
-        timelineAdapter = new TimelineAdapter(UserProfileActivity.this, list, true);
+        timelineAdapter = new TimelineAdapter(UserProfileActivity.this, list, true, socialOptions);
 
         // Attach the adapter to a ListView
         timeLine.setAdapter(timelineAdapter);
@@ -882,7 +889,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
     @Override
     public void onSelectShareAction(int index) {
 
-        String target = getResources().getStringArray(R.array.report_share_options_all)[index];
+        String target = getResources().getStringArray(socialOptions)[index];
 
         if (target.toLowerCase().contains("facebook")) {
 

@@ -3,6 +3,8 @@ package com.viableindustries.waterreporter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -211,6 +213,55 @@ public class SocialShareUtility {
             public void onPrepareLoad(Drawable placeHolderDrawable) {
             }
         });
+
+    }
+
+    public static boolean verifyTarget(Context context, String packageName) {
+
+        boolean packagedInstalled;
+
+        try {
+
+            ApplicationInfo info = context.getPackageManager().getApplicationInfo(packageName, 0);
+
+            packagedInstalled = true;
+
+        } catch (PackageManager.NameNotFoundException e) {
+
+            packagedInstalled = false;
+
+        }
+
+        return packagedInstalled;
+
+    }
+
+    public static int getShareOptions(Context context) {
+
+        int socialOptions;
+
+        boolean hasFacebook = SocialShareUtility.verifyTarget(context, context.getResources().getString(R.string.fb_package_name));
+        boolean hasTwitter = SocialShareUtility.verifyTarget(context, context.getResources().getString(R.string.tt_package_name));
+
+        if (hasFacebook && hasTwitter) {
+
+            socialOptions = R.array.report_share_options_all;
+
+        } else if (hasFacebook) {
+
+            socialOptions = R.array.report_share_options_fb;
+
+        } else if (hasTwitter) {
+
+            socialOptions = R.array.report_share_options_tt;
+
+        } else {
+            
+            socialOptions = 0;
+
+        }
+
+        return socialOptions;
 
     }
 

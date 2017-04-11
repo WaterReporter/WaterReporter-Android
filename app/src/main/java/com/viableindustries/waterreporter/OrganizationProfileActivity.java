@@ -146,6 +146,8 @@ public class OrganizationProfileActivity extends AppCompatActivity implements Sh
 
     private SharedPreferences groupPrefs;
 
+    private int socialOptions;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -160,6 +162,11 @@ public class OrganizationProfileActivity extends AppCompatActivity implements Sh
         groupPrefs = getSharedPreferences(getString(R.string.group_membership_key), 0);
 
         context = this;
+
+        // Determine which (if any) of Facebook and Twitter
+        // can be displayed in the social sharing dialog
+
+        socialOptions = SocialShareUtility.getShareOptions(this);
 
         organization = OrganizationHolder.getOrganization();
 
@@ -781,7 +788,7 @@ public class OrganizationProfileActivity extends AppCompatActivity implements Sh
 
     private void populateTimeline(List list) {
 
-        timelineAdapter = new TimelineAdapter(this, list, false);
+        timelineAdapter = new TimelineAdapter(this, list, false, socialOptions);
 
         // Attach the adapter to a ListView
         timeLine.setAdapter(timelineAdapter);
@@ -793,7 +800,7 @@ public class OrganizationProfileActivity extends AppCompatActivity implements Sh
     @Override
     public void onSelectShareAction(int index) {
 
-        String target = getResources().getStringArray(R.array.report_share_options_all)[index];
+        String target = getResources().getStringArray(socialOptions)[index];
 
         if (target.toLowerCase().contains("facebook")) {
 

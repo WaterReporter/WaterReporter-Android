@@ -91,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String TAG = "MainActivity";
 
+    private int socialOptions;
+
     protected void connectionStatus() {
 
         final Context context = getApplicationContext();
@@ -247,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void populateTimeline(List list) {
 
-        timelineAdapter = new TimelineAdapter(this, list, false);
+        timelineAdapter = new TimelineAdapter(this, list, false, socialOptions);
 
         // Attach the adapter to a ListView
         listView.setAdapter(timelineAdapter);
@@ -418,6 +420,11 @@ public class MainActivity extends AppCompatActivity implements
 
         coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
+        // Determine which (if any) of Facebook and Twitter
+        // can be displayed in the social sharing dialog
+
+        socialOptions = SocialShareUtility.getShareOptions(this);
+
         timeline.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
@@ -539,7 +546,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onSelectShareAction(int index) {
 
-        String target = getResources().getStringArray(R.array.report_share_options_all)[index];
+        String target = getResources().getStringArray(socialOptions)[index];
 
         if (target.toLowerCase().contains("facebook")) {
 

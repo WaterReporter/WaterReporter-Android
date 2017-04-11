@@ -181,7 +181,8 @@
             android:layout_width="48dp"
             android:layout_height="match_parent"
             android:paddingLeft="0dp"
-            android:paddingRight="0dp">
+            android:paddingRight="0dp"
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="24dp"

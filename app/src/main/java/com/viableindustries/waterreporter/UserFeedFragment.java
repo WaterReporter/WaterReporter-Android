@@ -43,6 +43,8 @@ public class UserFeedFragment extends Fragment {
 
     private int userId;
 
+    private int socialOptions;
+
     protected RestAdapter restAdapter = ReportService.restAdapter;
 
     protected ReportService service = restAdapter.create(ReportService.class);
@@ -180,7 +182,7 @@ public class UserFeedFragment extends Fragment {
 
     private void populateTimeline(List list) {
 
-        timelineAdapter = new TimelineAdapter(getActivity(), list, true);
+        timelineAdapter = new TimelineAdapter(getActivity(), list, true, socialOptions);
 
         // Attach the adapter to a ListView
         timeLine.setAdapter(timelineAdapter);
@@ -213,6 +215,11 @@ public class UserFeedFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        // Determine which (if any) of Facebook and Twitter
+        // can be displayed in the social sharing dialog
+
+        socialOptions = SocialShareUtility.getShareOptions(getContext());
 
         userId = getArguments().getInt("userId", 0);
 

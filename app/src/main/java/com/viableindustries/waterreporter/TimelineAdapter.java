@@ -87,12 +87,15 @@ public class TimelineAdapter extends ArrayAdapter {
 
     protected String commentCount;
 
+    private int socialOptions;
+
     final private String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
 
-    public TimelineAdapter(Activity activity, List features, boolean isProfile) {
+    public TimelineAdapter(Activity activity, List features, boolean isProfile, int socialOptions) {
         super(activity, 0, features);
         this.context = activity;
         this.isProfile = isProfile;
+        this.socialOptions = socialOptions;
 
         this.callbackManager = CallbackManager.Factory.create();
         this.shareDialog = new ShareDialog(activity);
@@ -267,47 +270,54 @@ public class TimelineAdapter extends ArrayAdapter {
             }
         });
 
-        // Allow user to share report content with other applications
+        // Allow user to share report content on Facebook/Twitter
+        // if either or both of those applications is installed
 
-        viewHolder.shareIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if (socialOptions != 0) {
 
-                Log.d("Click Event", "Share button clicked.");
+            viewHolder.shareIcon.setVisibility(View.VISIBLE);
 
-                Resources res = context.getResources();
+            viewHolder.shareIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-                String[] options = res.getStringArray(R.array.report_share_options_all);
+                    Log.d("Click Event", "Share button clicked.");
 
-                CharSequence[] renders = new CharSequence[2];
+                    Resources res = context.getResources();
 
-                for (int i = 0; i < options.length; i++) {
+                    String[] options = res.getStringArray(socialOptions);
 
-                    renders[i] = HtmlCompat.fromHtml(options[i]);
+                    CharSequence[] renders = new CharSequence[2];
 
-                }
+                    for (int i = 0; i < options.length; i++) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
-                builder.setItems(renders, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        ReportHolder.setReport(feature);
-
-                        // The 'which' argument contains the index position
-                        // of the selected item
-                        ShareActionDialogListener activity = (ShareActionDialogListener) context;
-
-                        activity.onSelectShareAction(which);
+                        renders[i] = HtmlCompat.fromHtml(options[i]);
 
                     }
-                });
 
-                // Create the AlertDialog object and return it
-                builder.create().show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-            }
-        });
+                    builder.setItems(renders, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            ReportHolder.setReport(feature);
+
+                            // The 'which' argument contains the index position
+                            // of the selected item
+                            ShareActionDialogListener activity = (ShareActionDialogListener) context;
+
+                            activity.onSelectShareAction(which);
+
+                        }
+                    });
+
+                    // Create the AlertDialog object and return it
+                    builder.create().show();
+
+                }
+            });
+
+        }
 
         // Populate the data into the template view using the data object
         viewHolder.reportDate.setText(creationDate);
