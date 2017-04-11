@@ -102,6 +102,8 @@ public class MapDetailActivity extends AppCompatActivity {
 
     MappedReportsHolder mappedReportsHolder;
 
+    private Report report;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -121,6 +123,14 @@ public class MapDetailActivity extends AppCompatActivity {
 
         // Reset stored list of mapped reports
         sharedPreferences.edit().putString("mappedReports", "").apply();
+
+        // Add report to marker index
+
+        report = ReportHolder.getReport();
+
+        mappedReportsHolder.addReport(String.format("%s-%s", report.id, "r"), report);
+
+        Log.d("reportKey", String.format("%s-%s", report.id, "r"));
 
         // Retrieve report attributes
         reportId = getIntent().getExtras().getInt("REPORT_ID", 0);
@@ -285,7 +295,9 @@ public class MapDetailActivity extends AppCompatActivity {
             // Build new MarkerDetailFragment
             MarkerDetailFragment markerDetailFragment = new MarkerDetailFragment();
 
-            ReportHolder.setReport(mappedReportsHolder.getReport(String.format("%s-%s", marker.getReportId(), marker.getCreationDate())));
+            Log.d("reportKeyFromMarkerTap", String.format("%s-%s", marker.getReportId(), "r"));
+
+            ReportHolder.setReport(mappedReportsHolder.getReport(String.format("%s-%s", marker.getReportId(), "r")));
 
             getContext().startActivity(new Intent(getContext(), MarkerDetailActivity.class));
 
@@ -376,7 +388,9 @@ public class MapDetailActivity extends AppCompatActivity {
             // Store report id for exclusion from future queries
             trackId(report.id);
 
-            mappedReportsHolder.addReport(String.format("%s-%s", report.id, report.properties.created), report);
+            mappedReportsHolder.addReport(String.format("%s-%s", report.id, "r"), report);
+
+            Log.d("reportKey", String.format("%s-%s", report.id, "r"));
 
         }
 

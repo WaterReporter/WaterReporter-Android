@@ -88,8 +88,8 @@ public class MarkerDetailActivity extends AppCompatActivity {
     @Bind(R.id.report_stub)
     LinearLayout reportStub;
 
-    @Bind(R.id.location_icon)
-    RelativeLayout locationIcon;
+//    @Bind(R.id.location_icon)
+//    RelativeLayout locationIcon;
 
     private String creationDate;
 
@@ -141,14 +141,14 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
         // Attach click listeners to active UI components
 
-        locationIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                finish();
-
-            }
-        });
+//        locationIcon.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                finish();
+//
+//            }
+//        });
 
         // Populate the data into the template view using the data object
         reportDate.setText(creationDate);
@@ -202,7 +202,9 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
         Log.v("url", imagePath);
 
-        Picasso.with(this).load(report.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(ownerAvatar);
+        //Picasso.with(this).load(report.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(ownerAvatar);
+
+        Picasso.with(this).load(report.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(ownerAvatar);
 
         Picasso.with(this).load(imagePath).fit().centerCrop().into(reportThumb);
 
