@@ -44,7 +44,6 @@ public class CustomMarkerView extends MarkerView {
         this.userAvatar = userAvatar;
         this.status = status;
         this.inFocus = inFocus;
-//        this.report = report;
     }
 
     public String getThumbNail() {
@@ -90,7 +89,5 @@ public class CustomMarkerView extends MarkerView {
     public String getStatus() { return status; }
 
     public int isInFocus() { return inFocus; }
-
-//    public Report getReport() { return  report; }
 
 }

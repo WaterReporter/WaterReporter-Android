@@ -155,7 +155,7 @@ public class CommentAdapter extends ArrayAdapter {
 
         }
 
-        Picasso.with(context).load(feature.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(viewHolder.ownerAvatar);
+        Picasso.with(context).load(feature.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(viewHolder.ownerAvatar);
 
         // Return the completed view to render on screen
         return convertView;

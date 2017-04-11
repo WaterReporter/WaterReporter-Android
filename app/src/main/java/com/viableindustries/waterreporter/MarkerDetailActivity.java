@@ -33,6 +33,7 @@ import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserOrgPatch;
+import com.viableindustries.waterreporter.data.UserProfileListener;
 import com.viableindustries.waterreporter.data.UserService;
 
 import java.text.ParseException;
@@ -85,11 +86,11 @@ public class MarkerDetailActivity extends AppCompatActivity {
     @Bind(R.id.action_badge)
     RelativeLayout actionBadge;
 
+    @Bind(R.id.comment_icon)
+    RelativeLayout commentIcon;
+
     @Bind(R.id.report_stub)
     LinearLayout reportStub;
-
-//    @Bind(R.id.location_icon)
-//    RelativeLayout locationIcon;
 
     private String creationDate;
 
@@ -129,34 +130,62 @@ public class MarkerDetailActivity extends AppCompatActivity {
         imagePath = (String) image.properties.square_retina;
 
         creationDate = (String) AttributeTransformUtility.relativeTime(report.properties.created);
+        reportDate.setText(creationDate);
 
         featureId = (Integer) report.id;
 
-        // Extract watershed name, if any
+        // Display watershed name, if any
 
         watershedName = AttributeTransformUtility.parseWatershedName(report.properties.territory);
+        reportWatershed.setText(watershedName);
 
         // Extract group names, if any
+
         groupList = AttributeTransformUtility.groupListSize(report.properties.groups);
+
+        reportOwner.setText(String.format("%s %s", report.properties.owner.properties.first_name, report.properties.owner.properties.last_name));
+
+        // Display report text body, if any
+
+        if (report.properties.report_description != null && (report.properties.report_description.length() > 0)) {
+
+            reportCaption.setVisibility(View.VISIBLE);
+
+            reportCaption.setText(report.properties.report_description.trim());
+
+        } else {
+
+            reportCaption.setVisibility(View.GONE);
+
+        }
 
         // Attach click listeners to active UI components
 
-//        locationIcon.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                finish();
-//
-//            }
-//        });
+        commentIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        // Populate the data into the template view using the data object
-        reportDate.setText(creationDate);
-        reportOwner.setText(String.format("%s %s", report.properties.owner.properties.first_name, report.properties.owner.properties.last_name));
-        reportWatershed.setText(watershedName);
-        reportCaption.setText(report.properties.report_description.trim());
+                ReportHolder.setReport(report);
 
-        // Add clickable organization views, if any
+                Intent intent = new Intent(MarkerDetailActivity.this, CommentActivity.class);
+
+                startActivity(intent);
+
+            }
+        });
+
+        actionBadge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ReportHolder.setReport(report);
+
+                Intent intent = new Intent(MarkerDetailActivity.this, CommentActivity.class);
+
+                startActivity(intent);
+
+            }
+        });
 
         reportGroups.setVisibility(View.VISIBLE);
 
@@ -184,7 +213,14 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
         }
 
+        // Report owner
+
+        ownerAvatar.setOnClickListener(new UserProfileListener(this, report.properties.owner));
+
+        reportOwner.setOnClickListener(new UserProfileListener(this, report.properties.owner));
+
         // Display badge if report is closed
+
         if ("closed".equals(report.properties.state)) {
 
             actionBadge.setVisibility(View.VISIBLE);
@@ -196,13 +232,11 @@ public class MarkerDetailActivity extends AppCompatActivity {
         }
 
         // Set value of comment count string
-        commentCount = AttributeTransformUtility.countComments(report.properties.comments);
 
+        commentCount = AttributeTransformUtility.countComments(report.properties.comments);
         reportComments.setText(commentCount);
 
-        Log.v("url", imagePath);
-
-        //Picasso.with(this).load(report.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(ownerAvatar);
+        // Load images assets into their targets
 
         Picasso.with(this).load(report.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(ownerAvatar);
 

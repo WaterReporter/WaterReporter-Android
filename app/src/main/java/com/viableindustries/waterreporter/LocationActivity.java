@@ -38,7 +38,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.mapbox.mapboxsdk.MapboxAccountManager;
+import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.MarkerViewManager;
 //import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
@@ -168,8 +168,8 @@ public class LocationActivity extends AppCompatActivity implements
 
         super.onCreate(savedInstanceState);
 
-        // Mapbox access token only needs to be configured once in your app
-        MapboxAccountManager.start(this, getResources().getString(R.string.mapBoxToken));
+        // Mapbox access token is configured here.
+        Mapbox.getInstance(this, getString(R.string.mapBoxToken));
 
         setContentView(R.layout.activity_map);
 

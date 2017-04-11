@@ -9,7 +9,7 @@
         android:id="@+id/mapview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        mapbox:style_url="mapbox://styles/mapbox/basic-v9" />
+        mapbox:mapbox_styleUrl="mapbox://styles/mapbox/basic-v9" />
 
 
     <View

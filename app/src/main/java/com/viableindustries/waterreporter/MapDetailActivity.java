@@ -32,11 +32,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.mapbox.mapboxsdk.MapboxAccountManager;
-import com.mapbox.mapboxsdk.annotations.Icon;
-import com.mapbox.mapboxsdk.annotations.IconFactory;
-import com.mapbox.mapboxsdk.annotations.Marker;
-import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.MarkerViewManager;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdate;
@@ -111,8 +107,8 @@ public class MapDetailActivity extends AppCompatActivity {
 
         mappedReportsHolder = new MappedReportsHolder();
 
-        // Mapbox access token only needs to be configured once in your app
-        MapboxAccountManager.start(this, getResources().getString(R.string.mapBoxToken));
+        // Mapbox access token is configured here.
+        Mapbox.getInstance(this, getString(R.string.mapBoxToken));
 
         setContentView(R.layout.activity_map_detail);
 
@@ -133,17 +129,17 @@ public class MapDetailActivity extends AppCompatActivity {
         Log.d("reportKey", String.format("%s-%s", report.id, "r"));
 
         // Retrieve report attributes
-        reportId = getIntent().getExtras().getInt("REPORT_ID", 0);
-        reportDescription = getIntent().getExtras().getString("REPORT_DESCRIPTION", "");
-        thumbNail = getIntent().getExtras().getString("THUMBNAIL_URL", "");
-        fullImage = getIntent().getExtras().getString("FULL_IMAGE_URL", "");
-        creationDate = getIntent().getExtras().getString("REPORT_CREATED", "");
-        watershedName = getIntent().getExtras().getString("REPORT_WATERSHED", "");
-        groupList = getIntent().getExtras().getString("REPORT_GROUPS", "");
-        commentCount = getIntent().getExtras().getString("COMMENT_COUNT", "");
-        userName = getIntent().getExtras().getString("USER_NAME", "");
-        userAvatar = getIntent().getExtras().getString("USER_AVATAR", null);
-        status = getIntent().getExtras().getString("STATUS", "");
+//        reportId = getIntent().getExtras().getInt("REPORT_ID", 0);
+//        reportDescription = getIntent().getExtras().getString("REPORT_DESCRIPTION", "");
+//        thumbNail = getIntent().getExtras().getString("THUMBNAIL_URL", "");
+//        fullImage = getIntent().getExtras().getString("FULL_IMAGE_URL", "");
+//        creationDate = getIntent().getExtras().getString("REPORT_CREATED", "");
+//        watershedName = getIntent().getExtras().getString("REPORT_WATERSHED", "");
+//        groupList = getIntent().getExtras().getString("REPORT_GROUPS", "");
+//        commentCount = getIntent().getExtras().getString("COMMENT_COUNT", "");
+//        userName = getIntent().getExtras().getString("USER_NAME", "");
+//        userAvatar = getIntent().getExtras().getString("USER_AVATAR", null);
+//        status = getIntent().getExtras().getString("STATUS", "");
 
         // Retrieve location data from intent
         latitude = getIntent().getExtras().getDouble("REPORT_LATITUDE", 38.904722);
@@ -369,6 +365,7 @@ public class MapDetailActivity extends AppCompatActivity {
 
             CustomMarkerViewOptions options = new CustomMarkerViewOptions();
             options.position(new LatLng(geometry.coordinates.get(1), geometry.coordinates.get(0)));
+            options.anchor(0.5f, 0.5f);
             options.flat(true);
             options.reportId(report.id);
             options.reportDescription(report.properties.report_description.trim());
@@ -402,6 +399,7 @@ public class MapDetailActivity extends AppCompatActivity {
 
             CustomMarkerViewOptions options = new CustomMarkerViewOptions();
             options.position(new LatLng(latitude, longitude));
+            options.anchor(0.5f, 0.5f);
             options.flat(true);
             options.reportId(reportId);
             options.reportDescription(reportDescription);
