@@ -130,6 +130,7 @@
     <string name="group_membership_key">com.viableindustries.waterreporter.GROUP_MEMBERSHIP</string>
 
     <string name="title_activity_map_detail">MapDetailActivity</string>
+    <string name="title_activity_marker_detail">MarkerDetailActivity</string>
     <string name="title_activity_user_profile">UserProfileActivity</string>
     <string name="title_activity_user_groups">UserGroupsActivity</string>
 

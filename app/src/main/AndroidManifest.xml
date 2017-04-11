@@ -148,6 +148,15 @@
                 android:value="com.viableindustries.waterreporter.MainActivity" />
         </activity>
         <activity
+            android:name=".MarkerDetailActivity"
+            android:label="@string/title_activity_marker_detail"
+            android:parentActivityName=".MapDetailActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.viableindustries.waterreporter.MapDetailActivity" />
+        </activity>
+        <activity
             android:name=".UserProfileActivity"
             android:label="@string/title_activity_user_profile"
             android:parentActivityName=".MainActivity"
@@ -211,7 +220,7 @@
         <activity
             android:name=".TerritoryActivity"
             android:label="@string/title_activity_territory"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 
 </manifest>

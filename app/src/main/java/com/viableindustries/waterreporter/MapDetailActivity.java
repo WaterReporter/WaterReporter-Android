@@ -287,12 +287,14 @@ public class MapDetailActivity extends AppCompatActivity {
 
             ReportHolder.setReport(mappedReportsHolder.getReport(String.format("%s-%s", marker.getReportId(), marker.getCreationDate())));
 
-            FragmentTransaction fragmentTransaction = ((FragmentActivity) getContext()).getFragmentManager().beginTransaction();
+            getContext().startActivity(new Intent(getContext(), MarkerDetailActivity.class));
 
-            fragmentTransaction.replace(R.id.map_detail, markerDetailFragment);
-            fragmentTransaction.addToBackStack(null);
-
-            fragmentTransaction.commit();
+//            FragmentTransaction fragmentTransaction = ((FragmentActivity) getContext()).getFragmentManager().beginTransaction();
+//
+//            fragmentTransaction.replace(R.id.map_detail, markerDetailFragment);
+//            fragmentTransaction.addToBackStack(null);
+//
+//            fragmentTransaction.commit();
 
             return false;
 

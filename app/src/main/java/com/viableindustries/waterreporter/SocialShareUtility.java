@@ -256,7 +256,7 @@ public class SocialShareUtility {
             socialOptions = R.array.report_share_options_tt;
 
         } else {
-            
+
             socialOptions = 0;
 
         }
