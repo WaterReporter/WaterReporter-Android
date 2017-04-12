@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.share.model.ShareLinkContent;
@@ -63,6 +65,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.viableindustries.waterreporter.R.id.imageView;
@@ -307,7 +310,19 @@ public class TimelineAdapter extends ArrayAdapter {
 
             viewHolder.reportCaption.setVisibility(View.VISIBLE);
 
-            viewHolder.reportCaption.setText(PostTextProcessor.process(feature.properties.report_description.trim()));
+            viewHolder.reportCaption.setText(feature.properties.report_description.trim());
+
+//            viewHolder.reportCaption.setText(PostTextProcessor.process(feature.properties.report_description.trim()));
+
+            new PatternEditableBuilder().
+                    addPattern(Pattern.compile("\\#(\\w+)"), ContextCompat.getColor(context, R.color.waterreporter_blue),
+                            new PatternEditableBuilder.SpannableClickedListener() {
+                                @Override
+                                public void onSpanClicked(String text) {
+                                    Toast.makeText(getContext(), "Clicked hashtag: " + text,
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }).into(viewHolder.reportCaption);
 
         } else {
 
