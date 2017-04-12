@@ -20,6 +20,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
+import android.text.SpannableString;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,8 +34,10 @@ import android.widget.TextView;
 import com.facebook.CallbackManager;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import com.google.android.flexbox.FlexboxLayout;
 import com.viableindustries.waterreporter.data.Comment;
 import com.viableindustries.waterreporter.data.Geometry;
+import com.viableindustries.waterreporter.data.HashTag;
 import com.viableindustries.waterreporter.data.HtmlCompat;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationProfileListener;
@@ -42,6 +45,7 @@ import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.ReportPhoto;
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.TagProfileListener;
 import com.viableindustries.waterreporter.data.UserHolder;
 import com.viableindustries.waterreporter.data.UserProfileListener;
 import com.viableindustries.waterreporter.dialogs.CommentActionDialog;
@@ -107,7 +111,8 @@ public class TimelineAdapter extends ArrayAdapter {
         TextView reportWatershed;
         TextView reportComments;
         TextView reportCaption;
-        LinearLayout reportGroups;
+        FlexboxLayout reportGroups;
+//        FlexboxLayout reportTags;
         ImageView ownerAvatar;
         ImageView reportThumb;
         RelativeLayout actionBadge;
@@ -137,7 +142,8 @@ public class TimelineAdapter extends ArrayAdapter {
             viewHolder.reportComments = (TextView) convertView.findViewById(R.id.comment_count);
             viewHolder.reportCaption = (TextView) convertView.findViewById(R.id.report_caption);
             viewHolder.ownerAvatar = (ImageView) convertView.findViewById(R.id.owner_avatar);
-            viewHolder.reportGroups = (LinearLayout) convertView.findViewById(R.id.reportGroups);
+            viewHolder.reportGroups = (FlexboxLayout) convertView.findViewById(R.id.report_groups);
+//            viewHolder.reportTags = (FlexboxLayout) convertView.findViewById(R.id.report_tags);
             viewHolder.reportThumb = (ImageView) convertView.findViewById(R.id.report_thumb);
             viewHolder.actionBadge = (RelativeLayout) convertView.findViewById(R.id.action_badge);
             viewHolder.reportStub = (LinearLayout) convertView.findViewById(R.id.report_stub);
@@ -301,7 +307,7 @@ public class TimelineAdapter extends ArrayAdapter {
 
             viewHolder.reportCaption.setVisibility(View.VISIBLE);
 
-            viewHolder.reportCaption.setText(feature.properties.report_description.trim());
+            viewHolder.reportCaption.setText(PostTextProcessor.process(feature.properties.report_description.trim()));
 
         } else {
 
@@ -336,6 +342,34 @@ public class TimelineAdapter extends ArrayAdapter {
             viewHolder.reportGroups.setVisibility(View.GONE);
 
         }
+
+        // Add clickable tag views, if any
+
+//        viewHolder.reportTags.setVisibility(View.VISIBLE);
+//
+//        viewHolder.reportTags.removeAllViews();
+//
+//        if (feature.properties.tags.size() > 0) {
+//
+//            for (HashTag hashTag : feature.properties.tags) {
+//
+//                TextView tagName = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.related_group_item, parent, false);
+//
+//                tagName.setText(String.format("\u0023%s", hashTag.properties.tag));
+//
+//                tagName.setTag(hashTag);
+//
+//                tagName.setOnClickListener(new TagProfileListener(getContext(), hashTag));
+//
+//                viewHolder.reportTags.addView(tagName);
+//
+//            }
+//
+//        } else {
+//
+//            viewHolder.reportGroups.setVisibility(View.GONE);
+//
+//        }
 
         // Display badge if report is closed
         if ("closed".equals(feature.properties.state)) {

@@ -227,15 +227,57 @@
         android:text="A caption goes here"
         android:textSize="16sp" />
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/reportGroups"
+    <!--<com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+        <!--android:id="@+id/report_tags"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:paddingBottom="16dp"-->
+        <!--android:paddingLeft="16dp"-->
+        <!--android:paddingRight="16dp"-->
+        <!--android:paddingTop="0dp"-->
+        <!--android:visibility="gone"-->
+        <!--app:alignContent="flex_start"-->
+        <!--app:alignItems="flex_start"-->
+        <!--app:flexDirection="row"-->
+        <!--app:flexWrap="wrap" />-->
+
+    <com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/report_groups"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:paddingBottom="16dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:paddingTop="0dp"></LinearLayout>
+        android:paddingTop="0dp"
+        android:visibility="gone"
+        app:alignContent="flex_start"
+        app:alignItems="flex_start"
+        app:flexDirection="row"
+        app:flexWrap="wrap" />
+
+    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:id="@+id/report_tags"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="horizontal"-->
+    <!--android:paddingBottom="16dp"-->
+    <!--android:paddingLeft="16dp"-->
+    <!--android:paddingRight="16dp"-->
+    <!--android:paddingTop="0dp"-->
+    <!--android:visibility="gone" />-->
+
+    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:id="@+id/report_groups"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="horizontal"-->
+    <!--android:paddingBottom="16dp"-->
+    <!--android:paddingLeft="16dp"-->
+    <!--android:paddingRight="16dp"-->
+    <!--android:paddingTop="0dp"-->
+    <!--android:visibility="gone" />-->
 
     <TextView
         android:id="@+id/tracker"

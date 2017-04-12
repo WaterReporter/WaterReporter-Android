@@ -4,9 +4,11 @@
     android:id="@+id/groupName"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:ellipsize="end"
+    android:maxLines="1"
     android:paddingBottom="0dp"
     android:paddingLeft="0dp"
     android:paddingRight="12dp"
     android:paddingTop="2dp"
     android:textColor="@color/gray_186"
-    android:textSize="12sp" />
+    android:textSize="14sp" />
