@@ -91,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String TAG = "MainActivity";
 
+    private EndlessScrollListener scrollListener;
+
     private int socialOptions;
 
     protected void connectionStatus() {
@@ -126,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 if (reportCollection.isEmpty()) {
 
-                    requestData(10, 1, false, false);
+                    requestData(5, 1, false, false);
 
                 }
 
@@ -146,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    protected void requestData(int limit, int page, final boolean transition, final boolean refresh) {
+    protected void requestData(int limit, final int page, final boolean transition, final boolean refresh) {
 
         final String accessToken = prefs.getString("access_token", "");
 
@@ -171,8 +173,6 @@ public class MainActivity extends AppCompatActivity implements
 
         Log.d("URL", query);
 
-        timeline.setRefreshing(true);
-
         service.getReports(accessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
 
             @Override
@@ -182,15 +182,23 @@ public class MainActivity extends AppCompatActivity implements
 
                 Log.v("list", reports.toString());
 
-                if (!reports.isEmpty()) {
+                timeline.setRefreshing(false);
+
+                if (refresh || reportCollection.isEmpty()) {
+
+                    reportCollection.clear();
 
                     reportCollection.addAll(reports);
+
+                    scrollListener.resetState();
 
                     try {
 
                         timelineAdapter.notifyDataSetChanged();
 
-                    } catch (NullPointerException ne) {
+                        listView.smoothScrollToPosition(0);
+
+                    } catch (NullPointerException e) {
 
                         populateTimeline(reportCollection);
 
@@ -198,23 +206,15 @@ public class MainActivity extends AppCompatActivity implements
 
                 } else {
 
-                    CharSequence text = "Your report collection is empty. Tap on the plus sign in the menu bar to start a new report.";
-                    int duration = Toast.LENGTH_LONG;
+                    if (page > 1) {
 
-                    Toast toast = Toast.makeText(getBaseContext(), text, duration);
-                    toast.show();
+                        reportCollection.addAll(reports);
 
-                }
+                        timelineAdapter.notifyDataSetChanged();
 
-                if (refresh) {
-
-                    reportCollection = reports;
-
-                    populateTimeline(reportCollection);
+                    }
 
                 }
-
-                timeline.setRefreshing(false);
 
             }
 
@@ -254,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements
         // Attach the adapter to a ListView
         listView.setAdapter(timelineAdapter);
 
-        attachScrollListener();
+        //attachScrollListener();
 
     }
 
@@ -323,17 +323,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void attachScrollListener() {
 
-        listView.setOnScrollListener(new EndlessScrollListener() {
-            @Override
-            public boolean onLoadMore(int page, int totalItemsCount) {
-
-                // Triggered only when new data needs to be appended to the list
-                requestData(10, page, false, false);
-
-                return true; // ONLY if more data is actually being loaded; false otherwise.
-
-            }
-        });
+        listView.setOnScrollListener(scrollListener);
 
     }
 
@@ -347,7 +337,7 @@ public class MainActivity extends AppCompatActivity implements
 
         if (EasyPermissions.hasPermissions(this, permissions)) {
 
-            requestData(10, 1, false, false);
+            requestData(5, 1, false, false);
 
         } else {
 
@@ -425,6 +415,20 @@ public class MainActivity extends AppCompatActivity implements
 
         socialOptions = SocialShareUtility.getShareOptions(this);
 
+        // Set up EndlessScrollListener
+
+        scrollListener = new EndlessScrollListener() {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+
+                // Triggered only when new data needs to be appended to the list
+                requestData(5, page, false, false);
+
+                return true; // ONLY if more data is actually being loaded; false otherwise.
+
+            }
+        };
+
         timeline.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
@@ -432,7 +436,9 @@ public class MainActivity extends AppCompatActivity implements
                         Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
                         // This method performs the actual data-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
-                        requestData(10, 1, false, true);
+
+                        requestData(5, 1, false, true);
+
                     }
                 }
         );
@@ -440,6 +446,12 @@ public class MainActivity extends AppCompatActivity implements
         // Set color of swipe refresh arrow animation
 
         timeline.setColorSchemeResources(R.color.waterreporter_blue);
+
+        // Attach EndlessScrollListener to timeline ListView
+
+        attachScrollListener();
+
+        // Check permissions and handle missing requirements as necessary
 
         verifyPermissions();
 
@@ -502,37 +514,13 @@ public class MainActivity extends AppCompatActivity implements
             Toast.makeText(this, R.string.returned_from_app_settings_to_activity, Toast.LENGTH_SHORT)
                     .show();
         } else {
-            // Check which request we're responding to
-//        if (requestCode == REGISTRATION_REQUEST) {
-//            // Make sure the request was successful
-//            if (resultCode == RESULT_OK) {
-//
-//                // Since the user just registered, direct them to create a new report
-//                startActivity(new Intent(this, PhotoActivity.class));
-//
-//            }
-//
-//        } else if (requestCode == LOGIN_REQUEST) {
-//
-//            if (resultCode == RESULT_OK) {
-//
-//                // The user is logged in and may already have reports in the system.
-//                // Let's attempt to fetch the user's report collection and, if none exist,
-//                // direct the user to submit their first report.
-//                requestData(10, 1, false, false);
-//
-//                fetchUserGroups();
-//
-//            }
-//
-//        }
 
             if (resultCode == RESULT_OK) {
 
                 // The user is logged in and may already have reports in the system.
-                // Let's attempt to fetch the user's report collection and, if none exist,
+                // Let's attempt to fetch the user's report collection and, if none exists,
                 // direct the user to submit their first report.
-//                requestData(10, 1, false, false);
+
                 verifyPermissions();
 
                 fetchUserGroups();
