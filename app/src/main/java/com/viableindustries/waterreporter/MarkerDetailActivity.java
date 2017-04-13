@@ -32,6 +32,7 @@ import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.ReportPhoto;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.Report;
+import com.viableindustries.waterreporter.data.TerritoryProfileListener;
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserOrgPatch;
 import com.viableindustries.waterreporter.data.UserProfileListener;
@@ -106,7 +107,7 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
     private String groupList;
 
-    private String commentCount;
+    private int commentCount;
 
     private Context context;
 
@@ -144,7 +145,10 @@ public class MarkerDetailActivity extends AppCompatActivity {
         // Display watershed name, if any
 
         watershedName = AttributeTransformUtility.parseWatershedName(report.properties.territory);
+
         reportWatershed.setText(watershedName);
+
+        reportWatershed.setOnClickListener(new TerritoryProfileListener(this, report.properties.territory));
 
         // Extract group names, if any
 
@@ -253,8 +257,8 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
         // Set value of comment count string
 
-        commentCount = AttributeTransformUtility.countComments(report.properties.comments);
-        reportComments.setText(commentCount);
+        commentCount = report.properties.comments.size();
+        reportComments.setText(getResources().getQuantityString(R.plurals.comment_label, commentCount, commentCount));
 
         // Load images assets into their targets
 

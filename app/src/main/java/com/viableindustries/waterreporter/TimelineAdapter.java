@@ -93,7 +93,7 @@ public class TimelineAdapter extends ArrayAdapter {
 
     protected String groupList;
 
-    protected String commentCount;
+    protected int commentCount;
 
     private int socialOptions;
 
@@ -369,20 +369,16 @@ public class TimelineAdapter extends ArrayAdapter {
 
             viewHolder.actionBadge.setVisibility(View.VISIBLE);
 
-            viewHolder.commentIcon.setVisibility(View.GONE);
-
         } else {
 
             viewHolder.actionBadge.setVisibility(View.GONE);
 
-            viewHolder.commentIcon.setVisibility(View.VISIBLE);
-
         }
 
         // Set value of comment count string
-        commentCount = AttributeTransformUtility.countComments(feature.properties.comments);
+        commentCount = feature.properties.comments.size();
 
-        viewHolder.reportComments.setText(commentCount);
+        viewHolder.reportComments.setText(context.getResources().getQuantityString(R.plurals.comment_label, commentCount, commentCount));
 
         // Load report image and user avatar
 

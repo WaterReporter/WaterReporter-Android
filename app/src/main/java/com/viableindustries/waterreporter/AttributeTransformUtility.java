@@ -57,20 +57,6 @@ public class AttributeTransformUtility {
 
     }
 
-    public static String countComments(List<Comment> commentList) {
-
-        if (commentList.size() != 1) {
-
-            return String.format("%s comments", commentList.size());
-
-        } else {
-
-            return "1 comment";
-
-        }
-
-    }
-
     public static String parseWatershedName(Territory territory) {
 
         try {

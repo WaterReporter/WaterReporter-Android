@@ -263,9 +263,6 @@ public class MapDetailActivity extends AppCompatActivity {
         @Override
         public boolean onSelect(@NonNull final CustomMarkerView marker, @NonNull final View convertView, boolean reselectionForViewReuse) {
 
-            // Build new MarkerDetailFragment
-            MarkerDetailFragment markerDetailFragment = new MarkerDetailFragment();
-
             Log.d("reportKeyFromMarkerTap", String.format("%s-%s", marker.getReportId(), "r"));
 
             ReportHolder.setReport(mappedReportsHolder.getReport(String.format("%s-%s", marker.getReportId(), "r")));

@@ -180,7 +180,10 @@
         <item quantity="one">Member</item>
         <item quantity="other">Members</item>
     </plurals>
-
+    <plurals name="comment_label">
+        <item quantity="one">%d comment</item>
+        <item quantity="other">%d comments</item>
+    </plurals>
     <string name="saving_profile">Saving profile&#8230;</string>
     <string name="title_activity_group_action_list">GroupActionListActivity</string>
     <string name="title_activity_comment">CommentActivity</string>
@@ -219,7 +222,6 @@
 
     <string name="share_report_chooser_title">Share report to&#8230;</string>
     <string name="share_report_text_body" formatted="false">%1$s https://www.waterreporter.org/community/reports/%2$s.</string>
-    <!--<string name="share_report_text_body" formatted="false">https://www.waterreporter.org/reports/%1$s.</string>-->
     <string name="share_report_email_subject" formatted="false">Someone shared a post from Water Reporter.</string>
     <string name="title_activity_search">SearchActivity</string>
     <string name="title_activity_territory">TerritoryActivity</string>
