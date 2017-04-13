@@ -35,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 public class CommentAdapter extends ArrayAdapter {
 
@@ -136,6 +137,19 @@ public class CommentAdapter extends ArrayAdapter {
             viewHolder.reportCaption.setVisibility(View.VISIBLE);
 
             viewHolder.reportCaption.setText(feature.properties.body.trim());
+
+            new PatternEditableBuilder().
+                    addPattern(context, Pattern.compile("\\#(\\w+)"), ContextCompat.getColor(context, R.color.waterreporter_blue),
+                            new PatternEditableBuilder.SpannableClickedListener() {
+                                @Override
+                                public void onSpanClicked(String text) {
+
+                                    Intent intent = new Intent(context, TagProfileActivity.class);
+                                    intent.putExtra("tag", text);
+                                    context.startActivity(intent);
+
+                                }
+                            }).into(viewHolder.reportCaption);
 
         } else {
 
