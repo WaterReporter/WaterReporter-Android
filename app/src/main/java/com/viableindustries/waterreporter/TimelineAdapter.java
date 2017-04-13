@@ -48,6 +48,7 @@ import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.ReportPhoto;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.TagProfileListener;
+import com.viableindustries.waterreporter.data.TerritoryProfileListener;
 import com.viableindustries.waterreporter.data.UserHolder;
 import com.viableindustries.waterreporter.data.UserProfileListener;
 import com.viableindustries.waterreporter.dialogs.CommentActionDialog;
@@ -115,7 +116,6 @@ public class TimelineAdapter extends ArrayAdapter {
         TextView reportComments;
         TextView reportCaption;
         FlexboxLayout reportGroups;
-//        FlexboxLayout reportTags;
         ImageView ownerAvatar;
         ImageView reportThumb;
         RelativeLayout actionBadge;
@@ -146,7 +146,6 @@ public class TimelineAdapter extends ArrayAdapter {
             viewHolder.reportCaption = (TextView) convertView.findViewById(R.id.report_caption);
             viewHolder.ownerAvatar = (ImageView) convertView.findViewById(R.id.owner_avatar);
             viewHolder.reportGroups = (FlexboxLayout) convertView.findViewById(R.id.report_groups);
-//            viewHolder.reportTags = (FlexboxLayout) convertView.findViewById(R.id.report_tags);
             viewHolder.reportThumb = (ImageView) convertView.findViewById(R.id.report_thumb);
             viewHolder.actionBadge = (RelativeLayout) convertView.findViewById(R.id.action_badge);
             viewHolder.reportStub = (LinearLayout) convertView.findViewById(R.id.report_stub);
@@ -304,15 +303,19 @@ public class TimelineAdapter extends ArrayAdapter {
         // Populate the data into the template view using the data object
         viewHolder.reportDate.setText(creationDate);
         viewHolder.reportOwner.setText(String.format("%s %s", feature.properties.owner.properties.first_name, feature.properties.owner.properties.last_name));
+
+        // Display watershed name and add click listener if
+        // a valid territory object is present
+
         viewHolder.reportWatershed.setText(watershedName);
+
+        viewHolder.reportWatershed.setOnClickListener(new TerritoryProfileListener(getContext(), feature.properties.territory));
 
         if (feature.properties.report_description != null && (feature.properties.report_description.length() > 0)) {
 
             viewHolder.reportCaption.setVisibility(View.VISIBLE);
 
             viewHolder.reportCaption.setText(feature.properties.report_description.trim());
-
-//            viewHolder.reportCaption.setText(PostTextProcessor.process(feature.properties.report_description.trim()));
 
             new PatternEditableBuilder().
                     addPattern(context, Pattern.compile("\\#(\\w+)"), ContextCompat.getColor(context, R.color.waterreporter_blue),
@@ -323,9 +326,6 @@ public class TimelineAdapter extends ArrayAdapter {
                                     Intent intent = new Intent(context, TagProfileActivity.class);
                                     intent.putExtra("tag", text);
                                     context.startActivity(intent);
-
-//                                    Toast.makeText(getContext(), "Clicked hashtag: " + text,
-//                                            Toast.LENGTH_SHORT).show();
 
                                 }
                             }).into(viewHolder.reportCaption);
@@ -363,34 +363,6 @@ public class TimelineAdapter extends ArrayAdapter {
             viewHolder.reportGroups.setVisibility(View.GONE);
 
         }
-
-        // Add clickable tag views, if any
-
-//        viewHolder.reportTags.setVisibility(View.VISIBLE);
-//
-//        viewHolder.reportTags.removeAllViews();
-//
-//        if (feature.properties.tags.size() > 0) {
-//
-//            for (HashTag hashTag : feature.properties.tags) {
-//
-//                TextView tagName = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.related_group_item, parent, false);
-//
-//                tagName.setText(String.format("\u0023%s", hashTag.properties.tag));
-//
-//                tagName.setTag(hashTag);
-//
-//                tagName.setOnClickListener(new TagProfileListener(getContext(), hashTag));
-//
-//                viewHolder.reportTags.addView(tagName);
-//
-//            }
-//
-//        } else {
-//
-//            viewHolder.reportGroups.setVisibility(View.GONE);
-//
-//        }
 
         // Display badge if report is closed
         if ("closed".equals(feature.properties.state)) {

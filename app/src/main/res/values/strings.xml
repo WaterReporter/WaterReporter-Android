@@ -164,6 +164,23 @@
 
     <!-- Profile -->
 
+    <plurals name="post_label">
+        <item quantity="one">Post</item>
+        <item quantity="other">Posts</item>
+    </plurals>
+    <plurals name="action_label">
+        <item quantity="one">Action</item>
+        <item quantity="other">Actions</item>
+    </plurals>
+    <plurals name="group_label">
+        <item quantity="one">Group</item>
+        <item quantity="other">Groups</item>
+    </plurals>
+    <plurals name="member_label">
+        <item quantity="one">Member</item>
+        <item quantity="other">Members</item>
+    </plurals>
+
     <string name="saving_profile">Saving profile&#8230;</string>
     <string name="title_activity_group_action_list">GroupActionListActivity</string>
     <string name="title_activity_comment">CommentActivity</string>

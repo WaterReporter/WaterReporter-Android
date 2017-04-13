@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Handler;
@@ -148,6 +149,8 @@ public class OrganizationProfileActivity extends AppCompatActivity implements Sh
 
     private int socialOptions;
 
+    private Resources resources;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -162,6 +165,8 @@ public class OrganizationProfileActivity extends AppCompatActivity implements Sh
         groupPrefs = getSharedPreferences(getString(R.string.group_membership_key), 0);
 
         context = this;
+
+        resources = getResources();
 
         // Determine which (if any) of Facebook and Twitter
         // can be displayed in the social sharing dialog
@@ -495,12 +500,13 @@ public class OrganizationProfileActivity extends AppCompatActivity implements Sh
                             actionStat.setVisibility(View.VISIBLE);
                             actionCount = count;
                             actionCounter.setText(String.valueOf(actionCount));
-
+                            actionCountLabel.setText(resources.getQuantityString(R.plurals.action_label, actionCount, actionCount));
                         }
                         break;
                     default:
                         reportCount = count;
                         reportCounter.setText(String.valueOf(reportCount));
+                        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
                         break;
                 }
 
@@ -550,7 +556,10 @@ public class OrganizationProfileActivity extends AppCompatActivity implements Sh
 
                 if (!members.isEmpty()) {
 
-                    peopleCounter.setText(String.valueOf(userCollection.getProperties().num_results));
+                    int memberCount = userCollection.getProperties().num_results;
+
+                    peopleCounter.setText(String.valueOf(memberCount));
+                    peopleCountLabel.setText(resources.getQuantityString(R.plurals.member_label, memberCount, memberCount));
 
                     peopleStat.setVisibility(View.VISIBLE);
 
@@ -690,6 +699,8 @@ public class OrganizationProfileActivity extends AppCompatActivity implements Sh
                         reportStat.setVisibility(View.VISIBLE);
 
                         reportCounter.setText(String.valueOf(reportCount));
+
+                        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
 
                     } else {
 

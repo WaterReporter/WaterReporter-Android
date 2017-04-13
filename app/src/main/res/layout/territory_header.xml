@@ -68,7 +68,6 @@
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
                 android:paddingTop="0dp"
-                android:text="0"
                 android:textColor="@color/base_blue"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -83,7 +82,6 @@
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
                 android:paddingTop="2dp"
-                android:text="Reports"
                 android:textColor="@color/base_blue"
                 android:textSize="14sp" />
 
@@ -107,7 +105,6 @@
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
                 android:paddingTop="0dp"
-                android:text="0"
                 android:textColor="@color/material_blue_grey950"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -122,7 +119,6 @@
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
                 android:paddingTop="2dp"
-                android:text="Actions"
                 android:textColor="@color/material_blue_grey950"
                 android:textSize="14sp" />
 
@@ -146,7 +142,6 @@
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
                 android:paddingTop="0dp"
-                android:text="0"
                 android:textColor="@color/material_blue_grey950"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -161,7 +156,6 @@
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
                 android:paddingTop="2dp"
-                android:text="Groups"
                 android:textColor="@color/material_blue_grey950"
                 android:textSize="14sp" />
 

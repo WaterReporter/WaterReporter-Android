@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -164,6 +165,8 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     private int socialOptions;
 
+    private Resources resources;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -178,6 +181,8 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
         coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
         Log.d("storedavatar", coreProfile.getString("picture", ""));
+
+        resources = getResources();
 
         // Determine which (if any) of Facebook and Twitter
         // can be displayed in the social sharing dialog
@@ -453,16 +458,16 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
                 switch (filterName) {
                     case "state":
                         if (count > 0) {
-
+                            actionStat.setVisibility(View.VISIBLE);
                             actionCount = count;
                             actionCounter.setText(String.valueOf(actionCount));
-                            actionStat.setVisibility(View.VISIBLE);
-
+                            actionCountLabel.setText(resources.getQuantityString(R.plurals.action_label, actionCount, actionCount));
                         }
                         break;
                     default:
                         reportCount = count;
                         reportCounter.setText(String.valueOf(reportCount));
+                        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
                         break;
                 }
 
@@ -512,7 +517,10 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                 if (!organizations.isEmpty()) {
 
-                    groupCounter.setText(String.valueOf(organizations.size()));
+                    int groupCount = organizations.size();
+
+                    groupCounter.setText(String.valueOf(groupCount));
+                    groupCountLabel.setText(resources.getQuantityString(R.plurals.group_label, groupCount, groupCount));
 
                     groupStat.setVisibility(View.VISIBLE);
 
@@ -652,6 +660,8 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
                         reportStat.setVisibility(View.VISIBLE);
 
                         reportCounter.setText(String.valueOf(reportCount));
+
+                        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
 
                     } else {
 

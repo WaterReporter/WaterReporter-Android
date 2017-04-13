@@ -3,6 +3,7 @@ package com.viableindustries.waterreporter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -35,6 +36,8 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import static java.lang.Boolean.TRUE;
+
 public class TagProfileActivity extends AppCompatActivity implements ShareActionDialogListener {
 
     TextView tagNameView;
@@ -52,6 +55,12 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
     TextView actionCounter;
 
     TextView actionCountLabel;
+
+    LinearLayout groupStat;
+
+    TextView groupCounter;
+
+    TextView groupCountLabel;
 
     @Bind(R.id.timeline)
     SwipeRefreshLayout timeLineContainer;
@@ -74,6 +83,8 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
     private boolean actionFocus = false;
 
+    private boolean hasGroups = false;
+
     private Context context;
 
     private SharedPreferences prefs;
@@ -81,6 +92,8 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
     private int socialOptions;
 
     private String tagName;
+
+    private Resources resources;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +107,8 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         context = this;
+
+        resources = getResources();
 
         // Retrieve tag name from intent
 
@@ -182,6 +197,12 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
         actionStat = (LinearLayout) header.findViewById(R.id.actionStat);
 
+        groupCounter = (TextView) header.findViewById(R.id.groupCount);
+
+        groupCountLabel = (TextView) header.findViewById(R.id.groupCountLabel);
+
+        groupStat = (LinearLayout) header.findViewById(R.id.groupStat);
+
         profileStats = (LinearLayout) header.findViewById(R.id.profileStats);
 
         // Attach click listeners to stat elements
@@ -216,6 +237,23 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
                 timeLineContainer.setRefreshing(true);
 
                 fetchReports(5, 1, complexQuery, false, true);
+
+            }
+        });
+
+        groupStat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (hasGroups) {
+
+                    Intent intent = new Intent(context, UserGroupsActivity.class);
+
+                    intent.putExtra("GENERIC_USER", TRUE);
+
+                    startActivity(intent);
+
+                }
 
             }
         });
@@ -263,12 +301,13 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
                             actionStat.setVisibility(View.VISIBLE);
                             actionCount = count;
                             actionCounter.setText(String.valueOf(actionCount));
-
+                            actionCountLabel.setText(resources.getQuantityString(R.plurals.action_label, actionCount, actionCount));
                         }
                         break;
                     default:
                         reportCount = count;
                         reportCounter.setText(String.valueOf(reportCount));
+                        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
                         break;
                 }
 
@@ -402,6 +441,8 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
                         reportStat.setVisibility(View.VISIBLE);
 
                         reportCounter.setText(String.valueOf(reportCount));
+
+                        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
 
                     } else {
 

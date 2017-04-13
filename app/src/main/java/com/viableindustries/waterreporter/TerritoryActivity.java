@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.app.Activity;
 import android.support.v4.content.ContextCompat;
@@ -56,6 +57,8 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import static java.lang.Boolean.TRUE;
 
 public class TerritoryActivity extends AppCompatActivity {
 
@@ -110,8 +113,6 @@ public class TerritoryActivity extends AppCompatActivity {
 
     private boolean actionFocus = false;
 
-    private boolean hasScrolled = false;
-
     private boolean hasGroups = false;
 
     private Context context;
@@ -120,9 +121,9 @@ public class TerritoryActivity extends AppCompatActivity {
 
     private SharedPreferences prefs;
 
-    private SharedPreferences groupPrefs;
-
     private int socialOptions;
+
+    private Resources resources;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,9 +136,9 @@ public class TerritoryActivity extends AppCompatActivity {
 
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        groupPrefs = getSharedPreferences(getString(R.string.group_membership_key), 0);
-
         context = this;
+
+        resources = getResources();
 
         // Determine which (if any) of Facebook and Twitter
         // can be displayed in the social sharing dialog
@@ -180,13 +181,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
         countReports(complexQuery, "state");
 
-        // Retrieve groups located in this territory
-
-//        fetchOrganizationMembers(50, 1, organizationId);
-
-//        fetchOrganizations(10, 1, territoryId);
-
-        // Retrieve first batch of user's reports
+        // Retrieve first batch of posts
 
         if (reportCollection.isEmpty()) {
 
@@ -280,20 +275,22 @@ public class TerritoryActivity extends AppCompatActivity {
             }
         });
 
-//        peopleStat.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                if (hasMembers) {
-//
-//                    Intent intent = new Intent(context, OrganizationMembersActivity.class);
-//
-//                    startActivity(intent);
-//
-//                }
-//
-//            }
-//        });
+        groupStat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (hasGroups) {
+
+                    Intent intent = new Intent(context, UserGroupsActivity.class);
+
+                    intent.putExtra("GENERIC_USER", TRUE);
+
+                    startActivity(intent);
+
+                }
+
+            }
+        });
 
         // Add populated header view to report timeline
 
@@ -338,12 +335,13 @@ public class TerritoryActivity extends AppCompatActivity {
                             actionStat.setVisibility(View.VISIBLE);
                             actionCount = count;
                             actionCounter.setText(String.valueOf(actionCount));
-
+                            actionCountLabel.setText(resources.getQuantityString(R.plurals.action_label, actionCount, actionCount));
                         }
                         break;
                     default:
                         reportCount = count;
                         reportCounter.setText(String.valueOf(reportCount));
+                        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
                         break;
                 }
 
@@ -537,6 +535,8 @@ public class TerritoryActivity extends AppCompatActivity {
                         reportStat.setVisibility(View.VISIBLE);
 
                         reportCounter.setText(String.valueOf(reportCount));
+
+                        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
 
                     } else {
 
