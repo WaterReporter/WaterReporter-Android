@@ -107,8 +107,9 @@
                 android:layout_height="24dp"
                 android:layout_centerInParent="true"
                 android:layout_gravity="center_vertical"
+                android:alpha="0.4"
                 android:scaleType="fitXY"
-                android:src="@drawable/report_location_icon" />
+                android:src="@drawable/ic_location_on_black_24dp" />
 
         </RelativeLayout>
 
@@ -158,8 +159,9 @@
                 android:layout_height="24dp"
                 android:layout_centerInParent="true"
                 android:layout_gravity="center_vertical"
+                android:alpha="0.4"
                 android:scaleType="fitXY"
-                android:src="@drawable/comment_icon" />
+                android:src="@drawable/ic_mode_comment_black_24dp" />
 
         </RelativeLayout>
 
@@ -225,21 +227,6 @@
         android:paddingTop="8dp"
         android:textSize="16sp" />
 
-    <!--<com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-        <!--android:id="@+id/report_tags"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:paddingBottom="16dp"-->
-        <!--android:paddingLeft="16dp"-->
-        <!--android:paddingRight="16dp"-->
-        <!--android:paddingTop="0dp"-->
-        <!--android:visibility="gone"-->
-        <!--app:alignContent="flex_start"-->
-        <!--app:alignItems="flex_start"-->
-        <!--app:flexDirection="row"-->
-        <!--app:flexWrap="wrap" />-->
-
     <com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/report_groups"
@@ -254,28 +241,6 @@
         app:alignItems="flex_start"
         app:flexDirection="row"
         app:flexWrap="wrap" />
-
-    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:id="@+id/report_tags"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:orientation="horizontal"-->
-    <!--android:paddingBottom="16dp"-->
-    <!--android:paddingLeft="16dp"-->
-    <!--android:paddingRight="16dp"-->
-    <!--android:paddingTop="0dp"-->
-    <!--android:visibility="gone" />-->
-
-    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:id="@+id/report_groups"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:orientation="horizontal"-->
-    <!--android:paddingBottom="16dp"-->
-    <!--android:paddingLeft="16dp"-->
-    <!--android:paddingRight="16dp"-->
-    <!--android:paddingTop="0dp"-->
-    <!--android:visibility="gone" />-->
 
     <TextView
         android:id="@+id/tracker"

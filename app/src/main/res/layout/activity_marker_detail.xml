@@ -158,8 +158,9 @@
                         android:layout_height="24dp"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center_vertical"
+                        android:alpha="0.4"
                         android:scaleType="fitXY"
-                        android:src="@drawable/comment_icon" />
+                        android:src="@drawable/ic_mode_comment_black_24dp" />
 
                 </RelativeLayout>
 
@@ -172,9 +173,27 @@
                     android:paddingLeft="0dp"
                     android:paddingRight="0dp"
                     android:paddingTop="0dp"
-                    android:text="0 comments"
                     android:textColor="@color/gray_186"
                     android:textSize="@dimen/small_text" />
+
+                <RelativeLayout
+                    android:id="@+id/share_icon"
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="0dp"
+                    android:paddingRight="0dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center_vertical"
+                        android:alpha="0.4"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_share_black_24dp" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 

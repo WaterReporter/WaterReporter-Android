@@ -1,11 +1,14 @@
 package com.viableindustries.waterreporter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,6 +29,7 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.GroupNameComparator;
+import com.viableindustries.waterreporter.data.HtmlCompat;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationProfileListener;
 import com.viableindustries.waterreporter.data.ReportHolder;
@@ -37,6 +41,8 @@ import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserOrgPatch;
 import com.viableindustries.waterreporter.data.UserProfileListener;
 import com.viableindustries.waterreporter.data.UserService;
+import com.viableindustries.waterreporter.dialogs.ReportActionDialogListener;
+import com.viableindustries.waterreporter.dialogs.ShareActionDialogListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -60,7 +66,8 @@ import retrofit.client.Response;
  * Created by Ryan Hamley on 10/14/14.
  * This activity displays detailed information about a report after clicking on its map marker.
  */
-public class MarkerDetailActivity extends AppCompatActivity {
+public class MarkerDetailActivity extends AppCompatActivity
+        implements ShareActionDialogListener {
 
     @Bind(R.id.report_date)
     TextView reportDate;
@@ -92,6 +99,9 @@ public class MarkerDetailActivity extends AppCompatActivity {
     @Bind(R.id.comment_icon)
     RelativeLayout commentIcon;
 
+    @Bind(R.id.share_icon)
+    RelativeLayout shareIcon;
+
     @Bind(R.id.report_stub)
     LinearLayout reportStub;
 
@@ -111,6 +121,8 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
     private Context context;
 
+    private int socialOptions;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -121,6 +133,11 @@ public class MarkerDetailActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         context = this;
+
+        // Determine which (if any) of Facebook and Twitter
+        // can be displayed in the social sharing dialog
+
+        socialOptions = SocialShareUtility.getShareOptions(this);
 
         Report report = ReportHolder.getReport();
 
@@ -260,11 +277,77 @@ public class MarkerDetailActivity extends AppCompatActivity {
         commentCount = report.properties.comments.size();
         reportComments.setText(getResources().getQuantityString(R.plurals.comment_label, commentCount, commentCount));
 
+        // Allow user to share report content on Facebook/Twitter
+        // if either or both of those applications is installed
+
+        if (socialOptions != 0) {
+
+            shareIcon.setVisibility(View.VISIBLE);
+
+            shareIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Log.d("Click Event", "Share button clicked.");
+
+                    Resources res = context.getResources();
+
+                    String[] options = res.getStringArray(socialOptions);
+
+                    CharSequence[] renders = new CharSequence[2];
+
+                    for (int i = 0; i < options.length; i++) {
+
+                        renders[i] = HtmlCompat.fromHtml(options[i]);
+
+                    }
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                    builder.setItems(renders, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            ReportHolder.setReport(report);
+
+                            // The 'which' argument contains the index position
+                            // of the selected item
+                            ShareActionDialogListener activity = (ShareActionDialogListener) context;
+
+                            activity.onSelectShareAction(which);
+
+                        }
+                    });
+
+                    // Create the AlertDialog object and return it
+                    builder.create().show();
+
+                }
+            });
+
+        }
+
         // Load images assets into their targets
 
         Picasso.with(this).load(report.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(ownerAvatar);
 
         Picasso.with(this).load(imagePath).fit().centerCrop().into(reportThumb);
+
+    }
+
+    @Override
+    public void onSelectShareAction(int index) {
+
+        String target = getResources().getStringArray(socialOptions)[index];
+
+        if (target.toLowerCase().contains("facebook")) {
+
+            SocialShareUtility.shareOnFacebook(this);
+
+        } else {
+
+            SocialShareUtility.shareOnTwitter(this);
+
+        }
 
     }
 
