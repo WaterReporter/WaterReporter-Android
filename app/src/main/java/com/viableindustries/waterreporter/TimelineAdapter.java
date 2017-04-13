@@ -315,12 +315,18 @@ public class TimelineAdapter extends ArrayAdapter {
 //            viewHolder.reportCaption.setText(PostTextProcessor.process(feature.properties.report_description.trim()));
 
             new PatternEditableBuilder().
-                    addPattern(Pattern.compile("\\#(\\w+)"), ContextCompat.getColor(context, R.color.waterreporter_blue),
+                    addPattern(context, Pattern.compile("\\#(\\w+)"), ContextCompat.getColor(context, R.color.waterreporter_blue),
                             new PatternEditableBuilder.SpannableClickedListener() {
                                 @Override
                                 public void onSpanClicked(String text) {
-                                    Toast.makeText(getContext(), "Clicked hashtag: " + text,
-                                            Toast.LENGTH_SHORT).show();
+
+                                    Intent intent = new Intent(context, TagProfileActivity.class);
+                                    intent.putExtra("tag", text);
+                                    context.startActivity(intent);
+
+//                                    Toast.makeText(getContext(), "Clicked hashtag: " + text,
+//                                            Toast.LENGTH_SHORT).show();
+
                                 }
                             }).into(viewHolder.reportCaption);
 

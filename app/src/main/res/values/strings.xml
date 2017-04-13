@@ -210,5 +210,6 @@
     <!-- Useful package names -->
     <string name="fb_package_name">com.facebook.katana</string>
     <string name="tt_package_name">com.twitter.android</string>
+    <string name="title_activity_tag">TagActivity</string>
 
 </resources>

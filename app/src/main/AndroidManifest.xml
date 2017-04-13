@@ -39,7 +39,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-
         <provider
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProvider409059752790536"
@@ -48,7 +47,6 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
-
         <meta-data
             android:name="DATABASE"
             android:value="water_reporter_reports_004.db" />
@@ -223,6 +221,10 @@
         <activity
             android:name=".TerritoryActivity"
             android:label="@string/title_activity_territory"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".TagProfileActivity"
+            android:label="@string/title_activity_tag"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 

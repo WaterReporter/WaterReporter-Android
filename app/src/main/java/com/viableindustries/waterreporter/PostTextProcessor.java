@@ -21,15 +21,11 @@ public class PostTextProcessor {
 
             if (token.contains("#")) {
 
-                //SpannableString ss = new SpannableString(token);
-
                 int start = stringBuilder.length();
 
                 stringBuilder.append(String.format("%s ", token));
 
                 stringBuilder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, stringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-//                stringBuilder.append(" rest not bold");
 
             } else {
 

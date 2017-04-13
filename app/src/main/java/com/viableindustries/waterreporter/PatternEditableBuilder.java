@@ -1,6 +1,7 @@
 package com.viableindustries.waterreporter;
 
 import android.app.Application;
+import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
@@ -48,13 +49,14 @@ public class PatternEditableBuilder {
     /* This stores a particular pattern item
        complete with pattern, span styles, and click listener */
     public class SpannablePatternItem {
-        public SpannablePatternItem(Pattern pattern, int textColor, SpannableClickedListener listener) {
+        public SpannablePatternItem(Context context, Pattern pattern, int textColor, SpannableClickedListener listener) {
+            this.context = context;
             this.pattern = pattern;
             this.textColor = textColor;
             this.listener = listener;
         }
 
-        //        public SpannableStyleListener styles;
+        public Context context;
         public Pattern pattern;
         public int textColor;
         public SpannableClickedListener listener;
@@ -103,15 +105,6 @@ public class PatternEditableBuilder {
             ds.bgColor = Color.WHITE;
             ds.setUnderlineText(false);
 
-//            if (item.styles != null) {
-//                item.styles.onSpanStyled(ds);
-//            }
-////            ds.setColor(ContextCompat.getColor(, R.color.waterreporter_blue));
-////            ds.setColor("#24BAE4");
-////            ds.setUnderlineText(false);
-//
-//            super.updateDrawState(ds);
-
         }
 
         @Override
@@ -123,6 +116,7 @@ public class PatternEditableBuilder {
                 int end = span.getSpanEnd(this);
                 CharSequence text = span.subSequence(start, end);
                 item.listener.onSpanClicked(text.toString());
+
             }
             widget.invalidate();
         }
@@ -135,8 +129,8 @@ public class PatternEditableBuilder {
 
     /* These are the `addPattern` overloaded signatures */
     // Each allows us to add a span pattern with different arguments
-    public PatternEditableBuilder addPattern(Pattern pattern, int textColor, SpannableClickedListener listener) {
-        patterns.add(new SpannablePatternItem(pattern, textColor, listener));
+    public PatternEditableBuilder addPattern(Context context, Pattern pattern, int textColor, SpannableClickedListener listener) {
+        patterns.add(new SpannablePatternItem(context, pattern, textColor, listener));
         return this;
     }
 
@@ -150,10 +144,10 @@ public class PatternEditableBuilder {
 //        return this;
 //    }
 
-    public PatternEditableBuilder addPattern(Pattern pattern, int textColor) {
-        addPattern(pattern, textColor, null);
-        return this;
-    }
+//    public PatternEditableBuilder addPattern(Pattern pattern, int textColor) {
+//        addPattern(pattern, textColor, null);
+//        return this;
+//    }
 
 //    public PatternEditableBuilder addPattern(Pattern pattern, int textColor, SpannableClickedListener listener) {
 ////        SpannableStyleListener styles = new SpannableStyleListener(textColor) {
