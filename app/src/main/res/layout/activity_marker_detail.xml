@@ -206,6 +206,7 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:paddingTop="8dp"
+                android:textColorLink="@color/waterreporter_blue"
                 android:textSize="16sp" />
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

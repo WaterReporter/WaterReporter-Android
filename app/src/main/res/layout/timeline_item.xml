@@ -96,6 +96,22 @@
         android:paddingTop="0dp">
 
         <RelativeLayout
+            android:id="@+id/action_badge"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center_vertical"
+                android:scaleType="fitXY"
+                android:src="@drawable/action_badge_small" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/location_icon"
             android:layout_width="48dp"
             android:layout_height="match_parent"
@@ -131,21 +147,21 @@
 
         </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/action_badge"
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
-            android:visibility="gone">
+        <!--<RelativeLayout-->
+            <!--android:id="@+id/action_badge"-->
+            <!--android:layout_width="48dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:visibility="gone">-->
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center_vertical"
-                android:scaleType="fitXY"
-                android:src="@drawable/action_badge_small" />
+            <!--<ImageView-->
+                <!--android:layout_width="24dp"-->
+                <!--android:layout_height="24dp"-->
+                <!--android:layout_centerInParent="true"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:scaleType="fitXY"-->
+                <!--android:src="@drawable/action_badge_small" />-->
 
-        </RelativeLayout>
+        <!--</RelativeLayout>-->
 
         <RelativeLayout
             android:id="@+id/comment_icon"
@@ -226,6 +242,7 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingTop="8dp"
+        android:textColorLink="@color/waterreporter_blue"
         android:textSize="16sp" />
 
     <com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
