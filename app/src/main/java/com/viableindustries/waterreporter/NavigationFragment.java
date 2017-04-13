@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -38,18 +39,28 @@ public class NavigationFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         // Setup any handles to view objects here
 
-        LinearLayout feedTab = (LinearLayout) view.findViewById(R.id.feed);
+        LinearLayout timelineTab = (LinearLayout) view.findViewById(R.id.timeline);
         LinearLayout searchTab = (LinearLayout) view.findViewById(R.id.search);
         LinearLayout submitTab = (LinearLayout) view.findViewById(R.id.submit);
         LinearLayout profileTab = (LinearLayout) view.findViewById(R.id.profile);
 
-        feedTab.setOnClickListener(new View.OnClickListener() {
+        final ImageView timelineIcon = (ImageView) view.findViewById(R.id.timeline_icon);
+        final ImageView searchIcon = (ImageView) view.findViewById(R.id.search_icon);
+        final ImageView submitIcon = (ImageView) view.findViewById(R.id.submit_icon);
+        final ImageView profileIcon = (ImageView) view.findViewById(R.id.profile_icon);
+
+        timelineTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Context context = getContext();
 
                 Log.d("context", context.toString());
+
+                timelineIcon.setAlpha(Float.valueOf("0.8"));
+                searchIcon.setAlpha(Float.valueOf("0.4"));
+                submitIcon.setAlpha(Float.valueOf("0.4"));
+                profileIcon.setAlpha(Float.valueOf("0.4"));
 
                 // If the current activity is the main feed, simply refresh the timeline
 
@@ -75,14 +86,28 @@ public class NavigationFragment extends Fragment {
         searchTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                timelineIcon.setAlpha(Float.valueOf("0.4"));
+                searchIcon.setAlpha(Float.valueOf("0.8"));
+                submitIcon.setAlpha(Float.valueOf("0.4"));
+                profileIcon.setAlpha(Float.valueOf("0.4"));
+
                 startActivity(new Intent(getActivity(), SearchActivity.class));
+
             }
         });
 
         submitTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                timelineIcon.setAlpha(Float.valueOf("0.4"));
+                searchIcon.setAlpha(Float.valueOf("0.4"));
+                submitIcon.setAlpha(Float.valueOf("0.8"));
+                profileIcon.setAlpha(Float.valueOf("0.4"));
+
                 startActivity(new Intent(getActivity(), PhotoMetaActivity.class));
+
             }
         });
 
@@ -95,6 +120,11 @@ public class NavigationFragment extends Fragment {
                 int coreId = coreProfile.getInt("id", 0);
 
                 Log.d("avatar", coreProfile.getString("picture", ""));
+
+                timelineIcon.setAlpha(Float.valueOf("0.4"));
+                searchIcon.setAlpha(Float.valueOf("0.4"));
+                submitIcon.setAlpha(Float.valueOf("0.4"));
+                profileIcon.setAlpha(Float.valueOf("0.8"));
 
                 UserProperties userProperties = new UserProperties(coreId, coreProfile.getString("description", ""),
                         coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),

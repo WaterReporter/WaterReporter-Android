@@ -59,6 +59,7 @@
 
         <activity
             android:name=".MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
@@ -70,6 +71,7 @@
         </activity>
         <activity
             android:name=".PhotoMetaActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_report"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
@@ -82,6 +84,7 @@
         </activity>
         <activity
             android:name=".LocationActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_map"
             android:parentActivityName=".PhotoMetaActivity"
             android:screenOrientation="portrait">
@@ -91,6 +94,7 @@
         </activity>
         <activity
             android:name=".SignInActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_sign_in"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
@@ -101,6 +105,7 @@
         </activity>
         <activity
             android:name=".RegistrationActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_registration"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
@@ -111,6 +116,7 @@
         </activity>
         <activity
             android:name=".ProfileBasicActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_profile_basic"
             android:parentActivityName=".RegistrationActivity"
             android:screenOrientation="portrait"
@@ -121,6 +127,7 @@
         </activity>
         <activity
             android:name=".RegistrationForkActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_registration_fork"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
@@ -131,6 +138,7 @@
         </activity>
         <activity
             android:name=".PasswordResetActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_password_reset"
             android:parentActivityName=".SignInActivity"
             android:screenOrientation="portrait"
@@ -141,8 +149,10 @@
         </activity>
         <activity
             android:name=".MapDetailActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_map_detail"
             android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -150,8 +160,10 @@
         </activity>
         <activity
             android:name=".MarkerDetailActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_marker_detail"
             android:parentActivityName=".MapDetailActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -159,8 +171,10 @@
         </activity>
         <activity
             android:name=".UserProfileActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_user_profile"
             android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -168,8 +182,10 @@
         </activity>
         <activity
             android:name=".UserGroupsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_user_groups"
             android:parentActivityName=".UserProfileActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -177,14 +193,19 @@
         </activity>
         <activity
             android:name=".OrganizationProfileActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_organization_profile"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".OrganizationMembersActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_organization_members"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".GroupActionListActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_group_action_list"
             android:parentActivityName=".ProfileBasicActivity"
             android:screenOrientation="portrait"
@@ -195,12 +216,16 @@
         </activity>
         <activity
             android:name=".CommentActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_comment"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".ProfileSettingsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_profile_settings"
             android:parentActivityName=".UserProfileActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -208,8 +233,10 @@
         </activity>
         <activity
             android:name=".EditProfileActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_edit_profile"
             android:parentActivityName=".ProfileSettingsActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -217,18 +244,26 @@
         </activity>
         <activity
             android:name=".SearchActivity"
-            android:label="@string/title_activity_search" />
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_search"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".TerritoryActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_territory"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".TagProfileActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_tag"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".RelatedGroupsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_related_groups"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 

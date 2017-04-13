@@ -1,5 +1,6 @@
 package com.viableindustries.waterreporter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -106,6 +108,8 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
     private String commentCount;
 
+    private Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -114,6 +118,8 @@ public class MarkerDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_marker_detail);
 
         ButterKnife.bind(this);
+
+        context = this;
 
         Report report = ReportHolder.getReport();
 
@@ -153,6 +159,19 @@ public class MarkerDetailActivity extends AppCompatActivity {
             reportCaption.setVisibility(View.VISIBLE);
 
             reportCaption.setText(report.properties.report_description.trim());
+
+            new PatternEditableBuilder().
+                    addPattern(context, Pattern.compile("\\#(\\w+)"), ContextCompat.getColor(context, R.color.waterreporter_blue),
+                            new PatternEditableBuilder.SpannableClickedListener() {
+                                @Override
+                                public void onSpanClicked(String text) {
+
+                                    Intent intent = new Intent(context, TagProfileActivity.class);
+                                    intent.putExtra("tag", text);
+                                    startActivity(intent);
+
+                                }
+                            }).into(reportCaption);
 
         } else {
 

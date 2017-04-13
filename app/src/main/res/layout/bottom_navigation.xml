@@ -7,7 +7,7 @@
     android:orientation="horizontal">
 
     <LinearLayout
-        android:id="@+id/feed"
+        android:id="@+id/timeline"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -22,12 +22,12 @@
             android:background="@color/gray_224" />
 
         <ImageView
-            android:id="@+id/activity_tab_icon"
+            android:id="@+id/timeline_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
-            android:alpha="0.5"
+            android:alpha="0.8"
             android:background="@android:color/transparent"
             android:gravity="center"
             android:scaleType="fitXY"
@@ -51,12 +51,12 @@
             android:background="@color/gray_224" />
 
         <ImageView
-            android:id="@+id/activity_search_icon"
+            android:id="@+id/search_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
-            android:alpha="0.5"
+            android:alpha="0.4"
             android:background="@android:color/transparent"
             android:gravity="center"
             android:scaleType="fitXY"
@@ -80,12 +80,12 @@
             android:background="@color/gray_224" />
 
         <ImageView
-            android:id="@+id/submit_tab_icon"
+            android:id="@+id/submit_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
-            android:alpha="0.5"
+            android:alpha="0.4"
             android:background="@android:color/transparent"
             android:gravity="center"
             android:scaleType="fitXY"
@@ -109,12 +109,12 @@
             android:background="@color/gray_224" />
 
         <ImageView
-            android:id="@+id/profile_tab_icon"
+            android:id="@+id/profile_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
-            android:alpha="0.5"
+            android:alpha="0.4"
             android:background="@android:color/transparent"
             android:gravity="center"
             android:scaleType="fitXY"

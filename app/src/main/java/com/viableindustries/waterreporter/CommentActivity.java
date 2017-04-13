@@ -102,6 +102,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -185,6 +186,8 @@ public class CommentActivity extends AppCompatActivity implements
 
     private SharedPreferences prefs;
 
+    private Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -193,6 +196,8 @@ public class CommentActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_comment);
 
         ButterKnife.bind(this);
+
+        context = this;
 
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
@@ -352,6 +357,19 @@ public class CommentActivity extends AppCompatActivity implements
             reportCaption.setVisibility(View.VISIBLE);
 
             reportCaption.setText(report.properties.report_description.trim());
+
+            new PatternEditableBuilder().
+                    addPattern(context, Pattern.compile("\\#(\\w+)"), ContextCompat.getColor(context, R.color.waterreporter_blue),
+                            new PatternEditableBuilder.SpannableClickedListener() {
+                                @Override
+                                public void onSpanClicked(String text) {
+
+                                    Intent intent = new Intent(context, TagProfileActivity.class);
+                                    intent.putExtra("tag", text);
+                                    context.startActivity(intent);
+
+                                }
+                            }).into(reportCaption);
 
         } else {
 
