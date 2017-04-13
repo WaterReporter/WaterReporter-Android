@@ -1,5 +1,8 @@
 package com.viableindustries.waterreporter;
 
+import android.app.Application;
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -45,20 +48,22 @@ public class PatternEditableBuilder {
     /* This stores a particular pattern item
        complete with pattern, span styles, and click listener */
     public class SpannablePatternItem {
-        public SpannablePatternItem(Pattern pattern, SpannableStyleListener styles, SpannableClickedListener listener) {
+        public SpannablePatternItem(Pattern pattern, int textColor, SpannableClickedListener listener) {
             this.pattern = pattern;
-            this.styles = styles;
+            this.textColor = textColor;
             this.listener = listener;
         }
 
-        public SpannableStyleListener styles;
+        //        public SpannableStyleListener styles;
         public Pattern pattern;
+        public int textColor;
         public SpannableClickedListener listener;
     }
 
     /* This stores the style listener for a pattern item
        Used to style a particular category of spans */
     public static abstract class SpannableStyleListener {
+
         public int spanTextColor;
 
         public SpannableStyleListener() {
@@ -82,6 +87,7 @@ public class PatternEditableBuilder {
        applying the styles and invoking click listener.
      */
     public class StyledClickableSpan extends ClickableSpan {
+
         SpannablePatternItem item;
 
         public StyledClickableSpan(SpannablePatternItem item) {
@@ -90,10 +96,22 @@ public class PatternEditableBuilder {
 
         @Override
         public void updateDrawState(TextPaint ds) {
-            if (item.styles != null) {
-                item.styles.onSpanStyled(ds);
-            }
+
             super.updateDrawState(ds);
+
+            ds.setColor(item.textColor);
+            ds.bgColor = Color.WHITE;
+            ds.setUnderlineText(false);
+
+//            if (item.styles != null) {
+//                item.styles.onSpanStyled(ds);
+//            }
+////            ds.setColor(ContextCompat.getColor(, R.color.waterreporter_blue));
+////            ds.setColor("#24BAE4");
+////            ds.setUnderlineText(false);
+//
+//            super.updateDrawState(ds);
+
         }
 
         @Override
@@ -117,41 +135,41 @@ public class PatternEditableBuilder {
 
     /* These are the `addPattern` overloaded signatures */
     // Each allows us to add a span pattern with different arguments
-    public PatternEditableBuilder addPattern(Pattern pattern, SpannableStyleListener spanStyles, SpannableClickedListener listener) {
-        patterns.add(new SpannablePatternItem(pattern, spanStyles, listener));
+    public PatternEditableBuilder addPattern(Pattern pattern, int textColor, SpannableClickedListener listener) {
+        patterns.add(new SpannablePatternItem(pattern, textColor, listener));
         return this;
     }
 
-    public PatternEditableBuilder addPattern(Pattern pattern, SpannableStyleListener spanStyles) {
-        addPattern(pattern, spanStyles, null);
-        return this;
-    }
+//    public PatternEditableBuilder addPattern(Pattern pattern, SpannableStyleListener spanStyles) {
+//        addPattern(pattern, spanStyles, null);
+//        return this;
+//    }
 
-    public PatternEditableBuilder addPattern(Pattern pattern) {
-        addPattern(pattern, null, null);
-        return this;
-    }
+//    public PatternEditableBuilder addPattern(Pattern pattern) {
+//        addPattern(pattern, null, null);
+//        return this;
+//    }
 
     public PatternEditableBuilder addPattern(Pattern pattern, int textColor) {
         addPattern(pattern, textColor, null);
         return this;
     }
 
-    public PatternEditableBuilder addPattern(Pattern pattern, int textColor, SpannableClickedListener listener) {
-        SpannableStyleListener styles = new SpannableStyleListener(textColor) {
-            @Override
-            public void onSpanStyled(TextPaint ds) {
-                ds.linkColor = this.spanTextColor;
-            }
-        };
-        addPattern(pattern, styles, listener);
-        return this;
-    }
+//    public PatternEditableBuilder addPattern(Pattern pattern, int textColor, SpannableClickedListener listener) {
+////        SpannableStyleListener styles = new SpannableStyleListener(textColor) {
+////            @Override
+////            public void onSpanStyled(TextPaint ds) {
+////                ds.linkColor = this.spanTextColor;
+////            }
+////        };
+//        addPattern(pattern, textColor, listener);
+//        return this;
+//    }
 
-    public PatternEditableBuilder addPattern(Pattern pattern, SpannableClickedListener listener) {
-        addPattern(pattern, null, listener);
-        return this;
-    }
+//    public PatternEditableBuilder addPattern(Pattern pattern, SpannableClickedListener listener) {
+//        addPattern(pattern, null, listener);
+//        return this;
+//    }
 
     /* BUILDER METHODS */
 
