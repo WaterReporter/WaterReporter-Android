@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.FeatureCollection;
+import com.viableindustries.waterreporter.data.GroupListHolder;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.data.OrganizationHolder;
@@ -175,11 +176,15 @@ public class TerritoryActivity extends AppCompatActivity {
 
         // Count reports with actions
 
-        complexQuery = buildQuery(true, new String[][]{
+        complexQuery = buildQuery(true, "report", new String[][]{
                 {"state", "eq", "closed"}
         });
 
         countReports(complexQuery, "state");
+
+        // Count related groups
+
+        fetchOrganizations(10, 1, buildQuery(false, "group", null));
 
         // Retrieve first batch of posts
 
@@ -187,7 +192,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
             timeLineContainer.setRefreshing(true);
 
-            fetchReports(10, 1, buildQuery(true, null), false, false);
+            fetchReports(10, 1, buildQuery(true, "report", null), false, false);
 
         }
 
@@ -281,7 +286,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
                 if (hasGroups) {
 
-                    Intent intent = new Intent(context, UserGroupsActivity.class);
+                    Intent intent = new Intent(context, RelatedGroupsActivity.class);
 
                     intent.putExtra("GENERIC_USER", TRUE);
 
@@ -310,7 +315,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
         timeLineContainer.setRefreshing(true);
 
-        fetchReports(10, 1, buildQuery(true, null), true, true);
+        fetchReports(10, 1, buildQuery(true, "report", null), true, true);
 
     }
 
@@ -393,11 +398,14 @@ public class TerritoryActivity extends AppCompatActivity {
 
                 if (!organizations.isEmpty()) {
 
-                    groupCounter.setText(String.valueOf(organizationFeatureCollection.getProperties().num_results));
+                    int groupCount = organizations.size();
+
+                    groupCounter.setText(String.valueOf(groupCount));
+                    groupCountLabel.setText(resources.getQuantityString(R.plurals.group_label, groupCount, groupCount));
 
                     groupStat.setVisibility(View.VISIBLE);
 
-                    TerritoryGroupList.setList(organizations);
+                    GroupListHolder.setList(organizations);
 
                     hasGroups = true;
 
@@ -447,7 +455,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
                 } else {
 
-                    fetchReports(10, page, buildQuery(true, null), false, false);
+                    fetchReports(10, page, buildQuery(true, "report", null), false, false);
 
                 }
 
@@ -459,9 +467,11 @@ public class TerritoryActivity extends AppCompatActivity {
 
     }
 
-    private String buildQuery(boolean order, String[][] optionalFilters) {
+    private String buildQuery(boolean order, String collection, String[][] optionalFilters) {
 
         List<QuerySort> queryOrder = null;
+
+        List<Object> queryFilters = new ArrayList<>();
 
         // Create order_by list and add a sort parameter
 
@@ -475,23 +485,33 @@ public class TerritoryActivity extends AppCompatActivity {
 
         }
 
-        // Create filter list and add a filter parameter
+        if (collection.equals("group")) {
 
-        List<Object> queryFilters = new ArrayList<>();
+            QueryFilter territoryFilter = new QueryFilter("huc_8_name", "eq", territory.properties.huc_8_name);
 
-        QueryFilter complexVal = new QueryFilter("huc_8_name", "eq", territory.properties.huc_8_name);
+            QueryFilter complexVal = new QueryFilter("territory", "has", territoryFilter);
 
-        QueryFilter territoryFilter = new QueryFilter("territory", "has", complexVal);
+            QueryFilter complexFilter = new QueryFilter("reports", "any", complexVal);
 
-        queryFilters.add(territoryFilter);
+            queryFilters.add(complexFilter);
 
-        if (optionalFilters != null) {
+        } else {
 
-            for (String[] filterComponents : optionalFilters) {
+            QueryFilter complexVal = new QueryFilter("huc_8_name", "eq", territory.properties.huc_8_name);
 
-                QueryFilter optionalFilter = new QueryFilter(filterComponents[0], filterComponents[1], filterComponents[2]);
+            QueryFilter territoryFilter = new QueryFilter("territory", "has", complexVal);
 
-                queryFilters.add(optionalFilter);
+            queryFilters.add(territoryFilter);
+
+            if (optionalFilters != null) {
+
+                for (String[] filterComponents : optionalFilters) {
+
+                    QueryFilter optionalFilter = new QueryFilter(filterComponents[0], filterComponents[1], filterComponents[2]);
+
+                    queryFilters.add(optionalFilter);
+
+                }
 
             }
 

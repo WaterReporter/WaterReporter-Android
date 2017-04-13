@@ -226,6 +226,10 @@
             android:name=".TagProfileActivity"
             android:label="@string/title_activity_tag"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".RelatedGroupsActivity"
+            android:label="@string/title_activity_related_groups"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 
 </manifest>

@@ -19,11 +19,16 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.viableindustries.waterreporter.data.FeatureCollection;
+import com.viableindustries.waterreporter.data.GroupListHolder;
+import com.viableindustries.waterreporter.data.Organization;
+import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
+import com.viableindustries.waterreporter.data.OrganizationService;
 import com.viableindustries.waterreporter.data.QueryFilter;
 import com.viableindustries.waterreporter.data.QueryParams;
 import com.viableindustries.waterreporter.data.QuerySort;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportService;
+import com.viableindustries.waterreporter.data.TerritoryGroupList;
 import com.viableindustries.waterreporter.dialogs.ShareActionDialogListener;
 
 import java.util.ArrayList;
@@ -157,11 +162,15 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
         // Count reports with actions
 
-        complexQuery = buildQuery(true, new String[][]{
+        complexQuery = buildQuery(true, "report", new String[][]{
                 {"state", "eq", "closed"}
         });
 
         countReports(complexQuery, "state");
+
+        // Count related groups
+
+        fetchOrganizations(10, 1, buildQuery(false, "group", null));
 
         // Retrieve first batch of posts
 
@@ -169,7 +178,7 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
             timeLineContainer.setRefreshing(true);
 
-            fetchReports(5, 1, buildQuery(true, null), false, false);
+            fetchReports(5, 1, buildQuery(true, "report", null), false, false);
 
         }
 
@@ -182,7 +191,6 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
         ViewGroup header = (ViewGroup) inflater.inflate(R.layout.tag_profile_header, timeLine, false);
 
         tagNameView = (TextView) header.findViewById(R.id.tag_name);
-//        tagNameView.setText(String.format("\u0023%s", tagName));
         tagNameView.setText(tagName);
 
         reportCounter = (TextView) header.findViewById(R.id.reportCount);
@@ -247,7 +255,7 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
                 if (hasGroups) {
 
-                    Intent intent = new Intent(context, UserGroupsActivity.class);
+                    Intent intent = new Intent(context, RelatedGroupsActivity.class);
 
                     intent.putExtra("GENERIC_USER", TRUE);
 
@@ -276,7 +284,7 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
         timeLineContainer.setRefreshing(true);
 
-        fetchReports(5, 1, buildQuery(true, null), true, true);
+        fetchReports(5, 1, buildQuery(true, "report", null), true, true);
 
     }
 
@@ -355,7 +363,7 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
                 } else {
 
-                    fetchReports(5, page, buildQuery(true, null), false, false);
+                    fetchReports(5, page, buildQuery(true, "report", null), false, false);
 
                 }
 
@@ -367,9 +375,11 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
     }
 
-    private String buildQuery(boolean order, String[][] optionalFilters) {
+    private String buildQuery(boolean order, String collection, String[][] optionalFilters) {
 
         List<QuerySort> queryOrder = null;
+
+        List<Object> queryFilters = new ArrayList<>();
 
         // Create order_by list and add a sort parameter
 
@@ -385,19 +395,31 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
         // Create filter list and add a filter parameter
 
-        List<Object> queryFilters = new ArrayList<>();
+        if (collection.equals("group")) {
 
-        QueryFilter userFilter = new QueryFilter("tags__tag", "any", tagName.replace("#", ""));
+            QueryFilter tagFilter = new QueryFilter("tag", "like", String.format("%s%s%s", "%", tagName.replace("#", ""), "%"));
 
-        queryFilters.add(userFilter);
+            QueryFilter complexVal = new QueryFilter("tags", "any", tagFilter);
 
-        if (optionalFilters != null) {
+            QueryFilter complexFilter = new QueryFilter("reports", "any", complexVal);
 
-            for (String[] filterComponents : optionalFilters) {
+            queryFilters.add(complexFilter);
 
-                QueryFilter optionalFilter = new QueryFilter(filterComponents[0], filterComponents[1], filterComponents[2]);
+        } else {
 
-                queryFilters.add(optionalFilter);
+            QueryFilter userFilter = new QueryFilter("tags__tag", "any", tagName.replace("#", ""));
+
+            queryFilters.add(userFilter);
+
+            if (optionalFilters != null) {
+
+                for (String[] filterComponents : optionalFilters) {
+
+                    QueryFilter optionalFilter = new QueryFilter(filterComponents[0], filterComponents[1], filterComponents[2]);
+
+                    queryFilters.add(optionalFilter);
+
+                }
 
             }
 
@@ -408,6 +430,67 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
         QueryParams queryParams = new QueryParams(queryFilters, queryOrder);
 
         return new Gson().toJson(queryParams);
+
+    }
+
+    protected void fetchOrganizations(int limit, int page, final String query) {
+
+        final String accessToken = prefs.getString("access_token", "");
+
+        Log.d("", accessToken);
+
+        RestAdapter restAdapter = OrganizationService.restAdapter;
+
+        OrganizationService service = restAdapter.create(OrganizationService.class);
+
+        service.getOrganizations(accessToken, "application/json", page, limit, query, new Callback<OrganizationFeatureCollection>() {
+
+            @Override
+            public void success(OrganizationFeatureCollection organizationFeatureCollection, Response response) {
+
+                ArrayList<Organization> organizations = organizationFeatureCollection.getFeatures();
+
+                if (!organizations.isEmpty()) {
+
+                    int groupCount = organizations.size();
+
+                    groupCounter.setText(String.valueOf(groupCount));
+                    groupCountLabel.setText(resources.getQuantityString(R.plurals.group_label, groupCount, groupCount));
+
+                    groupStat.setVisibility(View.VISIBLE);
+
+                    GroupListHolder.setList(organizations);
+
+                    hasGroups = true;
+
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(context, SignInActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
 
     }
 
