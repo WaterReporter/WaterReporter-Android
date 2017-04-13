@@ -584,52 +584,6 @@ public class LocationActivity extends AppCompatActivity implements
         });
     }
 
-    @Override
-    protected void onStart() {
-
-        super.onStart();
-
-        if (mGoogleApiClient != null) mGoogleApiClient.connect();
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        // Within {@code onPause()}, we pause location updates, but leave the
-        // connection to GoogleApiClient intact.  Here, we resume receiving
-        // location updates if the user has requested them.
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
-            hasPermission();
-        }
-
-        //mLocationOverlay.enableMyLocation();
-        mapView.onResume();
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        // Stop location updates to save battery, but don't disconnect the GoogleApiClient object.
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-            stopLocationUpdates();
-        }
-
-        //mLocationOverlay.disableMyLocation();
-        mapView.onPause();
-
-    }
-
-    @Override
-    protected void onStop() {
-
-        super.onStop();
-
-        if (mGoogleApiClient != null) mGoogleApiClient.disconnect();
-
-    }
-
     /**
      * Runs when a GoogleApiClient object successfully connects.
      */
@@ -799,6 +753,56 @@ public class LocationActivity extends AppCompatActivity implements
     public void onLowMemory() {
         super.onLowMemory();
         mapView.onLowMemory();
+    }
+
+    @Override
+    protected void onStart() {
+
+        super.onStart();
+
+        if (mGoogleApiClient != null) mGoogleApiClient.connect();
+
+        mapView.onStart();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Within {@code onPause()}, we pause location updates, but leave the
+        // connection to GoogleApiClient intact.  Here, we resume receiving
+        // location updates if the user has requested them.
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
+            hasPermission();
+        }
+
+        //mLocationOverlay.enableMyLocation();
+        mapView.onResume();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Stop location updates to save battery, but don't disconnect the GoogleApiClient object.
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            stopLocationUpdates();
+        }
+
+        //mLocationOverlay.disableMyLocation();
+        mapView.onPause();
+
+    }
+
+    @Override
+    protected void onStop() {
+
+        super.onStop();
+
+        if (mGoogleApiClient != null) mGoogleApiClient.disconnect();
+
+        mapView.onStop();
+
     }
 
     @Override

@@ -28,7 +28,7 @@
         tools:replace="android:icon">
 
         <!-- Mapbox telemetry service -->
-        <service android:name="com.mapbox.mapboxsdk.telemetry.TelemetryService" />
+        <!--<service android:name="com.mapbox.mapboxsdk.telemetry.TelemetryService" />-->
 
         <provider
             android:name="android.support.v4.content.FileProvider"
