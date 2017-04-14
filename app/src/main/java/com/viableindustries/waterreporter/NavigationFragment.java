@@ -1,5 +1,6 @@
 package com.viableindustries.waterreporter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserHolder;
@@ -37,7 +39,10 @@ public class NavigationFragment extends Fragment {
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+
         // Setup any handles to view objects here
+
+        final Activity activity = getActivity();
 
         LinearLayout timelineTab = (LinearLayout) view.findViewById(R.id.timeline);
         LinearLayout searchTab = (LinearLayout) view.findViewById(R.id.search);
@@ -64,19 +69,19 @@ public class NavigationFragment extends Fragment {
 
                 // If the current activity is the main feed, simply refresh the timeline
 
-                if ("MainActivity".equals(getActivity().getClass().getSimpleName())) {
+                if ("MainActivity".equals(activity.getClass().getSimpleName())) {
 
-                    Log.d("activity", getActivity().getClass().getSimpleName());
+                    Log.d("activity", activity.getClass().getSimpleName());
 
-                    final SwipeRefreshLayout timeline = (SwipeRefreshLayout) getActivity().findViewById(R.id.timeline);
+                    final SwipeRefreshLayout timeline = (SwipeRefreshLayout) activity.findViewById(R.id.timeline);
 
                     timeline.setRefreshing(true);
 
-                    ((MainActivity) getActivity()).requestData(5, 1, false, true);
+                    ((MainActivity) activity).requestData(5, 1, false, true);
 
                 } else {
 
-                    startActivity(new Intent(getActivity(), MainActivity.class));
+                    startActivity(new Intent(activity, MainActivity.class));
 
                 }
 
@@ -92,7 +97,7 @@ public class NavigationFragment extends Fragment {
                 submitIcon.setAlpha(Float.valueOf("0.4"));
                 profileIcon.setAlpha(Float.valueOf("0.4"));
 
-                startActivity(new Intent(getActivity(), SearchActivity.class));
+                startActivity(new Intent(activity, SearchActivity.class));
 
             }
         });
@@ -101,14 +106,26 @@ public class NavigationFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+                Intent intent = new Intent(activity, PhotoMetaActivity.class);
+
+                if ("TagProfileActivity".equals(activity.getClass().getSimpleName())) {
+
+                    Log.d("activityContext", activity.getClass().getSimpleName());
+
+                    final TextView tagName = (TextView) activity.findViewById(R.id.tag_name);
+
+                    intent.putExtra("autoTag", tagName.getText().toString());
+
+                }
+
                 timelineIcon.setAlpha(Float.valueOf("0.4"));
                 searchIcon.setAlpha(Float.valueOf("0.4"));
                 submitIcon.setAlpha(Float.valueOf("0.8"));
                 profileIcon.setAlpha(Float.valueOf("0.4"));
 
-                startActivity(new Intent(getActivity(), PhotoMetaActivity.class));
+                startActivity(intent);
 
-                getActivity().overridePendingTransition(R.anim.animation_leave,
+                activity.overridePendingTransition(R.anim.animation_enter,
                         R.anim.animation_enter);
 
             }
@@ -138,7 +155,7 @@ public class NavigationFragment extends Fragment {
 
                 UserHolder.setUser(coreUser);
 
-                startActivity(new Intent(getActivity(), UserProfileActivity.class));
+                startActivity(new Intent(activity, UserProfileActivity.class));
 
             }
         });

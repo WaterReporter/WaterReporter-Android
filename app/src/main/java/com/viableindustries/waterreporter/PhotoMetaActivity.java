@@ -260,33 +260,45 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         if (extras != null) {
 
-            editMode = extras.getBoolean("EDIT_MODE", false);
+            // Check for presence of pre-populated hashtag
 
-            mTempImagePath = extras.getString("image_path", "");
+            String autoTag = extras.getString("autoTag", "");
 
-            mGalleryPath = extras.getString("gallery_path", "");
+            if (autoTag.length() > 0) {
 
-            Log.d("galleryPath", mGalleryPath);
+                commentsField.setText(autoTag);
 
-            mImageId = extras.getInt("image_id", 0);
+            } else {
 
-            Log.d("image_path", mTempImagePath);
+                editMode = extras.getBoolean("EDIT_MODE", false);
 
-            Log.d("image_id", mImageId + "");
+                mTempImagePath = extras.getString("image_path", "");
 
-            try {
+                mGalleryPath = extras.getString("gallery_path", "");
 
-                Picasso.with(this)
-                        .load(new File(mTempImagePath))
-                        .placeholder(R.drawable.square_placeholder)
-                        .into(mImageView);
+                Log.d("galleryPath", mGalleryPath);
 
-                mImageView.setVisibility(View.VISIBLE);
+                mImageId = extras.getInt("image_id", 0);
 
-            } catch (OutOfMemoryError om) {
+                Log.d("image_path", mTempImagePath);
 
-                //
-                Log.d("memory", "too heavy");
+                Log.d("image_id", mImageId + "");
+
+                try {
+
+                    Picasso.with(this)
+                            .load(new File(mTempImagePath))
+                            .placeholder(R.drawable.square_placeholder)
+                            .into(mImageView);
+
+                    mImageView.setVisibility(View.VISIBLE);
+
+                } catch (OutOfMemoryError om) {
+
+                    //
+                    Log.d("memory", "too heavy");
+
+                }
 
             }
 
