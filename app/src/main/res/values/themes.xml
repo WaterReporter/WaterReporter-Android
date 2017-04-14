@@ -27,9 +27,6 @@
         <!--<item name="actionMenuTextColor">@color/white</item>-->
         <item name="android:alertDialogTheme">@style/wrDialogTheme</item>
 
-        <!-- Animation style -->
-        <item name="android:windowAnimationStyle">@style/Animation.AppCompat.DropDownUp</item>
-
     </style>
 
     <style name="MyActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
@@ -104,6 +101,15 @@
         <item name="android:windowBackground">@null</item>
         <item name="android:windowFrame">@null</item>
         <item name="android:windowNoTitle">true</item>
+
+    </style>
+
+    <!-- Activity animation -->
+    <style name="wrActivityAnimation" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <!-- Animation style -->
+        <item name="android:windowAnimationStyle">@anim/animation_enter</item>
+        <!--<item name="android:windowEnterAnimation">@anim/animation_enter</item>-->
 
     </style>
 

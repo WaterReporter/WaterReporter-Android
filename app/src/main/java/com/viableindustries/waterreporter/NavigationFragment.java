@@ -108,6 +108,9 @@ public class NavigationFragment extends Fragment {
 
                 startActivity(new Intent(getActivity(), PhotoMetaActivity.class));
 
+                getActivity().overridePendingTransition(R.anim.animation_leave,
+                        R.anim.animation_enter);
+
             }
         });
 
