@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -14,15 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserHolder;
 import com.viableindustries.waterreporter.data.UserProperties;
-
-import java.util.Map;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -118,6 +113,26 @@ public class NavigationFragment extends Fragment {
 
                 }
 
+                if ("OrganizationProfileActivity".equals(activity.getClass().getSimpleName())) {
+
+                    Log.d("activityContext", activity.getClass().getSimpleName());
+
+                    final TextView tagName = (TextView) activity.findViewById(R.id.organizationName);
+
+                    intent.putExtra("autoTag", String.format("\u0023%s", tagName.getText().toString().replaceAll("[^a-zA-Z0-9]+","")));
+
+                }
+
+                if ("TerritoryActivity".equals(activity.getClass().getSimpleName())) {
+
+                    Log.d("activityContext", activity.getClass().getSimpleName());
+
+                    final TextView tagName = (TextView) activity.findViewById(R.id.territoryName);
+
+                    intent.putExtra("autoTag", String.format("\u0023%s", tagName.getText().toString().replaceAll("[^a-zA-Z0-9]+","")));
+
+                }
+
                 timelineIcon.setAlpha(Float.valueOf("0.4"));
                 searchIcon.setAlpha(Float.valueOf("0.4"));
                 submitIcon.setAlpha(Float.valueOf("0.8"));
@@ -125,8 +140,8 @@ public class NavigationFragment extends Fragment {
 
                 startActivity(intent);
 
-                activity.overridePendingTransition(R.anim.animation_enter,
-                        R.anim.animation_enter);
+                activity.overridePendingTransition(R.anim.animation_enter_right,
+                        R.anim.animation_exit_left);
 
             }
         });

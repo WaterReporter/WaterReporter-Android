@@ -93,8 +93,8 @@
     <style name="wrActivityAnimation" parent="Theme.AppCompat.Light.NoActionBar">
 
         <!-- Animation style -->
-        <item name="android:windowAnimationStyle">@anim/animation_enter</item>
-        <!--<item name="android:windowEnterAnimation">@anim/animation_enter</item>-->
+        <item name="android:windowAnimationStyle">@anim/animation_enter_right</item>
+        <!--<item name="android:windowEnterAnimation">@anim/animation_enter_right</item>-->
 
     </style>
 
