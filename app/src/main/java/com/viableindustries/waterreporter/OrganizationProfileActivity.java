@@ -219,7 +219,7 @@ public class OrganizationProfileActivity extends AppCompatActivity implements Sh
 
             timeLineContainer.setRefreshing(true);
 
-            fetchReports(10, 1, buildQuery(true, null), false, false);
+            fetchReports(5, 1, buildQuery(true, null), false, false);
 
         }
 
@@ -437,7 +437,7 @@ public class OrganizationProfileActivity extends AppCompatActivity implements Sh
 
                 timeLineContainer.setRefreshing(true);
 
-                fetchReports(10, 1, complexQuery, false, true);
+                fetchReports(5, 1, complexQuery, false, true);
 
             }
         });
@@ -475,7 +475,7 @@ public class OrganizationProfileActivity extends AppCompatActivity implements Sh
 
         timeLineContainer.setRefreshing(true);
 
-        fetchReports(10, 1, buildQuery(true, null), true, true);
+        fetchReports(5, 1, buildQuery(true, null), true, true);
 
     }
 
@@ -609,11 +609,11 @@ public class OrganizationProfileActivity extends AppCompatActivity implements Sh
 
                 if (actionFocus) {
 
-                    fetchReports(10, page, complexQuery, false, false);
+                    fetchReports(5, page, complexQuery, false, false);
 
                 } else {
 
-                    fetchReports(10, page, buildQuery(true, null), false, false);
+                    fetchReports(5, page, buildQuery(true, null), false, false);
 
                 }
 

@@ -118,16 +118,17 @@
 
                 <EditText
                     android:id="@+id/comment_input"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="false"
                     android:background="#00000000"
                     android:gravity="top|left"
                     android:hint="@string/comment_hint"
                     android:inputType="textMultiLine|textCapSentences"
-                    android:lines="5"
-                    android:maxLength="1000"
+                    android:maxLength="500"
+                    android:maxLines="5"
                     android:minLines="1"
                     android:paddingBottom="16dp"
                     android:paddingEnd="16dp"
@@ -139,10 +140,10 @@
                     android:textSize="16sp" />
 
                 <!--<View-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="0.5dp"-->
-                    <!--android:layout_alignParentBottom="true"-->
-                    <!--android:background="@color/gray_232" />-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="0.5dp"-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:background="@color/gray_232" />-->
 
             </RelativeLayout>
 

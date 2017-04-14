@@ -128,6 +128,43 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         TextView tracker;
     }
 
+    protected void presentShareDialog(final Report report) {
+
+        Log.d("Click Event", "Share button clicked.");
+
+        Resources res = context.getResources();
+
+        String[] options = res.getStringArray(socialOptions);
+
+        CharSequence[] renders = new CharSequence[2];
+
+        for (int i = 0; i < options.length; i++) {
+
+            renders[i] = HtmlCompat.fromHtml(options[i]);
+
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        builder.setItems(renders, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+
+                ReportHolder.setReport(report);
+
+                // The 'which' argument contains the index position
+                // of the selected item
+                ShareActionDialogListener activity = (ShareActionDialogListener) context;
+
+                activity.onSelectShareAction(which);
+
+            }
+        });
+
+        // Create the AlertDialog object and return it
+        builder.create().show();
+
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -256,44 +293,26 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         if (socialOptions != 0) {
 
+            viewHolder.reportThumb.setOnLongClickListener(new View.OnLongClickListener() {
+
+                @Override
+                public boolean onLongClick(View v) {
+
+                    presentShareDialog(feature);
+
+                    return true;
+
+                }
+
+            });
+
             viewHolder.shareIcon.setVisibility(View.VISIBLE);
 
             viewHolder.shareIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    Log.d("Click Event", "Share button clicked.");
-
-                    Resources res = context.getResources();
-
-                    String[] options = res.getStringArray(socialOptions);
-
-                    CharSequence[] renders = new CharSequence[2];
-
-                    for (int i = 0; i < options.length; i++) {
-
-                        renders[i] = HtmlCompat.fromHtml(options[i]);
-
-                    }
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
-                    builder.setItems(renders, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-
-                            ReportHolder.setReport(feature);
-
-                            // The 'which' argument contains the index position
-                            // of the selected item
-                            ShareActionDialogListener activity = (ShareActionDialogListener) context;
-
-                            activity.onSelectShareAction(which);
-
-                        }
-                    });
-
-                    // Create the AlertDialog object and return it
-                    builder.create().show();
+                    presentShareDialog(feature);
 
                 }
             });
@@ -386,7 +405,13 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         Picasso.with(context).load(feature.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(viewHolder.ownerAvatar);
 
-        Picasso.with(context).load(imagePath).fit().centerCrop().into(viewHolder.reportThumb);
+//        Picasso.with(context).load(imagePath).fit().centerCrop().into(viewHolder.reportThumb);
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(context));
+
+        viewHolder.reportThumb.setLayoutParams(layoutParams);
+
+        Picasso.with(context).load(imagePath).fit().into(viewHolder.reportThumb);
 
         viewHolder.reportThumb.setTag(imagePath);
 

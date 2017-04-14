@@ -192,7 +192,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
             timeLineContainer.setRefreshing(true);
 
-            fetchReports(10, 1, buildQuery(true, "report", null), false, false);
+            fetchReports(5, 1, buildQuery(true, "report", null), false, false);
 
         }
 
@@ -275,7 +275,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
                 timeLineContainer.setRefreshing(true);
 
-                fetchReports(10, 1, complexQuery, false, true);
+                fetchReports(5, 1, complexQuery, false, true);
 
             }
         });
@@ -315,7 +315,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
         timeLineContainer.setRefreshing(true);
 
-        fetchReports(10, 1, buildQuery(true, "report", null), true, true);
+        fetchReports(5, 1, buildQuery(true, "report", null), true, true);
 
     }
 
@@ -451,11 +451,11 @@ public class TerritoryActivity extends AppCompatActivity {
 
                 if (actionFocus) {
 
-                    fetchReports(10, page, complexQuery, false, false);
+                    fetchReports(5, page, complexQuery, false, false);
 
                 } else {
 
-                    fetchReports(10, page, buildQuery(true, "report", null), false, false);
+                    fetchReports(5, page, buildQuery(true, "report", null), false, false);
 
                 }
 
