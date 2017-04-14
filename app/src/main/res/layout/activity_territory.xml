@@ -40,13 +40,13 @@
             android:id="@+id/timeline"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="55dp">
+            android:layout_marginBottom="40dp">
 
             <ListView
                 android:id="@+id/timeline_items"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="55dp"
+                android:layout_marginBottom="40dp"
                 android:divider="@color/gray_232"
                 android:dividerHeight="0.5dp"
                 android:fadingEdgeLength="0dp"
