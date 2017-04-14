@@ -645,19 +645,6 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
-    /**
-     * onClick event to launch a date picker from Report view
-     **/
-    public void showDatePickerDialog(View v) {
-
-        DialogFragment newFragment = new DatePickerFragment();
-
-        FragmentManager fragmentManager = getFragmentManager();
-
-        newFragment.show(fragmentManager, "datePicker");
-
-    }
-
     protected void onPostError() {
 
         progressBar.setVisibility(View.INVISIBLE);

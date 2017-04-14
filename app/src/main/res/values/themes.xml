@@ -27,6 +27,9 @@
         <!--<item name="actionMenuTextColor">@color/white</item>-->
         <item name="android:alertDialogTheme">@style/wrDialogTheme</item>
 
+        <!-- Animation style -->
+        <item name="android:windowAnimationStyle">@style/Animation.AppCompat.DropDownUp</item>
+
     </style>
 
     <style name="MyActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">

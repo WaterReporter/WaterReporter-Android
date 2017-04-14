@@ -74,10 +74,10 @@
 
     <!-- Report -->
 
-    <string name="report_instruction">To get started, tap on the camera icon to add a photo.</string>
+    <string name="report_instruction">To get started, tap on the camera and add a photo.</string>
     <string name="comment_hint">Write a few words about the photo&#8230;</string>
     <string name="report_location_prompt">Confirm location</string>
-    <string name="report_groups_prompt">Associate this report with one or more of your groups.</string>
+    <string name="report_groups_prompt">Share with your groups.</string>
     <string name="saving">Please sit tight while we save your report&#8230;</string>
     <string name="report_received">Great! Your report was successfully broadcast on Water Reporter.</string>
 
