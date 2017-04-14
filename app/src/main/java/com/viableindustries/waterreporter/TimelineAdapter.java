@@ -71,7 +71,7 @@ import java.util.regex.Pattern;
 import static android.content.Context.MODE_PRIVATE;
 import static com.viableindustries.waterreporter.R.id.imageView;
 
-public class TimelineAdapter extends ArrayAdapter {
+public class TimelineAdapter extends ArrayAdapter<Report> {
 
     private final Context context;
 
@@ -99,7 +99,7 @@ public class TimelineAdapter extends ArrayAdapter {
 
     final private String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
 
-    public TimelineAdapter(Activity activity, List features, boolean isProfile, int socialOptions) {
+    public TimelineAdapter(Activity activity, List<Report> features, boolean isProfile, int socialOptions) {
         super(activity, 0, features);
         this.context = activity;
         this.isProfile = isProfile;

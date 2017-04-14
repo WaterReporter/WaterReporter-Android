@@ -81,6 +81,7 @@ import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -109,9 +110,6 @@ public class PhotoMetaActivity extends AppCompatActivity
     @Bind(R.id.scrollView)
     ScrollView parentLayout;
 
-    @Bind(R.id.date_input)
-    EditText dateField;
-
     @Bind(R.id.comment_input)
     EditText commentsField;
 
@@ -129,12 +127,6 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     @Bind(R.id.add_report_image)
     ImageView addImageIcon;
-
-    @Bind(R.id.date_component)
-    LinearLayout dateComponent;
-
-    @Bind(R.id.date_button_container)
-    RelativeLayout dateButtonContainer;
 
     @Bind(R.id.location_component)
     LinearLayout locationComponent;
@@ -264,8 +256,6 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         }
 
-        initializeDateField();
-
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
@@ -323,8 +313,6 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             mImageView.setVisibility(View.VISIBLE);
 
-            dateField.setText(savedInstanceState.getString("report_date"));
-
             commentsField.setText(savedInstanceState.getString("report_description"));
 
             latitude = savedInstanceState.getDouble("latitude", 0);
@@ -379,31 +367,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             Picasso.with(this).load(report.properties.images.get(0).properties.square_retina).placeholder(R.drawable.user_avatar_placeholder).into(mImageView);
 
-            // Set date text
-
-            dateField.setText(AttributeTransformUtility.parseDate(new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault()), report.properties.report_date));
-
         }
-
-        // Add click listener to date field (EditText)
-
-        dateField.setInputType(InputType.TYPE_NULL);
-
-        dateField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDatePickerDialog(v);
-            }
-        });
-
-        dateField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    showDatePickerDialog(v);
-                }
-            }
-        });
 
         // Add click listener to photo element
 
@@ -450,15 +414,11 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
-    protected void initializeDateField() {
+    protected String initializeDateField() {
 
-        UtilityMethods utilityMethods = new UtilityMethods();
-
-        int day = utilityMethods.getCurrentDay();
-        int month = utilityMethods.getCurrentMonth();
-        int year = utilityMethods.getCurrentYear();
-
-        dateField.setText(utilityMethods.getDateString(month, day, year));
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        return format.format(calendar.getTime());
 
     }
 
@@ -732,7 +692,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         accessToken = prefs.getString("access_token", "");
 
-        dateText = String.valueOf(dateField.getText());
+        dateText = initializeDateField();
 
         commentsText = commentsField.getText().toString();
 

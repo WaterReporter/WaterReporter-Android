@@ -144,85 +144,85 @@
 
         <!-- Date elements -->
 
-        <LinearLayout
-            android:id="@+id/date_component"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="16dp"
-            android:layout_marginTop="16dp"
-            android:background="#FFFFFF"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+        <!--<LinearLayout-->
+            <!--android:id="@+id/date_component"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="56dp"-->
+            <!--android:layout_gravity="bottom"-->
+            <!--android:layout_marginBottom="16dp"-->
+            <!--android:layout_marginTop="16dp"-->
+            <!--android:background="#FFFFFF"-->
+            <!--android:baselineAligned="false"-->
+            <!--android:orientation="horizontal">-->
 
-            <RelativeLayout
-                android:id="@+id/date_button_container"
-                android:layout_width="56dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="start|bottom">
+            <!--<RelativeLayout-->
+                <!--android:id="@+id/date_button_container"-->
+                <!--android:layout_width="56dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_gravity="start|bottom">-->
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_alignParentTop="true"
-                    android:background="@color/gray_232" />
+                <!--<View-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0.5dp"-->
+                    <!--android:layout_alignParentTop="true"-->
+                    <!--android:background="@color/gray_232" />-->
 
-                <ImageView
-                    android:id="@+id/change_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:alpha="0.5"
-                    android:src="@drawable/ic_today_black_24dp" />
+                <!--<ImageView-->
+                    <!--android:id="@+id/change_date"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_centerInParent="true"-->
+                    <!--android:alpha="0.5"-->
+                    <!--android:src="@drawable/ic_today_black_24dp" />-->
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/gray_232" />
+                <!--<View-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0.5dp"-->
+                    <!--android:layout_alignParentBottom="true"-->
+                    <!--android:background="@color/gray_232" />-->
 
-            </RelativeLayout>
+            <!--</RelativeLayout>-->
 
-            <RelativeLayout
-                android:id="@+id/date_box"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="bottom|center"
-                android:layout_marginBottom="0dp"
-                android:layout_marginTop="0dp"
-                android:layout_weight="1">
+            <!--<RelativeLayout-->
+                <!--android:id="@+id/date_box"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_gravity="bottom|center"-->
+                <!--android:layout_marginBottom="0dp"-->
+                <!--android:layout_marginTop="0dp"-->
+                <!--android:layout_weight="1">-->
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_alignParentTop="true"
-                    android:background="@color/gray_232" />
+                <!--<View-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0.5dp"-->
+                    <!--android:layout_alignParentTop="true"-->
+                    <!--android:background="@color/gray_232" />-->
 
-                <EditText
-                    android:id="@+id/date_input"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:background="#00000000"
-                    android:clickable="true"
-                    android:inputType="date"
-                    android:paddingBottom="16dp"
-                    android:paddingEnd="16dp"
-                    android:paddingLeft="0dp"
-                    android:paddingRight="16dp"
-                    android:paddingStart="0dp"
-                    android:paddingTop="16dp"
-                    android:textSize="16sp" />
+                <!--<EditText-->
+                    <!--android:id="@+id/date_input"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_centerInParent="true"-->
+                    <!--android:background="#00000000"-->
+                    <!--android:clickable="true"-->
+                    <!--android:inputType="date"-->
+                    <!--android:paddingBottom="16dp"-->
+                    <!--android:paddingEnd="16dp"-->
+                    <!--android:paddingLeft="0dp"-->
+                    <!--android:paddingRight="16dp"-->
+                    <!--android:paddingStart="0dp"-->
+                    <!--android:paddingTop="16dp"-->
+                    <!--android:textSize="16sp" />-->
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/gray_232" />
+                <!--<View-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0.5dp"-->
+                    <!--android:layout_alignParentBottom="true"-->
+                    <!--android:background="@color/gray_232" />-->
 
-            </RelativeLayout>
+            <!--</RelativeLayout>-->
 
-        </LinearLayout>
+        <!--</LinearLayout>-->
 
         <!-- Location capture elements -->
 

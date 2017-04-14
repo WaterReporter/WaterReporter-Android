@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-public class CommentAdapter extends ArrayAdapter {
+public class CommentAdapter extends ArrayAdapter<Comment> {
 
     private final Context context;
 
@@ -49,7 +49,7 @@ public class CommentAdapter extends ArrayAdapter {
 
     protected String groupList;
 
-    public CommentAdapter(Context context, List features, boolean isProfile) {
+    public CommentAdapter(Context context, List<Comment> features, boolean isProfile) {
         super(context, 0, features);
         this.context = context;
     }
