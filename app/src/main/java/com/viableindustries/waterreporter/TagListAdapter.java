@@ -95,11 +95,9 @@ public class TagListAdapter extends ArrayAdapter<HashTag> {
             @Override
             public void onClick(View v) {
 
-                TextView tag = (TextView) v.findViewById(R.id.tag_name);
-
                 Intent intent = new Intent(context, TagProfileActivity.class);
 
-                intent.putExtra("autoTag", tag.getText().toString());
+                intent.putExtra("tag", String.format("\u0023%s", hashTag.properties.tag));
 
                 context.startActivity(intent);
 
