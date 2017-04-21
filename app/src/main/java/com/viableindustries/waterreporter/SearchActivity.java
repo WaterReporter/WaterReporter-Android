@@ -30,6 +30,8 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.viableindustries.waterreporter.data.BooleanQueryFilter;
 import com.viableindustries.waterreporter.data.CompoundQueryFilter;
+import com.viableindustries.waterreporter.data.HashTag;
+import com.viableindustries.waterreporter.data.HashtagCollection;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.data.OrganizationService;
@@ -37,9 +39,15 @@ import com.viableindustries.waterreporter.data.QueryFilter;
 import com.viableindustries.waterreporter.data.QueryParams;
 import com.viableindustries.waterreporter.data.QuerySort;
 import com.viableindustries.waterreporter.data.ReportService;
+import com.viableindustries.waterreporter.data.TagService;
 import com.viableindustries.waterreporter.data.Territory;
 import com.viableindustries.waterreporter.data.TerritoryCollection;
 import com.viableindustries.waterreporter.data.TerritoryService;
+import com.viableindustries.waterreporter.data.TrendingGroups;
+import com.viableindustries.waterreporter.data.TrendingPeople;
+import com.viableindustries.waterreporter.data.TrendingService;
+import com.viableindustries.waterreporter.data.TrendingTags;
+import com.viableindustries.waterreporter.data.TrendingTerritories;
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserCollection;
 import com.viableindustries.waterreporter.data.UserService;
@@ -77,6 +85,9 @@ public class SearchActivity extends FragmentActivity {
     @Bind(R.id.search_watersheds)
     Button searchWatersheds;
 
+    @Bind(R.id.search_tags)
+    Button searchTags;
+
     @Bind(R.id.search_results)
     ListView searchResults;
 
@@ -96,24 +107,19 @@ public class SearchActivity extends FragmentActivity {
 
     protected UserListAdapter userListAdapter;
 
+    protected TagListAdapter tagListAdapter;
+
     ArrayList<Organization> baseOrganizationList;
 
     ArrayList<Territory> baseTerritoryList;
 
     ArrayList<User> baseUserList;
 
+    ArrayList<HashTag> baseTagList;
+
     private int activeTab = 0;
 
     private String query;
-
-    private static final String[] TITLES = {
-            "People",
-            //"Watersheds",
-            "Organizations",
-            "Tags"
-    };
-
-    public static final int NUM_TITLES = TITLES.length;
 
     Handler handler;
 
@@ -122,6 +128,8 @@ public class SearchActivity extends FragmentActivity {
     Runnable orgSearchRunnable;
 
     Runnable territorySearchRunnable;
+
+    Runnable tagSearchRunnable;
 
     private String buildQuery(String collection, String sortField, String sortDirection, String searchChars) {
 
@@ -197,6 +205,16 @@ public class SearchActivity extends FragmentActivity {
 
             }
 
+        } else if ("tag".equals(collection)) {
+
+            if (searchChars != null) {
+
+                QueryFilter tagNameFilter = new QueryFilter("tag", "like", String.format("%s%s%s", "%", searchChars, "%"));
+
+                queryFilters.add(tagNameFilter);
+
+            }
+
         } else {
 
             if (searchChars != null) {
@@ -232,52 +250,44 @@ public class SearchActivity extends FragmentActivity {
             @Override
             public void success(OrganizationFeatureCollection organizationFeatureCollection, Response response) {
 
-                ArrayList<Organization> organizations = organizationFeatureCollection.getFeatures();
-
-                if (!organizations.isEmpty()) {
-
-                    if (!filterResults) {
-
-                        baseOrganizationList.addAll(organizations);
-
-                        orgListAdapter = new OrganizationListAdapter(SearchActivity.this, baseOrganizationList, true);
-
-                    } else {
-
-                        orgListAdapter = new OrganizationListAdapter(SearchActivity.this, organizations, true);
-
-                    }
-
-                    if (switchCollection || activeTab == 1) {
-
-                        searchResults.setAdapter(orgListAdapter);
-
-                    }
-
-                }
+                onGroupSuccess(organizationFeatureCollection.getFeatures(), filterResults, switchCollection);
 
             }
 
             @Override
             public void failure(RetrofitError error) {
 
-                if (error == null) return;
+                onRequestError(error);
 
-                Response errorResponse = error.getResponse();
+            }
 
-                // If we have a valid response object, check the status code and redirect to log in view if necessary
+        });
 
-                if (errorResponse != null) {
+    }
 
-                    int status = errorResponse.getStatus();
+    protected void fetchTrendingGroups(int limit, int page, final boolean filterResults, final boolean switchCollection) {
 
-                    if (status == 403) {
+        final String accessToken = prefs.getString("access_token", "");
 
-                        startActivity(new Intent(context, SignInActivity.class));
+        Log.d("", accessToken);
 
-                    }
+        RestAdapter restAdapter = TrendingService.restAdapter;
 
-                }
+        TrendingService service = restAdapter.create(TrendingService.class);
+
+        service.getTrendingGroups(accessToken, "application/json", page, limit, new Callback<TrendingGroups>() {
+
+            @Override
+            public void success(TrendingGroups trendingGroups, Response response) {
+
+                onGroupSuccess(trendingGroups.getFeatures(), filterResults, switchCollection);
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                onRequestError(error);
 
             }
 
@@ -300,54 +310,44 @@ public class SearchActivity extends FragmentActivity {
             @Override
             public void success(UserCollection userCollection, Response response) {
 
-                Log.d("RESPONSE", response.toString());
-
-                ArrayList<User> users = userCollection.getFeatures();
-
-                if (!users.isEmpty()) {
-
-                    if (!filterResults) {
-
-                        baseUserList.addAll(users);
-
-                        userListAdapter = new UserListAdapter(SearchActivity.this, baseUserList, true);
-
-                    } else {
-
-                        userListAdapter = new UserListAdapter(SearchActivity.this, users, true);
-
-                    }
-
-                    if (switchCollection || activeTab == 0) {
-
-                        searchResults.setAdapter(userListAdapter);
-
-                    }
-
-                }
+                onPeopleSuccess(userCollection.getFeatures(), filterResults, switchCollection);
 
             }
 
             @Override
             public void failure(RetrofitError error) {
 
-                if (error == null) return;
+                onRequestError(error);
 
-                Response errorResponse = error.getResponse();
+            }
 
-                // If we have a valid response object, check the status code and redirect to log in view if necessary
+        });
 
-                if (errorResponse != null) {
+    }
 
-                    int status = errorResponse.getStatus();
+    protected void fetchTrendingPeople(int limit, int page, final boolean filterResults, final boolean switchCollection) {
 
-                    if (status == 403) {
+        final String accessToken = prefs.getString("access_token", "");
 
-                        startActivity(new Intent(context, SignInActivity.class));
+        Log.d("", accessToken);
 
-                    }
+        RestAdapter restAdapter = TrendingService.restAdapter;
 
-                }
+        TrendingService service = restAdapter.create(TrendingService.class);
+
+        service.getTrendingPeople(accessToken, "application/json", page, limit, new Callback<TrendingPeople>() {
+
+            @Override
+            public void success(TrendingPeople trendingPeople, Response response) {
+
+                onPeopleSuccess(trendingPeople.getFeatures(), filterResults, switchCollection);
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                onRequestError(error);
 
             }
 
@@ -370,56 +370,242 @@ public class SearchActivity extends FragmentActivity {
             @Override
             public void success(TerritoryCollection territoryCollection, Response response) {
 
-                ArrayList<Territory> territories = territoryCollection.getFeatures();
-
-                if (!territories.isEmpty()) {
-
-                    if (!filterResults) {
-
-                        baseTerritoryList.addAll(territories);
-
-                        territoryListAdapter = new TerritoryListAdapter(SearchActivity.this, baseTerritoryList, true);
-
-                    } else {
-
-                        territoryListAdapter = new TerritoryListAdapter(SearchActivity.this, territories, true);
-
-                    }
-
-                    if (switchCollection || activeTab == 2) {
-
-                        searchResults.setAdapter(territoryListAdapter);
-
-                    }
-
-                }
+                onTerritorySuccess(territoryCollection.getFeatures(), filterResults, switchCollection);
 
             }
 
             @Override
             public void failure(RetrofitError error) {
 
-                if (error == null) return;
-
-                Response errorResponse = error.getResponse();
-
-                // If we have a valid response object, check the status code and redirect to log in view if necessary
-
-                if (errorResponse != null) {
-
-                    int status = errorResponse.getStatus();
-
-                    if (status == 403) {
-
-                        startActivity(new Intent(context, SignInActivity.class));
-
-                    }
-
-                }
+                onRequestError(error);
 
             }
 
         });
+
+    }
+
+    protected void fetchTrendingTerritories(int limit, int page, final boolean filterResults, final boolean switchCollection) {
+
+        final String accessToken = prefs.getString("access_token", "");
+
+        Log.d("", accessToken);
+
+        RestAdapter restAdapter = TrendingService.restAdapter;
+
+        TrendingService service = restAdapter.create(TrendingService.class);
+
+        service.getTrendingTerritories(accessToken, "application/json", page, limit, new Callback<TrendingTerritories>() {
+
+            @Override
+            public void success(TrendingTerritories trendingTerritories, Response response) {
+
+                onTerritorySuccess(trendingTerritories.getFeatures(), filterResults, switchCollection);
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                onRequestError(error);
+
+            }
+
+        });
+
+    }
+
+    protected void fetchTags(int limit, int page, final String query, final boolean filterResults, final boolean switchCollection) {
+
+        final String accessToken = prefs.getString("access_token", "");
+
+        Log.d("", accessToken);
+
+        RestAdapter restAdapter = TagService.restAdapter;
+
+        TagService service = restAdapter.create(TagService.class);
+
+        service.getMany(accessToken, "application/json", page, limit, query, new Callback<HashtagCollection>() {
+
+            @Override
+            public void success(HashtagCollection hashtagCollection, Response response) {
+
+                onTagSuccess(hashtagCollection.getFeatures(), filterResults, switchCollection);
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                onRequestError(error);
+
+            }
+
+        });
+
+    }
+
+    protected void fetchTrendingTags(int limit, int page, final boolean filterResults, final boolean switchCollection) {
+
+        final String accessToken = prefs.getString("access_token", "");
+
+        Log.d("", accessToken);
+
+        RestAdapter restAdapter = TrendingService.restAdapter;
+
+        TrendingService service = restAdapter.create(TrendingService.class);
+
+        service.getTrendingTags(accessToken, "application/json", page, limit, new Callback<TrendingTags>() {
+
+            @Override
+            public void success(TrendingTags trendingTags, Response response) {
+
+                onTagSuccess(trendingTags.getFeatures(), filterResults, switchCollection);
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                onRequestError(error);
+
+            }
+
+        });
+
+    }
+
+    protected void onPeopleSuccess(ArrayList<User> users, boolean filterResults, boolean switchCollection) {
+
+        if (!users.isEmpty()) {
+
+            if (!filterResults) {
+
+                baseUserList.clear();
+
+                baseUserList.addAll(users);
+
+                userListAdapter = new UserListAdapter(SearchActivity.this, baseUserList, true);
+
+            } else {
+
+                userListAdapter = new UserListAdapter(SearchActivity.this, users, true);
+
+            }
+
+            if (switchCollection || activeTab == 0) {
+
+                searchResults.setAdapter(userListAdapter);
+
+            }
+
+        }
+
+    }
+
+    protected void onGroupSuccess(ArrayList<Organization> organizations, boolean filterResults, boolean switchCollection) {
+
+        if (!organizations.isEmpty()) {
+
+            if (!filterResults) {
+
+                baseOrganizationList.clear();
+
+                baseOrganizationList.addAll(organizations);
+
+                orgListAdapter = new OrganizationListAdapter(SearchActivity.this, baseOrganizationList, true);
+
+            } else {
+
+                orgListAdapter = new OrganizationListAdapter(SearchActivity.this, organizations, true);
+
+            }
+
+            if (switchCollection || activeTab == 1) {
+
+                searchResults.setAdapter(orgListAdapter);
+
+            }
+
+        }
+
+    }
+
+    protected void onTagSuccess(ArrayList<HashTag> hashTags, boolean filterResults, boolean switchCollection) {
+
+        if (!hashTags.isEmpty()) {
+
+            if (!filterResults) {
+
+                baseTagList.clear();
+
+                baseTagList.addAll(hashTags);
+
+                tagListAdapter = new TagListAdapter(SearchActivity.this, baseTagList, true);
+
+            } else {
+
+                tagListAdapter = new TagListAdapter(SearchActivity.this, hashTags, true);
+
+            }
+
+            if (switchCollection || activeTab == 2) {
+
+                searchResults.setAdapter(tagListAdapter);
+
+            }
+
+        }
+
+    }
+
+    protected void onTerritorySuccess(ArrayList<Territory> territories, boolean filterResults, boolean switchCollection) {
+
+        if (!territories.isEmpty()) {
+
+            if (!filterResults) {
+
+                baseTerritoryList.clear();
+
+                baseTerritoryList.addAll(territories);
+
+                territoryListAdapter = new TerritoryListAdapter(SearchActivity.this, baseTerritoryList, true);
+
+            } else {
+
+                territoryListAdapter = new TerritoryListAdapter(SearchActivity.this, territories, true);
+
+            }
+
+            if (switchCollection || activeTab == 3) {
+
+                searchResults.setAdapter(territoryListAdapter);
+
+            }
+
+        }
+
+    }
+
+    protected void onRequestError(RetrofitError error) {
+
+        if (error == null) return;
+
+        Response errorResponse = error.getResponse();
+
+        // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+        if (errorResponse != null) {
+
+            int status = errorResponse.getStatus();
+
+            if (status == 403) {
+
+                startActivity(new Intent(context, SignInActivity.class));
+
+            }
+
+        }
 
     }
 
@@ -446,11 +632,17 @@ public class SearchActivity extends FragmentActivity {
 
         baseTerritoryList = new ArrayList<Territory>();
 
-        fetchUsers(10, 1, buildQuery("user", "last_name", "asc", null), false, true);
+        // Initialize empty list to hold hashtags
 
-        fetchOrganizations(10, 1, buildQuery("organization", "name", "asc", null), false, false);
+        baseTagList = new ArrayList<HashTag>();
 
-        fetchTerritories(10, 1, buildQuery("territory", "huc_8_name", "asc", null), false, false);
+        fetchTrendingPeople(10, 1, false, true);
+
+        fetchTrendingGroups(10, 1, false, false);
+
+        fetchTrendingTerritories(10, 1, false, false);
+
+        fetchTrendingTags(10, 1, false, false);
 
         searchPeople.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -470,7 +662,7 @@ public class SearchActivity extends FragmentActivity {
 
                     Log.d("Switch tab", "User list is empty");
 
-                    fetchUsers(10, 1, buildQuery("user", "last_name", "asc", null), false, true);
+                    fetchTrendingPeople(10, 1, false, true);
 
                 } else {
 
@@ -503,7 +695,7 @@ public class SearchActivity extends FragmentActivity {
 
                     Log.d("Switch tab", "Org list is empty");
 
-                    fetchOrganizations(10, 1, buildQuery("organization", "name", "asc", null), false, true);
+                    fetchTrendingGroups(10, 1, false, true);
 
                 } else {
 
@@ -519,6 +711,40 @@ public class SearchActivity extends FragmentActivity {
 
         });
 
+        searchTags.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.d("Switch tab", "tags");
+
+                searchResults.setAdapter(null);
+
+                activeTab = 2;
+
+                if (query != null && !query.isEmpty()) {
+
+                    fetchTags(10, 1, buildQuery("tag", "id", "desc", query), true, false);
+
+                } else if (baseTerritoryList.isEmpty()) {
+
+                    Log.d("Switch tab", "Tag list is empty");
+
+                    fetchTrendingTags(10, 1, false, true);
+
+                } else {
+
+                    Log.d("Switch tab", "Tag list not empty");
+
+                    tagListAdapter = new TagListAdapter(SearchActivity.this, baseTagList, true);
+
+                    searchResults.setAdapter(tagListAdapter);
+
+                }
+
+            }
+
+        });
+
         searchWatersheds.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -527,7 +753,7 @@ public class SearchActivity extends FragmentActivity {
 
                 searchResults.setAdapter(null);
 
-                activeTab = 2;
+                activeTab = 3;
 
                 if (query != null && !query.isEmpty()) {
 
@@ -537,7 +763,7 @@ public class SearchActivity extends FragmentActivity {
 
                     Log.d("Switch tab", "Territory list is empty");
 
-                    fetchTerritories(10, 1, buildQuery("territory", "huc_8_name", "asc", null), false, true);
+                    fetchTrendingTerritories(10, 1, false, true);
 
                 } else {
 
@@ -569,21 +795,68 @@ public class SearchActivity extends FragmentActivity {
         userSearchRunnable = new Runnable() {
             @Override
             public void run() {
-                fetchUsers(10, 1, buildQuery("user", "last_name", "asc", query), true, true);
+
+                if (query.isEmpty()) {
+
+                    fetchTrendingPeople(10, 1, false, false);
+
+                } else {
+
+                    fetchUsers(10, 1, buildQuery("user", "last_name", "asc", query), true, true);
+
+                }
+
             }
         };
 
         orgSearchRunnable = new Runnable() {
             @Override
             public void run() {
-                fetchOrganizations(10, 1, buildQuery("organization", "name", "asc", query), true, false);
+
+                if (query.isEmpty()) {
+
+                    fetchTrendingGroups(10, 1, false, false);
+
+                } else {
+
+                    fetchOrganizations(10, 1, buildQuery("organization", "name", "asc", query), true, false);
+
+                }
+
             }
         };
 
         territorySearchRunnable = new Runnable() {
             @Override
             public void run() {
-                fetchTerritories(10, 1, buildQuery("territory", "huc_8_name", "asc", query), true, false);
+
+                if (query.isEmpty()) {
+
+                    fetchTrendingTerritories(10, 1, false, false);
+
+                } else {
+
+                    fetchTerritories(10, 1, buildQuery("territory", "huc_8_name", "asc", query), true, false);
+
+                }
+
+            }
+        };
+
+        tagSearchRunnable = new Runnable() {
+            @Override
+            public void run() {
+
+                if (query.isEmpty()) {
+
+                    fetchTrendingTags(10, 1, false, false);
+
+                } else {
+
+                    fetchTags(10, 1, buildQuery("tag", "id", "desc", query), true, false);
+
+                }
+
             }
         };
 
@@ -633,6 +906,14 @@ public class SearchActivity extends FragmentActivity {
                         break;
 
                     case 2:
+
+                        handler.removeCallbacks(tagSearchRunnable);
+
+                        handler.postDelayed(tagSearchRunnable, 300 /*delay*/);
+
+                        break;
+
+                    case 3:
 
                         handler.removeCallbacks(territorySearchRunnable);
 

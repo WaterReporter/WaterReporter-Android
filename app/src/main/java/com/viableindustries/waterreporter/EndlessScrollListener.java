@@ -40,38 +40,30 @@ public abstract class EndlessScrollListener implements AbsListView.OnScrollListe
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
-//        if (currentPage >= 1) {
-
-//            this.currentPage = 0;
-//            this.previousTotalItemCount = 0;
-//            this.loading = false;
-
-            // If the total item count is zero and the previous isn't, assume the
-            // list is invalidated and should be reset back to initial state
-            if (totalItemCount < previousTotalItemCount) {
-                this.currentPage = this.startingPageIndex;
-                this.previousTotalItemCount = totalItemCount;
-                if (totalItemCount == 0) {
-                    this.loading = true;
-                }
+        // If the total item count is zero and the previous isn't, assume the
+        // list is invalidated and should be reset back to initial state
+        if (totalItemCount < previousTotalItemCount) {
+            this.currentPage = this.startingPageIndex;
+            this.previousTotalItemCount = totalItemCount;
+            if (totalItemCount == 0) {
+                this.loading = true;
             }
-            // If it's still loading, we check to see if the dataset count has
-            // changed, if so we conclude it has finished loading and update the current page
-            // number and total item count.
-            if (loading && (totalItemCount > previousTotalItemCount)) {
-                loading = false;
-                previousTotalItemCount = totalItemCount;
-                currentPage++;
-            }
+        }
+        // If it's still loading, we check to see if the dataset count has
+        // changed, if so we conclude it has finished loading and update the current page
+        // number and total item count.
+        if (loading && (totalItemCount > previousTotalItemCount)) {
+            loading = false;
+            previousTotalItemCount = totalItemCount;
+            currentPage++;
+        }
 
-            // If it isn't currently loading, we check to see if we have breached
-            // the visibleThreshold and need to reload more data.
-            // If we do need to reload some more data, we execute onLoadMore to fetch the data.
-            if (!loading && (firstVisibleItem + visibleItemCount + visibleThreshold) >= totalItemCount) {
-                loading = onLoadMore(currentPage + 1, totalItemCount);
-            }
-
-//        }
+        // If it isn't currently loading, we check to see if we have breached
+        // the visibleThreshold and need to reload more data.
+        // If we do need to reload some more data, we execute onLoadMore to fetch the data.
+        if (!loading && (firstVisibleItem + visibleItemCount + visibleThreshold) >= totalItemCount) {
+            loading = onLoadMore(currentPage + 1, totalItemCount);
+        }
 
         Log.d("currentPage", "" + currentPage);
 
