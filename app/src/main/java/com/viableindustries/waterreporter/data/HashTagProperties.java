@@ -16,4 +16,7 @@ public class HashTagProperties implements Serializable {
     @SerializedName("tag")
     public String tag;
 
+    @SerializedName("reports")
+    public List<Report> reports;
+
 }

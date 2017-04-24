@@ -168,6 +168,10 @@
         <item quantity="one">Post</item>
         <item quantity="other">Posts</item>
     </plurals>
+    <plurals name="post_label_lower">
+        <item quantity="one">post</item>
+        <item quantity="other">posts</item>
+    </plurals>
     <plurals name="action_label">
         <item quantity="one">Action</item>
         <item quantity="other">Actions</item>

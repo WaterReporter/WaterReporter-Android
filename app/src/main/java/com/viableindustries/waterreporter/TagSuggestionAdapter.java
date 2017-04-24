@@ -44,6 +44,7 @@ public class TagSuggestionAdapter extends ArrayAdapter<HashTag> {
 
     private static class ViewHolder {
         TextView tagName;
+        TextView useCount;
         LinearLayout tagItem;
     }
 
@@ -67,11 +68,12 @@ public class TagSuggestionAdapter extends ArrayAdapter<HashTag> {
 
         if (convertView == null) {
 
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.tag_list_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.tag_suggestion_item, parent, false);
 
             viewHolder = new TagSuggestionAdapter.ViewHolder();
 
             viewHolder.tagName = (TextView) convertView.findViewById(R.id.tag_name);
+            viewHolder.useCount = (TextView) convertView.findViewById(R.id.use_count);
             viewHolder.tagItem = (LinearLayout) convertView.findViewById(R.id.tag_item);
 
             convertView.setTag(viewHolder);
@@ -87,6 +89,22 @@ public class TagSuggestionAdapter extends ArrayAdapter<HashTag> {
         // Populate layout elements
 
         viewHolder.tagName.setText(String.format("\u0023%s", hashTag.properties.tag));
+
+        int reportCount = hashTag.properties.reports.size();
+
+        if (reportCount > 0) {
+
+            viewHolder.useCount.setVisibility(View.VISIBLE);
+
+            String quantityString = context.getResources().getQuantityString(R.plurals.post_label_lower, reportCount, reportCount);
+
+            viewHolder.useCount.setText(String.format("%s %s", hashTag.properties.reports.size(), quantityString));
+
+        } else {
+
+            viewHolder.useCount.setVisibility(View.GONE);
+
+        }
 
         // Add click listeners to layout elements
 
