@@ -209,7 +209,7 @@ public class SearchActivity extends FragmentActivity {
 
             if (searchChars != null) {
 
-                QueryFilter tagNameFilter = new QueryFilter("tag", "like", String.format("%s%s%s", "%", searchChars, "%"));
+                QueryFilter tagNameFilter = new QueryFilter("tag", "ilike", String.format("%s%s%s", "%", searchChars, "%"));
 
                 queryFilters.add(tagNameFilter);
 
