@@ -170,7 +170,23 @@ public class NavigationFragment extends Fragment {
 
                 UserHolder.setUser(coreUser);
 
-                startActivity(new Intent(activity, UserProfileActivity.class));
+                // If the current activity is the authenticated user's profile, simply refresh the timeline
+
+                if ("UserProfileActivity".equals(activity.getClass().getSimpleName())) {
+
+                    Log.d("activity", activity.getClass().getSimpleName());
+
+                    final SwipeRefreshLayout timeline = (SwipeRefreshLayout) activity.findViewById(R.id.timeline);
+
+                    timeline.setRefreshing(true);
+
+                    ((UserProfileActivity) activity).fetchReports(5, 1, QueryBuilder.userQuery(true, coreId, null), true);
+
+                } else {
+
+                    startActivity(new Intent(activity, UserProfileActivity.class));
+
+                }
 
             }
         });

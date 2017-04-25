@@ -632,7 +632,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     }
 
-    private void fetchReports(int limit, final int page, String query, final boolean refresh) {
+    public void fetchReports(int limit, final int page, String query, final boolean refresh) {
 
         final String accessToken = prefs.getString("access_token", "");
 
@@ -704,80 +704,6 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
                     }
 
                 }
-
-//                if (reportCount == 99999999) {
-//
-//                    reportCount = featureCollection.getProperties().num_results;
-//
-//                    if (reportCount > 0) {
-//
-//                        reportStat.setVisibility(View.VISIBLE);
-//
-//                        reportCounter.setText(String.valueOf(reportCount));
-//
-//                        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
-//
-//                    } else {
-//
-//                        reportStat.setVisibility(View.GONE);
-//
-//                    }
-//
-//                }
-//
-//                if (!reports.isEmpty()) {
-//
-//                    if (replace) {
-//
-//                        reportCollection = reports;
-//
-//                        populateTimeline(reportCollection);
-//
-//                    } else {
-//
-//                        reportCollection.addAll(reports);
-//
-//                        try {
-//
-//                            timelineAdapter.notifyDataSetChanged();
-//
-//                        } catch (NullPointerException ne) {
-//
-//                            populateTimeline(reportCollection);
-//
-//                        }
-//
-//                    }
-//
-//                } else {
-//
-//                    reportCollection = reports;
-//
-//                    populateTimeline(reportCollection);
-//
-//                }
-//
-//                if (refresh) {
-//
-//                    reportCollection = reports;
-//
-//                    reportCount = featureCollection.getProperties().num_results;
-//
-//                    if (reportCount > 0) {
-//
-//                        reportStat.setVisibility(View.VISIBLE);
-//
-//                        reportCounter.setText(String.valueOf(reportCount));
-//
-//                    } else {
-//
-//                        reportStat.setVisibility(View.GONE);
-//
-//                    }
-//
-//                    populateTimeline(reportCollection);
-//
-//                }
 
                 timeLineContainer.setRefreshing(false);
 
