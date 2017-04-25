@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.app.Activity;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -129,35 +130,6 @@ public class GroupActionListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // This needs to be in its own utility service
-
-//    private void connectionStatus() {
-//
-//        ConnectivityManager connMgr = (ConnectivityManager)
-//                getSystemService(Context.CONNECTIVITY_SERVICE);
-//
-//        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-//
-//        if (networkInfo != null && networkInfo.isConnected()) {
-//
-//            organizationListContainer.setRefreshing(true);
-//
-//            buildList(1, 20, true);
-//
-//        } else {
-//
-//            CharSequence text = "Looks like you're not connected to the internet, so we couldn't retrieve your site collection.";
-//
-//            int duration = Toast.LENGTH_SHORT;
-//
-//            Toast toast = Toast.makeText(getBaseContext(), text, duration);
-//
-//            toast.show();
-//
-//        }
-//
-//    }
-
     private void attachScrollListener() {
 
         listView.setOnScrollListener(new EndlessScrollListener() {
@@ -199,8 +171,6 @@ public class GroupActionListActivity extends AppCompatActivity {
         String query = new Gson().toJson(queryParams);
 
         Log.d("URL", query);
-
-//        organizationListContainer.setRefreshing(true);
 
         service.getOrganizations(accessToken, "application/json", page, limit, query, new Callback<OrganizationFeatureCollection>() {
 
@@ -270,29 +240,37 @@ public class GroupActionListActivity extends AppCompatActivity {
 
         adapter = new GroupActionListAdapter(this, orgs, true);
 
-        listFilter.addTextChangedListener(new TextWatcher() {
+        try {
 
-            public void afterTextChanged(Editable s) {
-            }
+            listFilter.addTextChangedListener(new TextWatcher() {
 
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+                public void afterTextChanged(Editable s) {
+                }
 
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
 
-                Log.d("filter", s.toString());
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                adapter.getFilter().filter(s.toString());
+                    Log.d("filter", s.toString());
 
-            }
+                    adapter.getFilter().filter(s.toString());
 
-        });
+                }
 
-        listView.setAdapter(adapter);
+            });
 
-        // Enable ListView filtering
+            listView.setAdapter(adapter);
 
-        listView.setTextFilterEnabled(true);
+            // Enable ListView filtering
+
+            listView.setTextFilterEnabled(true);
+
+        } catch (NullPointerException e) {
+
+            //
+
+        }
 
         attachScrollListener();
 
@@ -316,6 +294,11 @@ public class GroupActionListActivity extends AppCompatActivity {
 
         super.onPause();
 
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 
     @Override

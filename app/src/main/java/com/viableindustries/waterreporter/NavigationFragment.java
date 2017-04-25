@@ -39,6 +39,10 @@ public class NavigationFragment extends Fragment {
 
         final Activity activity = getActivity();
 
+        final SharedPreferences coreProfile = getContext().getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+        final int coreId = coreProfile.getInt("id", 0);
+
         LinearLayout timelineTab = (LinearLayout) view.findViewById(R.id.timeline);
         LinearLayout searchTab = (LinearLayout) view.findViewById(R.id.search);
         LinearLayout submitTab = (LinearLayout) view.findViewById(R.id.submit);
@@ -49,6 +53,22 @@ public class NavigationFragment extends Fragment {
         final ImageView submitIcon = (ImageView) view.findViewById(R.id.submit_icon);
         final ImageView profileIcon = (ImageView) view.findViewById(R.id.profile_icon);
 
+        if ("AuthUserActivity".equals(activity.getClass().getSimpleName())) {
+
+            timelineIcon.setAlpha(Float.valueOf("0.4"));
+            searchIcon.setAlpha(Float.valueOf("0.4"));
+            submitIcon.setAlpha(Float.valueOf("0.4"));
+            profileIcon.setAlpha(Float.valueOf("0.8"));
+
+        } else if ("MainActivity".equals(activity.getClass().getSimpleName())) {
+
+            timelineIcon.setAlpha(Float.valueOf("0.8"));
+            searchIcon.setAlpha(Float.valueOf("0.4"));
+            submitIcon.setAlpha(Float.valueOf("0.4"));
+            profileIcon.setAlpha(Float.valueOf("0.4"));
+
+        }
+
         timelineTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,11 +76,6 @@ public class NavigationFragment extends Fragment {
                 Context context = getContext();
 
                 Log.d("context", context.toString());
-
-                timelineIcon.setAlpha(Float.valueOf("0.8"));
-                searchIcon.setAlpha(Float.valueOf("0.4"));
-                submitIcon.setAlpha(Float.valueOf("0.4"));
-                profileIcon.setAlpha(Float.valueOf("0.4"));
 
                 // If the current activity is the main feed, simply refresh the timeline
 
@@ -119,7 +134,7 @@ public class NavigationFragment extends Fragment {
 
                     final TextView tagName = (TextView) activity.findViewById(R.id.organizationName);
 
-                    intent.putExtra("autoTag", String.format("\u0023%s", tagName.getText().toString().replaceAll("[^a-zA-Z0-9]+","")));
+                    intent.putExtra("autoTag", String.format("\u0023%s", tagName.getText().toString().replaceAll("[^a-zA-Z0-9]+", "")));
 
                 }
 
@@ -129,7 +144,7 @@ public class NavigationFragment extends Fragment {
 
                     final TextView tagName = (TextView) activity.findViewById(R.id.territoryName);
 
-                    intent.putExtra("autoTag", String.format("\u0023%s", tagName.getText().toString().replaceAll("[^a-zA-Z0-9]+","")));
+                    intent.putExtra("autoTag", String.format("\u0023%s", tagName.getText().toString().replaceAll("[^a-zA-Z0-9]+", "")));
 
                 }
 
@@ -150,29 +165,11 @@ public class NavigationFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                final SharedPreferences coreProfile = getContext().getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
-
-                int coreId = coreProfile.getInt("id", 0);
-
                 Log.d("avatar", coreProfile.getString("picture", ""));
-
-                timelineIcon.setAlpha(Float.valueOf("0.4"));
-                searchIcon.setAlpha(Float.valueOf("0.4"));
-                submitIcon.setAlpha(Float.valueOf("0.4"));
-                profileIcon.setAlpha(Float.valueOf("0.8"));
-
-                UserProperties userProperties = new UserProperties(coreId, coreProfile.getString("description", ""),
-                        coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
-                        coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
-                        coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null);
-
-                User coreUser = User.createUser(coreId, userProperties);
-
-                UserHolder.setUser(coreUser);
 
                 // If the current activity is the authenticated user's profile, simply refresh the timeline
 
-                if ("UserProfileActivity".equals(activity.getClass().getSimpleName())) {
+                if ("AuthUserActivity".equals(activity.getClass().getSimpleName())) {
 
                     Log.d("activity", activity.getClass().getSimpleName());
 
@@ -180,11 +177,20 @@ public class NavigationFragment extends Fragment {
 
                     timeline.setRefreshing(true);
 
-                    ((UserProfileActivity) activity).fetchReports(5, 1, QueryBuilder.userQuery(true, coreId, null), true);
+                    ((AuthUserActivity) activity).fetchReports(5, 1, QueryBuilder.userQuery(true, coreId, null), true);
 
                 } else {
 
-                    startActivity(new Intent(activity, UserProfileActivity.class));
+                    UserProperties userProperties = new UserProperties(coreId, coreProfile.getString("description", ""),
+                            coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
+                            coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
+                            coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null);
+
+                    User coreUser = User.createUser(coreId, userProperties);
+
+                    UserHolder.setUser(coreUser);
+
+                    startActivity(new Intent(activity, AuthUserActivity.class));
 
                 }
 

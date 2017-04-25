@@ -28,7 +28,7 @@
         tools:replace="android:icon">
 
         <!-- Mapbox telemetry service -->
-        <!--<service android:name="com.mapbox.mapboxsdk.telemetry.TelemetryService" />-->
+        <!-- <service android:name="com.mapbox.mapboxsdk.telemetry.TelemetryService" /> -->
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -263,6 +263,12 @@
             android:name=".RelatedGroupsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_related_groups"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".AuthUserActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_auth_user"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
