@@ -180,7 +180,7 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
             timeLineContainer.setRefreshing(true);
 
-            fetchReports(5, 1, buildQuery(true, "report", null), false, false);
+            fetchReports(5, 1, buildQuery(true, "report", null), false);
 
         }
 
@@ -192,11 +192,11 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
                 if (actionFocus) {
 
-                    fetchReports(5, page, complexQuery, false, false);
+                    fetchReports(5, page, complexQuery, false);
 
                 } else {
 
-                    fetchReports(5, page, buildQuery(true, "report", null), false, false);
+                    fetchReports(5, page, buildQuery(true, "report", null), false);
 
                 }
 
@@ -267,7 +267,7 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
                 timeLineContainer.setRefreshing(true);
 
-                fetchReports(5, 1, complexQuery, false, true);
+                fetchReports(5, 1, complexQuery, true);
 
             }
         });
@@ -307,7 +307,7 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
         timeLineContainer.setRefreshing(true);
 
-        fetchReports(5, 1, buildQuery(true, "report", null), true, true);
+        fetchReports(5, 1, buildQuery(true, "report", null), true);
 
     }
 
@@ -496,7 +496,7 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
     }
 
-    private void fetchReports(int limit, final int page, String query, final boolean refresh, final boolean replace) {
+    private void fetchReports(int limit, final int page, String query, final boolean refresh) {
 
         final String accessToken = prefs.getString("access_token", "");
 
@@ -517,7 +517,11 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
                 Log.v("list", reports.toString());
 
-                reportCount = featureCollection.getProperties().num_results;
+                if (reportCount == 99999999) {
+
+                    reportCount = featureCollection.getProperties().num_results;
+
+                }
 
                 if (reportCount > 0) {
 
@@ -564,80 +568,6 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
                     }
 
                 }
-
-//                if (reportCount == 99999999) {
-//
-//                    reportCount = featureCollection.getProperties().num_results;
-//
-//                    if (reportCount > 0) {
-//
-//                        reportStat.setVisibility(View.VISIBLE);
-//
-//                        reportCounter.setText(String.valueOf(reportCount));
-//
-//                        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
-//
-//                    } else {
-//
-//                        reportStat.setVisibility(View.GONE);
-//
-//                    }
-//
-//                }
-
-//                if (!reports.isEmpty()) {
-//
-//                    reportCollection.addAll(reports);
-//
-//                    if (replace) {
-//
-//                        reportCollection = reports;
-//
-//                        populateTimeline(reportCollection);
-//
-//                    } else {
-//
-//                        try {
-//
-//                            timelineAdapter.notifyDataSetChanged();
-//
-//                        } catch (NullPointerException ne) {
-//
-//                            populateTimeline(reportCollection);
-//
-//                        }
-//
-//                    }
-//
-//                } else {
-//
-//                    reportCollection = reports;
-//
-//                    populateTimeline(reportCollection);
-//
-//                }
-//
-//                if (refresh) {
-//
-//                    reportCollection = reports;
-//
-//                    reportCount = featureCollection.getProperties().num_results;
-//
-//                    if (reportCount > 0) {
-//
-//                        reportStat.setVisibility(View.VISIBLE);
-//
-//                        reportCounter.setText(String.valueOf(reportCount));
-//
-//                    } else {
-//
-//                        reportStat.setVisibility(View.GONE);
-//
-//                    }
-//
-//                    populateTimeline(reportCollection);
-//
-//                }
 
                 timeLineContainer.setRefreshing(false);
 

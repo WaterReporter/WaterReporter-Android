@@ -167,6 +167,8 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     private Resources resources;
 
+    private EndlessScrollListener scrollListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -254,9 +256,30 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
             timeLineContainer.setRefreshing(true);
 
-            fetchReports(5, 1, buildQuery(true, null), false, false);
+            fetchReports(5, 1, buildQuery(true, null), false);
 
         }
+
+        scrollListener = new EndlessScrollListener() {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+
+                // Triggered only when new data needs to be appended to the list
+
+                if (actionFocus) {
+
+                    fetchReports(5, page, complexQuery, false);
+
+                } else {
+
+                    fetchReports(5, page, buildQuery(true, null), false);
+
+                }
+
+                return true; // ONLY if more data is actually being loaded; false otherwise.
+
+            }
+        };
 
     }
 
@@ -414,7 +437,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                 timeLineContainer.setRefreshing(true);
 
-                fetchReports(5, 1, complexQuery, false, true);
+                fetchReports(5, 1, complexQuery, true);
 
             }
         });
@@ -561,28 +584,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     private void attachScrollListener() {
 
-        timeLine.setOnScrollListener(new EndlessScrollListener() {
-
-            @Override
-            public boolean onLoadMore(int page, int totalItemsCount) {
-
-                // Triggered only when new data needs to be appended to the list
-
-                if (actionFocus) {
-
-                    fetchReports(5, page, complexQuery, false, false);
-
-                } else {
-
-                    fetchReports(5, page, buildQuery(true, null), false, false);
-
-                }
-
-                return true; // ONLY if more data is actually being loaded; false otherwise.
-
-            }
-
-        });
+        timeLine.setOnScrollListener(scrollListener);
 
     }
 
@@ -630,7 +632,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     }
 
-    private void fetchReports(int limit, int page, String query, final boolean refresh, final boolean replace) {
+    private void fetchReports(int limit, final int page, String query, final boolean refresh) {
 
         final String accessToken = prefs.getString("access_token", "");
 
@@ -655,75 +657,127 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                     reportCount = featureCollection.getProperties().num_results;
 
-                    if (reportCount > 0) {
+                }
 
-                        reportStat.setVisibility(View.VISIBLE);
+                if (reportCount > 0) {
 
-                        reportCounter.setText(String.valueOf(reportCount));
+                    reportStat.setVisibility(View.VISIBLE);
 
-                        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
+                    reportCounter.setText(String.valueOf(reportCount));
 
-                    } else {
+                    reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
 
-                        reportStat.setVisibility(View.GONE);
+                } else {
 
-                    }
+                    reportStat.setVisibility(View.GONE);
 
                 }
 
-                if (!reports.isEmpty()) {
+                if (refresh || reportCollection.isEmpty()) {
 
-                    if (replace) {
+                    reportCollection.clear();
 
-                        reportCollection = reports;
+                    reportCollection.addAll(reports);
+
+                    scrollListener.resetState();
+
+                    try {
+
+                        timelineAdapter.notifyDataSetChanged();
+
+                        timeLine.smoothScrollToPosition(0);
+
+                    } catch (NullPointerException e) {
 
                         populateTimeline(reportCollection);
-
-                    } else {
-
-                        reportCollection.addAll(reports);
-
-                        try {
-
-                            timelineAdapter.notifyDataSetChanged();
-
-                        } catch (NullPointerException ne) {
-
-                            populateTimeline(reportCollection);
-
-                        }
 
                     }
 
                 } else {
 
-                    reportCollection = reports;
+                    if (page > 1) {
 
-                    populateTimeline(reportCollection);
+                        reportCollection.addAll(reports);
 
-                }
-
-                if (refresh) {
-
-                    reportCollection = reports;
-
-                    reportCount = featureCollection.getProperties().num_results;
-
-                    if (reportCount > 0) {
-
-                        reportStat.setVisibility(View.VISIBLE);
-
-                        reportCounter.setText(String.valueOf(reportCount));
-
-                    } else {
-
-                        reportStat.setVisibility(View.GONE);
+                        timelineAdapter.notifyDataSetChanged();
 
                     }
 
-                    populateTimeline(reportCollection);
-
                 }
+
+//                if (reportCount == 99999999) {
+//
+//                    reportCount = featureCollection.getProperties().num_results;
+//
+//                    if (reportCount > 0) {
+//
+//                        reportStat.setVisibility(View.VISIBLE);
+//
+//                        reportCounter.setText(String.valueOf(reportCount));
+//
+//                        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
+//
+//                    } else {
+//
+//                        reportStat.setVisibility(View.GONE);
+//
+//                    }
+//
+//                }
+//
+//                if (!reports.isEmpty()) {
+//
+//                    if (replace) {
+//
+//                        reportCollection = reports;
+//
+//                        populateTimeline(reportCollection);
+//
+//                    } else {
+//
+//                        reportCollection.addAll(reports);
+//
+//                        try {
+//
+//                            timelineAdapter.notifyDataSetChanged();
+//
+//                        } catch (NullPointerException ne) {
+//
+//                            populateTimeline(reportCollection);
+//
+//                        }
+//
+//                    }
+//
+//                } else {
+//
+//                    reportCollection = reports;
+//
+//                    populateTimeline(reportCollection);
+//
+//                }
+//
+//                if (refresh) {
+//
+//                    reportCollection = reports;
+//
+//                    reportCount = featureCollection.getProperties().num_results;
+//
+//                    if (reportCount > 0) {
+//
+//                        reportStat.setVisibility(View.VISIBLE);
+//
+//                        reportCounter.setText(String.valueOf(reportCount));
+//
+//                    } else {
+//
+//                        reportStat.setVisibility(View.GONE);
+//
+//                    }
+//
+//                    populateTimeline(reportCollection);
+//
+//                }
 
                 timeLineContainer.setRefreshing(false);
 
@@ -787,7 +841,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         timeLineContainer.setRefreshing(true);
 
-        fetchReports(5, 1, buildQuery(true, null), true, true);
+        fetchReports(5, 1, buildQuery(true, null), true);
 
     }
 
