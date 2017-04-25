@@ -45,65 +45,79 @@
         android:layout_height="0.5dp"
         android:background="@color/gray_232" />
 
-    <LinearLayout
-        android:id="@+id/groupStat"
-        style="?android:attr/buttonBarStyle"
+    <HorizontalScrollView
+        android:id="@+id/tag_component"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#F7F7F7"
-        android:orientation="horizontal"
-        android:paddingLeft="0dp"
-        android:paddingRight="16dp">
+        android:background="#FFFFFF"
+        android:baselineAligned="false">
 
-        <Button
-            android:id="@+id/search_people"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:text="People"
-            android:textAllCaps="true"
-            android:textColor="@color/material_blue_grey950" />
+        <LinearLayout
+            android:id="@+id/groupStat"
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:background="#F7F7F7"
+            android:orientation="horizontal"
+            android:paddingLeft="56dp"
+            android:paddingRight="0dp">
 
-        <Button
-            android:id="@+id/search_organizations"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:text="Groups"
-            android:textAllCaps="true"
-            android:textColor="@color/material_blue_grey950" />
+            <Button
+                android:id="@+id/search_people"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:paddingLeft="0dp"
+                android:paddingRight="56dp"
+                android:text="People"
+                android:textAllCaps="true"
+                android:textColor="@color/material_blue_grey950" />
 
-        <Button
-            android:id="@+id/search_tags"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:text="Tags"
-            android:textAllCaps="true"
-            android:textColor="@color/material_blue_grey950" />
+            <Button
+                android:id="@+id/search_organizations"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:paddingLeft="0dp"
+                android:paddingRight="56dp"
+                android:text="Groups"
+                android:textAllCaps="true"
+                android:textColor="@color/material_blue_grey950" />
 
-        <Button
-            android:id="@+id/search_watersheds"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:text="Watersheds"
-            android:textAllCaps="true"
-            android:textColor="@color/material_blue_grey950" />
+            <Button
+                android:id="@+id/search_tags"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:paddingLeft="0dp"
+                android:paddingRight="56dp"
+                android:text="Tags"
+                android:textAllCaps="true"
+                android:textColor="@color/material_blue_grey950" />
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/search_watersheds"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:paddingLeft="0dp"
+                android:paddingRight="56dp"
+                android:text="Watersheds"
+                android:textAllCaps="true"
+                android:textColor="@color/material_blue_grey950" />
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
 
     <ListView
         android:id="@+id/search_results"
