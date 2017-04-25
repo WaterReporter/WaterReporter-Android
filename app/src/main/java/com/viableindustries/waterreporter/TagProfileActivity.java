@@ -100,6 +100,8 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
     private Resources resources;
 
+    private EndlessScrollListener scrollListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -181,6 +183,27 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
             fetchReports(5, 1, buildQuery(true, "report", null), false, false);
 
         }
+
+        scrollListener = new EndlessScrollListener() {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+
+                // Triggered only when new data needs to be appended to the list
+
+                if (actionFocus) {
+
+                    fetchReports(5, page, complexQuery, false, false);
+
+                } else {
+
+                    fetchReports(5, page, buildQuery(true, "report", null), false, false);
+
+                }
+
+                return true; // ONLY if more data is actually being loaded; false otherwise.
+
+            }
+        };
 
     }
 
@@ -350,28 +373,7 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
     private void attachScrollListener() {
 
-        timeLine.setOnScrollListener(new EndlessScrollListener() {
-
-            @Override
-            public boolean onLoadMore(int page, int totalItemsCount) {
-
-                // Triggered only when new data needs to be appended to the list
-
-                if (actionFocus) {
-
-                    fetchReports(5, page, complexQuery, false, false);
-
-                } else {
-
-                    fetchReports(5, page, buildQuery(true, "report", null), false, false);
-
-                }
-
-                return true; // ONLY if more data is actually being loaded; false otherwise.
-
-            }
-
-        });
+        timeLine.setOnScrollListener(scrollListener);
 
     }
 
@@ -494,7 +496,7 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
     }
 
-    private void fetchReports(int limit, int page, String query, final boolean refresh, final boolean replace) {
+    private void fetchReports(int limit, final int page, String query, final boolean refresh, final boolean replace) {
 
         final String accessToken = prefs.getString("access_token", "");
 
@@ -515,79 +517,127 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
                 Log.v("list", reports.toString());
 
-                if (reportCount == 99999999) {
+                reportCount = featureCollection.getProperties().num_results;
 
-                    reportCount = featureCollection.getProperties().num_results;
+                if (reportCount > 0) {
 
-                    if (reportCount > 0) {
+                    reportStat.setVisibility(View.VISIBLE);
 
-                        reportStat.setVisibility(View.VISIBLE);
+                    reportCounter.setText(String.valueOf(reportCount));
 
-                        reportCounter.setText(String.valueOf(reportCount));
+                    reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
 
-                        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
+                } else {
 
-                    } else {
-
-                        reportStat.setVisibility(View.GONE);
-
-                    }
+                    reportStat.setVisibility(View.GONE);
 
                 }
 
-                if (!reports.isEmpty()) {
+                if (refresh || reportCollection.isEmpty()) {
+
+                    reportCollection.clear();
 
                     reportCollection.addAll(reports);
 
-                    if (replace) {
+                    scrollListener.resetState();
 
-                        reportCollection = reports;
+                    try {
+
+                        timelineAdapter.notifyDataSetChanged();
+
+                        timeLine.smoothScrollToPosition(0);
+
+                    } catch (NullPointerException e) {
 
                         populateTimeline(reportCollection);
-
-                    } else {
-
-                        try {
-
-                            timelineAdapter.notifyDataSetChanged();
-
-                        } catch (NullPointerException ne) {
-
-                            populateTimeline(reportCollection);
-
-                        }
 
                     }
 
                 } else {
 
-                    reportCollection = reports;
+                    if (page > 1) {
 
-                    populateTimeline(reportCollection);
+                        reportCollection.addAll(reports);
 
-                }
-
-                if (refresh) {
-
-                    reportCollection = reports;
-
-                    reportCount = featureCollection.getProperties().num_results;
-
-                    if (reportCount > 0) {
-
-                        reportStat.setVisibility(View.VISIBLE);
-
-                        reportCounter.setText(String.valueOf(reportCount));
-
-                    } else {
-
-                        reportStat.setVisibility(View.GONE);
+                        timelineAdapter.notifyDataSetChanged();
 
                     }
 
-                    populateTimeline(reportCollection);
-
                 }
+
+//                if (reportCount == 99999999) {
+//
+//                    reportCount = featureCollection.getProperties().num_results;
+//
+//                    if (reportCount > 0) {
+//
+//                        reportStat.setVisibility(View.VISIBLE);
+//
+//                        reportCounter.setText(String.valueOf(reportCount));
+//
+//                        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
+//
+//                    } else {
+//
+//                        reportStat.setVisibility(View.GONE);
+//
+//                    }
+//
+//                }
+
+//                if (!reports.isEmpty()) {
+//
+//                    reportCollection.addAll(reports);
+//
+//                    if (replace) {
+//
+//                        reportCollection = reports;
+//
+//                        populateTimeline(reportCollection);
+//
+//                    } else {
+//
+//                        try {
+//
+//                            timelineAdapter.notifyDataSetChanged();
+//
+//                        } catch (NullPointerException ne) {
+//
+//                            populateTimeline(reportCollection);
+//
+//                        }
+//
+//                    }
+//
+//                } else {
+//
+//                    reportCollection = reports;
+//
+//                    populateTimeline(reportCollection);
+//
+//                }
+//
+//                if (refresh) {
+//
+//                    reportCollection = reports;
+//
+//                    reportCount = featureCollection.getProperties().num_results;
+//
+//                    if (reportCount > 0) {
+//
+//                        reportStat.setVisibility(View.VISIBLE);
+//
+//                        reportCounter.setText(String.valueOf(reportCount));
+//
+//                    } else {
+//
+//                        reportStat.setVisibility(View.GONE);
+//
+//                    }
+//
+//                    populateTimeline(reportCollection);
+//
+//                }
 
                 timeLineContainer.setRefreshing(false);
 
@@ -622,7 +672,7 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
     }
 
-    private void populateTimeline(List list) {
+    private void populateTimeline(List<Report> list) {
 
         timelineAdapter = new TimelineAdapter(this, list, false, socialOptions);
 
@@ -658,6 +708,11 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
     @Override
     public void onPause() {
         super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 
     @Override
