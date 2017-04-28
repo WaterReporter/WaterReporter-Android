@@ -19,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -45,6 +46,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -65,12 +67,15 @@ import com.viableindustries.waterreporter.data.DisplayDecimal;
 import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.GeometryResponse;
+import com.viableindustries.waterreporter.data.HashTag;
+import com.viableindustries.waterreporter.data.HashtagCollection;
 import com.viableindustries.waterreporter.data.ImageProperties;
 import com.viableindustries.waterreporter.data.ImageService;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.data.OrganizationMemberList;
 import com.viableindustries.waterreporter.data.OrganizationService;
+import com.viableindustries.waterreporter.data.QueryFilter;
 import com.viableindustries.waterreporter.data.QueryParams;
 import com.viableindustries.waterreporter.data.QuerySort;
 import com.viableindustries.waterreporter.data.Report;
@@ -78,6 +83,8 @@ import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.ReportPostBody;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.ReportStateBody;
+import com.viableindustries.waterreporter.data.TagHolder;
+import com.viableindustries.waterreporter.data.TagService;
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserGroupList;
 import com.viableindustries.waterreporter.data.UserHolder;
@@ -110,6 +117,7 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 import retrofit.Callback;
+import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedFile;
@@ -154,6 +162,15 @@ public class CommentActivity extends AppCompatActivity implements
     @Bind(R.id.comment_image_preview)
     ImageView mImageView;
 
+    @Bind(R.id.suggestion_separator)
+    View suggestionSeparator;
+
+    @Bind(R.id.tag_component)
+    HorizontalScrollView tagComponent;
+
+    @Bind(R.id.tag_results)
+    LinearLayout tagResults;
+
     private Report report;
 
     private String body;
@@ -188,6 +205,18 @@ public class CommentActivity extends AppCompatActivity implements
 
     private Context context;
 
+    ArrayList<HashTag> baseTagList;
+
+    Handler handler;
+
+    Runnable tagSearchRunnable;
+
+    protected TagSuggestionAdapter tagSuggestionAdapter;
+
+    private String query;
+
+    private String tagToken;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -212,6 +241,196 @@ public class CommentActivity extends AppCompatActivity implements
         // Load comments
 
         fetchComments(50, 1);
+
+        // Initialize empty list to hold hashtags
+
+        baseTagList = new ArrayList<HashTag>();
+
+        // Add text change listener to comment input.
+        // Observe changes and respond accordingly.
+
+        handler = new Handler(Looper.getMainLooper());
+
+        tagSearchRunnable = new Runnable() {
+            @Override
+            public void run() {
+
+                if (!tagToken.isEmpty() && tagToken.length() > 2 && !tagToken.equals(TagHolder.getCurrent())) {
+
+                    fetchTags(10, 1, buildQuery("tag", "asc", tagToken));
+
+                } else {
+
+                    tagResults.removeAllViews();
+
+                    suggestionSeparator.setVisibility(View.GONE);
+
+                    tagComponent.setVisibility(View.GONE);
+
+                }
+
+            }
+
+        };
+
+        commentInput.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
+
+                query = cs.toString();
+
+                if (!query.isEmpty() && query.contains("#")) {
+
+                    tagToken = query.substring(query.lastIndexOf("#")).replace("#", "");
+
+                } else {
+
+                    tagToken = "";
+
+                }
+
+                Log.d("token", tagToken);
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int arg1, int arg2, int arg3) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                // Ensure that the user's cursor is placed at the end of the selection
+
+                commentInput.setSelection(commentInput.getText().length());
+
+                handler.removeCallbacks(tagSearchRunnable);
+
+                handler.postDelayed(tagSearchRunnable, 300 /*delay*/);
+
+            }
+
+        });
+
+    }
+
+    private String buildQuery(String sortField, String sortDirection, String searchChars) {
+
+        // Create order_by list and add a sort parameter
+
+        List<QuerySort> queryOrder = new ArrayList<QuerySort>();
+
+        QuerySort querySort = new QuerySort(sortField, sortDirection);
+
+        queryOrder.add(querySort);
+
+        // Create filter list and add a filter parameter
+
+        List<Object> queryFilters = new ArrayList<>();
+
+        if (searchChars != null) {
+
+            QueryFilter tagNameFilter = new QueryFilter("tag", "ilike", String.format("%s%s%s", "%", searchChars, "%"));
+
+            queryFilters.add(tagNameFilter);
+
+        }
+
+        // Create query string from new QueryParams
+
+        QueryParams queryParams = new QueryParams(queryFilters, queryOrder);
+
+        return new Gson().toJson(queryParams);
+
+    }
+
+    protected void fetchTags(int limit, int page, final String query) {
+
+        final String accessToken = prefs.getString("access_token", "");
+
+        Log.d("", accessToken);
+
+        RestAdapter restAdapter = TagService.restAdapter;
+
+        TagService service = restAdapter.create(TagService.class);
+
+        service.getMany(accessToken, "application/json", page, limit, query, new Callback<HashtagCollection>() {
+
+            @Override
+            public void success(HashtagCollection hashtagCollection, Response response) {
+
+                onTagSuccess(hashtagCollection.getFeatures());
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                onRequestError(error);
+
+            }
+
+        });
+
+    }
+
+    protected void onTagSuccess(ArrayList<HashTag> hashTags) {
+
+        baseTagList.clear();
+
+        tagResults.removeAllViews();
+
+        if (!hashTags.isEmpty()) {
+
+            suggestionSeparator.setVisibility(View.VISIBLE);
+
+            tagComponent.setVisibility(View.VISIBLE);
+
+            baseTagList.addAll(hashTags);
+
+            tagSuggestionAdapter = new TagSuggestionAdapter(this, baseTagList);
+
+            final int adapterCount = tagSuggestionAdapter.getCount();
+
+            for (int i = 0; i < adapterCount; i++) {
+
+                View item = tagSuggestionAdapter.getView(i, null, tagResults);
+
+                tagResults.addView(item);
+
+            }
+
+        } else {
+
+            suggestionSeparator.setVisibility(View.GONE);
+
+            tagComponent.setVisibility(View.GONE);
+
+        }
+
+    }
+
+    protected void onRequestError(RetrofitError error) {
+
+        if (error == null) return;
+
+        Response errorResponse = error.getResponse();
+
+        // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+        if (errorResponse != null) {
+
+            int status = errorResponse.getStatus();
+
+            if (status == 403) {
+
+                startActivity(new Intent(this, SignInActivity.class));
+
+            }
+
+        }
 
     }
 
