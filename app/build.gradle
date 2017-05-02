@@ -36,6 +36,8 @@ dependencies {
     compile('com.mapbox.mapboxsdk:mapbox-android-sdk:5.0.2@aar') {
         transitive = true
     }
+    compile 'com.mapbox.mapboxsdk:mapbox-java-services:2.1.0'
+    compile 'com.mapbox.mapboxsdk:mapbox-android-ui:2.1.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.squareup.okhttp:okhttp:2.0.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'

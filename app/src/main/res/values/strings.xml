@@ -81,6 +81,9 @@
     <string name="saving">Please sit tight while we save your report&#8230;</string>
     <string name="report_received">Great! Your report was successfully broadcast on Water Reporter.</string>
 
+    <!-- Location -->
+    <string name="find_location">Find an address.</string>
+
     <!-- Camera -->
     <string name="picture">Picture</string>
     <string name="description_info">Info</string>

@@ -12,6 +12,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -56,6 +57,10 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 //import com.mapbox.mapboxsdk.views.InfoWindow;
 //import com.mapbox.mapboxsdk.views.MapView;
 //import com.mapbox.mapboxsdk.views.MapViewListener;
+import com.mapbox.services.android.ui.geocoder.GeocoderAutoCompleteView;
+import com.mapbox.services.api.geocoding.v5.GeocodingCriteria;
+import com.mapbox.services.api.geocoding.v5.models.CarmenFeature;
+import com.mapbox.services.commons.models.Position;
 import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.GeometryResponse;
@@ -86,6 +91,9 @@ public class LocationActivity extends AppCompatActivity implements
 
     @Bind(R.id.mapview)
     MapView mapView;
+
+    @Bind(R.id.save_location)
+    FloatingActionButton saveLocation;
 
     private MapboxMap mMapboxMap;
 
@@ -214,6 +222,42 @@ public class LocationActivity extends AppCompatActivity implements
                 mapboxMap.animateCamera(CameraUpdateFactory
                         .newCameraPosition(position), 4000);
 
+            }
+        });
+
+        // Set up autocomplete widget
+        GeocoderAutoCompleteView autoComplete = (GeocoderAutoCompleteView) findViewById(R.id.autoCompleteWidget);
+        autoComplete.setAccessToken(Mapbox.getAccessToken());
+        autoComplete.setType(GeocodingCriteria.TYPE_ADDRESS);
+        autoComplete.setOnFeatureListener(new GeocoderAutoCompleteView.OnFeatureListener() {
+            @Override
+            public void onFeatureClick(CarmenFeature feature) {
+
+                double[] point = feature.getCenter();
+
+                CameraPosition position = new CameraPosition.Builder()
+                        .target(new LatLng(point[1], point[0])) // Sets the new camera position
+                        .zoom(14) // Sets the zoom
+                        .build(); // Creates a CameraPosition from the builder
+
+//                Position position = feature.asPosition();
+
+                // using the position you can drop a marker or move the map's camera.
+
+                if (mMapboxMap != null) {
+
+                    mMapboxMap.animateCamera(CameraUpdateFactory
+                            .newCameraPosition(position), 4000);
+
+                }
+
+            }
+        });
+
+        saveLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getMapCenter();
             }
         });
 
