@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.location.Location;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -240,8 +241,6 @@ public class LocationActivity extends AppCompatActivity implements
                         .zoom(14) // Sets the zoom
                         .build(); // Creates a CameraPosition from the builder
 
-//                Position position = feature.asPosition();
-
                 // using the position you can drop a marker or move the map's camera.
 
                 if (mMapboxMap != null) {
@@ -253,6 +252,10 @@ public class LocationActivity extends AppCompatActivity implements
 
             }
         });
+
+        // Set FloatingActionButton color
+
+        saveLocation.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.base_blue)));
 
         saveLocation.setOnClickListener(new View.OnClickListener() {
             @Override
