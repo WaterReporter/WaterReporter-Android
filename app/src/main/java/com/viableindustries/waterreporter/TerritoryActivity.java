@@ -87,6 +87,10 @@ public class TerritoryActivity extends AppCompatActivity {
 
     TextView territoryName;
 
+    LinearLayout sharePrompt;
+
+    Button jumpStart;
+
     @Bind(R.id.timeline)
     SwipeRefreshLayout timeLineContainer;
 
@@ -219,6 +223,18 @@ public class TerritoryActivity extends AppCompatActivity {
             }
         };
 
+        // Add click listener to share button
+
+        jumpStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startPost();
+
+            }
+        });
+
+
     }
 
     protected void addListViewHeader() {
@@ -226,6 +242,21 @@ public class TerritoryActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
 
         ViewGroup header = (ViewGroup) inflater.inflate(R.layout.territory_header, timeLine, false);
+
+        sharePrompt = (LinearLayout) header.findViewById(R.id.share_cta);
+
+        jumpStart = (Button) header.findViewById(R.id.jump_start);
+
+        // Add click listener to share button
+
+        jumpStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startPost();
+
+            }
+        });
 
         territoryName = (TextView) header.findViewById(R.id.territoryName);
 
@@ -556,6 +587,8 @@ public class TerritoryActivity extends AppCompatActivity {
 
                 if (reportCount > 0) {
 
+                    sharePrompt.setVisibility(View.GONE);
+
                     reportStat.setVisibility(View.VISIBLE);
 
                     reportCounter.setText(String.valueOf(reportCount));
@@ -564,7 +597,17 @@ public class TerritoryActivity extends AppCompatActivity {
 
                 } else {
 
-                    reportStat.setVisibility(View.GONE);
+                    try {
+
+                        reportStat.setVisibility(View.GONE);
+
+                        sharePrompt.setVisibility(View.VISIBLE);
+
+                    } catch (NullPointerException e) {
+
+                        finish();
+
+                    }
 
                 }
 
@@ -599,80 +642,6 @@ public class TerritoryActivity extends AppCompatActivity {
                     }
 
                 }
-
-//                if (reportCount == 99999999) {
-//
-//                    reportCount = featureCollection.getProperties().num_results;
-//
-//                    if (reportCount > 0) {
-//
-//                        reportStat.setVisibility(View.VISIBLE);
-//
-//                        reportCounter.setText(String.valueOf(reportCount));
-//
-//                        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
-//
-//                    } else {
-//
-//                        reportStat.setVisibility(View.GONE);
-//
-//                    }
-//
-//                }
-//
-//                if (!reports.isEmpty()) {
-//
-//                    reportCollection.addAll(reports);
-//
-//                    if (replace) {
-//
-//                        reportCollection = reports;
-//
-//                        populateTimeline(reportCollection);
-//
-//                    } else {
-//
-//                        try {
-//
-//                            timelineAdapter.notifyDataSetChanged();
-//
-//                        } catch (NullPointerException ne) {
-//
-//                            populateTimeline(reportCollection);
-//
-//                        }
-//
-//                    }
-//
-//                } else {
-//
-//                    reportCollection = reports;
-//
-//                    populateTimeline(reportCollection);
-//
-//                }
-//
-//                if (refresh) {
-//
-//                    reportCollection = reports;
-//
-//                    reportCount = featureCollection.getProperties().num_results;
-//
-//                    if (reportCount > 0) {
-//
-//                        reportStat.setVisibility(View.VISIBLE);
-//
-//                        reportCounter.setText(String.valueOf(reportCount));
-//
-//                    } else {
-//
-//                        reportStat.setVisibility(View.GONE);
-//
-//                    }
-//
-//                    populateTimeline(reportCollection);
-//
-//                }
 
                 try {
 
@@ -738,6 +707,19 @@ public class TerritoryActivity extends AppCompatActivity {
 
     }
 
+    private void startPost() {
+
+        Intent intent = new Intent(this, PhotoMetaActivity.class);
+
+        intent.putExtra("autoTag", String.format("\u0023%s", territoryName.getText().toString().replaceAll("[^a-zA-Z0-9]+", "")));
+
+        startActivity(intent);
+
+        this.overridePendingTransition(R.anim.animation_enter_right,
+                R.anim.animation_exit_left);
+
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -746,6 +728,11 @@ public class TerritoryActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 
     @Override

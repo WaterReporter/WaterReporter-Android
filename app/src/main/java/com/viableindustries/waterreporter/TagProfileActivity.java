@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -43,7 +44,7 @@ import retrofit.client.Response;
 
 import static java.lang.Boolean.TRUE;
 
-public class TagProfileActivity extends AppCompatActivity implements ShareActionDialogListener {
+public class TagProfileActivity extends AppCompatActivity {
 
     TextView tagNameView;
 
@@ -66,6 +67,10 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
     TextView groupCounter;
 
     TextView groupCountLabel;
+
+    LinearLayout sharePrompt;
+
+    Button jumpStart;
 
     @Bind(R.id.timeline)
     SwipeRefreshLayout timeLineContainer;
@@ -212,6 +217,21 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
         LayoutInflater inflater = getLayoutInflater();
 
         ViewGroup header = (ViewGroup) inflater.inflate(R.layout.tag_profile_header, timeLine, false);
+
+        sharePrompt = (LinearLayout) header.findViewById(R.id.share_cta);
+
+        jumpStart = (Button) header.findViewById(R.id.jump_start);
+
+        // Add click listener to share button
+
+        jumpStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startPost();
+
+            }
+        });
 
         tagNameView = (TextView) header.findViewById(R.id.tag_name);
         tagNameView.setText(tagName);
@@ -525,6 +545,8 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
                 if (reportCount > 0) {
 
+                    sharePrompt.setVisibility(View.GONE);
+
                     reportStat.setVisibility(View.VISIBLE);
 
                     reportCounter.setText(String.valueOf(reportCount));
@@ -533,7 +555,17 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
                 } else {
 
-                    reportStat.setVisibility(View.GONE);
+                    try {
+
+                        reportStat.setVisibility(View.GONE);
+
+                        sharePrompt.setVisibility(View.VISIBLE);
+
+                    } catch (NullPointerException e) {
+
+                        finish();
+
+                    }
 
                 }
 
@@ -633,20 +665,16 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
     }
 
-    @Override
-    public void onSelectShareAction(int index) {
+    private void startPost() {
 
-        String target = getResources().getStringArray(socialOptions)[index];
+        Intent intent = new Intent(this, PhotoMetaActivity.class);
 
-        if (target.toLowerCase().contains("facebook")) {
+        intent.putExtra("autoTag", tagNameView.getText().toString());
 
-            SocialShareUtility.shareOnFacebook(this);
+        startActivity(intent);
 
-        } else {
-
-            SocialShareUtility.shareOnTwitter(this);
-
-        }
+        this.overridePendingTransition(R.anim.animation_enter_right,
+                R.anim.animation_exit_left);
 
     }
 
