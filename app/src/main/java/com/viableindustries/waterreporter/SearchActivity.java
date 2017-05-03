@@ -726,6 +726,22 @@ public class SearchActivity extends FragmentActivity {
 
     }
 
+    private void highlightButton(Button button) {
+
+        button.setTextColor(ContextCompat.getColor(this, R.color.base_blue));
+
+    }
+
+    private void dimButtons(Button[] buttons) {
+
+        for (Button btn : buttons) {
+
+            btn.setTextColor(ContextCompat.getColor(this, R.color.material_blue_grey950));
+
+        }
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -777,6 +793,14 @@ public class SearchActivity extends FragmentActivity {
 
                 activeTab = 0;
 
+                highlightButton(searchPeople);
+
+                dimButtons(new Button[]{
+                        searchWatersheds,
+                        searchTags,
+                        searchOrgs
+                });
+
                 if (query != null && !query.isEmpty()) {
 
                     fetchUsers(10, 1, buildQuery("user", "last_name", "asc", query), true, true);
@@ -809,6 +833,15 @@ public class SearchActivity extends FragmentActivity {
                 searchResults.setAdapter(null);
 
                 activeTab = 1;
+
+                highlightButton(searchOrgs);
+
+                dimButtons(new Button[]{
+                        searchWatersheds,
+                        searchTags,
+                        searchPeople
+                });
+
 
                 if (query != null && !query.isEmpty()) {
 
@@ -844,6 +877,15 @@ public class SearchActivity extends FragmentActivity {
 
                 activeTab = 2;
 
+                highlightButton(searchTags);
+
+                dimButtons(new Button[]{
+                        searchWatersheds,
+                        searchPeople,
+                        searchOrgs
+                });
+
+
                 if (query != null && !query.isEmpty()) {
 
                     fetchTags(10, 1, buildQuery("tag", "id", "desc", query), true, false);
@@ -877,6 +919,17 @@ public class SearchActivity extends FragmentActivity {
                 searchResults.setAdapter(null);
 
                 activeTab = 3;
+
+                highlightButton(searchWatersheds);
+
+                dimButtons(new Button[]{
+                        searchPeople,
+                        searchTags,
+                        searchOrgs
+                });
+
+
+                searchWatersheds.setTextColor(ContextCompat.getColor(SearchActivity.this, R.color.base_blue));
 
                 if (query != null && !query.isEmpty()) {
 
