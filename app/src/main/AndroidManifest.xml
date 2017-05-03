@@ -225,12 +225,12 @@
             android:name=".ProfileSettingsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_profile_settings"
-            android:parentActivityName=".UserProfileActivity"
+            android:parentActivityName=".AuthUserActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.viableindustries.waterreporter.UserProfileActivity" />
+                android:value="com.viableindustries.waterreporter.AuthUserActivity" />
         </activity>
         <activity
             android:name=".EditProfileActivity"

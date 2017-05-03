@@ -365,7 +365,7 @@ public class SearchActivity extends FragmentActivity {
 
         TerritoryService service = restAdapter.create(TerritoryService.class);
 
-        service.getMany(accessToken, "application/json", page, limit, query, new Callback<TerritoryCollection>() {
+        service.search(accessToken, "application/json", page, limit, query, new Callback<TerritoryCollection>() {
 
             @Override
             public void success(TerritoryCollection territoryCollection, Response response) {

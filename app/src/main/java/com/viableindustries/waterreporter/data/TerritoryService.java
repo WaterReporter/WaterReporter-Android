@@ -24,6 +24,14 @@ public interface TerritoryService {
             .setEndpoint(ENDPOINT)
             .build();
 
+    @GET("/data/huc-8")
+    public void search(@Header("Authorization") String authorization,
+                        @Header("Content-Type") String contentType,
+                        @Query("page") int page,
+                        @Query("results_per_page") int numResults,
+                        @Query("q") String q,
+                        Callback<TerritoryCollection> territoryCollectionCallback);
+
     @GET("/data/territory")
     public void getMany(@Header("Authorization") String authorization,
                         @Header("Content-Type") String contentType,

@@ -12,19 +12,29 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.AuthResponse;
+import com.viableindustries.waterreporter.data.LogInBody;
 import com.viableindustries.waterreporter.data.NotificationSetting;
 import com.viableindustries.waterreporter.data.Organization;
+import com.viableindustries.waterreporter.data.SecurityService;
 import com.viableindustries.waterreporter.data.User;
+import com.viableindustries.waterreporter.data.UserBasicResponse;
 import com.viableindustries.waterreporter.data.UserHolder;
 import com.viableindustries.waterreporter.data.UserProperties;
+import com.viableindustries.waterreporter.data.UserService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class ProfileSettingsActivity extends AppCompatActivity {
 
@@ -62,13 +72,6 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-//        View decorView = getWindow().getDecorView();
-//
-//        // Hide the status bar.
-//
-//        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-//        decorView.setSystemUiVisibility(uiOptions);
-
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
@@ -81,7 +84,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
         if (user.id > 0) {
 
-            configureNotificationSettings();
+            refreshAccount(user.id);
 
         } else {
 
@@ -93,16 +96,112 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
     }
 
-    private void setCurrentUser(int userId, SharedPreferences coreProfile) {
+//    private void setCurrentUser(int userId, SharedPreferences coreProfile) {
+//
+//        UserProperties userProperties = new UserProperties(userId, coreProfile.getString("description", ""),
+//                coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
+//                coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
+//                coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null);
+//
+//        User coreUser = User.createUser(userId, userProperties);
+//
+//        UserHolder.setUser(coreUser);
+//
+//    }
 
-        UserProperties userProperties = new UserProperties(userId, coreProfile.getString("description", ""),
-                coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
-                coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
-                coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null);
+    protected void onRequestError(RetrofitError error) {
 
-        User coreUser = User.createUser(userId, userProperties);
+//        progressBar.setVisibility(View.GONE);
 
-        UserHolder.setUser(coreUser);
+        Response response = error.getResponse();
+
+        if (response != null) {
+
+            int status = response.getStatus();
+
+            if (status == 403) {
+
+                startActivity(new Intent(ProfileSettingsActivity.this, SignInActivity.class));
+
+            }
+
+        }
+
+    }
+
+    private void refreshAccount(int userId) {
+
+//        progressBar.setVisibility(View.VISIBLE);
+
+        final String accessToken = prefs.getString("access_token", "");
+
+        final UserService userService = UserService.restAdapter.create(UserService.class);
+
+        userService.getUser(accessToken,
+                "application/json",
+                userId,
+                new Callback<User>() {
+                    @Override
+                    public void success(User user,
+                                        Response response) {
+
+                        // Set flag confirming successful sign-in
+
+                        prefs.edit().putBoolean("clean_slate", true).apply();
+
+                        final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+                        coreProfile.edit()
+                                .putInt("id", user.id)
+                                .apply();
+
+                        // Update stored values of user's string type attributes
+
+                        Map<String, String> userStringProperties = user.properties.getStringProperties();
+
+                        for (Map.Entry<String, String> entry : userStringProperties.entrySet()) {
+
+                            coreProfile.edit().putString(entry.getKey(), entry.getValue()).apply();
+
+                        }
+
+                        // Update stored values of user's notification settings
+
+                        Map<String, Boolean> userNotificationSettings = user.properties.getNotificationProperties();
+
+                        for (Map.Entry<String, Boolean> entry : userNotificationSettings.entrySet()) {
+
+                            coreProfile.edit().putBoolean(entry.getKey(), entry.getValue()).apply();
+
+                        }
+
+                        // Update stored values of user's group memberships
+
+                        final SharedPreferences groupPrefs = getSharedPreferences(getString(R.string.group_membership_key), 0);
+
+                        for (Organization organization : user.properties.organizations) {
+
+                            groupPrefs.edit().putInt(organization.properties.name, organization.properties.id).apply();
+
+                        }
+
+                        // Update stored values of user's role designation
+
+                        coreProfile.edit().putString("role", user.properties.roles.get(0).properties.name).apply();
+
+//                        progressBar.setVisibility(View.GONE);
+
+                        configureNotificationSettings();
+
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+
+                        onRequestError(error);
+
+                    }
+                });
 
     }
 
@@ -201,12 +300,12 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         }
     }
 
-    // Back button should always go to user profile
+    // Back button should always go to authenticated user's account profile
 
     @Override
     public void onBackPressed() {
 
-        startActivity(new Intent(this, UserProfileActivity.class));
+        startActivity(new Intent(this, AuthUserActivity.class));
 
     }
 
