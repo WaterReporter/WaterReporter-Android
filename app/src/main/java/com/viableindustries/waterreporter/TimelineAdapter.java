@@ -130,38 +130,48 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
     protected void presentShareDialog(final Report report) {
 
-        Log.d("Click Event", "Share button clicked.");
-
         Resources res = context.getResources();
 
-        String[] options = res.getStringArray(socialOptions);
+        String shareUrl = res.getString(R.string.share_post_url, report.id);
 
-        CharSequence[] renders = new CharSequence[2];
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, shareUrl);
+        sendIntent.setType("text/plain");
+        context.startActivity(Intent.createChooser(sendIntent, res.getText(R.string.share_report_chooser_title)));
 
-        for (int i = 0; i < options.length; i++) {
-
-            renders[i] = HtmlCompat.fromHtml(options[i]);
-
-        }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
-        builder.setItems(renders, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-
-                ReportHolder.setReport(report);
-
-                // The 'which' argument contains the index position
-                // of the selected item
-                ShareActionDialogListener activity = (ShareActionDialogListener) context;
-
-                activity.onSelectShareAction(which);
-
-            }
-        });
-
-        // Create the AlertDialog object and return it
-        builder.create().show();
+//        Log.d("Click Event", "Share button clicked.");
+//
+//        Resources res = context.getResources();
+//
+//        String[] options = res.getStringArray(socialOptions);
+//
+//        CharSequence[] renders = new CharSequence[2];
+//
+//        for (int i = 0; i < options.length; i++) {
+//
+//            renders[i] = HtmlCompat.fromHtml(options[i]);
+//
+//        }
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//
+//        builder.setItems(renders, new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int which) {
+//
+//                ReportHolder.setReport(report);
+//
+//                // The 'which' argument contains the index position
+//                // of the selected item
+//                ShareActionDialogListener activity = (ShareActionDialogListener) context;
+//
+//                activity.onSelectShareAction(which);
+//
+//            }
+//        });
+//
+//        // Create the AlertDialog object and return it
+//        builder.create().show();
 
     }
 
@@ -291,33 +301,33 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         // Allow user to share report content on Facebook/Twitter
         // if either or both of those applications is installed
 
-        if (socialOptions != 0) {
+//        if (socialOptions != 0) {
 
-            viewHolder.reportThumb.setOnLongClickListener(new View.OnLongClickListener() {
+        viewHolder.reportThumb.setOnLongClickListener(new View.OnLongClickListener() {
 
-                @Override
-                public boolean onLongClick(View v) {
+            @Override
+            public boolean onLongClick(View v) {
 
-                    presentShareDialog(feature);
+                presentShareDialog(feature);
 
-                    return true;
+                return true;
 
-                }
+            }
 
-            });
+        });
 
-            viewHolder.shareIcon.setVisibility(View.VISIBLE);
+        viewHolder.shareIcon.setVisibility(View.VISIBLE);
 
-            viewHolder.shareIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        viewHolder.shareIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-                    presentShareDialog(feature);
+                presentShareDialog(feature);
 
-                }
-            });
+            }
+        });
 
-        }
+//        }
 
         // Populate the data into the template view using the data object
         viewHolder.reportDate.setText(creationDate);

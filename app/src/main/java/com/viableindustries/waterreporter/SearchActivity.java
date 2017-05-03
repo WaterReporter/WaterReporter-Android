@@ -320,6 +320,8 @@ public class SearchActivity extends FragmentActivity {
 
     protected void fetchTrendingGroups(int limit, int page, final boolean filterResults, final boolean switchCollection) {
 
+        progressBar.setVisibility(View.VISIBLE);
+
         final String accessToken = prefs.getString("access_token", "");
 
         Log.d("", accessToken);
@@ -379,6 +381,8 @@ public class SearchActivity extends FragmentActivity {
     }
 
     protected void fetchTrendingPeople(int limit, int page, final boolean filterResults, final boolean switchCollection) {
+
+        progressBar.setVisibility(View.VISIBLE);
 
         final String accessToken = prefs.getString("access_token", "");
 
@@ -440,6 +444,8 @@ public class SearchActivity extends FragmentActivity {
 
     protected void fetchTrendingTerritories(int limit, int page, final boolean filterResults, final boolean switchCollection) {
 
+        progressBar.setVisibility(View.VISIBLE);
+
         final String accessToken = prefs.getString("access_token", "");
 
         Log.d("", accessToken);
@@ -499,6 +505,8 @@ public class SearchActivity extends FragmentActivity {
     }
 
     protected void fetchTrendingTags(int limit, int page, final boolean filterResults, final boolean switchCollection) {
+
+        progressBar.setVisibility(View.VISIBLE);
 
         final String accessToken = prefs.getString("access_token", "");
 
@@ -912,8 +920,6 @@ public class SearchActivity extends FragmentActivity {
 
                     searchMessage.setVisibility(View.GONE);
 
-                    progressBar.setVisibility(View.VISIBLE);
-
                     fetchTrendingPeople(10, 1, false, false);
 
                 } else {
@@ -942,8 +948,6 @@ public class SearchActivity extends FragmentActivity {
                     displaySeparator(false);
 
                     searchMessage.setVisibility(View.GONE);
-
-                    progressBar.setVisibility(View.VISIBLE);
 
                     fetchTrendingGroups(10, 1, false, false);
 
@@ -974,8 +978,6 @@ public class SearchActivity extends FragmentActivity {
 
                     searchMessage.setVisibility(View.GONE);
 
-                    progressBar.setVisibility(View.VISIBLE);
-
                     fetchTrendingTerritories(10, 1, false, false);
 
                 } else {
@@ -1004,8 +1006,6 @@ public class SearchActivity extends FragmentActivity {
                     displaySeparator(false);
 
                     searchMessage.setVisibility(View.GONE);
-
-                    progressBar.setVisibility(View.VISIBLE);
 
                     fetchTrendingTags(10, 1, false, false);
 

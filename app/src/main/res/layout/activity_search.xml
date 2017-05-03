@@ -157,6 +157,8 @@
         android:id="@+id/search_results"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:divider="@color/gray_232"
+        android:dividerHeight="0.5dp"
         android:scrollbars="none" />
 
 </LinearLayout>
