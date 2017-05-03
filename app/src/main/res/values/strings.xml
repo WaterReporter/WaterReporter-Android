@@ -202,6 +202,7 @@
     <string name="title_activity_edit_profile">EditProfileActivity</string>
 
     <!-- Search -->
+
     <string name="search_in_progress">Searching for "%s"&#8230;</string>
     <string name="search_no_matches">No matches found.</string>
     <plurals name="search_match_count">
@@ -241,6 +242,10 @@
     <string name="share_report_email_subject" formatted="false">Someone shared a post from Water Reporter.</string>
     <string name="title_activity_search">SearchActivity</string>
     <string name="title_activity_territory">TerritoryActivity</string>
+
+    <!-- Empty profile -->
+    <string name="start_conversation">Start a conversation.</string>
+    <string name="share_post_prompt">Share a post</string>
 
     <!-- Useful package names -->
     <string name="fb_package_name">com.facebook.katana</string>
