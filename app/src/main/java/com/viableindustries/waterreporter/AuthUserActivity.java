@@ -705,14 +705,30 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
                 }
 
-                timeLineContainer.setRefreshing(false);
+                try {
+
+                    timeLineContainer.setRefreshing(false);
+
+                } catch (NullPointerException e) {
+
+                    finish();
+
+                }
 
             }
 
             @Override
             public void failure(RetrofitError error) {
 
-                timeLineContainer.setRefreshing(false);
+                try {
+
+                    timeLineContainer.setRefreshing(false);
+
+                } catch (NullPointerException e) {
+
+                    finish();
+
+                }
 
                 if (error == null) return;
 
@@ -743,9 +759,13 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
         timelineAdapter = new TimelineAdapter(AuthUserActivity.this, list, true, socialOptions);
 
         // Attach the adapter to a ListView
-        timeLine.setAdapter(timelineAdapter);
+        if (timeLine != null) {
 
-        attachScrollListener();
+            timeLine.setAdapter(timelineAdapter);
+
+            attachScrollListener();
+
+        }
 
     }
 

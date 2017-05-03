@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Handler;
@@ -25,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -69,6 +71,15 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class SearchActivity extends FragmentActivity {
+
+    @Bind(R.id.spinner)
+    ProgressBar progressBar;
+
+    @Bind(R.id.search_message_separator)
+    View searchMessageSeparator;
+
+    @Bind(R.id.search_message)
+    TextView searchMessage;
 
     @Bind(R.id.search_box)
     EditText searchBox;
@@ -130,6 +141,10 @@ public class SearchActivity extends FragmentActivity {
     Runnable territorySearchRunnable;
 
     Runnable tagSearchRunnable;
+
+    private Resources resources;
+
+    private String messageText;
 
     private String buildQuery(String collection, String sortField, String sortDirection, String searchChars) {
 
@@ -232,6 +247,44 @@ public class SearchActivity extends FragmentActivity {
         QueryParams queryParams = new QueryParams(queryFilters, queryOrder);
 
         return new Gson().toJson(queryParams);
+
+    }
+
+    protected void displaySeparator(boolean show) {
+
+        if (show) {
+
+            searchMessageSeparator.setVisibility(View.VISIBLE);
+
+        } else {
+
+            searchMessageSeparator.setVisibility(View.GONE);
+
+        }
+
+    }
+
+    protected void displayMatchCount(int matchCount) {
+
+        if (matchCount > 0) {
+
+            messageText = resources.getQuantityString(R.plurals.search_match_count, matchCount, matchCount);
+
+        } else {
+
+            messageText = resources.getString(R.string.search_no_matches);
+
+        }
+
+        searchMessage.setText(messageText);
+
+    }
+
+    protected void displayProgressMessage(String category) {
+
+        messageText = resources.getString(R.string.search_in_progress, category);
+
+        searchMessage.setText(messageText);
 
     }
 
@@ -477,7 +530,13 @@ public class SearchActivity extends FragmentActivity {
 
     protected void onPeopleSuccess(ArrayList<User> users, boolean filterResults, boolean switchCollection) {
 
+        progressBar.setVisibility(View.GONE);
+
+        displayMatchCount(users.size());
+
         if (!users.isEmpty()) {
+
+            searchResults.setVisibility(View.VISIBLE);
 
             if (!filterResults) {
 
@@ -495,9 +554,16 @@ public class SearchActivity extends FragmentActivity {
 
             if (switchCollection || activeTab == 0) {
 
-                searchResults.setAdapter(userListAdapter);
+                if (searchResults != null) {
+
+                    searchResults.setAdapter(userListAdapter);
+                }
 
             }
+
+        } else {
+
+            searchResults.setVisibility(View.GONE);
 
         }
 
@@ -505,7 +571,13 @@ public class SearchActivity extends FragmentActivity {
 
     protected void onGroupSuccess(ArrayList<Organization> organizations, boolean filterResults, boolean switchCollection) {
 
+        progressBar.setVisibility(View.GONE);
+
+        displayMatchCount(organizations.size());
+
         if (!organizations.isEmpty()) {
+
+            searchResults.setVisibility(View.VISIBLE);
 
             if (!filterResults) {
 
@@ -523,9 +595,16 @@ public class SearchActivity extends FragmentActivity {
 
             if (switchCollection || activeTab == 1) {
 
-                searchResults.setAdapter(orgListAdapter);
+                if (searchResults != null) {
+
+                    searchResults.setAdapter(orgListAdapter);
+                }
 
             }
+
+        } else {
+
+            searchResults.setVisibility(View.GONE);
 
         }
 
@@ -533,7 +612,13 @@ public class SearchActivity extends FragmentActivity {
 
     protected void onTagSuccess(ArrayList<HashTag> hashTags, boolean filterResults, boolean switchCollection) {
 
+        progressBar.setVisibility(View.GONE);
+
+        displayMatchCount(hashTags.size());
+
         if (!hashTags.isEmpty()) {
+
+            searchResults.setVisibility(View.VISIBLE);
 
             if (!filterResults) {
 
@@ -551,9 +636,16 @@ public class SearchActivity extends FragmentActivity {
 
             if (switchCollection || activeTab == 2) {
 
-                searchResults.setAdapter(tagListAdapter);
+                if (searchResults != null) {
+
+                    searchResults.setAdapter(tagListAdapter);
+                }
 
             }
+
+        } else {
+
+            searchResults.setVisibility(View.GONE);
 
         }
 
@@ -561,7 +653,13 @@ public class SearchActivity extends FragmentActivity {
 
     protected void onTerritorySuccess(ArrayList<Territory> territories, boolean filterResults, boolean switchCollection) {
 
+        progressBar.setVisibility(View.GONE);
+
+        displayMatchCount(territories.size());
+
         if (!territories.isEmpty()) {
+
+            searchResults.setVisibility(View.VISIBLE);
 
             if (!filterResults) {
 
@@ -579,15 +677,25 @@ public class SearchActivity extends FragmentActivity {
 
             if (switchCollection || activeTab == 3) {
 
-                searchResults.setAdapter(territoryListAdapter);
+                if (searchResults != null) {
+
+                    searchResults.setAdapter(territoryListAdapter);
+
+                }
 
             }
+
+        } else {
+
+            searchResults.setVisibility(View.GONE);
 
         }
 
     }
 
     protected void onRequestError(RetrofitError error) {
+
+        progressBar.setVisibility(View.GONE);
 
         if (error == null) return;
 
@@ -619,6 +727,8 @@ public class SearchActivity extends FragmentActivity {
         ButterKnife.bind(this);
 
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        resources = getResources();
 
         // Initialize empty list to hold organizations
 
@@ -798,9 +908,23 @@ public class SearchActivity extends FragmentActivity {
 
                 if (query.isEmpty()) {
 
+                    displaySeparator(false);
+
+                    searchMessage.setVisibility(View.GONE);
+
+                    progressBar.setVisibility(View.VISIBLE);
+
                     fetchTrendingPeople(10, 1, false, false);
 
                 } else {
+
+                    displaySeparator(true);
+
+                    progressBar.setVisibility(View.GONE);
+
+                    displayProgressMessage("people");
+
+                    searchMessage.setVisibility(View.VISIBLE);
 
                     fetchUsers(10, 1, buildQuery("user", "last_name", "asc", query), true, true);
 
@@ -815,9 +939,23 @@ public class SearchActivity extends FragmentActivity {
 
                 if (query.isEmpty()) {
 
+                    displaySeparator(false);
+
+                    searchMessage.setVisibility(View.GONE);
+
+                    progressBar.setVisibility(View.VISIBLE);
+
                     fetchTrendingGroups(10, 1, false, false);
 
                 } else {
+
+                    displaySeparator(true);
+
+                    progressBar.setVisibility(View.GONE);
+
+                    displayProgressMessage("groups");
+
+                    searchMessage.setVisibility(View.VISIBLE);
 
                     fetchOrganizations(10, 1, buildQuery("organization", "name", "asc", query), true, false);
 
@@ -832,9 +970,23 @@ public class SearchActivity extends FragmentActivity {
 
                 if (query.isEmpty()) {
 
+                    displaySeparator(false);
+
+                    searchMessage.setVisibility(View.GONE);
+
+                    progressBar.setVisibility(View.VISIBLE);
+
                     fetchTrendingTerritories(10, 1, false, false);
 
                 } else {
+
+                    displaySeparator(true);
+
+                    progressBar.setVisibility(View.GONE);
+
+                    displayProgressMessage("watersheds");
+
+                    searchMessage.setVisibility(View.VISIBLE);
 
                     fetchTerritories(10, 1, buildQuery("territory", "huc_8_name", "asc", query), true, false);
 
@@ -849,9 +1001,23 @@ public class SearchActivity extends FragmentActivity {
 
                 if (query.isEmpty()) {
 
+                    displaySeparator(false);
+
+                    searchMessage.setVisibility(View.GONE);
+
+                    progressBar.setVisibility(View.VISIBLE);
+
                     fetchTrendingTags(10, 1, false, false);
 
                 } else {
+
+                    displaySeparator(true);
+
+                    progressBar.setVisibility(View.GONE);
+
+                    displayProgressMessage("tags");
+
+                    searchMessage.setVisibility(View.VISIBLE);
 
                     fetchTags(10, 1, buildQuery("tag", "id", "desc", query), true, false);
 

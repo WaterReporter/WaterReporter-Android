@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class TerritoryCollection {
 
-    @SerializedName("features")
+    @SerializedName("objects")
     private ArrayList<Territory> features;
 
     @SerializedName("properties")

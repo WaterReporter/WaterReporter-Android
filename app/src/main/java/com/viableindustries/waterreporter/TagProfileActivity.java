@@ -569,14 +569,30 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
 
                 }
 
-                timeLineContainer.setRefreshing(false);
+                try {
+
+                    timeLineContainer.setRefreshing(false);
+
+                } catch (NullPointerException e) {
+
+                    finish();
+
+                }
 
             }
 
             @Override
             public void failure(RetrofitError error) {
 
-                timeLineContainer.setRefreshing(false);
+                try {
+
+                    timeLineContainer.setRefreshing(false);
+
+                } catch (NullPointerException e) {
+
+                    finish();
+
+                }
 
                 if (error == null) return;
 
@@ -607,9 +623,13 @@ public class TagProfileActivity extends AppCompatActivity implements ShareAction
         timelineAdapter = new TimelineAdapter(this, list, false, socialOptions);
 
         // Attach the adapter to a ListView
-        timeLine.setAdapter(timelineAdapter);
+        if (timeLine != null) {
 
-        attachScrollListener();
+            timeLine.setAdapter(timelineAdapter);
+
+            attachScrollListener();
+
+        }
 
     }
 

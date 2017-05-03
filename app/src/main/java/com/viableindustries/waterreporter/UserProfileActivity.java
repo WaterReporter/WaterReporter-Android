@@ -705,14 +705,30 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                 }
 
-                timeLineContainer.setRefreshing(false);
+                try {
+
+                    timeLineContainer.setRefreshing(false);
+
+                } catch (NullPointerException e) {
+
+                    finish();
+
+                }
 
             }
 
             @Override
             public void failure(RetrofitError error) {
 
-                timeLineContainer.setRefreshing(false);
+                try {
+
+                    timeLineContainer.setRefreshing(false);
+
+                } catch (NullPointerException e) {
+
+                    finish();
+
+                }
 
                 if (error == null) return;
 
@@ -738,14 +754,19 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     }
 
-    private void populateTimeline(List list) {
+    private void populateTimeline(List<Report> list) {
 
         timelineAdapter = new TimelineAdapter(UserProfileActivity.this, list, true, socialOptions);
 
         // Attach the adapter to a ListView
-        timeLine.setAdapter(timelineAdapter);
 
-        attachScrollListener();
+        if (timeLine != null) {
+
+            timeLine.setAdapter(timelineAdapter);
+
+            attachScrollListener();
+
+        }
 
     }
 

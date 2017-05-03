@@ -201,6 +201,14 @@
     <string name="add_comment">Add a comment&#8230;</string>
     <string name="title_activity_edit_profile">EditProfileActivity</string>
 
+    <!-- Search -->
+    <string name="search_in_progress">Searching for "%s"&#8230;</string>
+    <string name="search_no_matches">No matches found.</string>
+    <plurals name="search_match_count">
+        <item quantity="one">%d match found.</item>
+        <item quantity="other">%d matches found.</item>
+    </plurals>
+
     <!-- Notification settings -->
 
     <string name="can_notify_owner_comment_on_owned_report">Let me know when people comment on my reports.</string>

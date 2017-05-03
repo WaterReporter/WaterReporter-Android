@@ -674,14 +674,30 @@ public class TerritoryActivity extends AppCompatActivity {
 //
 //                }
 
-                timeLineContainer.setRefreshing(false);
+                try {
+
+                    timeLineContainer.setRefreshing(false);
+
+                } catch (NullPointerException e) {
+
+                    finish();
+
+                }
 
             }
 
             @Override
             public void failure(RetrofitError error) {
 
-                timeLineContainer.setRefreshing(false);
+                try {
+
+                    timeLineContainer.setRefreshing(false);
+
+                } catch (NullPointerException e) {
+
+                    finish();
+
+                }
 
                 if (error == null) return;
 
@@ -707,14 +723,18 @@ public class TerritoryActivity extends AppCompatActivity {
 
     }
 
-    private void populateTimeline(List list) {
+    private void populateTimeline(List<Report> list) {
 
         timelineAdapter = new TimelineAdapter(this, list, false, socialOptions);
 
         // Attach the adapter to a ListView
-        timeLine.setAdapter(timelineAdapter);
+        if (timeLine != null) {
 
-        attachScrollListener();
+            timeLine.setAdapter(timelineAdapter);
+
+            attachScrollListener();
+
+        }
 
     }
 
