@@ -132,18 +132,26 @@ public class GroupActionListActivity extends AppCompatActivity {
 
     private void attachScrollListener() {
 
-        listView.setOnScrollListener(new EndlessScrollListener() {
-            @Override
-            public boolean onLoadMore(int page, int totalItemsCount) {
+        try {
 
-                // Triggered only when new data needs to be appended to the list
+            listView.setOnScrollListener(new EndlessScrollListener() {
+                @Override
+                public boolean onLoadMore(int page, int totalItemsCount) {
 
-                buildList(page, 20, false);
+                    // Triggered only when new data needs to be appended to the list
 
-                return true; // ONLY if more data is actually being loaded; false otherwise.
+                    buildList(page, 20, false);
 
-            }
-        });
+                    return true; // ONLY if more data is actually being loaded; false otherwise.
+
+                }
+            });
+
+        } catch (NullPointerException e) {
+
+            finish();
+
+        }
 
     }
 
@@ -203,14 +211,30 @@ public class GroupActionListActivity extends AppCompatActivity {
 
                 }
 
-                organizationListContainer.setRefreshing(false);
+                try {
+
+                    organizationListContainer.setRefreshing(false);
+
+                } catch (NullPointerException e) {
+
+                    finish();
+
+                }
 
             }
 
             @Override
             public void failure(RetrofitError error) {
 
-                organizationListContainer.setRefreshing(false);
+                try {
+
+                    organizationListContainer.setRefreshing(false);
+
+                } catch (NullPointerException e) {
+
+                    finish();
+
+                }
 
                 if (error == null) return;
 
@@ -268,7 +292,7 @@ public class GroupActionListActivity extends AppCompatActivity {
 
         } catch (NullPointerException e) {
 
-            //
+            finish();
 
         }
 

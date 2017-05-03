@@ -55,7 +55,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity implements
-        EasyPermissions.PermissionCallbacks, ShareActionDialogListener {
+        EasyPermissions.PermissionCallbacks {
 
     @Bind(R.id.timeline)
     SwipeRefreshLayout timeline;
@@ -247,9 +247,9 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    private void populateTimeline(List list) {
+    private void populateTimeline(List<Report> list) {
 
-        timelineAdapter = new TimelineAdapter(this, list, false, socialOptions);
+        timelineAdapter = new TimelineAdapter(this, list, false);
 
         // Attach the adapter to a ListView
         listView.setAdapter(timelineAdapter);
@@ -410,11 +410,6 @@ public class MainActivity extends AppCompatActivity implements
 
         coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
-        // Determine which (if any) of Facebook and Twitter
-        // can be displayed in the social sharing dialog
-
-        socialOptions = SocialShareUtility.getShareOptions(this);
-
         // Set up EndlessScrollListener
 
         scrollListener = new EndlessScrollListener() {
@@ -526,23 +521,6 @@ public class MainActivity extends AppCompatActivity implements
                 fetchUserGroups();
 
             }
-
-        }
-
-    }
-
-    @Override
-    public void onSelectShareAction(int index) {
-
-        String target = getResources().getStringArray(socialOptions)[index];
-
-        if (target.toLowerCase().contains("facebook")) {
-
-            SocialShareUtility.shareOnFacebook(this);
-
-        } else {
-
-            SocialShareUtility.shareOnTwitter(this);
 
         }
 

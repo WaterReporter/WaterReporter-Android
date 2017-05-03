@@ -138,11 +138,6 @@ public class TagProfileActivity extends AppCompatActivity {
 
         }
 
-        // Determine which (if any) of Facebook and Twitter
-        // can be displayed in the social sharing dialog
-
-        socialOptions = SocialShareUtility.getShareOptions(this);
-
         // Set refresh listener on report feed container
 
         timeLineContainer.setOnRefreshListener(
@@ -656,7 +651,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
     private void populateTimeline(List<Report> list) {
 
-        timelineAdapter = new TimelineAdapter(this, list, false, socialOptions);
+        timelineAdapter = new TimelineAdapter(this, list, false);
 
         // Attach the adapter to a ListView
         if (timeLine != null) {

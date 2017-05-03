@@ -46,9 +46,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.CallbackManager;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.widget.ShareDialog;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -89,7 +86,7 @@ import retrofit.client.Response;
 import static java.lang.Boolean.TRUE;
 import static java.security.AccessController.getContext;
 
-public class AuthUserActivity extends AppCompatActivity implements ReportActionDialogListener, ShareActionDialogListener {
+public class AuthUserActivity extends AppCompatActivity implements ReportActionDialogListener {
 
     TextView userTitle;
 
@@ -185,11 +182,6 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
         Log.d("storedavatar", coreProfile.getString("picture", ""));
 
         resources = getResources();
-
-        // Determine which (if any) of Facebook and Twitter
-        // can be displayed in the social sharing dialog
-
-        socialOptions = SocialShareUtility.getShareOptions(this);
 
         // Retrieve stored User object
 
@@ -754,9 +746,9 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
     }
 
-    private void populateTimeline(List list) {
+    private void populateTimeline(List<Report> list) {
 
-        timelineAdapter = new TimelineAdapter(AuthUserActivity.this, list, true, socialOptions);
+        timelineAdapter = new TimelineAdapter(AuthUserActivity.this, list, true);
 
         // Attach the adapter to a ListView
         if (timeLine != null) {
@@ -891,23 +883,6 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
         } else {
 
             editReport();
-
-        }
-
-    }
-
-    @Override
-    public void onSelectShareAction(int index) {
-
-        String target = getResources().getStringArray(socialOptions)[index];
-
-        if (target.toLowerCase().contains("facebook")) {
-
-            SocialShareUtility.shareOnFacebook(this);
-
-        } else {
-
-            SocialShareUtility.shareOnTwitter(this);
 
         }
 

@@ -149,11 +149,6 @@ public class TerritoryActivity extends AppCompatActivity {
 
         resources = getResources();
 
-        // Determine which (if any) of Facebook and Twitter
-        // can be displayed in the social sharing dialog
-
-        socialOptions = SocialShareUtility.getShareOptions(this);
-
         territory = TerritoryHolder.getTerritory();
 
         // Set refresh listener on report feed container
@@ -698,7 +693,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
     private void populateTimeline(List<Report> list) {
 
-        timelineAdapter = new TimelineAdapter(this, list, false, socialOptions);
+        timelineAdapter = new TimelineAdapter(this, list, false);
 
         // Attach the adapter to a ListView
         if (timeLine != null) {

@@ -775,6 +775,16 @@ public class SearchActivity extends FragmentActivity {
 
         baseTagList = new ArrayList<HashTag>();
 
+        // Set initial category highlight
+
+        highlightButton(searchPeople);
+
+        dimButtons(new Button[]{
+                searchWatersheds,
+                searchTags,
+                searchOrgs
+        });
+
         fetchTrendingPeople(10, 1, false, true);
 
         fetchTrendingGroups(10, 1, false, false);

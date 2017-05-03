@@ -72,7 +72,7 @@ import retrofit.client.Response;
 import static java.lang.Boolean.TRUE;
 import static java.security.AccessController.getContext;
 
-public class OrganizationProfileActivity extends AppCompatActivity implements ShareActionDialogListener {
+public class OrganizationProfileActivity extends AppCompatActivity {
 
     LinearLayout profileMeta;
 
@@ -169,11 +169,6 @@ public class OrganizationProfileActivity extends AppCompatActivity implements Sh
         context = this;
 
         resources = getResources();
-
-        // Determine which (if any) of Facebook and Twitter
-        // can be displayed in the social sharing dialog
-
-        socialOptions = SocialShareUtility.getShareOptions(this);
 
         organization = OrganizationHolder.getOrganization();
 
@@ -777,31 +772,14 @@ public class OrganizationProfileActivity extends AppCompatActivity implements Sh
 
     }
 
-    private void populateTimeline(List list) {
+    private void populateTimeline(List<Report> list) {
 
-        timelineAdapter = new TimelineAdapter(this, list, false, socialOptions);
+        timelineAdapter = new TimelineAdapter(this, list, false);
 
         // Attach the adapter to a ListView
         timeLine.setAdapter(timelineAdapter);
 
         attachScrollListener();
-
-    }
-
-    @Override
-    public void onSelectShareAction(int index) {
-
-        String target = getResources().getStringArray(socialOptions)[index];
-
-        if (target.toLowerCase().contains("facebook")) {
-
-            SocialShareUtility.shareOnFacebook(this);
-
-        } else {
-
-            SocialShareUtility.shareOnTwitter(this);
-
-        }
 
     }
 

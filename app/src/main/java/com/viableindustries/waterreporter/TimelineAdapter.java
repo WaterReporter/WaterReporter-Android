@@ -33,9 +33,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.CallbackManager;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.widget.ShareDialog;
 import com.google.android.flexbox.FlexboxLayout;
 import com.viableindustries.waterreporter.data.Comment;
 import com.viableindustries.waterreporter.data.Geometry;
@@ -75,10 +72,6 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
     private final Context context;
 
-    private CallbackManager callbackManager;
-
-    private ShareDialog shareDialog;
-
     private final boolean isProfile;
 
     protected String creationDate;
@@ -99,14 +92,10 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
     final private String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
 
-    public TimelineAdapter(Activity activity, List<Report> features, boolean isProfile, int socialOptions) {
+    public TimelineAdapter(Activity activity, List<Report> features, boolean isProfile) {
         super(activity, 0, features);
         this.context = activity;
         this.isProfile = isProfile;
-        this.socialOptions = socialOptions;
-
-        this.callbackManager = CallbackManager.Factory.create();
-        this.shareDialog = new ShareDialog(activity);
     }
 
     protected static class ViewHolder {
@@ -139,39 +128,6 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         sendIntent.putExtra(Intent.EXTRA_TEXT, shareUrl);
         sendIntent.setType("text/plain");
         context.startActivity(Intent.createChooser(sendIntent, res.getText(R.string.share_report_chooser_title)));
-
-//        Log.d("Click Event", "Share button clicked.");
-//
-//        Resources res = context.getResources();
-//
-//        String[] options = res.getStringArray(socialOptions);
-//
-//        CharSequence[] renders = new CharSequence[2];
-//
-//        for (int i = 0; i < options.length; i++) {
-//
-//            renders[i] = HtmlCompat.fromHtml(options[i]);
-//
-//        }
-//
-//        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-//
-//        builder.setItems(renders, new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int which) {
-//
-//                ReportHolder.setReport(report);
-//
-//                // The 'which' argument contains the index position
-//                // of the selected item
-//                ShareActionDialogListener activity = (ShareActionDialogListener) context;
-//
-//                activity.onSelectShareAction(which);
-//
-//            }
-//        });
-//
-//        // Create the AlertDialog object and return it
-//        builder.create().show();
 
     }
 

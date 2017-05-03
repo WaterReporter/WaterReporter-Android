@@ -66,8 +66,7 @@ import retrofit.client.Response;
  * Created by Ryan Hamley on 10/14/14.
  * This activity displays detailed information about a report after clicking on its map marker.
  */
-public class MarkerDetailActivity extends AppCompatActivity
-        implements ShareActionDialogListener {
+public class MarkerDetailActivity extends AppCompatActivity {
 
     @Bind(R.id.report_date)
     TextView reportDate;
@@ -133,11 +132,6 @@ public class MarkerDetailActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         context = this;
-
-        // Determine which (if any) of Facebook and Twitter
-        // can be displayed in the social sharing dialog
-
-        socialOptions = SocialShareUtility.getShareOptions(this);
 
         Report report = ReportHolder.getReport();
 
@@ -331,23 +325,6 @@ public class MarkerDetailActivity extends AppCompatActivity
         Picasso.with(this).load(report.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(ownerAvatar);
 
         Picasso.with(this).load(imagePath).fit().centerCrop().into(reportThumb);
-
-    }
-
-    @Override
-    public void onSelectShareAction(int index) {
-
-        String target = getResources().getStringArray(socialOptions)[index];
-
-        if (target.toLowerCase().contains("facebook")) {
-
-            SocialShareUtility.shareOnFacebook(this);
-
-        } else {
-
-            SocialShareUtility.shareOnTwitter(this);
-
-        }
 
     }
 
