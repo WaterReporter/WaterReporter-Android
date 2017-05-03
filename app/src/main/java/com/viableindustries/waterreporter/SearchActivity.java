@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.TextViewCompat;
@@ -737,6 +738,10 @@ public class SearchActivity extends FragmentActivity {
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         resources = getResources();
+
+        // Set ProgressBar appearance
+
+        progressBar.setIndeterminateDrawable(ContextCompat.getDrawable(this, R.drawable.blue_progress_compat));
 
         // Initialize empty list to hold organizations
 
