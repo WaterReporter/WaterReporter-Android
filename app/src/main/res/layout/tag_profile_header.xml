@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_user_profile"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -151,6 +152,12 @@
         android:paddingBottom="64dp"
         android:visibility="gone">
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginBottom="64dp"
+            android:background="@color/gray_232" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -160,26 +167,19 @@
             android:paddingBottom="16dp"
             android:paddingTop="16dp"
             android:text="@string/start_conversation"
+            android:textColor="@color/black"
             android:textSize="@dimen/medium_text" />
 
-        <Button
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/jump_start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:layout_gravity="center"
-            android:background="@drawable/green_button"
-            android:gravity="center"
-            android:paddingBottom="0dp"
-            android:paddingEnd="16dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingStart="16dp"
-            android:paddingTop="0dp"
-            android:text="@string/share_post_prompt"
-            android:textAllCaps="true"
-            android:textColor="#FFFFFF"
-            android:textSize="@dimen/small_text"
-            android:textStyle="bold" />
+            android:clickable="true"
+            android:src="@drawable/ic_add_white_24dp"
+            app:fabSize="normal"
+            app:rippleColor="@color/blue_green"
+            app:useCompatPadding="true" />
 
     </LinearLayout>
 

@@ -4,9 +4,11 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.app.Activity;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -89,7 +91,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
     LinearLayout sharePrompt;
 
-    Button jumpStart;
+    FloatingActionButton jumpStart;
 
     @Bind(R.id.timeline)
     SwipeRefreshLayout timeLineContainer;
@@ -245,7 +247,9 @@ public class TerritoryActivity extends AppCompatActivity {
 
         sharePrompt = (LinearLayout) header.findViewById(R.id.share_cta);
 
-        jumpStart = (Button) header.findViewById(R.id.jump_start);
+        jumpStart = (FloatingActionButton) header.findViewById(R.id.jump_start);
+
+        jumpStart.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.green_1)));
 
         // Add click listener to share button
 
