@@ -2,6 +2,7 @@
 <resources>
 
     <color name="black">#000000</color>
+    <color name="coal">#333333</color>
 
     <color name="waterreporter_blue">#24BAE4</color>
     <color name="waterreporter_dark">#555555</color>

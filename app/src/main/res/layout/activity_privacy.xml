@@ -42,8 +42,9 @@
                 android:paddingBottom="16dp"
                 android:paddingTop="16dp"
                 android:text="@string/privacy_title"
-                android:textColor="@color/black"
-                android:textSize="@dimen/medium_text" />
+                android:textColor="@color/coal"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="match_parent"
@@ -76,8 +77,9 @@
                 android:background="#F7F7F7"
                 android:padding="16dp"
                 android:text="@string/privacy_subheading_one"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textColor="@color/coal"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="match_parent"
@@ -136,8 +138,9 @@
                 android:background="#F7F7F7"
                 android:padding="16dp"
                 android:text="@string/privacy_subheading_two"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textColor="@color/coal"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="match_parent"
@@ -180,8 +183,9 @@
                 android:background="#F7F7F7"
                 android:padding="16dp"
                 android:text="@string/privacy_subheading_three"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textColor="@color/coal"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="match_parent"
@@ -256,8 +260,9 @@
                 android:background="#F7F7F7"
                 android:padding="16dp"
                 android:text="@string/privacy_subheading_four"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textColor="@color/coal"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="match_parent"
@@ -294,8 +299,9 @@
                 android:background="#F7F7F7"
                 android:padding="16dp"
                 android:text="@string/privacy_subheading_five"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textColor="@color/coal"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="match_parent"
@@ -332,8 +338,9 @@
                 android:background="#F7F7F7"
                 android:padding="16dp"
                 android:text="@string/privacy_subheading_six"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textColor="@color/coal"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="match_parent"
@@ -370,8 +377,9 @@
                 android:background="#F7F7F7"
                 android:padding="16dp"
                 android:text="@string/privacy_subheading_seven"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textColor="@color/coal"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="match_parent"
@@ -406,8 +414,9 @@
                 android:background="#F7F7F7"
                 android:padding="16dp"
                 android:text="@string/privacy_subheading_eight"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textColor="@color/coal"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="match_parent"
@@ -444,8 +453,9 @@
                 android:background="#F7F7F7"
                 android:padding="16dp"
                 android:text="@string/privacy_subheading_nine"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textColor="@color/coal"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="match_parent"
@@ -480,8 +490,9 @@
                 android:background="#F7F7F7"
                 android:padding="16dp"
                 android:text="@string/privacy_subheading_ten"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textColor="@color/coal"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="match_parent"
