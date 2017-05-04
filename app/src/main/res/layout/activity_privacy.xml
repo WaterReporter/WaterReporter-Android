@@ -278,7 +278,8 @@
                     android:paddingBottom="16dp"
                     android:paddingTop="0dp"
                     android:text="@string/privacy_s4_body_part_one"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textColorLink="@color/base_blue" />
 
             </LinearLayout>
 
@@ -315,7 +316,8 @@
                     android:paddingBottom="16dp"
                     android:paddingTop="0dp"
                     android:text="@string/privacy_s5_body_part_one"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textColorLink="@color/base_blue" />
 
             </LinearLayout>
 
@@ -352,7 +354,8 @@
                     android:paddingBottom="16dp"
                     android:paddingTop="0dp"
                     android:text="@string/privacy_s6_body_part_one"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textColorLink="@color/base_blue" />
 
             </LinearLayout>
 
@@ -425,7 +428,8 @@
                     android:paddingBottom="16dp"
                     android:paddingTop="0dp"
                     android:text="@string/privacy_s8_body_part_one"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textColorLink="@color/base_blue" />
 
             </LinearLayout>
 
@@ -498,7 +502,8 @@
                     android:paddingBottom="16dp"
                     android:paddingTop="0dp"
                     android:text="@string/privacy_s10_body_part_one"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textColorLink="@color/base_blue" />
 
             </LinearLayout>
 
