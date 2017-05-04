@@ -418,7 +418,9 @@ public class TagProfileActivity extends AppCompatActivity {
 
         if (collection.equals("group")) {
 
-            QueryFilter tagFilter = new QueryFilter("tag", "like", String.format("%s%s%s", "%", tagName.replace("#", ""), "%"));
+            // Set tag filter to match from beginning of token
+
+            QueryFilter tagFilter = new QueryFilter("tag", "ilike", String.format("%s%s", tagName.replace("#", ""), "%"));
 
             QueryFilter complexVal = new QueryFilter("tags", "any", tagFilter);
 
@@ -428,9 +430,15 @@ public class TagProfileActivity extends AppCompatActivity {
 
         } else {
 
-            QueryFilter userFilter = new QueryFilter("tags__tag", "any", tagName.replace("#", ""));
+            // Set tag filter to match from beginning of token
 
-            queryFilters.add(userFilter);
+            QueryFilter tagFilter = new QueryFilter("tag", "ilike", String.format("%s%s", tagName.replace("#", ""), "%"));
+
+            QueryFilter complexVal = new QueryFilter("tags", "any", tagFilter);
+
+//            QueryFilter userFilter = new QueryFilter("tags__tag", "any", tagName.replace("#", ""));
+
+            queryFilters.add(complexVal);
 
             if (optionalFilters != null) {
 

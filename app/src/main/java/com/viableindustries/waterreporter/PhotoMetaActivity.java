@@ -515,7 +515,9 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         if (searchChars != null) {
 
-            QueryFilter tagNameFilter = new QueryFilter("tag", "ilike", String.format("%s%s%s", "%", searchChars, "%"));
+            // Set tag filter to match from beginning of token
+
+            QueryFilter tagNameFilter = new QueryFilter("tag", "ilike", String.format("%s%s", searchChars, "%"));
 
             queryFilters.add(tagNameFilter);
 
