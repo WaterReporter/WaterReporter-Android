@@ -96,22 +96,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
     }
 
-//    private void setCurrentUser(int userId, SharedPreferences coreProfile) {
-//
-//        UserProperties userProperties = new UserProperties(userId, coreProfile.getString("description", ""),
-//                coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
-//                coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
-//                coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null);
-//
-//        User coreUser = User.createUser(userId, userProperties);
-//
-//        UserHolder.setUser(coreUser);
-//
-//    }
-
     protected void onRequestError(RetrofitError error) {
-
-//        progressBar.setVisibility(View.GONE);
 
         Response response = error.getResponse();
 
@@ -130,8 +115,6 @@ public class ProfileSettingsActivity extends AppCompatActivity {
     }
 
     private void refreshAccount(int userId) {
-
-//        progressBar.setVisibility(View.VISIBLE);
 
         final String accessToken = prefs.getString("access_token", "");
 
@@ -188,8 +171,6 @@ public class ProfileSettingsActivity extends AppCompatActivity {
                         // Update stored values of user's role designation
 
                         coreProfile.edit().putString("role", user.properties.roles.get(0).properties.name).apply();
-
-//                        progressBar.setVisibility(View.GONE);
 
                         configureNotificationSettings();
 
@@ -298,6 +279,18 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
+    }
+
+    public void readTerms(View view) {
+
+        startActivity(new Intent(this, TermsActivity.class));
+
+    }
+
+    public void readPrivacy(View view) {
+
+        startActivity(new Intent(this, PrivacyActivity.class));
+
     }
 
     // Back button should always go to authenticated user's account profile

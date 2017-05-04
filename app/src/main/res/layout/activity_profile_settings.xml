@@ -92,6 +92,24 @@
             android:background="@color/gray_232" />
 
         <TextView
+            android:id="@+id/read_terms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="readTerms"
+            android:padding="16dp"
+            android:text="@string/read_terms"
+            android:textColor="@color/base_blue" />
+
+        <TextView
+            android:id="@+id/read_privacy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="readPrivacy"
+            android:padding="16dp"
+            android:text="@string/read_privacy"
+            android:textColor="@color/base_blue" />
+
+        <TextView
             android:id="@+id/report_bug"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -14,7 +14,6 @@
         android:layout_gravity="center"
         mapbox:mapbox_styleUrl="mapbox://styles/mapbox/basic-v9" />
 
-
     <View
         android:layout_width="48dp"
         android:layout_height="48dp"
@@ -32,17 +31,24 @@
         app:rippleColor="@color/base_blue"
         app:useCompatPadding="true" />
 
-    <com.mapbox.services.android.ui.geocoder.GeocoderAutoCompleteView
-        android:id="@+id/autoCompleteWidget"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center|top"
         android:layout_margin="8dp"
         android:background="@drawable/geocoder_input"
         android:elevation="1dp"
-        android:ellipsize="end"
-        android:hint="@string/find_location"
-        android:maxLines="1"
-        android:padding="16dp" />
+        android:padding="16dp">
+
+        <com.mapbox.services.android.ui.geocoder.GeocoderAutoCompleteView
+            android:id="@+id/autoCompleteWidget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:ellipsize="end"
+            android:hint="@string/find_location"
+            android:maxLines="1" />
+
+    </RelativeLayout>
 
 </FrameLayout>

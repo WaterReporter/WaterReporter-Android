@@ -164,6 +164,81 @@
     <string name="general_options">General</string>
     <string name="log_out">Log out</string>
     <string name="bug_report">Report a bug or suggest a change</string>
+    <string name="read_terms">Terms and Conditions</string>
+    <string name="read_privacy">Privacy Statement</string>
+
+    <!-- Terms -->
+
+    <string name="terms_title">Terms and Conditions</string>
+    <string name="terms_intro">By using Water Reporter for Android, you agree to be bound by the following terms and conditions (\"Terms of Service\").</string>
+    <string name="basic_terms_title">Basic Terms</string>
+    <string name="general_conditions_title">General Conditions</string>
+
+    <string name="term_one">&#8226; You must be 13 years and older to use this app.</string>
+    <string name="term_two">&#8226; You are responsible for any activity that occurs under your user account.</string>
+    <string name="term_three">&#8226; You are responsible for keeping your password secure.</string>
+    <string name="term_four">&#8226; You must not abuse, harass, threaten, invade the privacy of, or intimidate other Water Reporter members or staff.</string>
+    <string name="term_five">&#8226; You may not use Water Reporter for any illegal or unauthorized purpose. International members agree to comply with all local laws regarding online conduct and acceptable content.</string>
+    <string name="term_six">&#8226; You are solely responsible for your conduct and any data, text, information, screen names, graphics, photos, profiles, links (\"Content\") that you submit, post, and display on Water Reporter.</string>
+    <string name="term_seven">&#8226; You must not modify, adapt or hack Water Reporter or modify another website so as to falsely imply that it is associated with Water Reporter.</string>
+    <string name="term_eight">&#8226; You must not create or send unwanted notes to any members of the Water Reporter community that would be considered to be spam.</string>
+    <string name="term_nine">&#8226; You must not transmit any worms or viruses or any code of a destructive nature.</string>
+    <string name="term_ten">&#8226; You must not, in the use of Water Reporter, violate any laws in your jurisdiction (including but not limited to copyright laws).</string>
+    <string name="term_eleven">&#8226; Violation of any of these agreements will result in the termination of your Water Reporter account. While Water Reporter prohibits malicious or harmful conduct and content, you understand and agree that Water Reporter cannot be responsible for the Content posted by its members and you nonetheless may be exposed to such materials and that you use Water Reporter at your own risk.</string>
+
+    <string name="condition_one">&#8226; We reserve the right to modify or terminate Water Reporter for any reason, without notice at any time.</string>
+    <string name="condition_two">&#8226; We reserve the right to alter these Terms of Service at any time. If the alterations constitute a material change to the Terms of Service, we will notify you via the email address associated with your Water Reporter account in a timely manner.</string>
+    <string name="condition_three">&#8226; What constitutes a \"material change\" will be determined at our sole discretion, in good faith and using common sense and reasonable judgement.u must not abuse, harass, threaten, invade the privacy of, or intimidate other Water Reporter members or staff.</string>
+    <string name="condition_four">&#8226; We reserve the right to refuse service to anyone for any reason at any time.</string>
+    <string name="condition_five">&#8226; You own all of the content that you share on Water Reporter. You give us permission to use, store, and share the member content you post on Water Reporter. You may request that your account be deleted at any time, though if you\'ve shared your content publicly, the content may persist on third party sites until it is deleted.</string>
+    <string name="condition_six">&#8226; You grant Water Reporter a non-exclusive, transferable, sub-licensable, royalty-free, worldwide license to use, copy, publicly perform or display, distribute, modify, translate, and create derivative works of any content you post on Water Reporter solely for the purpose for which your content was submitted or made available. This license ends when your account or content are deleted.</string>
+    <string name="condition_seven">&#8226; We may, but have no obligation to, remove content that we determine in our sole discretion are unlawful, offensive, threatening, libelous, defamatory, obscene, invades the privacy of others, or otherwise objectionable or violates any party\'s intellectual property or these Terms of Service.</string>
+    <string name="condition_eight">&#8226; We reserve the right to remove any content that we feel may include personally identifiable documentation or scans of documents issued by banks or governments (social security numbers, passport numbers, credit card numbers, drivers licenses, etc.).</string>
+    <string name="condition_nine">&#8226; We reserve the right to contact you occasionally via email to share system-wide updates regarding new features, releases, and community news.</string>
+
+    <!-- Privacy -->
+
+    <string name="privacy_title">Privacy Statement</string>
+    <string name="privacy_intro">This Privacy Statement governs your use of the software application Water Reporter (\"Application\") for mobile devices and web browsers that was created by Chesapeake Commons and Viable Industries, LLC. The Application empowers everyday citizens to take actions that protect and improve water quality in their communities. Through photos, comments, and locations, Water Reporter members help to build a living record of experiences and conditions on the world\'s lakes, rivers, and oceans.</string>
+
+    <string name="privacy_subheading_one">What information does the Application obtain and how is it used?</string>
+    <string name="privacy_s1_body_part_one">The Application obtains the information you provide when you download the software and create an account. Registration is required in order to use the Application.</string>
+    <string name="privacy_s1_body_part_two">When you register as a Water Reporter member and use the Application, you generally provide (a) your name, email address, password and other registration information; (b) transaction-related information, such as when you respond to any offers or download or use applications from us; \(c\) information you provide us when you contact us for help, and; (d) information you enter into our system when using the Application, such as contact information, photographs, and written comments.</string>
+    <string name="privacy_s1_body_part_three">We may use the information you provide to contact you with important information, required notices, and marketing promotions.</string>
+    <string name="privacy_s1_body_part_four">In addition, the Application may collect certain information automatically, including, but not limited to, the type of mobile device you use, the IP address of your mobile device, your mobile operating system, the type of mobile and/or desktop web browsers you use, and information about the way you use the Application.</string>
+
+    <string name="privacy_subheading_two">Does the Application collect the precise real-time location of my device?</string>
+    <string name="privacy_s2_body_part_one">When you use this mobile application, we may use GPS technology (or other similar technology) to determine your current location in order to correctly associate real coordinates with any posts that you share. The Water Reporter website does not automatically monitor your location. Maps of post locations will be displayed in the mobile application and on the Water Reporter website. We will not share your current location with other users or partners.</string>
+    <string name="privacy_s2_body_part_two">If you do not want us to use your location for the purposes set forth above, you should turn off location services for the mobile application located in your mobile phone settings and/or within the mobile application.</string>
+
+    <string name="privacy_subheading_three">Do third parties see and/or have access to information obtained by the Application?</string>
+    <string name="privacy_s3_body_part_one">Yes. We will share your information with third parties only in the ways described in this Privacy Statement.</string>
+    <string name="privacy_s3_body_part_two">We may disclose user-provided and automatically collected information:</string>
+    <string name="privacy_s3_body_part_three">&#8226; as required by law, such as to comply with a subpoena, or similar legal process;</string>
+    <string name="privacy_s3_body_part_four">&#8226; when we believe in good faith that disclosure is necessary to protect our rights, protect your safety or the safety of others, investigate fraud, or respond to a government request;</string>
+    <string name="privacy_s3_body_part_five">&#8226; with our trusted services providers who work on our behalf, do not have an independent use of the information we disclose to them, and have agreed to adhere to the rules set forth in this privacy statement.</string>
+    <string name="privacy_s3_body_part_six">If Chesapeake Commons or Viable Industries, LLC is involved in a merger, acquisition, or sale of all or a portion of its assets, you will be notified via email and/or a prominent notice on our website of any change in ownership or uses of this information, as well as any choices you may have regarding this information.</string>
+
+    <string name="privacy_subheading_four">What are my opt-out rights?</string>
+    <string name="privacy_s4_body_part_one">You can stop all collection of information by the Application easily by uninstalling the Application. You may use the standard uninstall processes as may be available as part of your mobile device or via the mobile application marketplace or network. You can also request to opt-out via email, at support@waterreporter.org.</string>
+
+    <string name="privacy_subheading_five">Data Retention Policy</string>
+    <string name="privacy_s5_body_part_one">We will retain user-provided information for as long as you use the Application and for a reasonable time thereafter. We will retain automatically-collected information for up to 24 months and thereafter may store it in aggregate. If you\'d like us to delete user-provided information that you have provided via the Application, please contact us at support@waterreporter.org and we will respond as quickly as possible. Please note that some or all of the user-provided information may be required in order for the Application to function properly.</string>
+
+    <string name="privacy_subheading_six">Children</string>
+    <string name="privacy_s6_body_part_one">We do not use the Application to knowingly solicit data from or market to children under the age of 13. If a parent or guardian becomes aware that his or her child has provided us with information without their consent, he or she should contact us at support@waterreporter.org. We will delete such information from our records as quickly as possible.</string>
+
+    <string name="privacy_subheading_seven">Security</string>
+    <string name="privacy_s7_body_part_one">We are concerned about safeguarding the confidentiality of your information. We provide physical, electronic, and procedural safeguards to protect information we process and maintain. For example, we limit access to this information to authorized employees and contractors who need to know that information in order to operate, develop or improve our Application. Please be aware that, although we endeavor to provide reasonable security for information we process and maintain, no security system can prevent all potential security breaches.</string>
+
+    <string name="privacy_subheading_eight">Changes</string>
+    <string name="privacy_s8_body_part_one">This Privacy Statement may be updated from time to time for any reason. We will notify you of any changes to our Privacy Statement by posting the new Privacy Statement at https://www.waterreporter.org/privacy and informing you via email. You are advised to consult this Privacy Statement regularly for any changes, as continued use is deemed approval of all changes.</string>
+
+    <string name="privacy_subheading_nine">Your Consent</string>
+    <string name="privacy_s9_body_part_one">By using the Application, you are consenting to our processing of your information as set forth in this Privacy Statement now and as amended by us. \"Processing\" means using cookies on a computer/handheld device or using or touching information in any way, including, but not limited to, collecting, storing, deleting, using, combining and disclosing information, all of which activities will take place in the United States. If you reside outside the United States your information will be transferred, processed, and stored there under United States privacy standards.</string>
+
+    <string name="privacy_subheading_ten">Contact Us</string>
+    <string name="privacy_s10_body_part_one">Questions regarding this Privacy Statement or the Application\'s information practices should be directed to support@waterreporter.org.</string>
 
     <!-- Profile -->
 
@@ -253,5 +328,7 @@
     <string name="title_activity_tag">TagActivity</string>
     <string name="title_activity_related_groups">RelatedGroupsActivity</string>
     <string name="title_activity_auth_user">AuthUserActivity</string>
+    <string name="title_activity_terms">TermsActivity</string>
+    <string name="title_activity_privacy">PrivacyActivity</string>
 
 </resources>
