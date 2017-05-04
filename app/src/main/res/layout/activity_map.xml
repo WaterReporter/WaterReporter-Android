@@ -7,39 +7,6 @@
     android:layout_height="match_parent"
     tools:context="com.viableindustries.waterreporter.LocationActivity">
 
-    <!--<RelativeLayout-->
-    <!--android:id="@+id/action_bar"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="56dp"-->
-    <!--android:background="#FFFFFF">-->
-
-    <!--<ImageView-->
-    <!--android:id="@+id/logo_horizontal_lockup"-->
-    <!--android:layout_width="88dp"-->
-    <!--android:layout_height="24dp"-->
-    <!--android:layout_centerInParent="true"-->
-    <!--android:scaleType="fitXY"-->
-    <!--android:src="@drawable/logo_horizontal_lockup" />-->
-
-    <!--<View-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="0.5dp"-->
-    <!--android:layout_alignParentBottom="true"-->
-    <!--android:background="@color/gray_232" />-->
-
-    <!--</RelativeLayout>-->
-
-    <!--<com.mapbox.services.android.ui.geocoder.GeocoderAutoCompleteView-->
-    <!--android:id="@+id/autoCompleteWidget"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="center|top"-->
-    <!--android:layout_margin="8dp"-->
-    <!--android:background="#BFFFFFFF"-->
-    <!--android:hint="@string/find_location"-->
-    <!--android:maxLines="1"-->
-    <!--android:padding="16dp" />-->
-
     <com.mapbox.mapboxsdk.maps.MapView
         android:id="@+id/mapview"
         android:layout_width="match_parent"
@@ -73,6 +40,7 @@
         android:layout_margin="8dp"
         android:background="@drawable/geocoder_input"
         android:elevation="1dp"
+        android:ellipsize="end"
         android:hint="@string/find_location"
         android:maxLines="1"
         android:padding="16dp" />

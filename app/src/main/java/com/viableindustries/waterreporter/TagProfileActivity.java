@@ -436,8 +436,6 @@ public class TagProfileActivity extends AppCompatActivity {
 
             QueryFilter complexVal = new QueryFilter("tags", "any", tagFilter);
 
-//            QueryFilter userFilter = new QueryFilter("tags__tag", "any", tagName.replace("#", ""));
-
             queryFilters.add(complexVal);
 
             if (optionalFilters != null) {

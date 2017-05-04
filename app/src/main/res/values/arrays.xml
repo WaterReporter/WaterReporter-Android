@@ -27,10 +27,25 @@
         <item name="tt"><![CDATA[<b>Share on Twitter</b>]]></item>
     </string-array>
     <string-array name="default_avatars">
-        <item>calidris_canutus</item>
-        <item>gavia_immer</item>
-        <item>glyptemys_muhlenbergii</item>
-        <item>hudson_bay_sunset</item>
-        <item>lophodytes_cucullatus</item>
+        <item>alpha</item>
+        <item>bravo</item>
+        <item>charlie</item>
+        <item>delta</item>
+        <item>echo</item>
+        <item>foxtrot</item>
+        <item>golf</item>
+        <item>hotel</item>
+        <item>india</item>
+        <item>juliet</item>
+        <item>kilo</item>
+        <item>lima</item>
+        <item>mike</item>
+        <item>november</item>
+        <item>oscar</item>
+        <item>papa</item>
+        <item>quebec</item>
+        <item>romeo</item>
+        <item>sierra</item>
+        <item>tango</item>
     </string-array>
 </resources>
