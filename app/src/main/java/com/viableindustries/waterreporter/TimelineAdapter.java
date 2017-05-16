@@ -371,8 +371,6 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         Picasso.with(context).load(feature.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(viewHolder.ownerAvatar);
 
-//        Picasso.with(context).load(imagePath).fit().centerCrop().into(viewHolder.reportThumb);
-
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(context));
 
         viewHolder.reportThumb.setLayoutParams(layoutParams);

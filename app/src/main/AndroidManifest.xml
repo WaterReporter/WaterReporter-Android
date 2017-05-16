@@ -166,10 +166,48 @@
         <activity
             android:name=".MarkerDetailActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_marker_detail"
+            android:label="@string/app_name"
             android:parentActivityName=".MapDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "http://www.waterreporter.org/reports” -->
+                <data android:scheme="http"
+                    android:host="www.waterreporter.org"
+                    android:pathPrefix="/reports" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "https://www.waterreporter.org/reports” -->
+                <data android:scheme="https"
+                    android:host="www.waterreporter.org"
+                    android:pathPrefix="/reports" />
+                <!-- note that the leading "/" is required for pathPrefix-->
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "http://www.waterreporter.org/community/reports” -->
+                <data android:scheme="http"
+                    android:host="www.waterreporter.org"
+                    android:pathPrefix="/community/reports" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "https://www.waterreporter.org/community/reports” -->
+                <data android:scheme="https"
+                    android:host="www.waterreporter.org"
+                    android:pathPrefix="/community/reports" />
+                <!-- note that the leading "/" is required for pathPrefix-->
+            </intent-filter>
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.viableindustries.waterreporter.MapDetailActivity" />
@@ -288,9 +326,6 @@
             android:label="@string/title_activity_privacy"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".LaunchActivity"
-            android:label="@string/title_activity_launch"></activity>
     </application>
 
 </manifest>

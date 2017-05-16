@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarActivity;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -23,11 +25,13 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.GroupNameComparator;
 import com.viableindustries.waterreporter.data.HtmlCompat;
@@ -68,6 +72,12 @@ import retrofit.client.Response;
  * This activity displays detailed information about a report after clicking on its map marker.
  */
 public class MarkerDetailActivity extends AppCompatActivity {
+
+    @Bind(R.id.masthead)
+    RelativeLayout masthead;
+
+    @Bind(R.id.post_container)
+    ScrollView postContainer;
 
     @Bind(R.id.report_date)
     TextView reportDate;
@@ -123,6 +133,8 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
     private int socialOptions;
 
+    private SharedPreferences prefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -136,7 +148,33 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
         Report report = ReportHolder.getReport();
 
-        populateView(report);
+        try {
+
+            populateView(report);
+
+        } catch (NullPointerException npe) {
+
+            Intent intent = getIntent();
+            String action = intent.getAction();
+            Uri data = intent.getData();
+
+            Log.d("intentData", data.getLastPathSegment());
+
+            try {
+
+                int id = Integer.parseInt(data.getLastPathSegment());
+
+                fetchReport(id);
+
+            } catch (NumberFormatException nfe) {
+
+                startActivity(new Intent(context, MainActivity.class));
+
+            }
+
+        }
+
+        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
     }
 
@@ -144,6 +182,10 @@ public class MarkerDetailActivity extends AppCompatActivity {
     }
 
     private void populateView(final Report report) {
+
+        masthead.setVisibility(View.VISIBLE);
+
+        postContainer.setVisibility(View.VISIBLE);
 
         ReportPhoto image = (ReportPhoto) report.properties.images.get(0);
 
@@ -272,60 +314,68 @@ public class MarkerDetailActivity extends AppCompatActivity {
         commentCount = report.properties.comments.size();
         reportComments.setText(getResources().getQuantityString(R.plurals.comment_label, commentCount, commentCount));
 
-        // Allow user to share report content on Facebook/Twitter
-        // if either or both of those applications is installed
+        shareIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        if (socialOptions != 0) {
+                Resources res = context.getResources();
 
-            shareIcon.setVisibility(View.VISIBLE);
+                String shareUrl = res.getString(R.string.share_post_url, report.id);
 
-            shareIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, shareUrl);
+                sendIntent.setType("text/plain");
+                context.startActivity(Intent.createChooser(sendIntent, res.getText(R.string.share_report_chooser_title)));
 
-                    Log.d("Click Event", "Share button clicked.");
-
-                    Resources res = context.getResources();
-
-                    String[] options = res.getStringArray(socialOptions);
-
-                    CharSequence[] renders = new CharSequence[2];
-
-                    for (int i = 0; i < options.length; i++) {
-
-                        renders[i] = HtmlCompat.fromHtml(options[i]);
-
-                    }
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
-                    builder.setItems(renders, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-
-                            ReportHolder.setReport(report);
-
-                            // The 'which' argument contains the index position
-                            // of the selected item
-                            ShareActionDialogListener activity = (ShareActionDialogListener) context;
-
-                            activity.onSelectShareAction(which);
-
-                        }
-                    });
-
-                    // Create the AlertDialog object and return it
-                    builder.create().show();
-
-                }
-            });
-
-        }
+            }
+        });
 
         // Load images assets into their targets
 
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(context));
+
+        reportThumb.setLayoutParams(layoutParams);
+
         Picasso.with(this).load(report.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(ownerAvatar);
 
-        Picasso.with(this).load(imagePath).fit().centerCrop().into(reportThumb);
+        Picasso.with(this).load(imagePath).placeholder(R.drawable.reverse_letter_mark).fit().centerCrop().into(reportThumb);
+
+    }
+
+    private void fetchReport(int postId) {
+
+        RestAdapter restAdapter = ReportService.restAdapter;
+
+        ReportService service = restAdapter.create(ReportService.class);
+
+        service.getSingleReport("", "application/json", postId, new Callback<Report>() {
+
+            @Override
+            public void success(Report report, Response response) {
+
+                populateView(report);
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    startActivity(new Intent(context, MainActivity.class));
+
+                }
+
+            }
+
+        });
 
     }
 
@@ -340,12 +390,29 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
+
         super.onResume();
+
+        prefs.edit().putBoolean("markerDetailOpen", false).apply();
+
     }
 
     @Override
     public void onPause() {
+
         super.onPause();
+
+        prefs.edit().putBoolean("markerDetailOpen", false).apply();
+
+    }
+
+    @Override
+    public void onStop() {
+
+        super.onStop();
+
+        prefs.edit().putBoolean("markerDetailOpen", false).apply();
+
     }
 
     @Override
@@ -358,8 +425,6 @@ public class MarkerDetailActivity extends AppCompatActivity {
         Picasso.with(this).cancelRequest(ownerAvatar);
 
         ButterKnife.unbind(this);
-
-        SharedPreferences prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         prefs.edit().putBoolean("markerDetailOpen", false).apply();
 

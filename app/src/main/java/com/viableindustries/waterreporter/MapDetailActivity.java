@@ -272,15 +272,15 @@ public class MapDetailActivity extends AppCompatActivity {
 
             boolean isOpen = prefs.getBoolean("markerDetailOpen", false);
 
-            if (!isOpen) {
-
-                prefs.edit().putBoolean("markerDetailOpen", true).apply();
+//            if (!isOpen) {
+//
+//                prefs.edit().putBoolean("markerDetailOpen", true).apply();
 
                 Intent markerIntent = new Intent(getContext(), MarkerDetailActivity.class);
 
                 getContext().startActivity(markerIntent);
 
-            }
+//            }
 
             return false;
 
