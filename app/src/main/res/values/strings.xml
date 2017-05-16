@@ -330,5 +330,6 @@
     <string name="title_activity_auth_user">AuthUserActivity</string>
     <string name="title_activity_terms">TermsActivity</string>
     <string name="title_activity_privacy">PrivacyActivity</string>
+    <string name="title_activity_launch">LaunchActivity</string>
 
 </resources>

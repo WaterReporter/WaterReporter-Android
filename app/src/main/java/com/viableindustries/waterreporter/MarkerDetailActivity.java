@@ -26,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.GroupNameComparator;
@@ -84,7 +85,7 @@ public class MarkerDetailActivity extends AppCompatActivity {
     TextView reportCaption;
 
     @Bind(R.id.report_groups)
-    LinearLayout reportGroups;
+    FlexboxLayout reportGroups;
 
     @Bind(R.id.owner_avatar)
     ImageView ownerAvatar;

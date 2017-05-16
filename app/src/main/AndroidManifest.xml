@@ -288,6 +288,9 @@
             android:label="@string/title_activity_privacy"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".LaunchActivity"
+            android:label="@string/title_activity_launch"></activity>
     </application>
 
 </manifest>

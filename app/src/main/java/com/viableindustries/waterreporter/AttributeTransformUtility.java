@@ -73,9 +73,9 @@ public class AttributeTransformUtility {
 
     public static CharSequence relativeTime(String dateString) {
 
-        CharSequence relativeTime = (CharSequence) dateString;
+        long delta;
 
-        long now = new Date().getTime();
+        long currentTime = new Date().getTime();
 
         try {
 
@@ -84,10 +84,32 @@ public class AttributeTransformUtility {
 
             //parse the string into Date object
 
-            long date = sdfSource.parse(dateString).getTime();
+            long originTime = sdfSource.parse(dateString).getTime();
 
-            relativeTime = DateUtils.getRelativeTimeSpanString(date, now,
-                    0L, DateUtils.FORMAT_ABBREV_ALL);
+            delta = currentTime - originTime;
+
+            // The value of delta is greater than or equal to 1 day (86400000 milliseconds)
+
+            if (delta >= 86400000) {
+
+                SimpleDateFormat baseDateFormat = new SimpleDateFormat("MMM d", Locale.US);
+
+                //parse the date into another format
+                dateString = baseDateFormat.format(sdfSource.parse(dateString));
+
+            } else if (3600000 <= delta && delta < 86400000) {
+
+                int hours = Math.round(delta / 3600000);
+
+                dateString = String.format("%sh", hours);
+
+            } else {
+
+                int minutes = Math.round(delta / 60000);
+
+                dateString = minutes > 0 ? String.format("%sm", minutes) : String.format("%ss", Math.round(delta / 1000));
+
+            }
 
         } catch (ParseException pe) {
 
@@ -95,7 +117,7 @@ public class AttributeTransformUtility {
 
         }
 
-        return  relativeTime;
+        return dateString;
 
     }
 
