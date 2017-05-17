@@ -112,6 +112,9 @@ public class MarkerDetailActivity extends AppCompatActivity {
     @Bind(R.id.share_icon)
     RelativeLayout shareIcon;
 
+    @Bind(R.id.text_descriptors)
+    LinearLayout textDescriptors;
+
     @Bind(R.id.report_stub)
     LinearLayout reportStub;
 
@@ -146,6 +149,14 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
         context = this;
 
+        // Set dimensions of post image
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(context));
+
+        reportThumb.setLayoutParams(layoutParams);
+
+        // Retrieve report and attempt to display data
+
         Report report = ReportHolder.getReport();
 
         try {
@@ -178,10 +189,9 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
     }
 
-    private void populateOrganizations(ArrayList<Organization> orgs) {
-    }
-
     private void populateView(final Report report) {
+
+        featureId = (Integer) report.id;
 
         masthead.setVisibility(View.VISIBLE);
 
@@ -191,24 +201,24 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
         imagePath = (String) image.properties.square_retina;
 
+        // Display user name
+        reportOwner.setText(String.format("%s %s", report.properties.owner.properties.first_name, report.properties.owner.properties.last_name));
+
         creationDate = (String) AttributeTransformUtility.relativeTime(report.properties.created);
         reportDate.setText(creationDate);
-
-        featureId = (Integer) report.id;
 
         // Display watershed name, if any
 
         watershedName = AttributeTransformUtility.parseWatershedName(report.properties.territory);
-
         reportWatershed.setText(watershedName);
 
         reportWatershed.setOnClickListener(new TerritoryProfileListener(this, report.properties.territory));
 
+        textDescriptors.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
+
         // Extract group names, if any
 
         groupList = AttributeTransformUtility.groupListSize(report.properties.groups);
-
-        reportOwner.setText(String.format("%s %s", report.properties.owner.properties.first_name, report.properties.owner.properties.last_name));
 
         // Display report text body, if any
 
@@ -332,10 +342,6 @@ public class MarkerDetailActivity extends AppCompatActivity {
         });
 
         // Load images assets into their targets
-
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(context));
-
-        reportThumb.setLayoutParams(layoutParams);
 
         Picasso.with(this).load(report.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(ownerAvatar);
 
