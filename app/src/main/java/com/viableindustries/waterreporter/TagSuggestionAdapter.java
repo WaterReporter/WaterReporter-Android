@@ -114,37 +114,39 @@ public class TagSuggestionAdapter extends ArrayAdapter<HashTag> {
             @Override
             public void onClick(View v) {
 
+                // Retrieve boundary indices
+
+                int cursorPosition = CursorPositionTracker.getPosition();
+
+                int hashIndex = CursorPositionTracker.getHashIndex();
+
                 EditText postCaptionView = (EditText) ((Activity) context).findViewById(R.id.comment_input);
 
                 HorizontalScrollView tagList = (HorizontalScrollView) ((Activity) context).findViewById(R.id.tag_component);
 
                 String postCaptionText = postCaptionView.getText().toString();
 
-                String partialA = postCaptionText.substring(0, CursorPositionTracker.getSignIndex());
+                // Assemble substrings
 
-                String partialB = postCaptionText.substring(CursorPositionTracker.getEnd(), postCaptionText.length());
+                String partialA = postCaptionText.substring(0, hashIndex);
 
-                String tag = String.format("\u0023%s%s", hashTag.properties.tag, " ");
+                String partialB = postCaptionText.substring(cursorPosition, postCaptionText.length());
 
-                String c = String.format("%s%s%s", partialA, tag, partialB);
+                String tag = String.format("\u0023%s ", hashTag.properties.tag);
 
-                //postCaptionText = postCaptionText.substring(0, postCaptionText.lastIndexOf("#"));
+                String complete = String.format("%s%s%s", partialA, tag, partialB);
 
-                //postCaptionText += String.format("\u0023%s%s", hashTag.properties.tag, " ");
+                // Update input text
 
-                //postCaptionView.setText(postCaptionText);
+                postCaptionView.setText(complete);
 
-                postCaptionView.setText(c);
+                // Update cursor position so that user remains in the correct place
 
-                postCaptionView.setSelection(c.length());
+                postCaptionView.setSelection(hashIndex + tag.length());
 
-                //postCaptionView.append(String.format("\u0023%s", hashTag.properties.tag));
+                // Reset octothorpe index to default value
 
-                //postCaptionView.append(postCaptionText, 0, postCaptionText.length());
-
-                //postCaptionView.append("");
-
-                CursorPositionTracker.setSignIndex(9999);
+                CursorPositionTracker.resetHashIndex();
 
                 TagHolder.setCurrent(hashTag.properties.tag);
 

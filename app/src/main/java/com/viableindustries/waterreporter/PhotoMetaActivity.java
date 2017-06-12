@@ -441,7 +441,7 @@ public class PhotoMetaActivity extends AppCompatActivity
             @Override
             public void run() {
 
-                if (!tagToken.isEmpty() && tagToken.length() > 2 && !tagToken.equals(TagHolder.getCurrent())) {
+                if (!tagToken.isEmpty() && !tagToken.equals(TagHolder.getCurrent())) {
 
                     fetchTags(10, 1, buildQuery("tag", "asc", tagToken));
 
@@ -462,12 +462,11 @@ public class PhotoMetaActivity extends AppCompatActivity
             @Override
             public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
 
-                CursorPositionTracker.setStart(commentsField.getSelectionStart());
+                // Retrieve current cursor position
 
-                CursorPositionTracker.setEnd(commentsField.getSelectionEnd());
+                int pos = commentsField.getSelectionStart();
 
-                //Log.d("selectionStart", CursorPositionTracker.getStart() + "");
-                //Log.d("selectionEnd", CursorPositionTracker.getEnd() + "");
+                CursorPositionTracker.setPosition(pos);
 
                 query = cs.toString();
 
@@ -475,29 +474,41 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                     try {
 
-                        String previousCharacter = query.substring(CursorPositionTracker.getEnd() - 1, CursorPositionTracker.getEnd());
+                        // Identify previous character and handle octothorpes
+
+                        String previousCharacter = query.substring(pos - 1, pos);
 
                         Log.d("selectionEdge", previousCharacter);
 
                         if (previousCharacter.equals(" ")) {
 
-                            CursorPositionTracker.setSignIndex(9999);
+                            // Spaces are not allowed in tags,
+                            // therefore reset octothorpe index
+                            // to the default value
+
+                            CursorPositionTracker.resetHashIndex();
 
                         }
 
-                        if (previousCharacter.equals("#") && CursorPositionTracker.getSignIndex() == 9999) {
+                        if (previousCharacter.equals("#") && CursorPositionTracker.getHashIndex() == 9999) {
 
-                            CursorPositionTracker.setSignIndex(CursorPositionTracker.getEnd() - 1);
+                            CursorPositionTracker.setHashIndex(pos - 1);
 
                         }
 
-                        if (CursorPositionTracker.getSignIndex() < 9999) {
+                        if (CursorPositionTracker.getHashIndex() < 9999) {
 
-                            tagToken = query.substring(CursorPositionTracker.getSignIndex() + 1, CursorPositionTracker.getEnd());
+                            // Extract substring bounded by octothorpe position
+                            // and current cursor position
+
+                            tagToken = query.substring(CursorPositionTracker.getHashIndex() + 1, pos);
 
                             Log.d("selectionEdgeToken", tagToken);
 
                         } else {
+
+                            // Previous character not an octothorpe and
+                            // none is already present
 
                             tagToken = "";
 

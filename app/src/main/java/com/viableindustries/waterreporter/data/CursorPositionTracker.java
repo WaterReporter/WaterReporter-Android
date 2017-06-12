@@ -6,46 +6,39 @@ package com.viableindustries.waterreporter.data;
 
 public class CursorPositionTracker {
 
-    private static int start;
+    private static int position;
 
-    private static int end;
+    private static int hashIndex = 9999;
 
-    private static int signIndex = 9999;
+    public static int getPosition() {
 
-    public static int getStart() {
-
-        return start;
+        return position;
 
     }
 
-    public static void setStart(int aStart) {
+    public static void setPosition(int aPosition) {
 
-        CursorPositionTracker.start = aStart;
-
-    }
-
-    public static int getEnd() {
-
-        return end;
+        CursorPositionTracker.position = aPosition;
 
     }
 
-    public static void setEnd(int aEnd) {
+    public static int getHashIndex() {
 
-        CursorPositionTracker.end = aEnd;
-
-    }
-
-    public static int getSignIndex() {
-
-        return signIndex;
+        return hashIndex;
 
     }
 
-    public static void setSignIndex(int aSignIndex) {
+    public static void setHashIndex(int aHashIndex) {
 
-        CursorPositionTracker.signIndex = aSignIndex;
+        CursorPositionTracker.hashIndex = aHashIndex;
 
     }
+
+    public static void resetHashIndex() {
+
+        CursorPositionTracker.hashIndex = 9999;
+
+    }
+
 
 }
