@@ -8,11 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.viableindustries.waterreporter.data.CursorPositionTracker;
 import com.viableindustries.waterreporter.data.HashTag;
 import com.viableindustries.waterreporter.data.TagHolder;
 
@@ -112,17 +114,37 @@ public class TagSuggestionAdapter extends ArrayAdapter<HashTag> {
             @Override
             public void onClick(View v) {
 
-                TextView postCaptionView = (TextView) ((Activity) context).findViewById(R.id.comment_input);
+                EditText postCaptionView = (EditText) ((Activity) context).findViewById(R.id.comment_input);
 
                 HorizontalScrollView tagList = (HorizontalScrollView) ((Activity) context).findViewById(R.id.tag_component);
 
                 String postCaptionText = postCaptionView.getText().toString();
 
-                postCaptionText = postCaptionText.substring(0, postCaptionText.lastIndexOf("#"));
+                String partialA = postCaptionText.substring(0, CursorPositionTracker.getSignIndex());
 
-                postCaptionText += String.format("\u0023%s", hashTag.properties.tag);
+                String partialB = postCaptionText.substring(CursorPositionTracker.getEnd(), postCaptionText.length());
 
-                postCaptionView.setText(postCaptionText);
+                String tag = String.format("\u0023%s%s", hashTag.properties.tag, " ");
+
+                String c = String.format("%s%s%s", partialA, tag, partialB);
+
+                //postCaptionText = postCaptionText.substring(0, postCaptionText.lastIndexOf("#"));
+
+                //postCaptionText += String.format("\u0023%s%s", hashTag.properties.tag, " ");
+
+                //postCaptionView.setText(postCaptionText);
+
+                postCaptionView.setText(c);
+
+                postCaptionView.setSelection(c.length());
+
+                //postCaptionView.append(String.format("\u0023%s", hashTag.properties.tag));
+
+                //postCaptionView.append(postCaptionText, 0, postCaptionText.length());
+
+                //postCaptionView.append("");
+
+                CursorPositionTracker.setSignIndex(9999);
 
                 TagHolder.setCurrent(hashTag.properties.tag);
 

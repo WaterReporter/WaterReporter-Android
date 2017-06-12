@@ -47,6 +47,7 @@ import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.AbbreviatedOrganization;
 import com.viableindustries.waterreporter.data.BooleanQueryFilter;
 import com.viableindustries.waterreporter.data.CacheManager;
+import com.viableindustries.waterreporter.data.CursorPositionTracker;
 import com.viableindustries.waterreporter.data.DisplayDecimal;
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.GeometryResponse;
@@ -461,11 +462,52 @@ public class PhotoMetaActivity extends AppCompatActivity
             @Override
             public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
 
+                CursorPositionTracker.setStart(commentsField.getSelectionStart());
+
+                CursorPositionTracker.setEnd(commentsField.getSelectionEnd());
+
+                //Log.d("selectionStart", CursorPositionTracker.getStart() + "");
+                //Log.d("selectionEnd", CursorPositionTracker.getEnd() + "");
+
                 query = cs.toString();
 
-                if (!query.isEmpty() && query.contains("#")) {
+                if (!query.isEmpty()) {
 
-                    tagToken = query.substring(query.lastIndexOf("#")).replace("#", "");
+                    try {
+
+                        String previousCharacter = query.substring(CursorPositionTracker.getEnd() - 1, CursorPositionTracker.getEnd());
+
+                        Log.d("selectionEdge", previousCharacter);
+
+                        if (previousCharacter.equals(" ")) {
+
+                            CursorPositionTracker.setSignIndex(9999);
+
+                        }
+
+                        if (previousCharacter.equals("#") && CursorPositionTracker.getSignIndex() == 9999) {
+
+                            CursorPositionTracker.setSignIndex(CursorPositionTracker.getEnd() - 1);
+
+                        }
+
+                        if (CursorPositionTracker.getSignIndex() < 9999) {
+
+                            tagToken = query.substring(CursorPositionTracker.getSignIndex() + 1, CursorPositionTracker.getEnd());
+
+                            Log.d("selectionEdgeToken", tagToken);
+
+                        } else {
+
+                            tagToken = "";
+
+                        }
+
+                    } catch (StringIndexOutOfBoundsException e) {
+
+                        tagToken = "";
+
+                    }
 
                 } else {
 
@@ -487,7 +529,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                 // Ensure that the user's cursor is placed at the end of the selection
 
-                commentsField.setSelection(commentsField.getText().length());
+                //commentsField.setSelection(commentsField.getText().length());
 
                 handler.removeCallbacks(tagSearchRunnable);
 
