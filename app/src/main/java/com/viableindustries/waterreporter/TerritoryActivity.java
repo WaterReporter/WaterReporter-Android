@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Activity;
 import android.support.design.widget.FloatingActionButton;
@@ -24,13 +25,30 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.MarkerViewManager;
+import com.mapbox.mapboxsdk.annotations.PolygonOptions;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.geometry.LatLngBounds;
+import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.style.functions.stops.Stops;
+import com.mapbox.mapboxsdk.style.layers.FillLayer;
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.GroupListHolder;
+import com.viableindustries.waterreporter.data.HUCFeature;
+import com.viableindustries.waterreporter.data.HUCGeometryCollection;
+import com.viableindustries.waterreporter.data.HUCGeometryService;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.data.OrganizationHolder;
@@ -49,6 +67,8 @@ import com.viableindustries.waterreporter.data.UserCollection;
 import com.viableindustries.waterreporter.data.UserOrgPatch;
 import com.viableindustries.waterreporter.data.UserService;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,6 +81,13 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import static com.mapbox.mapboxsdk.style.functions.Function.property;
+import static com.mapbox.mapboxsdk.style.functions.stops.Stop.stop;
+import static com.mapbox.mapboxsdk.style.functions.stops.Stops.exponential;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillColor;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillOpacity;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillOutlineColor;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineColor;
 import static java.lang.Boolean.TRUE;
 
 public class TerritoryActivity extends AppCompatActivity {
@@ -92,6 +119,13 @@ public class TerritoryActivity extends AppCompatActivity {
     LinearLayout sharePrompt;
 
     FloatingActionButton jumpStart;
+
+    List<LatLng> latLngs = new ArrayList<LatLng>();
+
+    @Bind(R.id.mapview)
+    MapView mapView;
+
+    private MapboxMap mMapboxMap;
 
     @Bind(R.id.timeline)
     SwipeRefreshLayout timeLineContainer;
@@ -138,6 +172,9 @@ public class TerritoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        // Mapbox access token is configured here.
+        Mapbox.getInstance(this, getString(R.string.mapBoxToken));
 
         setContentView(R.layout.activity_territory);
 
@@ -227,6 +264,60 @@ public class TerritoryActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 startPost();
+
+            }
+        });
+
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(final MapboxMap mapboxMap) {
+
+                mMapboxMap = mapboxMap;
+
+                fetchGeometry();
+
+//                final MarkerViewManager markerViewManager = mapboxMap.getMarkerViewManager();
+//
+//                latitude = originalPost.geometry.geometries.get(0).coordinates.get(1);
+//                longitude = originalPost.geometry.geometries.get(0).coordinates.get(0);
+//
+//                CameraPosition position = new CameraPosition.Builder()
+//                        .target(new LatLng(latitude, longitude)) // Sets the new camera position
+//                        .zoom(14) // Sets the zoom
+//                        .build(); // Creates a CameraPosition from the builder
+
+//                mapboxMap.animateCamera(CameraUpdateFactory
+//                        .newCameraPosition(position), 4000);
+
+                //
+//                String code = String.format("%s", territory.properties.huc_8_code);
+//                if (code.length() == 7) code = String.format("0%s", code);
+//                String url = String.format("https://huc.waterreporter.org/8/%s.json", code);
+//
+//                try {
+//
+//                    URL geoJsonUrl = new URL(url);
+//                    GeoJsonSource geoJsonSource = new GeoJsonSource("geojson", geoJsonUrl);
+//                    mapboxMap.addSource(geoJsonSource);
+//
+//                    // Create a FillLayer with style properties
+//
+//                    FillLayer layer = new FillLayer("geojson", "geojson");
+//
+//                    layer.withProperties(
+//                            fillOutlineColor("#FFFFFF"),
+//                            fillColor("#6b4ab5"),
+//                            fillOpacity(0.3f)
+//                    );
+//
+//                    mapboxMap.addLayer(layer);
+//
+//                } catch (MalformedURLException e) {
+//
+//                    Log.d("Malformed URL", e.getMessage());
+//
+//                }
 
             }
         });
@@ -369,6 +460,79 @@ public class TerritoryActivity extends AppCompatActivity {
         timeLineContainer.setRefreshing(true);
 
         fetchReports(5, 1, buildQuery(true, "report", null), true);
+
+    }
+
+    protected void fetchGeometry() {
+
+        RestAdapter restAdapter = HUCGeometryService.restAdapter;
+
+        HUCGeometryService service = restAdapter.create(HUCGeometryService.class);
+
+        String code = String.format("%s", territory.properties.huc_8_code);
+        if (code.length() == 7) code = String.format("0%s", code);
+
+        service.getGeometry(code, new Callback<HUCGeometryCollection>() {
+
+            @Override
+            public void success(HUCGeometryCollection hucGeometryCollection, Response response) {
+
+                HUCFeature hucFeature = hucGeometryCollection.features.get(0);
+
+                Log.v("huc-feature", hucFeature.toString());
+
+                List<List<Double>> coordinatePairs = hucFeature.geometry.coordinates.get(0);
+
+                for (List<Double> point : coordinatePairs) {
+
+                    Log.v("point", point.toString());
+
+                    LatLng latLng = new LatLng(point.get(1), point.get(0));
+
+                    latLngs.add(latLng);
+
+                }
+
+                // Draw a polygon on the map
+                mMapboxMap.addPolygon(new PolygonOptions()
+                        .addAll(latLngs)
+                        .strokeColor(Color.parseColor("#FFFFFF"))
+                        .fillColor(Color.parseColor("#6b4ab5")));
+
+                // Move camera to watershed bounds
+                LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(latLngs).build();
+                mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 20), 4000);
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    Log.v("huc-error", errorResponse.getReason());
+
+                    int status = errorResponse.getStatus();
+
+                    Log.v("huc-error-status", String.valueOf(status));
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(context, SignInActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
 
     }
 
@@ -720,27 +884,46 @@ public class TerritoryActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        mapView.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mapView.onStop();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
+        mapView.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        mapView.onPause();
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
     }
 
     @Override
-    protected void onDestroy() {
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
+    }
 
+    @Override
+    public void onDestroy() {
         super.onDestroy();
-
+        mapView.onDestroy();
         ButterKnife.unbind(this);
-
     }
 
 }
