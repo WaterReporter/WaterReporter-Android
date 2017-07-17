@@ -52,4 +52,5 @@ dependencies {
     compile 'pub.devrel:easypermissions:0.2.1'
     compile 'com.google.android:flexbox:0.2.6'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'org.jsoup:jsoup:1.10.3'
 }

@@ -28,8 +28,13 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
 import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Geometry;
+import com.viableindustries.waterreporter.data.OpenGraph;
+import com.viableindustries.waterreporter.data.OpenGraphResponse;
+import com.viableindustries.waterreporter.data.OpenGraphTask;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.data.QueryParams;
@@ -41,6 +46,9 @@ import com.viableindustries.waterreporter.data.UserService;
 import com.viableindustries.waterreporter.BuildConfig;
 import com.viableindustries.waterreporter.dialogs.ShareActionDialogListener;
 
+import org.jsoup.nodes.Document;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -321,6 +329,25 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    private void openGraphTrial() throws IOException {
+
+        OpenGraphTask openGraphTask = new OpenGraphTask(new OpenGraphResponse() {
+
+            @Override
+            public void processFinish(Document output) {
+                //Here you will receive the result fired from async class
+                //of onPostExecute(result) method.
+                String ogImage = OpenGraph.parseTag(output, "og:image");
+                Log.v("og:image", ogImage);
+
+            }
+
+        });
+
+        openGraphTask.execute("https://www.instagram.com/hellozso/");
+
+    }
+
     private void attachScrollListener() {
 
         listView.setOnScrollListener(scrollListener);
@@ -449,6 +476,18 @@ public class MainActivity extends AppCompatActivity implements
         // Check permissions and handle missing requirements as necessary
 
         verifyPermissions();
+
+        // Test Open Graph parser
+
+        try {
+
+            openGraphTrial();
+
+        } catch (IOException e) {
+
+            Log.v("OGError", e.getMessage());
+
+        }
 
     }
 
