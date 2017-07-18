@@ -33,6 +33,7 @@ import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.MarkerViewManager;
 import com.mapbox.mapboxsdk.annotations.PolygonOptions;
+import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -472,7 +473,7 @@ public class TerritoryActivity extends AppCompatActivity {
         String code = String.format("%s", territory.properties.huc_8_code);
         if (code.length() == 7) code = String.format("0%s", code);
 
-        service.getGeometry(code, new Callback<HUCGeometryCollection>() {
+        service.getGeometry("application/json", code, new Callback<HUCGeometryCollection>() {
 
             @Override
             public void success(HUCGeometryCollection hucGeometryCollection, Response response) {
@@ -493,15 +494,21 @@ public class TerritoryActivity extends AppCompatActivity {
 
                 }
 
+                // Draw polyline on the map
+                mMapboxMap.addPolyline(new PolylineOptions()
+                        .addAll(latLngs)
+                        .color(Color.parseColor("#FFFFFF"))
+                        .width(4));
+
                 // Draw a polygon on the map
                 mMapboxMap.addPolygon(new PolygonOptions()
                         .addAll(latLngs)
-                        .strokeColor(Color.parseColor("#FFFFFF"))
-                        .fillColor(Color.parseColor("#6b4ab5")));
+                        //.strokeColor(Color.parseColor("#FFFFFF"))
+                        .fillColor(Color.parseColor("#806b4ab5")));
 
                 // Move camera to watershed bounds
                 LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(latLngs).build();
-                mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 20), 4000);
+                mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 40), 4000);
 
             }
 
@@ -516,11 +523,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
                 if (errorResponse != null) {
 
-                    Log.v("huc-error", errorResponse.getReason());
-
                     int status = errorResponse.getStatus();
-
-                    Log.v("huc-error-status", String.valueOf(status));
 
                     if (status == 403) {
 

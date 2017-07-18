@@ -15,8 +15,8 @@ public class HUCFeature implements Serializable {
     @SerializedName("geometry")
     public HUCGeometry geometry;
 
-    @SerializedName("properties")
-    public ArrayList<Double> coordinates;
+    //@SerializedName("properties")
+    //public ArrayList<Double> coordinates;
 
     @SerializedName("type")
     public String type;

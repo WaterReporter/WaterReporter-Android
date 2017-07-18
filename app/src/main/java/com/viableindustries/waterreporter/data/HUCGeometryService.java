@@ -16,12 +16,13 @@ public interface HUCGeometryService {
     final String ENDPOINT = "https://huc.waterreporter.org/8";
 
     public static RestAdapter restAdapter = new RestAdapter.Builder()
-            .setLogLevel(RestAdapter.LogLevel.HEADERS_AND_ARGS)
+            .setLogLevel(RestAdapter.LogLevel.FULL)
             .setEndpoint(ENDPOINT)
             .build();
 
     @GET("/{code}.json")
-    public void getGeometry(@Path("code") String code,
-                       Callback<HUCGeometryCollection> hucGeometryCollectionCallback);
+    public void getGeometry(@Header("Content-Type") String contentType,
+                            @Path("code") String code,
+                            Callback<HUCGeometryCollection> hucGeometryCollectionCallback);
 
 }

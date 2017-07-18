@@ -32,7 +32,7 @@ public interface ReportService {
     final String ENDPOINT = "https://api.waterreporter.org/v2";
 
     public static RestAdapter restAdapter = new RestAdapter.Builder()
-            .setLogLevel(RestAdapter.LogLevel.FULL)
+            .setLogLevel(RestAdapter.LogLevel.BASIC)
             .setEndpoint(ENDPOINT)
             .build();
 
