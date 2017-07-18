@@ -30,38 +30,21 @@
 
     </RelativeLayout>
 
-    <com.mapbox.mapboxsdk.maps.MapView
-        android:id="@+id/mapview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        mapbox:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v9" />
-
     <FrameLayout
-        android:id="@+id/listTabs"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="bottom"
-        android:visibility="gone">
+        android:layout_gravity="bottom">
 
-        <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/timeline"
+        <com.mapbox.mapboxsdk.maps.MapView
+            android:id="@+id/mapview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="40dp">
+            mapbox:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v9" />
 
-            <ListView
-                android:id="@+id/timeline_items"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="40dp"
-                android:divider="@color/gray_232"
-                android:dividerHeight="0.5dp"
-                android:fadingEdgeLength="0dp"
-                android:listSelector="@drawable/timeline_selector"
-                android:overScrollMode="never"
-                android:scrollbars="none" />
-
-        </android.support.v4.widget.SwipeRefreshLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/watershed_gradient_overlay" />
 
         <fragment
             android:id="@+id/navigationFragment"
@@ -71,5 +54,86 @@
             android:layout_gravity="bottom" />
 
     </FrameLayout>
+
+    <!--<FrameLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="bottom">-->
+
+    <!--<View-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="200dp"-->
+    <!--android:background="@color/white" />-->
+
+    <!--<fragment-->
+    <!--android:id="@+id/navigationFragment"-->
+    <!--android:name="com.viableindustries.waterreporter.NavigationFragment"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="bottom" />-->
+
+    <!--</FrameLayout>-->
+
+    <!--<FrameLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="bottom">-->
+
+    <!--&lt;!&ndash;<com.mapbox.mapboxsdk.maps.MapView&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/mapview"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_marginTop=""&ndash;&gt;-->
+    <!--&lt;!&ndash;mapbox:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v9" />&ndash;&gt;-->
+
+    <!--<View-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="200dp"-->
+    <!--android:background="@color/white" />-->
+
+    <!--<fragment-->
+    <!--android:id="@+id/navigationFragment"-->
+    <!--android:name="com.viableindustries.waterreporter.NavigationFragment"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="bottom" />-->
+
+    <!--</FrameLayout>-->
+
+    <!--<FrameLayout-->
+    <!--android:id="@+id/listTabs"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_gravity="bottom"-->
+    <!--android:visibility="gone">-->
+
+    <!--<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:id="@+id/timeline"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_marginBottom="40dp">-->
+
+    <!--<ListView-->
+    <!--android:id="@+id/timeline_items"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginBottom="40dp"-->
+    <!--android:divider="@color/gray_232"-->
+    <!--android:dividerHeight="0.5dp"-->
+    <!--android:fadingEdgeLength="0dp"-->
+    <!--android:listSelector="@drawable/timeline_selector"-->
+    <!--android:overScrollMode="never"-->
+    <!--android:scrollbars="none" />-->
+
+    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
+
+    <!--<fragment-->
+    <!--android:id="@+id/navigationFragment"-->
+    <!--android:name="com.viableindustries.waterreporter.NavigationFragment"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="bottom" />-->
+
+    <!--</FrameLayout>-->
 
 </LinearLayout>
