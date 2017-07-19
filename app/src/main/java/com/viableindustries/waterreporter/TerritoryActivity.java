@@ -128,11 +128,11 @@ public class TerritoryActivity extends AppCompatActivity {
 
     private MapboxMap mMapboxMap;
 
-//    @Bind(R.id.timeline)
+    //    @Bind(R.id.timeline)
 //    SwipeRefreshLayout timeLineContainer;
 //
-//    @Bind(R.id.timeline_items)
-//    ListView timeLine;
+    @Bind(R.id.timeline_items)
+    ListView timeLine;
 //
 //    @Bind(R.id.listTabs)
 //    FrameLayout listTabs;
@@ -213,7 +213,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
         // Inflate and insert timeline header view
 
-//        addListViewHeader();
+        addListViewHeader();
 
         // Count reports with actions
 
@@ -233,7 +233,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
 //            timeLineContainer.setRefreshing(true);
 
-//            fetchReports(5, 1, buildQuery(true, "report", null), false);
+            fetchReports(5, 1, buildQuery(true, "report", null), false);
 
         }
 
@@ -245,11 +245,11 @@ public class TerritoryActivity extends AppCompatActivity {
 
                 if (actionFocus) {
 
-//                    fetchReports(5, page, complexQuery, false);
+                    fetchReports(5, page, complexQuery, false);
 
                 } else {
 
-//                    fetchReports(5, page, buildQuery(true, "report", null), false);
+                    fetchReports(5, page, buildQuery(true, "report", null), false);
 
                 }
 
@@ -275,6 +275,8 @@ public class TerritoryActivity extends AppCompatActivity {
             public void onMapReady(final MapboxMap mapboxMap) {
 
                 mMapboxMap = mapboxMap;
+
+                mapboxMap.getUiSettings().setAllGesturesEnabled(false);
 
                 fetchGeometry();
 
@@ -326,12 +328,12 @@ public class TerritoryActivity extends AppCompatActivity {
 
     }
 
-//    protected void addListViewHeader() {
-//
-//        LayoutInflater inflater = getLayoutInflater();
-//
-//        ViewGroup header = (ViewGroup) inflater.inflate(R.layout.territory_header, timeLine, false);
-//
+    protected void addListViewHeader() {
+
+        LayoutInflater inflater = getLayoutInflater();
+
+        ViewGroup header = (ViewGroup) inflater.inflate(R.layout.watershed_profile_header, timeLine, false);
+
 //        sharePrompt = (LinearLayout) header.findViewById(R.id.share_cta);
 //
 //        jumpStart = (FloatingActionButton) header.findViewById(R.id.jump_start);
@@ -348,9 +350,9 @@ public class TerritoryActivity extends AppCompatActivity {
 //
 //            }
 //        });
-//
-//        territoryName = (TextView) header.findViewById(R.id.territoryName);
-//
+
+        territoryName = (TextView) header.findViewById(R.id.territoryName);
+
 //        reportCounter = (TextView) header.findViewById(R.id.reportCount);
 //
 //        actionCounter = (TextView) header.findViewById(R.id.actionCount);
@@ -368,29 +370,29 @@ public class TerritoryActivity extends AppCompatActivity {
 //        actionStat = (LinearLayout) header.findViewById(R.id.actionStat);
 //
 //        groupStat = (LinearLayout) header.findViewById(R.id.groupStat);
-//
-//        profileMeta = (LinearLayout) header.findViewById(R.id.profileMeta);
-//
+
+        profileMeta = (LinearLayout) header.findViewById(R.id.profileMeta);
+
 //        profileStats = (LinearLayout) header.findViewById(R.id.profileStats);
-//
-//        try {
-//
-//            territoryId = territory.id;
-//
-//        } catch (NullPointerException e) {
-//
-//            startActivity(new Intent(this, MainActivity.class));
-//
-//            finish();
-//
-//        }
-//
-//        territoryNameText = territory.properties.huc_8_name;
-//
-//        territoryName.setText(territoryNameText);
-//
-//        // Attach click listeners to stat elements
-//
+
+        try {
+
+            territoryId = territory.id;
+
+        } catch (NullPointerException e) {
+
+            startActivity(new Intent(this, MainActivity.class));
+
+            finish();
+
+        }
+
+        territoryNameText = territory.properties.huc_8_name;
+
+        territoryName.setText(territoryNameText);
+
+        // Attach click listeners to stat elements
+
 //        reportStat.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -399,7 +401,7 @@ public class TerritoryActivity extends AppCompatActivity {
 //
 //            }
 //        });
-//
+
 //        actionStat.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -424,7 +426,7 @@ public class TerritoryActivity extends AppCompatActivity {
 //
 //            }
 //        });
-//
+
 //        groupStat.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -441,22 +443,22 @@ public class TerritoryActivity extends AppCompatActivity {
 //
 //            }
 //        });
-//
-//        // Add populated header view to report timeline
-//
-//        timeLine.addHeaderView(header, null, false);
-//
-//    }
+
+        // Add populated header view to report timeline
+
+        timeLine.addHeaderView(header, null, false);
+
+    }
 
     private void resetStats() {
 
-        reportCounter.setTextColor(ContextCompat.getColor(TerritoryActivity.this, R.color.base_blue));
-        reportCountLabel.setTextColor(ContextCompat.getColor(TerritoryActivity.this, R.color.base_blue));
-
-        actionCounter.setTextColor(ContextCompat.getColor(TerritoryActivity.this, R.color.material_blue_grey950));
-        actionCountLabel.setTextColor(ContextCompat.getColor(TerritoryActivity.this, R.color.material_blue_grey950));
-
-        actionFocus = false;
+//        reportCounter.setTextColor(ContextCompat.getColor(TerritoryActivity.this, R.color.base_blue));
+//        reportCountLabel.setTextColor(ContextCompat.getColor(TerritoryActivity.this, R.color.base_blue));
+//
+//        actionCounter.setTextColor(ContextCompat.getColor(TerritoryActivity.this, R.color.material_blue_grey950));
+//        actionCountLabel.setTextColor(ContextCompat.getColor(TerritoryActivity.this, R.color.material_blue_grey950));
+//
+//        actionFocus = false;
 
 //        timeLineContainer.setRefreshing(true);
 
@@ -508,7 +510,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
                 // Move camera to watershed bounds
                 LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(latLngs).build();
-                mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 80), 4000);
+                mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 80, 80, 80, 80), 4000);
 
             }
 
@@ -662,7 +664,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
     private void attachScrollListener() {
 
-//        timeLine.setOnScrollListener(scrollListener);
+        timeLine.setOnScrollListener(scrollListener);
 
     }
 
@@ -724,33 +726,33 @@ public class TerritoryActivity extends AppCompatActivity {
 
     }
 
-//    private void fetchReports(int limit, final int page, String query, final boolean refresh) {
-//
-//        final String accessToken = prefs.getString("access_token", "");
-//
-//        Log.d("", accessToken);
-//
-//        Log.d("URL", query);
-//
-//        RestAdapter restAdapter = ReportService.restAdapter;
-//
-//        ReportService service = restAdapter.create(ReportService.class);
-//
-//        service.getReports(accessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
-//
-//            @Override
-//            public void success(FeatureCollection featureCollection, Response response) {
-//
-//                List<Report> reports = featureCollection.getFeatures();
-//
-//                Log.v("list", reports.toString());
-//
-//                if (reportCount == 99999999) {
-//
-//                    reportCount = featureCollection.getProperties().num_results;
-//
-//                }
-//
+    private void fetchReports(int limit, final int page, String query, final boolean refresh) {
+
+        final String accessToken = prefs.getString("access_token", "");
+
+        Log.d("", accessToken);
+
+        Log.d("URL", query);
+
+        RestAdapter restAdapter = ReportService.restAdapter;
+
+        ReportService service = restAdapter.create(ReportService.class);
+
+        service.getReports(accessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
+
+            @Override
+            public void success(FeatureCollection featureCollection, Response response) {
+
+                List<Report> reports = featureCollection.getFeatures();
+
+                Log.v("list", reports.toString());
+
+                if (reportCount == 99999999) {
+
+                    reportCount = featureCollection.getProperties().num_results;
+
+                }
+
 //                if (reportCount > 0) {
 //
 //                    sharePrompt.setVisibility(View.GONE);
@@ -776,102 +778,102 @@ public class TerritoryActivity extends AppCompatActivity {
 //                    }
 //
 //                }
-//
-//                if (refresh || reportCollection.isEmpty()) {
-//
-//                    reportCollection.clear();
-//
-//                    reportCollection.addAll(reports);
-//
-//                    scrollListener.resetState();
-//
-//                    try {
-//
-//                        timelineAdapter.notifyDataSetChanged();
-//
-////                        timeLine.smoothScrollToPosition(0);
-//
-//                    } catch (NullPointerException e) {
-//
-////                        populateTimeline(reportCollection);
-//
-//                    }
-//
-//                } else {
-//
-//                    if (page > 1) {
-//
-//                        reportCollection.addAll(reports);
-//
-//                        timelineAdapter.notifyDataSetChanged();
-//
-//                    }
-//
-//                }
-//
-//                try {
-//
-////                    timeLineContainer.setRefreshing(false);
-//
-//                } catch (NullPointerException e) {
-//
-//                    finish();
-//
-//                }
-//
-//            }
-//
-//            @Override
-//            public void failure(RetrofitError error) {
-//
-//                try {
-//
-////                    timeLineContainer.setRefreshing(false);
-//
-//                } catch (NullPointerException e) {
-//
-//                    finish();
-//
-//                }
-//
-//                if (error == null) return;
-//
-//                Response errorResponse = error.getResponse();
-//
-//                // If we have a valid response object, check the status code and redirect to log in view if necessary
-//
-//                if (errorResponse != null) {
-//
-//                    int status = errorResponse.getStatus();
-//
-//                    if (status == 403) {
-//
-//                        startActivity(new Intent(context, SignInActivity.class));
-//
-//                    }
-//
-//                }
-//
-//            }
-//
-//        });
-//
-//    }
 
-//    private void populateTimeline(List<Report> list) {
-//
-//        timelineAdapter = new TimelineAdapter(this, list, false);
-//
-//        // Attach the adapter to a ListView
-//        if (timeLine != null) {
-//
-//            timeLine.setAdapter(timelineAdapter);
-//
-//            attachScrollListener();
-//
-//        }
-//
-//    }
+                if (refresh || reportCollection.isEmpty()) {
+
+                    reportCollection.clear();
+
+                    reportCollection.addAll(reports);
+
+                    scrollListener.resetState();
+
+                    try {
+
+                        timelineAdapter.notifyDataSetChanged();
+
+//                        timeLine.smoothScrollToPosition(0);
+
+                    } catch (NullPointerException e) {
+
+                        populateTimeline(reportCollection);
+
+                    }
+
+                } else {
+
+                    if (page > 1) {
+
+                        reportCollection.addAll(reports);
+
+                        timelineAdapter.notifyDataSetChanged();
+
+                    }
+
+                }
+
+                try {
+
+//                    timeLineContainer.setRefreshing(false);
+
+                } catch (NullPointerException e) {
+
+                    finish();
+
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                try {
+
+//                    timeLineContainer.setRefreshing(false);
+
+                } catch (NullPointerException e) {
+
+                    finish();
+
+                }
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(context, SignInActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+    private void populateTimeline(List<Report> list) {
+
+        timelineAdapter = new TimelineAdapter(this, list, false);
+
+        // Attach the adapter to a ListView
+        if (timeLine != null) {
+
+            timeLine.setAdapter(timelineAdapter);
+
+            attachScrollListener();
+
+        }
+
+    }
 
     private void startPost() {
 

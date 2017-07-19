@@ -32,8 +32,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom">
+        android:layout_height="match_parent">
 
         <com.mapbox.mapboxsdk.maps.MapView
             android:id="@+id/mapview"
@@ -46,6 +45,18 @@
             android:layout_height="match_parent"
             android:background="@drawable/watershed_gradient_overlay" />
 
+        <ListView
+            android:id="@+id/timeline_items"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
+            android:divider="@color/gray_232"
+            android:dividerHeight="0.5dp"
+            android:fadingEdgeLength="0dp"
+            android:listSelector="@drawable/timeline_selector"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
+
         <fragment
             android:id="@+id/navigationFragment"
             android:name="com.viableindustries.waterreporter.NavigationFragment"
@@ -55,14 +66,44 @@
 
     </FrameLayout>
 
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:orientation="vertical">-->
+
     <!--<FrameLayout-->
     <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="bottom">-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_weight="1">-->
+
+    <!--<com.mapbox.mapboxsdk.maps.MapView-->
+    <!--android:id="@+id/mapview"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--mapbox:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v9" />-->
 
     <!--<View-->
     <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="200dp"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:background="@drawable/watershed_gradient_overlay" />-->
+
+    <!--&lt;!&ndash;<fragment&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/navigationFragment"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:name="com.viableindustries.waterreporter.NavigationFragment"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_gravity="bottom" />&ndash;&gt;-->
+
+    <!--</FrameLayout>-->
+
+    <!--<FrameLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_weight="1">-->
+
+    <!--<View-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
     <!--android:background="@color/white" />-->
 
     <!--<fragment-->
@@ -73,6 +114,8 @@
     <!--android:layout_gravity="bottom" />-->
 
     <!--</FrameLayout>-->
+
+    <!--</LinearLayout>-->
 
     <!--<FrameLayout-->
     <!--android:layout_width="match_parent"-->
