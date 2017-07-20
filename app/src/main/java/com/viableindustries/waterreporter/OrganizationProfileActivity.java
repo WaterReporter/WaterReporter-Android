@@ -61,6 +61,7 @@ import com.viableindustries.waterreporter.dialogs.ShareActionDialogListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -374,6 +375,19 @@ public class OrganizationProfileActivity extends AppCompatActivity {
         try {
 
             organizationDescription.setText(organizationDescriptionText);
+
+            new PatternEditableBuilder().
+                    addPattern(context, Pattern.compile("\\#(\\w+)"), ContextCompat.getColor(context, R.color.waterreporter_blue),
+                            new PatternEditableBuilder.SpannableClickedListener() {
+                                @Override
+                                public void onSpanClicked(String text) {
+
+                                    Intent intent = new Intent(context, TagProfileActivity.class);
+                                    intent.putExtra("tag", text);
+                                    context.startActivity(intent);
+
+                                }
+                            }).into(organizationDescription);
 
             organizationDescription.setOnClickListener(new View.OnClickListener() {
                 @Override
