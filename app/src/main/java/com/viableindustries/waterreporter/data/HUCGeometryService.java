@@ -20,7 +20,7 @@ public interface HUCGeometryService {
             .setEndpoint(ENDPOINT)
             .build();
 
-    @GET("/{code}.json")
+    @GET("/{code}")
     public void getGeometry(@Header("Content-Type") String contentType,
                             @Path("code") String code,
                             Callback<HUCGeometryCollection> hucGeometryCollectionCallback);

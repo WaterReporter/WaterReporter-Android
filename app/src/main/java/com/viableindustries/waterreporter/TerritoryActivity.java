@@ -301,7 +301,7 @@ public class TerritoryActivity extends AppCompatActivity {
                 //
                 String code = String.format("%s", territory.properties.huc_8_code);
                 if (code.length() == 7) code = String.format("0%s", code);
-                String url = String.format("https://huc.waterreporter.org/8/%s.json", code);
+                String url = String.format("https://huc.waterreporter.org/8/%s", code);
 
                 try {
 
