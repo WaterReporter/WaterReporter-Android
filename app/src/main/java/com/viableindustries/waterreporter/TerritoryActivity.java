@@ -117,6 +117,8 @@ public class TerritoryActivity extends AppCompatActivity {
 
     TextView territoryName;
 
+    TextView territoryStates;
+
     LinearLayout sharePrompt;
 
     FloatingActionButton jumpStart;
@@ -276,7 +278,10 @@ public class TerritoryActivity extends AppCompatActivity {
 
                 mMapboxMap = mapboxMap;
 
-                mapboxMap.getUiSettings().setAllGesturesEnabled(false);
+//                mapboxMap.setMaxZoomPreference(7);
+//                mapboxMap.setMinZoomPreference(7);
+
+//                mapboxMap.getUiSettings().setAllGesturesEnabled(false);
 
                 fetchGeometry();
 
@@ -294,33 +299,33 @@ public class TerritoryActivity extends AppCompatActivity {
 //                        .newCameraPosition(position), 4000);
 
                 //
-//                String code = String.format("%s", territory.properties.huc_8_code);
-//                if (code.length() == 7) code = String.format("0%s", code);
-//                String url = String.format("https://huc.waterreporter.org/8/%s.json", code);
-//
-//                try {
-//
-//                    URL geoJsonUrl = new URL(url);
-//                    GeoJsonSource geoJsonSource = new GeoJsonSource("geojson", geoJsonUrl);
-//                    mapboxMap.addSource(geoJsonSource);
-//
-//                    // Create a FillLayer with style properties
-//
-//                    FillLayer layer = new FillLayer("geojson", "geojson");
-//
-//                    layer.withProperties(
-//                            fillOutlineColor("#FFFFFF"),
-//                            fillColor("#6b4ab5"),
-//                            fillOpacity(0.3f)
-//                    );
-//
-//                    mapboxMap.addLayer(layer);
-//
-//                } catch (MalformedURLException e) {
-//
-//                    Log.d("Malformed URL", e.getMessage());
-//
-//                }
+                String code = String.format("%s", territory.properties.huc_8_code);
+                if (code.length() == 7) code = String.format("0%s", code);
+                String url = String.format("https://huc.waterreporter.org/8/%s.json", code);
+
+                try {
+
+                    URL geoJsonUrl = new URL(url);
+                    GeoJsonSource geoJsonSource = new GeoJsonSource("geojson", geoJsonUrl);
+                    mapboxMap.addSource(geoJsonSource);
+
+                    // Create a FillLayer with style properties
+
+                    FillLayer layer = new FillLayer("geojson", "geojson");
+
+                    layer.withProperties(
+                            //fillOutlineColor("#FFFFFF"),
+                            fillColor("#6b4ab5"),
+                            fillOpacity(0.4f)
+                    );
+
+                    mapboxMap.addLayer(layer);
+
+                } catch (MalformedURLException e) {
+
+                    Log.d("Malformed URL", e.getMessage());
+
+                }
 
             }
         });
@@ -353,7 +358,9 @@ public class TerritoryActivity extends AppCompatActivity {
 
         territoryName = (TextView) header.findViewById(R.id.territoryName);
 
-//        reportCounter = (TextView) header.findViewById(R.id.reportCount);
+        territoryStates = (TextView) header.findViewById(R.id.states);
+
+        reportCounter = (TextView) header.findViewById(R.id.reportCount);
 //
 //        actionCounter = (TextView) header.findViewById(R.id.actionCount);
 //
@@ -484,33 +491,41 @@ public class TerritoryActivity extends AppCompatActivity {
 
                 Log.v("huc-feature", hucFeature.toString());
 
-                List<List<Double>> coordinatePairs = hucFeature.geometry.coordinates.get(0);
+//                List<List<Double>> coordinatePairs = hucFeature.geometry.coordinates.get(0);
+//
+//                for (List<Double> point : coordinatePairs) {
+//
+//                    Log.v("point", point.toString());
+//
+//                    LatLng latLng = new LatLng(point.get(1), point.get(0));
+//
+//                    latLngs.add(latLng);
+//
+//                }
 
-                for (List<Double> point : coordinatePairs) {
+                LatLng southWest = new LatLng(hucFeature.properties.bounds.get(1), hucFeature.properties.bounds.get(0));
+                LatLng northEast = new LatLng(hucFeature.properties.bounds.get(3), hucFeature.properties.bounds.get(2));
 
-                    Log.v("point", point.toString());
+                latLngs.add(southWest);
+                latLngs.add(northEast);
 
-                    LatLng latLng = new LatLng(point.get(1), point.get(0));
-
-                    latLngs.add(latLng);
-
-                }
+                territoryStates.setText(hucFeature.properties.states.concat);
 
                 // Draw a polygon on the map
-                mMapboxMap.addPolygon(new PolygonOptions()
-                        .addAll(latLngs)
-                        //.strokeColor(Color.parseColor("#FFFFFF"))
-                        .fillColor(Color.parseColor("#806b4ab5")));
-
-                // Draw polyline on the map
-                mMapboxMap.addPolyline(new PolylineOptions()
-                        .addAll(latLngs)
-                        .color(Color.parseColor("#FFFFFF"))
-                        .width(2));
+//                mMapboxMap.addPolygon(new PolygonOptions()
+//                        .addAll(latLngs)
+//                        //.strokeColor(Color.parseColor("#FFFFFF"))
+//                        .fillColor(Color.parseColor("#806b4ab5")));
+//
+//                // Draw polyline on the map
+//                mMapboxMap.addPolyline(new PolylineOptions()
+//                        .addAll(latLngs)
+//                        .color(Color.parseColor("#FFFFFF"))
+//                        .width(2));
 
                 // Move camera to watershed bounds
                 LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(latLngs).build();
-                mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 80, 80, 80, 80), 4000);
+                mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 100, 100, 100, 100), 3000);
 
             }
 
@@ -541,65 +556,65 @@ public class TerritoryActivity extends AppCompatActivity {
 
     }
 
-//    protected void countReports(String query, final String filterName) {
-//
-//        final String accessToken = prefs.getString("access_token", "");
-//
-//        RestAdapter restAdapter = ReportService.restAdapter;
-//
-//        ReportService service = restAdapter.create(ReportService.class);
-//
-//        service.getReports(accessToken, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
-//
-//            @Override
-//            public void success(FeatureCollection featureCollection, Response response) {
-//
-//                int count = featureCollection.getProperties().num_results;
-//
-//                switch (filterName) {
-//                    case "state":
-//                        if (count > 0) {
-//                            actionStat.setVisibility(View.VISIBLE);
-//                            actionCount = count;
-//                            actionCounter.setText(String.valueOf(actionCount));
-//                            actionCountLabel.setText(resources.getQuantityString(R.plurals.action_label, actionCount, actionCount));
-//                        }
-//                        break;
-//                    default:
-//                        reportCount = count;
-//                        reportCounter.setText(String.valueOf(reportCount));
+    protected void countReports(String query, final String filterName) {
+
+        final String accessToken = prefs.getString("access_token", "");
+
+        RestAdapter restAdapter = ReportService.restAdapter;
+
+        ReportService service = restAdapter.create(ReportService.class);
+
+        service.getReports(accessToken, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
+
+            @Override
+            public void success(FeatureCollection featureCollection, Response response) {
+
+                int count = featureCollection.getProperties().num_results;
+
+                switch (filterName) {
+                    case "state":
+                        if (count > 0) {
+                            actionStat.setVisibility(View.VISIBLE);
+                            actionCount = count;
+                            actionCounter.setText(String.valueOf(actionCount));
+                            actionCountLabel.setText(resources.getQuantityString(R.plurals.action_label, actionCount, actionCount));
+                        }
+                        break;
+                    default:
+                        reportCount = count;
+                        reportCounter.setText(String.format("%s %s", reportCount, resources.getQuantityString(R.plurals.post_label, reportCount, reportCount)).toLowerCase());
 //                        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
-//                        break;
-//                }
-//
-//            }
-//
-//            @Override
-//            public void failure(RetrofitError error) {
-//
-//                if (error == null) return;
-//
-//                Response errorResponse = error.getResponse();
-//
-//                // If we have a valid response object, check the status code and redirect to log in view if necessary
-//
-//                if (errorResponse != null) {
-//
-//                    int status = errorResponse.getStatus();
-//
-//                    if (status == 403) {
-//
-//                        startActivity(new Intent(context, SignInActivity.class));
-//
-//                    }
-//
-//                }
-//
-//            }
-//
-//        });
-//
-//    }
+                        break;
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(context, SignInActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
 
 //    protected void fetchOrganizations(int limit, int page, final String query) {
 //
@@ -752,6 +767,9 @@ public class TerritoryActivity extends AppCompatActivity {
                     reportCount = featureCollection.getProperties().num_results;
 
                 }
+
+                String count = String.format("%s %s", reportCount, resources.getQuantityString(R.plurals.post_label, reportCount, reportCount)).toLowerCase();
+                reportCounter.setText(count);
 
 //                if (reportCount > 0) {
 //

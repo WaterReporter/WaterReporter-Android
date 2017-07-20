@@ -12,11 +12,11 @@ import java.util.ArrayList;
 
 public class HUCFeature implements Serializable {
 
-    @SerializedName("geometry")
-    public HUCGeometry geometry;
+//    @SerializedName("geometry")
+//    public HUCGeometry geometry;
 
-    //@SerializedName("properties")
-    //public ArrayList<Double> coordinates;
+    @SerializedName("properties")
+    public HUCProperties properties;
 
     @SerializedName("type")
     public String type;
