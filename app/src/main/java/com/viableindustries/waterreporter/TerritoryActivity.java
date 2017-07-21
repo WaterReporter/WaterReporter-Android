@@ -8,6 +8,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
 import android.support.design.widget.FloatingActionButton;
@@ -21,10 +22,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -139,8 +142,11 @@ public class TerritoryActivity extends AppCompatActivity {
     @Bind(R.id.sStates)
     TextView sStates;
 
-    @Bind(R.id.sReportCount)
-    TextView sReportCount;
+    @Bind(R.id.backArrow)
+    ImageButton backArrow;
+
+//    @Bind(R.id.sReportCount)
+//    TextView sReportCount;
 
     @Bind(R.id.mapview)
     MapView mapView;
@@ -199,6 +205,12 @@ public class TerritoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_territory);
 
         ButterKnife.bind(this);
+
+        if (Build.VERSION.SDK_INT >= 19){
+
+            setStatusBarTranslucent(true);
+
+        }
 
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
@@ -413,6 +425,13 @@ public class TerritoryActivity extends AppCompatActivity {
 
                 }
 
+            }
+        });
+
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
             }
         });
 
@@ -671,7 +690,7 @@ public class TerritoryActivity extends AppCompatActivity {
                     default:
                         reportCount = count;
                         reportCounter.setText(String.format("%s %s", reportCount, resources.getQuantityString(R.plurals.post_label, reportCount, reportCount)).toLowerCase());
-                        sReportCount.setText(String.format("%s %s", reportCount, resources.getQuantityString(R.plurals.post_label, reportCount, reportCount)).toLowerCase());
+//                        sReportCount.setText(String.format("%s %s", reportCount, resources.getQuantityString(R.plurals.post_label, reportCount, reportCount)).toLowerCase());
 //                        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
                         break;
                 }
@@ -993,6 +1012,14 @@ public class TerritoryActivity extends AppCompatActivity {
         this.overridePendingTransition(R.anim.animation_enter_right,
                 R.anim.animation_exit_left);
 
+    }
+
+    protected void setStatusBarTranslucent(boolean makeTranslucent) {
+        if (makeTranslucent) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
     }
 
     @Override

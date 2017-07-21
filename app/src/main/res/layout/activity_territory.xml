@@ -9,26 +9,70 @@
     android:orientation="vertical"
     tools:context="com.viableindustries.waterreporter.TerritoryActivity">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="#FFFFFF">
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="56dp"-->
+    <!--android:background="#FFFFFF">-->
 
-        <ImageView
-            android:id="@+id/logo"
-            android:layout_width="88dp"
-            android:layout_height="24dp"
-            android:layout_centerInParent="true"
-            android:scaleType="fitXY"
-            android:src="@drawable/logo_horizontal_lockup" />
+    <!--<ImageView-->
+    <!--android:id="@+id/logo"-->
+    <!--android:layout_width="88dp"-->
+    <!--android:layout_height="24dp"-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:scaleType="fitXY"-->
+    <!--android:src="@drawable/logo_horizontal_lockup" />-->
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/gray_232" />
+    <!--<View-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="0.5dp"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:background="@color/gray_232" />-->
 
-    </RelativeLayout>
+    <!--</RelativeLayout>-->
+
+    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:id="@+id/sProfileMeta"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="56dp"-->
+    <!--android:layout_gravity="center|top"-->
+    <!--android:layout_marginTop="-112dp"-->
+    <!--android:background="@color/splash_blue"-->
+    <!--android:elevation="2dp"-->
+    <!--android:orientation="vertical">-->
+
+    <!--<View-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="0.5dp"-->
+    <!--android:background="@color/gray_224" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/sTerritoryName"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:ellipsize="end"-->
+    <!--android:gravity="start|center_vertical"-->
+    <!--android:maxLines="1"-->
+    <!--android:paddingBottom="0dp"-->
+    <!--android:paddingLeft="16dp"-->
+    <!--android:paddingRight="16dp"-->
+    <!--android:paddingTop="8dp"-->
+    <!--android:textColor="@color/white"-->
+    <!--android:textSize="20sp" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/sStates"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:alpha="0.8"-->
+    <!--android:gravity="start|center_vertical"-->
+    <!--android:paddingBottom="8dp"-->
+    <!--android:paddingLeft="16dp"-->
+    <!--android:paddingRight="16dp"-->
+    <!--android:paddingTop="4dp"-->
+    <!--android:textColor="@color/white"-->
+    <!--android:textSize="14sp" />-->
+
+    <!--</LinearLayout>-->
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -37,8 +81,27 @@
         <com.mapbox.mapboxsdk.maps.MapView
             android:id="@+id/mapview"
             android:layout_width="match_parent"
-            android:layout_height="320dp"
+            android:layout_height="360dp"
             mapbox:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v9" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top"
+            android:paddingLeft="16dp"
+            android:paddingRight="0dp"
+            android:paddingTop="16dp">
+
+            <ImageButton
+                android:id="@+id/backArrow"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_arrow_back_white" />
+
+        </RelativeLayout>
 
         <!--<View-->
         <!--android:layout_width="match_parent"-->
@@ -64,7 +127,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center|top"
             android:layout_marginTop="-0.5dp"
-            android:background="@color/white"
+            android:background="@color/splash_blue"
+            android:elevation="2dp"
             android:orientation="vertical">
 
             <View
@@ -83,47 +147,23 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:paddingTop="8dp"
-                android:textColor="@color/material_blue_grey950"
-                android:textSize="24sp" />
+                android:textColor="@color/white"
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/sStates"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:alpha="0.8"
                 android:gravity="start|center_vertical"
                 android:paddingBottom="8dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:paddingTop="4dp"
-                android:textColor="@color/gray_186"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/sReportCount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="start|center_vertical"
-                android:paddingBottom="8dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="0dp"
-                android:paddingTop="0dp"
-                android:textColor="@color/gray_186"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/gray_224" />
+                android:textColor="@color/white"
+                android:textSize="16sp" />
 
         </LinearLayout>
-
-        <!--<com.mapbox.mapboxsdk.maps.MapView-->
-        <!--android:id="@+id/mapview"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="320dp"-->
-        <!--mapbox:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v9" />-->
 
         <fragment
             android:id="@+id/navigationFragment"
