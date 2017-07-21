@@ -1,6 +1,8 @@
 package com.viableindustries.waterreporter;
 
+import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -143,7 +145,7 @@ public class TerritoryActivity extends AppCompatActivity {
     TextView sStates;
 
     @Bind(R.id.backArrow)
-    ImageButton backArrow;
+    RelativeLayout backArrow;
 
 //    @Bind(R.id.sReportCount)
 //    TextView sReportCount;
@@ -221,7 +223,9 @@ public class TerritoryActivity extends AppCompatActivity {
         territory = TerritoryHolder.getTerritory();
 
         // Hide the docked metadata view
-        sProfileMeta.setAlpha(0.0f);
+//        sProfileMeta.setAlpha(0.0f);
+        sTerritoryName.setAlpha(0.0f);
+        sStates.setAlpha(0.0f);
 
         // Set refresh listener on report feed container
 
@@ -310,20 +314,66 @@ public class TerritoryActivity extends AppCompatActivity {
                 int x = locations[0];
                 int y = locations[1];
                 Log.v("header-offset", "" + y);
-                if (y <= 72) {
+                if (y <= 24) {
 
-                    if (sProfileMeta.getAlpha() < 1.0) {
+//                    if (sProfileMeta.getAlpha() < 1.0) {
+//
+//                        AlphaAnimation fadeIn = new AlphaAnimation(0.0f, 1.0f);
+//                        fadeIn.setDuration(250);
+//                        sProfileMeta.setAlpha(1.0f);
+//                        sProfileMeta.startAnimation(fadeIn);
+//
+//                    }
 
-                        AlphaAnimation fadeIn = new AlphaAnimation(0.0f, 1.0f);
-                        fadeIn.setDuration(250);
-                        sProfileMeta.setAlpha(1.0f);
-                        sProfileMeta.startAnimation(fadeIn);
+                    if (sTerritoryName.getAlpha() < 1.0) {
+
+//                        sProfileMeta.setBackgroundColor(ContextCompat.getColor(TerritoryActivity.this, R.color.splash_blue));
+
+                        int colorFrom = Color.TRANSPARENT;
+                        int colorTo = ContextCompat.getColor(TerritoryActivity.this, R.color.splash_blue);
+                        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+                        colorAnimation.setDuration(250); // milliseconds
+                        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+                            @Override
+                            public void onAnimationUpdate(ValueAnimator animator) {
+                                sProfileMeta.setBackgroundColor((int) animator.getAnimatedValue());
+                            }
+
+                        });
+                        colorAnimation.start();
+
+                        sTerritoryName.setAlpha(1.0f);
+                        sStates.setAlpha(0.8f);
 
                     }
 
                 } else {
 
-                    sProfileMeta.setAlpha(0.0f);
+//                    sProfileMeta.setBackgroundColor(Color.TRANSPARENT);
+
+                    if (sTerritoryName.getAlpha() > 0.0) {
+
+                        int colorFrom = ContextCompat.getColor(TerritoryActivity.this, R.color.splash_blue);
+                        int colorTo = Color.TRANSPARENT;
+                        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+                        colorAnimation.setDuration(250); // milliseconds
+                        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+                            @Override
+                            public void onAnimationUpdate(ValueAnimator animator) {
+                                sProfileMeta.setBackgroundColor((int) animator.getAnimatedValue());
+                            }
+
+                        });
+                        colorAnimation.start();
+
+                        sTerritoryName.setAlpha(0.0f);
+                        sStates.setAlpha(0.0f);
+
+                    }
+
+//                    sProfileMeta.setAlpha(0.0f);
 
 //                    sProfileMeta.setVisibility(View.GONE);
 //
@@ -434,7 +484,6 @@ public class TerritoryActivity extends AppCompatActivity {
                 finish();
             }
         });
-
 
     }
 

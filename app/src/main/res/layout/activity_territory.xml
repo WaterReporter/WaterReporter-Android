@@ -9,71 +9,6 @@
     android:orientation="vertical"
     tools:context="com.viableindustries.waterreporter.TerritoryActivity">
 
-    <!--<RelativeLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="56dp"-->
-    <!--android:background="#FFFFFF">-->
-
-    <!--<ImageView-->
-    <!--android:id="@+id/logo"-->
-    <!--android:layout_width="88dp"-->
-    <!--android:layout_height="24dp"-->
-    <!--android:layout_centerInParent="true"-->
-    <!--android:scaleType="fitXY"-->
-    <!--android:src="@drawable/logo_horizontal_lockup" />-->
-
-    <!--<View-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="0.5dp"-->
-    <!--android:layout_alignParentBottom="true"-->
-    <!--android:background="@color/gray_232" />-->
-
-    <!--</RelativeLayout>-->
-
-    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:id="@+id/sProfileMeta"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="56dp"-->
-    <!--android:layout_gravity="center|top"-->
-    <!--android:layout_marginTop="-112dp"-->
-    <!--android:background="@color/splash_blue"-->
-    <!--android:elevation="2dp"-->
-    <!--android:orientation="vertical">-->
-
-    <!--<View-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="0.5dp"-->
-    <!--android:background="@color/gray_224" />-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/sTerritoryName"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:ellipsize="end"-->
-    <!--android:gravity="start|center_vertical"-->
-    <!--android:maxLines="1"-->
-    <!--android:paddingBottom="0dp"-->
-    <!--android:paddingLeft="16dp"-->
-    <!--android:paddingRight="16dp"-->
-    <!--android:paddingTop="8dp"-->
-    <!--android:textColor="@color/white"-->
-    <!--android:textSize="20sp" />-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/sStates"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:alpha="0.8"-->
-    <!--android:gravity="start|center_vertical"-->
-    <!--android:paddingBottom="8dp"-->
-    <!--android:paddingLeft="16dp"-->
-    <!--android:paddingRight="16dp"-->
-    <!--android:paddingTop="4dp"-->
-    <!--android:textColor="@color/white"-->
-    <!--android:textSize="14sp" />-->
-
-    <!--</LinearLayout>-->
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -83,30 +18,6 @@
             android:layout_width="match_parent"
             android:layout_height="360dp"
             mapbox:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v9" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center|top"
-            android:paddingLeft="16dp"
-            android:paddingRight="0dp"
-            android:paddingTop="16dp">
-
-            <ImageButton
-                android:id="@+id/backArrow"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_arrow_back_white" />
-
-        </RelativeLayout>
-
-        <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:background="@drawable/watershed_gradient_overlay" />-->
 
         <ListView
             android:id="@+id/timeline_items"
@@ -127,41 +38,58 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center|top"
             android:layout_marginTop="-0.5dp"
-            android:background="@color/splash_blue"
-            android:elevation="2dp"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:paddingTop="24dp">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/gray_224" />
-
-            <TextView
-                android:id="@+id/sTerritoryName"
-                android:layout_width="match_parent"
+            <RelativeLayout
+                android:id="@+id/backArrow"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:gravity="start|center_vertical"
-                android:maxLines="1"
-                android:paddingBottom="0dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="8dp"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
+                android:layout_gravity="center_vertical"
+                android:padding="16dp">
 
-            <TextView
-                android:id="@+id/sStates"
-                android:layout_width="match_parent"
+                <ImageButton
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerInParent="true"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_arrow_back_white" />
+
+            </RelativeLayout>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha="0.8"
-                android:gravity="start|center_vertical"
-                android:paddingBottom="8dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="4dp"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/sTerritoryName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:gravity="start|center_vertical"
+                    android:maxLines="1"
+                    android:paddingBottom="0dp"
+                    android:paddingLeft="0dp"
+                    android:paddingRight="16dp"
+                    android:paddingTop="8dp"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/sStates"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start|center_vertical"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="0dp"
+                    android:paddingRight="16dp"
+                    android:paddingTop="4dp"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -173,118 +101,5 @@
             android:layout_gravity="bottom" />
 
     </FrameLayout>
-
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:orientation="vertical">-->
-
-    <!--<FrameLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:layout_weight="1">-->
-
-    <!--<com.mapbox.mapboxsdk.maps.MapView-->
-    <!--android:id="@+id/mapview"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--mapbox:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v9" />-->
-
-    <!--<View-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:background="@drawable/watershed_gradient_overlay" />-->
-
-    <!--&lt;!&ndash;<fragment&ndash;&gt;-->
-    <!--&lt;!&ndash;android:id="@+id/navigationFragment"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:name="com.viableindustries.waterreporter.NavigationFragment"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:layout_gravity="bottom" />&ndash;&gt;-->
-
-    <!--</FrameLayout>-->
-
-    <!--<FrameLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:layout_weight="1">-->
-
-    <!--<View-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:background="@color/white" />-->
-
-    <!--<fragment-->
-    <!--android:id="@+id/navigationFragment"-->
-    <!--android:name="com.viableindustries.waterreporter.NavigationFragment"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="bottom" />-->
-
-    <!--</FrameLayout>-->
-
-    <!--</LinearLayout>-->
-
-    <!--<FrameLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="bottom">-->
-
-    <!--&lt;!&ndash;<com.mapbox.mapboxsdk.maps.MapView&ndash;&gt;-->
-    <!--&lt;!&ndash;android:id="@+id/mapview"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:layout_marginTop=""&ndash;&gt;-->
-    <!--&lt;!&ndash;mapbox:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v9" />&ndash;&gt;-->
-
-    <!--<View-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="200dp"-->
-    <!--android:background="@color/white" />-->
-
-    <!--<fragment-->
-    <!--android:id="@+id/navigationFragment"-->
-    <!--android:name="com.viableindustries.waterreporter.NavigationFragment"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="bottom" />-->
-
-    <!--</FrameLayout>-->
-
-    <!--<FrameLayout-->
-    <!--android:id="@+id/listTabs"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_gravity="bottom"-->
-    <!--android:visibility="gone">-->
-
-    <!--<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:id="@+id/timeline"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_marginBottom="40dp">-->
-
-    <!--<ListView-->
-    <!--android:id="@+id/timeline_items"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginBottom="40dp"-->
-    <!--android:divider="@color/gray_232"-->
-    <!--android:dividerHeight="0.5dp"-->
-    <!--android:fadingEdgeLength="0dp"-->
-    <!--android:listSelector="@drawable/timeline_selector"-->
-    <!--android:overScrollMode="never"-->
-    <!--android:scrollbars="none" />-->
-
-    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
-
-    <!--<fragment-->
-    <!--android:id="@+id/navigationFragment"-->
-    <!--android:name="com.viableindustries.waterreporter.NavigationFragment"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="bottom" />-->
-
-    <!--</FrameLayout>-->
 
 </LinearLayout>
