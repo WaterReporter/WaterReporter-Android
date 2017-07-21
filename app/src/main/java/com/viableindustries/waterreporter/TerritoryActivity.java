@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.app.Activity;
 import android.support.design.widget.FloatingActionButton;
@@ -20,6 +21,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -67,6 +70,8 @@ import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserCollection;
 import com.viableindustries.waterreporter.data.UserOrgPatch;
 import com.viableindustries.waterreporter.data.UserService;
+
+import org.w3c.dom.Text;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -124,6 +129,18 @@ public class TerritoryActivity extends AppCompatActivity {
     FloatingActionButton jumpStart;
 
     List<LatLng> latLngs = new ArrayList<LatLng>();
+
+    @Bind(R.id.sProfileMeta)
+    LinearLayout sProfileMeta;
+
+    @Bind(R.id.sTerritoryName)
+    TextView sTerritoryName;
+
+    @Bind(R.id.sStates)
+    TextView sStates;
+
+    @Bind(R.id.sReportCount)
+    TextView sReportCount;
 
     @Bind(R.id.mapview)
     MapView mapView;
@@ -190,6 +207,9 @@ public class TerritoryActivity extends AppCompatActivity {
         resources = getResources();
 
         territory = TerritoryHolder.getTerritory();
+
+        // Hide the docked metadata view
+        sProfileMeta.setAlpha(0.0f);
 
         // Set refresh listener on report feed container
 
@@ -258,6 +278,72 @@ public class TerritoryActivity extends AppCompatActivity {
                 return true; // ONLY if more data is actually being loaded; false otherwise.
 
             }
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                // Determine the vertical offset of the profile view in the ListView header
+//                Rect myViewRect = new Rect();
+//                profileMeta.getGlobalVisibleRect(myViewRect);
+//                float x = myViewRect.left;
+//                float y = myViewRect.top;
+//                Log.v("header-offset", "" + y);
+
+//                Rect offsetViewBounds = new Rect();
+//                //returns the visible bounds
+//                profileMeta.getDrawingRect(offsetViewBounds);
+                //calculates the relative coordinates to the parent
+
+                int[] locations = new int[2];
+                profileMeta.getLocationOnScreen(locations);
+                int x = locations[0];
+                int y = locations[1];
+                Log.v("header-offset", "" + y);
+                if (y <= 72) {
+
+                    if (sProfileMeta.getAlpha() < 1.0) {
+
+                        AlphaAnimation fadeIn = new AlphaAnimation(0.0f, 1.0f);
+                        fadeIn.setDuration(250);
+                        sProfileMeta.setAlpha(1.0f);
+                        sProfileMeta.startAnimation(fadeIn);
+
+                    }
+
+                } else {
+
+                    sProfileMeta.setAlpha(0.0f);
+
+//                    sProfileMeta.setVisibility(View.GONE);
+//
+//                    AlphaAnimation fadeOut = new AlphaAnimation(1.0f, 0.0f);
+//                    fadeOut.setDuration(250);
+////                    fadeOut.setFillAfter(true);
+//                    sProfileMeta.setAlpha(0.0f);
+//                    sProfileMeta.startAnimation(fadeOut);
+
+                }
+
+//                try {
+//                    timeLine.offsetDescendantRectToMyCoords(profileMeta, offsetViewBounds);
+//                    int relativeTop = offsetViewBounds.top;
+//
+//                    if (relativeTop <= 16) {
+//
+//                        sProfileMeta.setVisibility(View.VISIBLE);
+//
+//                    } else {
+//
+//                        sProfileMeta.setVisibility(View.GONE);
+//
+//                    }
+//
+//                    Log.v("header-offset", "" + relativeTop);
+//                } catch (IllegalArgumentException e) {
+//                    return;
+//                }
+
+            }
+
         };
 
         // Add click listener to share button
@@ -397,6 +483,7 @@ public class TerritoryActivity extends AppCompatActivity {
         territoryNameText = territory.properties.huc_8_name;
 
         territoryName.setText(territoryNameText);
+        sTerritoryName.setText(territoryNameText);
 
         // Attach click listeners to stat elements
 
@@ -510,6 +597,7 @@ public class TerritoryActivity extends AppCompatActivity {
                 latLngs.add(northEast);
 
                 territoryStates.setText(hucFeature.properties.states.concat);
+                sStates.setText(hucFeature.properties.states.concat);
 
                 // Draw a polygon on the map
 //                mMapboxMap.addPolygon(new PolygonOptions()
@@ -583,6 +671,7 @@ public class TerritoryActivity extends AppCompatActivity {
                     default:
                         reportCount = count;
                         reportCounter.setText(String.format("%s %s", reportCount, resources.getQuantityString(R.plurals.post_label, reportCount, reportCount)).toLowerCase());
+                        sReportCount.setText(String.format("%s %s", reportCount, resources.getQuantityString(R.plurals.post_label, reportCount, reportCount)).toLowerCase());
 //                        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
                         break;
                 }
