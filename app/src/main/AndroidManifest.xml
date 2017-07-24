@@ -197,6 +197,7 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="www.waterreporter.org"
                     android:pathPrefix="/community/reports"
@@ -207,6 +208,7 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="www.waterreporter.org"
                     android:pathPrefix="/community/reports"
@@ -217,6 +219,7 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="og.waterreporter.org"
                     android:pathPrefix="/community/reports"
@@ -227,6 +230,7 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="og.waterreporter.org"
                     android:pathPrefix="/community/reports"
@@ -351,6 +355,17 @@
             android:label="@string/title_activity_privacy"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".TerritoryMapActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_territory_map"
+            android:parentActivityName=".TerritoryActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.viableindustries.waterreporter.TerritoryActivity" />
+        </activity>
     </application>
 
 </manifest>

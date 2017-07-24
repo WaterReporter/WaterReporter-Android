@@ -479,15 +479,15 @@ public class MainActivity extends AppCompatActivity implements
 
         // Test Open Graph parser
 
-        try {
-
-            openGraphTrial();
-
-        } catch (IOException e) {
-
-            Log.v("OGError", e.getMessage());
-
-        }
+//        try {
+//
+//            openGraphTrial();
+//
+//        } catch (IOException e) {
+//
+//            Log.v("OGError", e.getMessage());
+//
+//        }
 
     }
 

@@ -543,6 +543,13 @@ public class TerritoryActivity extends AppCompatActivity {
 
         accessMap.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.splash_blue)));
 
+        accessMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(TerritoryActivity.this, TerritoryMapActivity.class));
+            }
+        });
+
 //        profileStats = (LinearLayout) header.findViewById(R.id.profileStats);
 
         try {

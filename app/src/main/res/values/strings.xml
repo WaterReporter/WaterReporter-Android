@@ -331,5 +331,6 @@
     <string name="title_activity_terms">TermsActivity</string>
     <string name="title_activity_privacy">PrivacyActivity</string>
     <string name="title_activity_launch">LaunchActivity</string>
+    <string name="title_activity_territory_map">TerritoryMapActivity</string>
 
 </resources>
