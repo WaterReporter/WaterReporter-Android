@@ -546,6 +546,7 @@ public class TerritoryActivity extends AppCompatActivity {
         accessMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                accessMap.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.splash_blue_dark)));
                 startActivity(new Intent(TerritoryActivity.this, TerritoryMapActivity.class));
             }
         });

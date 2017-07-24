@@ -201,38 +201,45 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
                 fetchReports(50, 1, buildQuery(true, "report", null), false);
 
-                String code = String.format("%s", territory.properties.huc_8_code);
-                if (code.length() == 7) code = String.format("0%s", code);
-                String url = String.format("https://huc.waterreporter.org/8/%s", code);
-
-                try {
-
-                    URL geoJsonUrl = new URL(url);
-                    GeoJsonSource geoJsonSource = new GeoJsonSource("geojson", geoJsonUrl);
-                    mapboxMap.addSource(geoJsonSource);
-
-                    // Create a FillLayer with style properties
-
-                    FillLayer layer = new FillLayer("geojson", "geojson");
-
-                    layer.withProperties(
-                            //fillOutlineColor("#FFFFFF"),
-                            fillColor("#6b4ab5"),
-                            fillOpacity(0.4f)
-                    );
-
-                    mapboxMap.addLayer(layer);
-
-                } catch (MalformedURLException e) {
-
-                    Log.d("Malformed URL", e.getMessage());
-
-                }
+//                String code = String.format("%s", territory.properties.huc_8_code);
+//                if (code.length() == 7) code = String.format("0%s", code);
+//                String url = String.format("https://huc.waterreporter.org/8/%s", code);
+//
+//                try {
+//
+//                    URL geoJsonUrl = new URL(url);
+//                    GeoJsonSource geoJsonSource = new GeoJsonSource("geojson", geoJsonUrl);
+//                    mapboxMap.addSource(geoJsonSource);
+//
+//                    // Create a FillLayer with style properties
+//
+//                    FillLayer layer = new FillLayer("geojson", "geojson");
+//
+//                    layer.withProperties(
+//                            //fillOutlineColor("#FFFFFF"),
+//                            fillColor("#6b4ab5"),
+//                            fillOpacity(0.4f)
+//                    );
+//
+//                    mapboxMap.addLayer(layer);
+//
+//                } catch (MalformedURLException e) {
+//
+//                    Log.d("Malformed URL", e.getMessage());
+//
+//                }
 
             }
         });
 
         backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        sProfileMeta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
@@ -267,9 +274,9 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
                 sStates.setText(hucFeature.properties.states.concat);
 
-                // Move camera to watershed bounds
-                LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(latLngs).build();
-                mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 100, 100, 100, 100), 2000);
+//                // Move camera to watershed bounds
+//                LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(latLngs).build();
+//                mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 100, 100, 100, 100), 2000);
 
             }
 
@@ -398,6 +405,8 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     private void onFetchSuccess(List<Report> reports) {
 
+        List<LatLng> latLngs = new ArrayList<LatLng>();
+
         for (Report report : reports) {
 
             Geometry geometry = report.geometry.geometries.get(0);
@@ -412,11 +421,17 @@ public class TerritoryMapActivity extends AppCompatActivity {
             options.status(report.properties.state);
             options.inFocus(0);
 
+            latLngs.add(new LatLng(geometry.coordinates.get(1), geometry.coordinates.get(0)));
+
             mMapboxMap.addMarker(options);
 
             mappedReportsHolder.addReport(String.format("%s-%s", report.id, "r"), report);
 
         }
+
+        // Move camera to watershed bounds
+        LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(latLngs).build();
+        mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 100, 100, 100, 100), 2000);
 
     }
 
@@ -511,22 +526,32 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
             Log.d("reportKeyFromMarkerTap", String.format("%s-%s", marker.getReportId(), "r"));
 
-            ReportHolder.setReport(mappedReportsHolder.getReport(String.format("%s-%s", marker.getReportId(), "r")));
+            Report r = mappedReportsHolder.getReport(String.format("%s-%s", marker.getReportId(), "r"));
 
-            // Check to see if marker detail is already open
-            SharedPreferences prefs = getContext().getSharedPreferences(getContext().getPackageName(), MODE_PRIVATE);
+            ReportHolder.setReport(r);
 
-            boolean isOpen = prefs.getBoolean("markerDetailOpen", false);
+            CameraPosition position = new CameraPosition.Builder()
+                    .target(new LatLng(marker.getPosition().getLatitude(), marker.getPosition().getLongitude())) // Sets the new camera position
+                    .zoom(14) // Sets the zoom
+                    .build(); // Creates a CameraPosition from the builder
 
-//            if (!isOpen) {
+            mapboxMap.animateCamera(CameraUpdateFactory
+                    .newCameraPosition(position), 500);
+
+//            // Check to see if marker detail is already open
+//            SharedPreferences prefs = getContext().getSharedPreferences(getContext().getPackageName(), MODE_PRIVATE);
 //
-//                prefs.edit().putBoolean("markerDetailOpen", true).apply();
-
-            Intent markerIntent = new Intent(getContext(), MarkerDetailActivity.class);
-
-            getContext().startActivity(markerIntent);
-
-//            }
+//            boolean isOpen = prefs.getBoolean("markerDetailOpen", false);
+//
+////            if (!isOpen) {
+////
+////                prefs.edit().putBoolean("markerDetailOpen", true).apply();
+//
+//            Intent markerIntent = new Intent(getContext(), MarkerDetailActivity.class);
+//
+//            getContext().startActivity(markerIntent);
+//
+////            }
 
             return false;
 

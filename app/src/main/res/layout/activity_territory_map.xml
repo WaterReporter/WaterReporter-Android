@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:mapbox="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.viableindustries.waterreporter.TerritoryMapActivity">
-
-    <com.mapbox.mapboxsdk.maps.MapView
-        android:id="@+id/mapview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        mapbox:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v9" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/sProfileMeta"
@@ -76,11 +71,42 @@
 
     </LinearLayout>
 
-    <fragment
-        android:id="@+id/navigationFragment"
-        android:name="com.viableindustries.waterreporter.NavigationFragment"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom" />
+        android:layout_height="wrap_content">
 
-</FrameLayout>
+        <com.mapbox.mapboxsdk.maps.MapView
+            android:id="@+id/mapview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            mapbox:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v9" />
+
+        <HorizontalScrollView
+            android:id="@+id/postList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:baselineAligned="false"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/tag_results"
+                android:layout_width="wrap_content"
+                android:layout_height="56dp"
+                android:layout_gravity="start|center_vertical"
+                android:background="#FFFFFF"
+                android:baselineAligned="false"
+                android:orientation="horizontal" />
+
+        </HorizontalScrollView>
+
+        <fragment
+            android:id="@+id/navigationFragment"
+            android:name="com.viableindustries.waterreporter.NavigationFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom" />
+
+    </FrameLayout>
+
+</LinearLayout>
