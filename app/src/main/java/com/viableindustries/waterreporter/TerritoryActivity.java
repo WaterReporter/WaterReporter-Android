@@ -37,6 +37,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.MarkerViewManager;
@@ -103,7 +104,9 @@ import static java.lang.Boolean.TRUE;
 
 public class TerritoryActivity extends AppCompatActivity {
 
-    LinearLayout profileMeta;
+//    LinearLayout profileMeta;
+
+    FlexboxLayout profileMeta;
 
     LinearLayout profileStats;
 
@@ -163,6 +166,8 @@ public class TerritoryActivity extends AppCompatActivity {
 //
 //    @Bind(R.id.listTabs)
 //    FrameLayout listTabs;
+
+    FloatingActionButton accessMap;
 
     protected TimelineAdapter timelineAdapter;
 
@@ -357,7 +362,7 @@ public class TerritoryActivity extends AppCompatActivity {
                         int colorFrom = ContextCompat.getColor(TerritoryActivity.this, R.color.splash_blue);
                         int colorTo = Color.TRANSPARENT;
                         ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-                        colorAnimation.setDuration(250); // milliseconds
+                        colorAnimation.setDuration(200); // milliseconds
                         colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
                             @Override
@@ -532,7 +537,11 @@ public class TerritoryActivity extends AppCompatActivity {
 //
 //        groupStat = (LinearLayout) header.findViewById(R.id.groupStat);
 
-        profileMeta = (LinearLayout) header.findViewById(R.id.profileMeta);
+        profileMeta = (FlexboxLayout) header.findViewById(R.id.profileMeta);
+
+        accessMap = (FloatingActionButton) header.findViewById(R.id.accessMap);
+
+        accessMap.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.splash_blue)));
 
 //        profileStats = (LinearLayout) header.findViewById(R.id.profileStats);
 
