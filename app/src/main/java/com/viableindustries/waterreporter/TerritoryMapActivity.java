@@ -453,19 +453,21 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
                 viewHolder = new MarkerAdapter.ViewHolder();
 
-                if (marker.isInFocus() == 1) {
+                convertView = inflater.inflate(R.layout.view_marker_dot, parent, false);
 
-                    convertView = inflater.inflate(R.layout.view_origin_marker, parent, false);
+//                if (marker.isInFocus() == 1) {
+//
+//                    convertView = inflater.inflate(R.layout.view_origin_marker, parent, false);
+//
+//                } else {
+//
+//                    convertView = inflater.inflate(R.layout.view_custom_marker, parent, false);
+//
+//                }
 
-                } else {
-
-                    convertView = inflater.inflate(R.layout.view_custom_marker, parent, false);
-
-                }
-
-                viewHolder.markerContainer = (FrameLayout) convertView.findViewById(R.id.customMarker);
-                viewHolder.image = (ImageView) convertView.findViewById(R.id.imageView);
-                viewHolder.actionBadge = (ImageView) convertView.findViewById(R.id.actionBadge);
+//                viewHolder.markerContainer = (FrameLayout) convertView.findViewById(R.id.customMarker);
+//                viewHolder.image = (ImageView) convertView.findViewById(R.id.imageView);
+//                viewHolder.actionBadge = (ImageView) convertView.findViewById(R.id.actionBadge);
 
                 convertView.setTag(viewHolder);
 
@@ -475,31 +477,31 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
             }
 
-            // Display badge if report is closed
-            if (marker.getStatus().equals("closed")) {
-
-                viewHolder.actionBadge.setVisibility(View.VISIBLE);
-
-            } else {
-
-                viewHolder.actionBadge.setVisibility(View.GONE);
-
-            }
-
-            int markerDimension;
-
-            // Display active marker pin if report is "source"
-            if (marker.isInFocus() == 1) {
-
-                markerDimension = getContext().getResources().getDimensionPixelSize(R.dimen.origin_marker_size);
-
-            } else {
-
-                markerDimension = getContext().getResources().getDimensionPixelSize(R.dimen.default_marker_size);
-
-            }
-
-            Picasso.with(getContext()).load(marker.getThumbNail()).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(viewHolder.image);
+//            // Display badge if report is closed
+//            if (marker.getStatus().equals("closed")) {
+//
+//                viewHolder.actionBadge.setVisibility(View.VISIBLE);
+//
+//            } else {
+//
+//                viewHolder.actionBadge.setVisibility(View.GONE);
+//
+//            }
+//
+//            int markerDimension;
+//
+//            // Display active marker pin if report is "source"
+//            if (marker.isInFocus() == 1) {
+//
+//                markerDimension = getContext().getResources().getDimensionPixelSize(R.dimen.origin_marker_size);
+//
+//            } else {
+//
+//                markerDimension = getContext().getResources().getDimensionPixelSize(R.dimen.default_marker_size);
+//
+//            }
+//
+//            Picasso.with(getContext()).load(marker.getThumbNail()).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(viewHolder.image);
 
             return convertView;
         }
@@ -541,9 +543,9 @@ public class TerritoryMapActivity extends AppCompatActivity {
         }
 
         private static class ViewHolder {
-            FrameLayout markerContainer;
-            ImageView image;
-            ImageView actionBadge;
+//            FrameLayout markerContainer;
+//            ImageView image;
+//            ImageView actionBadge;
         }
     }
 
