@@ -21,10 +21,14 @@ import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +45,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -200,6 +205,63 @@ public class TerritoryMapActivity extends AppCompatActivity {
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         postList.setHasFixedSize(true);
+
+        final SnapHelper snapHelper = new GravitySnapHelper(Gravity.START);
+        snapHelper.attachToRecyclerView(postList);
+
+        postList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                CardView cardView = (CardView) snapHelper.findSnapView(mLayoutManager);
+
+                if (cardView != null) {
+
+                    int idx = (int) cardView.getTag();
+
+                    Report r = mappedReportsHolder.getReport(String.format("%s-%s", idx, "r"));
+
+                    Log.v("view-tag", "" + idx);
+
+                    Geometry geometry = r.geometry.geometries.get(0);
+
+                    LatLng postLocation = new LatLng(geometry.coordinates.get(1), geometry.coordinates.get(0));
+
+                    CameraPosition position = new CameraPosition.Builder()
+                        .target(new LatLng(postLocation.getLatitude(), postLocation.getLongitude())) // Sets the new camera position
+                            .zoom(12) // Sets the zoom
+                            .build(); // Creates a CameraPosition from the builder
+
+                    mMapboxMap.animateCamera(CameraUpdateFactory
+                            .newCameraPosition(position), 500);
+
+                }
+
+            }
+        });
+
+//        SnapHelper snapHelper = new LinearSnapHelper() {
+//            @Override
+//            public int findTargetSnapPosition(RecyclerView.LayoutManager layoutManager, int velocityX, int velocityY) {
+//                int snapPosition = super.findTargetSnapPosition(layoutManager, velocityX, velocityY);
+//
+//                // Do something with snapPosition
+//                LatLng postLocation = latLngs.get(snapPosition);
+//
+//                CameraPosition position = new CameraPosition.Builder()
+//                        .target(new LatLng(postLocation.getLatitude(), postLocation.getLongitude())) // Sets the new camera position
+//                        .zoom(12) // Sets the zoom
+//                        .build(); // Creates a CameraPosition from the builder
+//
+//                mMapboxMap.animateCamera(CameraUpdateFactory
+//                        .newCameraPosition(position), 500);
+//
+//                return snapPosition;
+//            }
+//        };
+
+//        snapHelper.attachToRecyclerView(postList);
 
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -452,7 +514,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
         mAdapter = new MarkerCardAdapter(this, reports);
         postList.setAdapter(mAdapter);
 
-        List<LatLng> latLngs = new ArrayList<LatLng>();
+//        List<LatLng> latLngs = new ArrayList<LatLng>();
 
         int idx = 0;
 
@@ -590,7 +652,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
             CameraPosition position = new CameraPosition.Builder()
                     .target(new LatLng(marker.getPosition().getLatitude(), marker.getPosition().getLongitude())) // Sets the new camera position
-                    .zoom(14) // Sets the zoom
+                    .zoom(12) // Sets the zoom
                     .build(); // Creates a CameraPosition from the builder
 
             mapboxMap.animateCamera(CameraUpdateFactory

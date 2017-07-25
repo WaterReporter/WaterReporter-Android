@@ -72,6 +72,8 @@ public class MarkerCardAdapter extends RecyclerView.Adapter<MarkerCardAdapter.Vi
         final Report r = mDataset.get(position);
         Picasso.with(mContext).load(r.properties.images.get(0).properties.thumbnail_retina).fit().into(holder.postImage);
 
+        holder.cardView.setTag(r.id);
+
         holder.postImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,5 +90,6 @@ public class MarkerCardAdapter extends RecyclerView.Adapter<MarkerCardAdapter.Vi
     public int getItemCount() {
         return mDataset.size();
     }
+
 }
 
