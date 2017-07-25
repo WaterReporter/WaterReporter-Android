@@ -30,6 +30,7 @@ public class CustomMarkerViewOptions extends BaseMarkerViewOptions<CustomMarkerV
     private String userAvatar;
     private String status;
     private int inFocus;
+    private int index;
 
     public CustomMarkerViewOptions() {
     }
@@ -61,6 +62,7 @@ public class CustomMarkerViewOptions extends BaseMarkerViewOptions<CustomMarkerV
         userAvatar(in.readString());
         status(in.readString());
         inFocus(in.readInt());
+        index(in.readInt());
     }
 
     @Override
@@ -103,11 +105,12 @@ public class CustomMarkerViewOptions extends BaseMarkerViewOptions<CustomMarkerV
         out.writeString(userAvatar);
         out.writeString(status);
         out.writeInt(inFocus);
+        out.writeInt(index);
     }
 
     @Override
     public CustomMarkerView getMarker() {
-        return new CustomMarkerView(this, reportId, reportDescription, thumbNail, fullImage, creationDate, watershedName, groupList, commentCount, userName, userAvatar, status, inFocus);
+        return new CustomMarkerView(this, reportId, reportDescription, thumbNail, fullImage, creationDate, watershedName, groupList, commentCount, userName, userAvatar, status, inFocus, index);
     }
 
     public CustomMarkerViewOptions reportId(int reportId) {
@@ -167,6 +170,11 @@ public class CustomMarkerViewOptions extends BaseMarkerViewOptions<CustomMarkerV
 
     public CustomMarkerViewOptions inFocus(int inFocus) {
         this.inFocus = inFocus;
+        return getThis();
+    }
+
+    public CustomMarkerViewOptions index(int index) {
+        this.index = index;
         return getThis();
     }
 

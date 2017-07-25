@@ -26,11 +26,12 @@ public class CustomMarkerView extends MarkerView {
     private String userAvatar;
     private String status;
     private int inFocus;
+    private int index;
 
     public CustomMarkerView(BaseMarkerViewOptions baseMarkerViewOptions,
                             int reportId, String reportDescription, String thumbNail, String fullImage,
                             String creationDate, String watershedName, String groupList, String commentCount,
-                            String userName, String userAvatar, String status, int inFocus) {
+                            String userName, String userAvatar, String status, int inFocus, int idx) {
         super(baseMarkerViewOptions);
         this.thumbNail = thumbNail;
         this.fullImage = fullImage;
@@ -44,6 +45,7 @@ public class CustomMarkerView extends MarkerView {
         this.userAvatar = userAvatar;
         this.status = status;
         this.inFocus = inFocus;
+        this.index = idx;
     }
 
     public String getThumbNail() {
@@ -89,5 +91,7 @@ public class CustomMarkerView extends MarkerView {
     public String getStatus() { return status; }
 
     public int isInFocus() { return inFocus; }
+
+    public int getIndex() { return index; }
 
 }

@@ -21,6 +21,8 @@ import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,6 +44,7 @@ import android.widget.Toast;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerViewManager;
 import com.mapbox.mapboxsdk.annotations.PolygonOptions;
 import com.mapbox.mapboxsdk.annotations.PolylineOptions;
@@ -128,6 +131,9 @@ public class TerritoryMapActivity extends AppCompatActivity {
     @Bind(R.id.mapview)
     MapView mapView;
 
+    @Bind(R.id.postList)
+    RecyclerView postList;
+
     private MapboxMap mMapboxMap;
 
     private MappedReportsHolder mappedReportsHolder;
@@ -145,6 +151,9 @@ public class TerritoryMapActivity extends AppCompatActivity {
     private SharedPreferences prefs;
 
     private Resources resources;
+
+    private RecyclerView.Adapter mAdapter;
+    private LinearLayoutManager mLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,6 +195,16 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
         }
 
+        // RecyclerView
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        postList.setHasFixedSize(true);
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        postList.setLayoutManager(mLayoutManager);
+
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -197,9 +216,34 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
                 final MarkerViewManager markerViewManager = mapboxMap.getMarkerViewManager();
 
-                markerViewManager.addMarkerViewAdapter(new MarkerAdapter(context, mapboxMap, mappedReportsHolder));
+                markerViewManager.addMarkerViewAdapter(new MarkerAdapter(context, postList, mLayoutManager, mapboxMap, mappedReportsHolder));
 
                 fetchReports(50, 1, buildQuery(true, "report", null), false);
+
+//                mapboxMap.setOnMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
+//                    @Override
+//                    public boolean onMarkerClick(@NonNull Marker marker) {
+//
+//                        marker.
+//
+//                        Log.d("reportKeyFromMarkerTap", String.format("%s-%s", marker.getReportId(), "r"));
+//
+//                        Report r = mappedReportsHolder.getReport(String.format("%s-%s", marker.getReportId(), "r"));
+//
+//                        ReportHolder.setReport(r);
+//
+//                        CameraPosition position = new CameraPosition.Builder()
+//                                .target(new LatLng(marker.getPosition().getLatitude(), marker.getPosition().getLongitude())) // Sets the new camera position
+//                                .zoom(14) // Sets the zoom
+//                                .build(); // Creates a CameraPosition from the builder
+//
+//                        mapboxMap.animateCamera(CameraUpdateFactory
+//                                .newCameraPosition(position), 500);
+//
+//                        int idx = marker.getIndex();
+//                        return true;
+//                    }
+//                });
 
 //                String code = String.format("%s", territory.properties.huc_8_code);
 //                if (code.length() == 7) code = String.format("0%s", code);
@@ -245,7 +289,6 @@ public class TerritoryMapActivity extends AppCompatActivity {
                 finish();
             }
         });
-
     }
 
     protected void fetchGeometry() {
@@ -405,7 +448,13 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     private void onFetchSuccess(List<Report> reports) {
 
+        // specify an adapter (see also next example)
+        mAdapter = new MarkerCardAdapter(this, reports);
+        postList.setAdapter(mAdapter);
+
         List<LatLng> latLngs = new ArrayList<LatLng>();
+
+        int idx = 0;
 
         for (Report report : reports) {
 
@@ -420,6 +469,9 @@ public class TerritoryMapActivity extends AppCompatActivity {
             options.fullImage(report.properties.images.get(0).properties.square_retina);
             options.status(report.properties.state);
             options.inFocus(0);
+            options.index(idx);
+
+            idx++;
 
             latLngs.add(new LatLng(geometry.coordinates.get(1), geometry.coordinates.get(0)));
 
@@ -450,12 +502,18 @@ public class TerritoryMapActivity extends AppCompatActivity {
         private LayoutInflater inflater;
         private MapboxMap mapboxMap;
         private MappedReportsHolder mappedReportsHolder;
+        private Context ctxt;
+        private RecyclerView recyclerView;
+        private LinearLayoutManager layoutManager;
 
-        public MarkerAdapter(@NonNull Context context, @NonNull MapboxMap mapboxMap, @NonNull MappedReportsHolder mappedReportsHolder) {
+        public MarkerAdapter(@NonNull Context context, @NonNull RecyclerView recyclerView, @NonNull LinearLayoutManager layoutManager, @NonNull MapboxMap mapboxMap, @NonNull MappedReportsHolder mappedReportsHolder) {
             super(context);
+            this.ctxt = context;
             this.inflater = LayoutInflater.from(context);
             this.mapboxMap = mapboxMap;
             this.mappedReportsHolder = mappedReportsHolder;
+            this.recyclerView = recyclerView;
+            this.layoutManager = layoutManager;
         }
 
         @Nullable
@@ -537,6 +595,12 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
             mapboxMap.animateCamera(CameraUpdateFactory
                     .newCameraPosition(position), 500);
+
+            int idx = marker.getIndex();
+
+            layoutManager.scrollToPositionWithOffset(idx, 0);
+
+//            recyclerView.smoothScrollToPosition(idx);
 
 //            // Check to see if marker detail is already open
 //            SharedPreferences prefs = getContext().getSharedPreferences(getContext().getPackageName(), MODE_PRIVATE);
