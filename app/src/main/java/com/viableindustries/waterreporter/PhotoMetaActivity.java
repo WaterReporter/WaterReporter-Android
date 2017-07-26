@@ -589,7 +589,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
-    private void displayOpenGraphObject(Map<String, String> openGraphObject) {
+    private void displayOpenGraphObject(Map<String, String> openGraphObject, String url) {
 
         ogData.setVisibility(View.VISIBLE);
 
@@ -601,16 +601,26 @@ public class PhotoMetaActivity extends AppCompatActivity
         String ogDomain;
 
         try {
+
             ogDomain = OpenGraph.getDomainName(openGraphObject.get("og:url"));
+
         } catch (URISyntaxException e) {
+
             ogDomain = "";
+
         }
 
         ogUrl.setText(ogDomain);
 
+        // Remove URL from comment text
+
+        String trimmedInput = query.substring(0, query.indexOf(url)).trim();
+
+        commentsField.setText(trimmedInput);
+
     }
 
-    private Map<String, String> fetchTags(String url) throws IOException {
+    private Map<String, String> fetchTags(final String url) throws IOException {
 
         final String[] ogTags = new String[]{
                 "og:url",
@@ -636,7 +646,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                     if (ogIdx.get("og:image").length() > 0) {
 
-                        displayOpenGraphObject(ogIdx);
+                        displayOpenGraphObject(ogIdx, url);
 
                     }
 
