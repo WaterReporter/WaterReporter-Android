@@ -85,15 +85,6 @@ public class OpenGraphProperties implements Serializable {
     @SerializedName("owner_id")
     private int ownerId;
 
-    // Report relation ID
-
-    @SerializedName("report_id")
-    private int reportId;
-
-    public OpenGraphProperties (Map<String, String> openGraphIdx) {
-
-
-
-    }
+    public OpenGraphProperties () {}
 
 }
