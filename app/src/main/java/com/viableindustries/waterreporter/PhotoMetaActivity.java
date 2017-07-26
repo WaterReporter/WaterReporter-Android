@@ -246,6 +246,8 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     private String tagToken;
 
+    private Map<String, String> openGraphObject;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -556,7 +558,7 @@ public class PhotoMetaActivity extends AppCompatActivity
                 if (URLUtil.isValidUrl(lastWord)) {
 
                     try {
-                        fetchTags(lastWord);
+                        openGraphObject = fetchTags(lastWord);
                     } catch (IOException e) {
                         Snackbar.make(parentLayout, "Unable to read URL.",
                                 Snackbar.LENGTH_SHORT)
