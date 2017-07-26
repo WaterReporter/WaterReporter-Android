@@ -593,7 +593,13 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         ogData.setVisibility(View.VISIBLE);
 
-        Picasso.with(this).load(openGraphObject.get("og:image")).fit().into(ogImage);
+        String imageUrl = openGraphObject.get("og:image");
+
+        if (imageUrl.length() > 0) {
+
+            Picasso.with(this).load(openGraphObject.get("og:image")).into(ogImage);
+
+        }
 
         ogTitle.setText(openGraphObject.get("og:title"));
         ogDescription.setText(openGraphObject.get("og:description"));
@@ -638,13 +644,14 @@ public class PhotoMetaActivity extends AppCompatActivity
                 //Here you will receive the result fired from async class
                 //of onPostExecute(result) method.
                 try {
+
                     for (String tag : ogTags) {
                         String tagContent = OpenGraph.parseTag(output, tag);
                         Log.v(tag, tagContent);
                         ogIdx.put(tag, tagContent);
                     }
 
-                    if (ogIdx.get("og:image").length() > 0) {
+                    if (ogIdx.get("og:url").length() > 0) {
 
                         displayOpenGraphObject(ogIdx, url);
 

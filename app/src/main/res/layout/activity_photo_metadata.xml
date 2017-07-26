@@ -145,6 +145,7 @@
                     android:layout_marginBottom="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
+                    android:animateLayoutChanges="true"
                     android:orientation="vertical"
                     android:visibility="gone"
                     card_view:cardCornerRadius="4dp">
@@ -158,12 +159,11 @@
                         <ImageView
                             android:id="@+id/ogImage"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="160dp"
                             android:adjustViewBounds="true"
                             android:background="@color/gray_224"
                             android:contentDescription="Open Graph image"
-                            android:minHeight="120dp"
-                            android:scaleType="fitCenter" />
+                            android:scaleType="centerCrop" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -176,6 +176,8 @@
                                 android:id="@+id/ogTitle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:maxLines="1"
                                 android:textColor="@color/material_blue_grey950"
                                 android:textSize="16sp" />
 
