@@ -30,6 +30,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.URLUtil;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -55,6 +56,9 @@ import com.viableindustries.waterreporter.data.HashTag;
 import com.viableindustries.waterreporter.data.HashtagCollection;
 import com.viableindustries.waterreporter.data.ImageProperties;
 import com.viableindustries.waterreporter.data.ImageService;
+import com.viableindustries.waterreporter.data.OpenGraph;
+import com.viableindustries.waterreporter.data.OpenGraphResponse;
+import com.viableindustries.waterreporter.data.OpenGraphTask;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.QueryFilter;
 import com.viableindustries.waterreporter.data.QueryParams;
@@ -69,6 +73,8 @@ import com.viableindustries.waterreporter.data.TagService;
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserHolder;
 import com.viableindustries.waterreporter.data.UserProperties;
+
+import org.jsoup.nodes.Document;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -528,6 +534,20 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                 Log.d("token", tagToken);
 
+                String lastWord = query.substring(query.lastIndexOf(" ") + 1);
+
+                if (URLUtil.isValidUrl(lastWord)) {
+
+                    try {
+                        fetchTags(lastWord);
+                    } catch (IOException e) {
+                        Snackbar.make(parentLayout, "Unable to read URL.",
+                                Snackbar.LENGTH_SHORT)
+                                .show();
+                    }
+
+                }
+
             }
 
             @Override
@@ -549,6 +569,39 @@ public class PhotoMetaActivity extends AppCompatActivity
             }
 
         });
+
+    }
+
+    private Map<String, String> fetchTags(String url) throws IOException {
+
+        final String[] ogTags = new String[]{
+                "og:url",
+                "og:title",
+                "og:description",
+                "og:image"
+        };
+
+        final Map<String, String> ogIdx = new HashMap<>();
+
+        OpenGraphTask openGraphTask = new OpenGraphTask(new OpenGraphResponse() {
+
+            @Override
+            public void processFinish(Document output) {
+                //Here you will receive the result fired from async class
+                //of onPostExecute(result) method.
+                for (String tag : ogTags) {
+                    String tagContent = OpenGraph.parseTag(output, tag);
+                    Log.v(tag, tagContent);
+                    ogIdx.put(tag, tagContent);
+                }
+
+            }
+
+        });
+
+        openGraphTask.execute(url);
+
+        return ogIdx;
 
     }
 
