@@ -24,6 +24,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -81,6 +82,7 @@ import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.FileNameMap;
+import java.net.URISyntaxException;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -159,6 +161,21 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     @Bind(R.id.progress_bar)
     ProgressBar progressBar;
+
+    @Bind(R.id.ogData)
+    CardView ogData;
+
+    @Bind(R.id.ogImage)
+    ImageView ogImage;
+
+    @Bind(R.id.ogTitle)
+    TextView ogTitle;
+
+    @Bind(R.id.ogDescription)
+    TextView ogDescription;
+
+    @Bind(R.id.ogUrl)
+    TextView ogUrl;
 
     private static final int ACTION_SET_LOCATION = 0;
 
@@ -572,6 +589,27 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
+    private void displayOpenGraphObject(Map<String, String> openGraphObject) {
+
+        ogData.setVisibility(View.VISIBLE);
+
+        Picasso.with(this).load(openGraphObject.get("og:image")).fit().into(ogImage);
+
+        ogTitle.setText(openGraphObject.get("og:title"));
+        ogDescription.setText(openGraphObject.get("og:description"));
+
+        String ogDomain;
+
+        try {
+            ogDomain = OpenGraph.getDomainName(openGraphObject.get("og:url"));
+        } catch (URISyntaxException e) {
+            ogDomain = "";
+        }
+
+        ogUrl.setText(ogDomain);
+
+    }
+
     private Map<String, String> fetchTags(String url) throws IOException {
 
         final String[] ogTags = new String[]{
@@ -589,10 +627,25 @@ public class PhotoMetaActivity extends AppCompatActivity
             public void processFinish(Document output) {
                 //Here you will receive the result fired from async class
                 //of onPostExecute(result) method.
-                for (String tag : ogTags) {
-                    String tagContent = OpenGraph.parseTag(output, tag);
-                    Log.v(tag, tagContent);
-                    ogIdx.put(tag, tagContent);
+                try {
+                    for (String tag : ogTags) {
+                        String tagContent = OpenGraph.parseTag(output, tag);
+                        Log.v(tag, tagContent);
+                        ogIdx.put(tag, tagContent);
+                    }
+
+                    if (ogIdx.get("og:image").length() > 0) {
+
+                        displayOpenGraphObject(ogIdx);
+
+                    }
+
+                } catch (NullPointerException e) {
+
+                    Snackbar.make(parentLayout, "Unable to read URL.",
+                            Snackbar.LENGTH_SHORT)
+                            .show();
+
                 }
 
             }
