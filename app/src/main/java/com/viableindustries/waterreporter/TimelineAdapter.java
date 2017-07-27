@@ -12,7 +12,9 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -88,6 +90,8 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
     protected int commentCount;
 
+    protected int likeCount;
+
     private int socialOptions;
 
     final private String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
@@ -114,6 +118,9 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         RelativeLayout commentIcon;
         RelativeLayout shareIcon;
         RelativeLayout actionsEllipsis;
+        ImageView commentIconView;
+        ImageView likeIconView;
+        TextView likeCounter;
         TextView tracker;
     }
 
@@ -157,6 +164,9 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
             viewHolder.commentIcon = (RelativeLayout) convertView.findViewById(R.id.comment_icon);
             viewHolder.shareIcon = (RelativeLayout) convertView.findViewById(R.id.share_icon);
             viewHolder.actionsEllipsis = (RelativeLayout) convertView.findViewById(R.id.action_ellipsis);
+            viewHolder.commentIconView = (ImageView) convertView.findViewById(R.id.commentIconView);
+            viewHolder.likeIconView = (ImageView) convertView.findViewById(R.id.likeIconView);
+            viewHolder.likeCounter = (TextView) convertView.findViewById(R.id.like_count);
             viewHolder.tracker = (TextView) convertView.findViewById(R.id.tracker);
 
             convertView.setTag(viewHolder);
@@ -363,7 +373,63 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         // Set value of comment count string
         commentCount = feature.properties.comments.size();
 
-        viewHolder.reportComments.setText(context.getResources().getQuantityString(R.plurals.comment_label, commentCount, commentCount));
+        if (commentCount > 0) {
+
+            viewHolder.reportComments.setText(String.valueOf(commentCount));
+
+            // Make comment icon opaque
+
+            viewHolder.commentIconView.setAlpha(1.0f);
+
+            // Change comment icon color
+
+            Drawable myIcon = ContextCompat.getDrawable(context, R.drawable.ic_mode_comment_black_24dp);
+            myIcon.setColorFilter(ContextCompat.getColor(context, R.color.splash_blue), PorterDuff.Mode.SRC_ATOP);
+            viewHolder.commentIconView.setImageDrawable(myIcon);
+
+        } else {
+
+            // Revert comment icon opacity
+
+            viewHolder.commentIconView.setAlpha(0.4f);
+
+            // Revert comment icon color
+
+            Drawable myIcon = ContextCompat.getDrawable(context, R.drawable.ic_mode_comment_black_24dp);
+            myIcon.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
+            viewHolder.commentIconView.setImageDrawable(myIcon);
+
+        }
+
+        likeCount = feature.properties.likes.size();
+
+        if (likeCount > 0) {
+
+            viewHolder.likeCounter.setText(String.valueOf(likeCount));
+
+            // Make like icon opaque
+
+            viewHolder.likeIconView.setAlpha(1.0f);
+
+            // Change like icon color
+
+            Drawable myIcon = ContextCompat.getDrawable(context, R.drawable.ic_favorite_black_24dp);
+            myIcon.setColorFilter(ContextCompat.getColor(context, R.color.like_red), PorterDuff.Mode.SRC_ATOP);
+            viewHolder.likeIconView.setImageDrawable(myIcon);
+
+        } else {
+
+            // Revert like icon opacity
+
+            viewHolder.likeIconView.setAlpha(0.4f);
+
+            // Revert icon color
+
+            Drawable myIcon = ContextCompat.getDrawable(context, R.drawable.ic_favorite_black_24dp);
+            myIcon.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
+            viewHolder.likeIconView.setImageDrawable(myIcon);
+
+        }
 
         // Load report image and user avatar
 

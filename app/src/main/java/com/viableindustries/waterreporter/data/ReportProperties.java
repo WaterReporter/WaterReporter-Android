@@ -42,6 +42,9 @@ public class ReportProperties implements Serializable {
     @SerializedName("is_public")
     public boolean is_public;
 
+    @SerializedName("likes")
+    public List<Like> likes;
+
     @SerializedName("owner")
     public User owner;
 
