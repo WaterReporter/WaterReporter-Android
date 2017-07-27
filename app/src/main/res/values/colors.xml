@@ -6,7 +6,7 @@
 
     <color name="og_card">#fdfdfd</color>
 
-    <color name="like_red">#f00635</color>
+    <color name="favorite_red">#f00635</color>
 
     <color name="waterreporter_blue">#24BAE4</color>
     <color name="waterreporter_dark">#555555</color>

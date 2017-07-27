@@ -15,6 +15,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -29,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -37,9 +39,13 @@ import android.widget.Toast;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.viableindustries.waterreporter.data.Comment;
+import com.viableindustries.waterreporter.data.Favorite;
+import com.viableindustries.waterreporter.data.FavoritePostBody;
+import com.viableindustries.waterreporter.data.FavoriteService;
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.HashTag;
 import com.viableindustries.waterreporter.data.HtmlCompat;
+import com.viableindustries.waterreporter.data.Favorite;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationProfileListener;
 import com.viableindustries.waterreporter.data.Report;
@@ -48,8 +54,11 @@ import com.viableindustries.waterreporter.data.ReportPhoto;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.TagProfileListener;
 import com.viableindustries.waterreporter.data.TerritoryProfileListener;
+import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserHolder;
+import com.viableindustries.waterreporter.data.UserOrgPatch;
 import com.viableindustries.waterreporter.data.UserProfileListener;
+import com.viableindustries.waterreporter.data.UserService;
 import com.viableindustries.waterreporter.dialogs.CommentActionDialog;
 import com.viableindustries.waterreporter.dialogs.CommentActionDialogListener;
 import com.viableindustries.waterreporter.dialogs.ReportActionDialog;
@@ -65,7 +74,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Pattern;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.viableindustries.waterreporter.R.id.imageView;
@@ -90,9 +104,9 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
     protected int commentCount;
 
-    protected int likeCount;
+    protected int favoriteCount;
 
-    private int socialOptions;
+    protected SharedPreferences prefs;
 
     final private String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
 
@@ -100,6 +114,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         super(activity, 0, features);
         this.context = activity;
         this.isProfile = isProfile;
+        prefs = context.getSharedPreferences(context.getPackageName(), 0);
     }
 
     protected static class ViewHolder {
@@ -116,11 +131,12 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         RelativeLayout locationIcon;
         RelativeLayout directionsIcon;
         RelativeLayout commentIcon;
+        RelativeLayout favoriteIcon;
         RelativeLayout shareIcon;
         RelativeLayout actionsEllipsis;
         ImageView commentIconView;
-        ImageView likeIconView;
-        TextView likeCounter;
+        ImageView favoriteIconView;
+        TextView favoriteCounter;
         TextView tracker;
     }
 
@@ -135,6 +151,104 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         sendIntent.putExtra(Intent.EXTRA_TEXT, shareUrl);
         sendIntent.setType("text/plain");
         context.startActivity(Intent.createChooser(sendIntent, res.getText(R.string.share_report_chooser_title)));
+
+    }
+
+    private void addFavorite(int featureId, final ImageView imageView) {
+
+        // Retrieve API token
+
+        final String accessToken = prefs.getString("access_token", "");
+
+        // Build request object
+
+        FavoritePostBody favoritePostBody = new FavoritePostBody(featureId);
+
+        FavoriteService service = FavoriteService.restAdapter.create(FavoriteService.class);
+
+        service.addFavorite(accessToken, "application/json", favoritePostBody, new Callback<Report>() {
+
+            @Override
+            public void success(Report report, Response response) {
+
+                // Make favorite icon opaque
+
+                imageView.setAlpha(1.0f);
+
+                // Change favorite icon color
+
+                Drawable myIcon = ContextCompat.getDrawable(context, R.drawable.ic_favorite_black_24dp);
+                myIcon.setColorFilter(ContextCompat.getColor(context, R.color.favorite_red), PorterDuff.Mode.SRC_ATOP);
+                imageView.setImageDrawable(myIcon);
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                Response response = error.getResponse();
+
+                int status = response.getStatus();
+
+                error.printStackTrace();
+
+            }
+
+        });
+
+    }
+
+    private void undoFavorite(int featureId, final int currentCount, final TextView textView, final ImageView imageView) {
+
+        // Retrieve API token
+
+        final String accessToken = prefs.getString("access_token", "");
+
+        // Build request object
+
+        FavoriteService service = FavoriteService.restAdapter.create(FavoriteService.class);
+
+        service.undoFavorite(accessToken, "application/json", featureId, new Callback<Void>() {
+
+            @Override
+            public void success(Void v, Response response) {
+
+                if (currentCount == 1) {
+
+                    textView.setText("");
+
+                    // Make favorite icon opaque
+
+                    imageView.setAlpha(1.0f);
+
+                    // Change favorite icon color
+
+                    Drawable myIcon = ContextCompat.getDrawable(context, R.drawable.ic_favorite_black_24dp);
+                    myIcon.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
+                    imageView.setImageDrawable(myIcon);
+
+                } else {
+
+                    int newCount = currentCount - 1;
+
+                    textView.setText(String.valueOf(newCount));
+
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                Response response = error.getResponse();
+
+                int status = response.getStatus();
+
+                error.printStackTrace();
+
+            }
+
+        });
 
     }
 
@@ -162,11 +276,12 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
             viewHolder.locationIcon = (RelativeLayout) convertView.findViewById(R.id.location_icon);
             viewHolder.directionsIcon = (RelativeLayout) convertView.findViewById(R.id.directions_icon);
             viewHolder.commentIcon = (RelativeLayout) convertView.findViewById(R.id.comment_icon);
+            viewHolder.favoriteIcon = (RelativeLayout) convertView.findViewById(R.id.favorite_icon);
             viewHolder.shareIcon = (RelativeLayout) convertView.findViewById(R.id.share_icon);
             viewHolder.actionsEllipsis = (RelativeLayout) convertView.findViewById(R.id.action_ellipsis);
             viewHolder.commentIconView = (ImageView) convertView.findViewById(R.id.commentIconView);
-            viewHolder.likeIconView = (ImageView) convertView.findViewById(R.id.likeIconView);
-            viewHolder.likeCounter = (TextView) convertView.findViewById(R.id.like_count);
+            viewHolder.favoriteIconView = (ImageView) convertView.findViewById(R.id.favoriteIconView);
+            viewHolder.favoriteCounter = (TextView) convertView.findViewById(R.id.favorite_count);
             viewHolder.tracker = (TextView) convertView.findViewById(R.id.tracker);
 
             convertView.setTag(viewHolder);
@@ -208,6 +323,33 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
                 context.startActivity(intent);
 
+            }
+        });
+
+        viewHolder.favoriteIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                int authUserId = prefs.getInt("user_id", 0);
+
+                for (Favorite favorite : feature.properties.favorites) {
+
+                    if (favorite.properties.owner_id == authUserId) {
+
+                        undoFavorite(favorite.properties.id,
+                                feature.properties.favorites.size(),
+                                viewHolder.favoriteCounter,
+                                viewHolder.favoriteIconView);
+
+                        return;
+
+                    }
+
+                }
+
+                addFavorite(featureId, viewHolder.favoriteIconView);
+
+           
             }
         });
 
@@ -389,6 +531,8 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         } else {
 
+            viewHolder.reportComments.setText("");
+
             // Revert comment icon opacity
 
             viewHolder.commentIconView.setAlpha(0.4f);
@@ -401,33 +545,35 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         }
 
-        likeCount = feature.properties.likes.size();
+        favoriteCount = feature.properties.favorites.size();
 
-        if (likeCount > 0) {
+        if (favoriteCount > 0) {
 
-            viewHolder.likeCounter.setText(String.valueOf(likeCount));
+            viewHolder.favoriteCounter.setText(String.valueOf(favoriteCount));
 
-            // Make like icon opaque
+            // Make favorite icon opaque
 
-            viewHolder.likeIconView.setAlpha(1.0f);
+            viewHolder.favoriteIconView.setAlpha(1.0f);
 
-            // Change like icon color
+            // Change favorite icon color
 
             Drawable myIcon = ContextCompat.getDrawable(context, R.drawable.ic_favorite_black_24dp);
-            myIcon.setColorFilter(ContextCompat.getColor(context, R.color.like_red), PorterDuff.Mode.SRC_ATOP);
-            viewHolder.likeIconView.setImageDrawable(myIcon);
+            myIcon.setColorFilter(ContextCompat.getColor(context, R.color.favorite_red), PorterDuff.Mode.SRC_ATOP);
+            viewHolder.favoriteIconView.setImageDrawable(myIcon);
 
         } else {
 
-            // Revert like icon opacity
+            viewHolder.favoriteCounter.setText("");
 
-            viewHolder.likeIconView.setAlpha(0.4f);
+            // Revert favorite icon opacity
+
+            viewHolder.favoriteIconView.setAlpha(0.4f);
 
             // Revert icon color
 
             Drawable myIcon = ContextCompat.getDrawable(context, R.drawable.ic_favorite_black_24dp);
             myIcon.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
-            viewHolder.likeIconView.setImageDrawable(myIcon);
+            viewHolder.favoriteIconView.setImageDrawable(myIcon);
 
         }
 

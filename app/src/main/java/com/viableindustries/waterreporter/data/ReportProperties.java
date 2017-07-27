@@ -1,5 +1,7 @@
 package com.viableindustries.waterreporter.data;
 
+import android.widget.ListView;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -43,7 +45,7 @@ public class ReportProperties implements Serializable {
     public boolean is_public;
 
     @SerializedName("likes")
-    public List<Like> likes;
+    public List<Favorite> favorites;
 
     @SerializedName("owner")
     public User owner;

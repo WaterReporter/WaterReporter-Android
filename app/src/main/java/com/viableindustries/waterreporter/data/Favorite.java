@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Created by brendanmcintyre on 7/27/17.
  */
 
-public class Like implements Serializable {
+public class Favorite implements Serializable {
 
     @SerializedName("geometry")
     public GeometryResponse geometry;
@@ -20,6 +20,6 @@ public class Like implements Serializable {
     public String type;
 
     @SerializedName("properties")
-    public LikeProperties properties;
+    public FavoriteProperties properties;
 
 }

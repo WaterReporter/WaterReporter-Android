@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONArray;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,7 @@ import java.util.Map;
 /**
  * Created by brendanmcintyre on 8/27/15.
  */
-public class ReportPostBody {
+public class ReportPostBody implements Serializable {
 
     @SerializedName("geometry")
     public GeometryResponse geometry;

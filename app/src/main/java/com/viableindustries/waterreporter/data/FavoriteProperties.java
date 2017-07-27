@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Created by brendanmcintyre on 7/27/17.
  */
 
-public class LikeProperties implements Serializable {
+public class FavoriteProperties implements Serializable {
 
     @SerializedName("created")
     public String created;
