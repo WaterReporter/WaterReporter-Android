@@ -28,6 +28,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -89,16 +90,16 @@ public class SearchActivity extends FragmentActivity {
     ImageButton clearSearch;
 
     @Bind(R.id.search_people)
-    Button searchPeople;
+    RelativeLayout searchPeople;
 
     @Bind(R.id.search_organizations)
-    Button searchOrgs;
+    RelativeLayout searchOrgs;
 
     @Bind(R.id.search_watersheds)
-    Button searchWatersheds;
+    RelativeLayout searchWatersheds;
 
     @Bind(R.id.search_tags)
-    Button searchTags;
+    RelativeLayout searchTags;
 
     @Bind(R.id.search_results)
     ListView searchResults;
@@ -726,17 +727,17 @@ public class SearchActivity extends FragmentActivity {
 
     }
 
-    private void highlightButton(Button button) {
+    private void highlightButton(RelativeLayout button) {
 
-        button.setTextColor(ContextCompat.getColor(this, R.color.base_blue));
+        button.setAlpha(0.8f);
 
     }
 
-    private void dimButtons(Button[] buttons) {
+    private void dimButtons(RelativeLayout[] buttons) {
 
-        for (Button btn : buttons) {
+        for (RelativeLayout btn : buttons) {
 
-            btn.setTextColor(ContextCompat.getColor(this, R.color.material_blue_grey950));
+            btn.setAlpha(0.4f);
 
         }
 
@@ -779,7 +780,7 @@ public class SearchActivity extends FragmentActivity {
 
         highlightButton(searchPeople);
 
-        dimButtons(new Button[]{
+        dimButtons(new RelativeLayout[]{
                 searchWatersheds,
                 searchTags,
                 searchOrgs
@@ -805,7 +806,7 @@ public class SearchActivity extends FragmentActivity {
 
                 highlightButton(searchPeople);
 
-                dimButtons(new Button[]{
+                dimButtons(new RelativeLayout[]{
                         searchWatersheds,
                         searchTags,
                         searchOrgs
@@ -846,7 +847,7 @@ public class SearchActivity extends FragmentActivity {
 
                 highlightButton(searchOrgs);
 
-                dimButtons(new Button[]{
+                dimButtons(new RelativeLayout[]{
                         searchWatersheds,
                         searchTags,
                         searchPeople
@@ -889,7 +890,7 @@ public class SearchActivity extends FragmentActivity {
 
                 highlightButton(searchTags);
 
-                dimButtons(new Button[]{
+                dimButtons(new RelativeLayout[]{
                         searchWatersheds,
                         searchPeople,
                         searchOrgs
@@ -932,14 +933,14 @@ public class SearchActivity extends FragmentActivity {
 
                 highlightButton(searchWatersheds);
 
-                dimButtons(new Button[]{
+                dimButtons(new RelativeLayout[]{
                         searchPeople,
                         searchTags,
                         searchOrgs
                 });
 
 
-                searchWatersheds.setTextColor(ContextCompat.getColor(SearchActivity.this, R.color.base_blue));
+//                searchWatersheds.setTextColor(ContextCompat.getColor(SearchActivity.this, R.color.base_blue));
 
                 if (query != null && !query.isEmpty()) {
 
