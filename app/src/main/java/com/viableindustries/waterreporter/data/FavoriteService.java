@@ -1,5 +1,7 @@
 package com.viableindustries.waterreporter.data;
 
+import java.util.Map;
+
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.http.Body;
@@ -27,7 +29,7 @@ public interface FavoriteService {
     public void addFavorite(@Header("Authorization") String authorization,
                                 @Header("Content-Type") String contentType,
                                 @Body FavoritePostBody favoritePostBody,
-                                Callback<Report> cb);
+                                Callback<Favorite> favoriteCallback);
 
     @DELETE("/data/like/{id}")
     public void undoFavorite(@Header("Authorization") String authorization,

@@ -22,4 +22,11 @@ public class Favorite implements Serializable {
     @SerializedName("properties")
     public FavoriteProperties properties;
 
+    public Favorite(GeometryResponse aGeometry, int aID, String aType, FavoriteProperties aProperties) {
+        this.geometry = aGeometry;
+        this.id = aID;
+        this.type = aType;
+        this.properties = aProperties;
+    }
+
 }

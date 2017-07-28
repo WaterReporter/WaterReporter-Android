@@ -22,4 +22,11 @@ public class FavoriteProperties implements Serializable {
     @SerializedName("report_id")
     public int report_id;
 
+    public FavoriteProperties(String aCreated, int aId, int aOwnerId, int aReportId) {
+        this.created = aCreated;
+        this.id = aId;
+        this.owner_id = aOwnerId;
+        this.report_id = aReportId;
+    }
+
 }

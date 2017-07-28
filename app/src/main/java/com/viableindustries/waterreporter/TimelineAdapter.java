@@ -77,6 +77,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import retrofit.Callback;
@@ -171,16 +172,10 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         FavoriteService service = FavoriteService.restAdapter.create(FavoriteService.class);
 
-        service.addFavorite(accessToken, "application/json", favoritePostBody, new Callback<Report>() {
+        service.addFavorite(accessToken, "application/json", favoritePostBody, new Callback<Favorite>() {
 
             @Override
-            public void success(Report report, Response response) {
-
-                // Replace the target post item with the
-                // updated API response object
-
-                features.set(position, report);
-                notifyDataSetChanged();
+            public void success(Favorite favorite, Response response) {
 
                 int newCount = currentCount + 1;
 
@@ -195,6 +190,12 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
                 Drawable myIcon = ContextCompat.getDrawable(context, R.drawable.ic_favorite_black_24dp);
                 myIcon.setColorFilter(ContextCompat.getColor(context, R.color.favorite_red), PorterDuff.Mode.SRC_ATOP);
                 imageView.setImageDrawable(myIcon);
+
+                // Replace the target post item with the
+                // updated API response object
+
+                feature.properties.favorites.add(favorite);
+//                notifyDataSetChanged();
 
             }
 
@@ -228,13 +229,6 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
             @Override
             public void success(Void v, Response response) {
 
-                for (Iterator<Favorite> iter = feature.properties.favorites.listIterator(); iter.hasNext(); ) {
-                    Favorite favorite = iter.next();
-                    if (favorite.properties.id == favoriteId) {
-                        iter.remove();
-                    }
-                }
-
                 if (currentCount == 1) {
 
                     textView.setText("");
@@ -255,6 +249,13 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
                     textView.setText(String.valueOf(newCount));
 
+                }
+
+                for (Iterator<Favorite> iter = feature.properties.favorites.listIterator(); iter.hasNext(); ) {
+                    Favorite favorite = iter.next();
+                    if (favorite.properties.id == favoriteId) {
+                        iter.remove();
+                    }
                 }
 
             }
@@ -317,6 +318,8 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         // Get the data item for this position
         final Report feature = (Report) getItem(position);
+
+        Log.d("target-report", feature.properties.toString());
 
         ReportPhoto image = (ReportPhoto) feature.properties.images.get(0);
 
