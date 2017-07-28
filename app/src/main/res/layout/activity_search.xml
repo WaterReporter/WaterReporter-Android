@@ -66,6 +66,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:contentDescription="Person icon"
                 android:src="@drawable/ic_person_black_24dp" />
 
         </RelativeLayout>
@@ -83,6 +84,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:contentDescription="Group icon"
                 android:src="@drawable/ic_group_black_24dp" />
 
         </RelativeLayout>
@@ -100,6 +102,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:contentDescription="Tag icon"
                 android:src="@drawable/ic_local_offer_black_24dp" />
 
         </RelativeLayout>
@@ -117,6 +120,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:contentDescription="Watershed icon"
                 android:src="@drawable/ic_droplet_black_24dp" />
 
         </RelativeLayout>
