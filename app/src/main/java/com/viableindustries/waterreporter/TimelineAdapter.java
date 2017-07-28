@@ -18,6 +18,7 @@ import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -72,6 +73,7 @@ import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -89,6 +91,8 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
     private final Context context;
 
     private final boolean isProfile;
+
+    private List<Report> features;
 
     protected String creationDate;
 
@@ -110,10 +114,11 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
     final private String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
 
-    public TimelineAdapter(Activity activity, List<Report> features, boolean isProfile) {
-        super(activity, 0, features);
+    public TimelineAdapter(Activity activity, List<Report> aFeatures, boolean isProfile) {
+        super(activity, 0, aFeatures);
         this.context = activity;
         this.isProfile = isProfile;
+        features = aFeatures;
         prefs = context.getSharedPreferences(context.getPackageName(), 0);
     }
 
@@ -154,7 +159,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
     }
 
-    private void addFavorite(int featureId, final ImageView imageView) {
+    private void addFavorite(final int position, final Report feature, final int currentCount, final TextView textView, final ImageView imageView) {
 
         // Retrieve API token
 
@@ -162,7 +167,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         // Build request object
 
-        FavoritePostBody favoritePostBody = new FavoritePostBody(featureId);
+        FavoritePostBody favoritePostBody = new FavoritePostBody(feature.id);
 
         FavoriteService service = FavoriteService.restAdapter.create(FavoriteService.class);
 
@@ -170,6 +175,16 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
             @Override
             public void success(Report report, Response response) {
+
+                // Replace the target post item with the
+                // updated API response object
+
+                features.set(position, report);
+                notifyDataSetChanged();
+
+                int newCount = currentCount + 1;
+
+                textView.setText(String.valueOf(newCount));
 
                 // Make favorite icon opaque
 
@@ -198,7 +213,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
     }
 
-    private void undoFavorite(int featureId, final int currentCount, final TextView textView, final ImageView imageView) {
+    private void undoFavorite(final Report feature, final int favoriteId, final int currentCount, final TextView textView, final ImageView imageView) {
 
         // Retrieve API token
 
@@ -208,10 +223,17 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         FavoriteService service = FavoriteService.restAdapter.create(FavoriteService.class);
 
-        service.undoFavorite(accessToken, "application/json", featureId, new Callback<Void>() {
+        service.undoFavorite(accessToken, "application/json", favoriteId, new Callback<Void>() {
 
             @Override
             public void success(Void v, Response response) {
+
+                for (Iterator<Favorite> iter = feature.properties.favorites.listIterator(); iter.hasNext(); ) {
+                    Favorite favorite = iter.next();
+                    if (favorite.properties.id == favoriteId) {
+                        iter.remove();
+                    }
+                }
 
                 if (currentCount == 1) {
 
@@ -219,7 +241,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
                     // Make favorite icon opaque
 
-                    imageView.setAlpha(1.0f);
+                    imageView.setAlpha(0.4f);
 
                     // Change favorite icon color
 
@@ -253,7 +275,8 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    @NonNull
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
 
         final ViewHolder viewHolder;
 
@@ -330,13 +353,22 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
             @Override
             public void onClick(View v) {
 
+                // Retrieve authenticated user's ID
+
                 int authUserId = prefs.getInt("user_id", 0);
+
+                // Loop over this post's list of favorites
 
                 for (Favorite favorite : feature.properties.favorites) {
 
+                    // The can only be one favorite per use per post,
+                    // so if the `owner_id` matches the authenticated
+                    // user's ID, target that favorite for removal.
+
                     if (favorite.properties.owner_id == authUserId) {
 
-                        undoFavorite(favorite.properties.id,
+                        undoFavorite(feature,
+                                favorite.properties.id,
                                 feature.properties.favorites.size(),
                                 viewHolder.favoriteCounter,
                                 viewHolder.favoriteIconView);
@@ -347,9 +379,9 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
                 }
 
-                addFavorite(featureId, viewHolder.favoriteIconView);
+                addFavorite(position, feature, feature.properties.favorites.size(), viewHolder.favoriteCounter, viewHolder.favoriteIconView);
 
-           
+
             }
         });
 
