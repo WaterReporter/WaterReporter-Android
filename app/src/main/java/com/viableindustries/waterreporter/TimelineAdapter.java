@@ -518,15 +518,19 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
             for (Organization organization : feature.properties.groups) {
 
-                TextView groupName = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.related_group_item, parent, false);
+//                TextView groupView = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.related_group_item, parent, false);
 
-                groupName.setText(organization.properties.name);
+                ImageView groupView = (ImageView) LayoutInflater.from(getContext()).inflate(R.layout.related_group_item, parent, false);
 
-                groupName.setTag(organization);
+//                groupView.setText(organization.properties.name);
 
-                groupName.setOnClickListener(new OrganizationProfileListener(getContext(), organization));
+                Picasso.with(context).load(organization.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(groupView);
 
-                viewHolder.reportGroups.addView(groupName);
+                groupView.setTag(organization);
+
+                groupView.setOnClickListener(new OrganizationProfileListener(getContext(), organization));
+
+                viewHolder.reportGroups.addView(groupView);
 
             }
 
@@ -670,7 +674,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
                         Resources res = context.getResources();
 
-                        String[] options = res.getStringArray(R.array.report_action_options);
+                        String[] options = res.getStringArray(R.array.post_action_options);
 
                         CharSequence[] renders = new CharSequence[2];
 

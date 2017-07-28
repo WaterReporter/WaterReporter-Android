@@ -23,7 +23,7 @@ public class ReportActionDialog extends DialogFragment {
 
         Resources res = getResources();
 
-        String[] options = res.getStringArray(R.array.report_action_options);
+        String[] options = res.getStringArray(R.array.post_action_options);
 
         CharSequence[] renders = new CharSequence[2];
 

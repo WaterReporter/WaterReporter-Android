@@ -6,8 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.Organization;
 
 import java.util.List;
@@ -22,7 +24,7 @@ public class RelatedGroupAdapter extends ArrayAdapter {
     }
 
     private static class ViewHolder {
-        TextView groupName;
+        ImageView groupView;
     }
 
     @Override
@@ -37,7 +39,7 @@ public class RelatedGroupAdapter extends ArrayAdapter {
 
             viewHolder = new ViewHolder();
 
-            viewHolder.groupName = (TextView) convertView.findViewById(R.id.groupName);
+            viewHolder.groupView = (ImageView) convertView.findViewById(R.id.groupLogo);
 
             convertView.setTag(viewHolder);
 
@@ -56,11 +58,13 @@ public class RelatedGroupAdapter extends ArrayAdapter {
 
         try {
 
-            viewHolder.groupName.setText(organization.properties.name);
+            Picasso.with(context).load(organization.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(viewHolder.groupView);
+
+//            viewHolder.groupView.setText(organization.properties.name);
 
         } catch (NullPointerException ne) {
 
-            viewHolder.groupName.setText("");
+            viewHolder.groupView.setImageDrawable(null);
 
         }
 

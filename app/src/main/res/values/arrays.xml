@@ -6,24 +6,26 @@
     </string-array>
     <string-array name="comment_action_options_close">
         <item><![CDATA[<b>Save comment</b>]]></item>
-        <item><![CDATA[<b>Save comment and close report</b>]]></item>
+        <item><![CDATA[<b>Save comment and close post</b>]]></item>
     </string-array>
     <string-array name="comment_action_options_open">
         <item><![CDATA[<b>Save comment</b>]]></item>
-        <item><![CDATA[<b>Save comment and re-open report</b>]]></item>
+        <item><![CDATA[<b>Save comment and re-open post</b>]]></item>
     </string-array>
-    <string-array name="report_action_options">
-        <item><![CDATA[<b>Edit this report</b>]]></item>
-        <item><![CDATA[<b>Delete this report</b>]]></item>
+    <string-array name="post_action_options">
+        <item><![CDATA[<b>Edit</b>]]></item>
+        <item><![CDATA[<b>Delete</b>]]></item>
+        <item><![CDATA[<b>Share</b>]]></item>
+        <item><![CDATA[<b>Directions</b>]]></item>
     </string-array>
-    <string-array name="report_share_options_all">
+    <string-array name="post_share_options_all">
         <item name="fb"><![CDATA[<b>Share on Facebook</b>]]></item>
         <item name="tt"><![CDATA[<b>Share on Twitter</b>]]></item>
     </string-array>
-    <string-array name="report_share_options_fb">
+    <string-array name="post_share_options_fb">
         <item name="fb"><![CDATA[<b>Share on Facebook</b>]]></item>
     </string-array>
-    <string-array name="report_share_options_tt">
+    <string-array name="post_share_options_tt">
         <item name="tt"><![CDATA[<b>Share on Twitter</b>]]></item>
     </string-array>
     <string-array name="default_avatars">
