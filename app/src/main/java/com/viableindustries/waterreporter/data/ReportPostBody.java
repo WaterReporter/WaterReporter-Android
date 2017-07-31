@@ -32,11 +32,14 @@ public class ReportPostBody implements Serializable {
     @SerializedName("report_description")
     public String report_description;
 
+    @SerializedName("social")
+    public List<OpenGraphProperties> social;
+
     @SerializedName("state")
     public String state;
 
     public ReportPostBody (GeometryResponse aGeometry, List<Map<String, Integer>> aGroups, List<Map<String, Integer>> aImages, boolean aIsPublic, String aReportDate,
-                           String aDescription, String aState) {
+                           String aDescription, String aState, List<OpenGraphProperties> aOpenGraph) {
 
         this.geometry = aGeometry;
 
@@ -51,6 +54,8 @@ public class ReportPostBody implements Serializable {
         this.report_description = aDescription;
 
         this.state = aState;
+
+        this.social = aOpenGraph;
 
     }
 

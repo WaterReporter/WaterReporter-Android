@@ -85,4 +85,15 @@ public class OpenGraphProperties implements Serializable {
     @SerializedName("owner_id")
     public int ownerId;
 
+    public OpenGraphProperties(String aCreated, String aImageUrl, String aDescription, String aTitle, String aUrl, int aOwnerId) {
+
+        this.created = aCreated;
+        this.description = aDescription;
+        this.openGraphTitle = aTitle;
+        this.url = aUrl;
+        this.imageUrl = aImageUrl;
+        this.ownerId = aOwnerId;
+
+    }
+
 }

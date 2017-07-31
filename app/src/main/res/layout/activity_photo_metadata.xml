@@ -150,7 +150,8 @@
                     android:orientation="vertical"
                     android:visibility="gone"
                     card_view:cardCornerRadius="4dp"
-                    card_view:cardElevation="0dp">
+                    card_view:cardElevation="0dp"
+                    card_view:cardPreventCornerOverlap="false">
 
                     <LinearLayout
                         android:layout_width="match_parent"

@@ -276,7 +276,8 @@
         android:orientation="vertical"
         android:visibility="gone"
         card_view:cardCornerRadius="4dp"
-        card_view:cardElevation="0dp">
+        card_view:cardElevation="0dp"
+        card_view:cardPreventCornerOverlap="false">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -296,7 +297,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/og_card"
                 android:orientation="vertical"
                 android:padding="8dp">
 

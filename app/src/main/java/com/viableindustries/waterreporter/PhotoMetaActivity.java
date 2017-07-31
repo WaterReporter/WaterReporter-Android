@@ -58,6 +58,7 @@ import com.viableindustries.waterreporter.data.HashtagCollection;
 import com.viableindustries.waterreporter.data.ImageProperties;
 import com.viableindustries.waterreporter.data.ImageService;
 import com.viableindustries.waterreporter.data.OpenGraph;
+import com.viableindustries.waterreporter.data.OpenGraphProperties;
 import com.viableindustries.waterreporter.data.OpenGraphResponse;
 import com.viableindustries.waterreporter.data.OpenGraphTask;
 import com.viableindustries.waterreporter.data.Organization;
@@ -246,7 +247,9 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     private String tagToken;
 
-    private Map<String, String> openGraphObject;
+    private OpenGraphProperties openGraphProperties;
+
+    List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -558,7 +561,7 @@ public class PhotoMetaActivity extends AppCompatActivity
                 if (URLUtil.isValidUrl(lastWord)) {
 
                     try {
-                        openGraphObject = fetchTags(lastWord);
+                        openGraphProperties = fetchTags(lastWord);
                     } catch (IOException e) {
                         Snackbar.make(parentLayout, "Unable to read URL.",
                                 Snackbar.LENGTH_SHORT)
@@ -628,7 +631,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
-    private Map<String, String> fetchTags(final String url) throws IOException {
+    private OpenGraphProperties fetchTags(final String url) throws IOException {
 
         final String[] ogTags = new String[]{
                 "og:url",
@@ -638,6 +641,8 @@ public class PhotoMetaActivity extends AppCompatActivity
         };
 
         final Map<String, String> ogIdx = new HashMap<>();
+
+        OpenGraphProperties openGraphProperties = null;
 
         OpenGraphTask openGraphTask = new OpenGraphTask(new OpenGraphResponse() {
 
@@ -673,7 +678,21 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         openGraphTask.execute(url);
 
-        return ogIdx;
+        if (ogIdx.values().size() == 4) {
+
+            String timeStamp = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ss", Locale.US).format(Calendar.getInstance().getTime());
+
+            openGraphProperties = new OpenGraphProperties(
+                    timeStamp,
+                    ogIdx.get("og:image"),
+                    ogIdx.get("og:description"),
+                    ogIdx.get("og:title"),
+                    ogIdx.get("og:url"),
+                    prefs.getInt("user_id", 0));
+
+        }
+
+        return openGraphProperties;
 
     }
 
@@ -1092,9 +1111,9 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         geometryResponse = new GeometryResponse(geometryList, type);
 
-        if ((commentsText.isEmpty() || imageUri == null) && !editMode) {
+        if (openGraphProperties == null && !editMode) {
 
-            CharSequence text = "Please add a photo and comment.";
+            CharSequence text = "Please add a photo, write a comment, or paste a link to share.";
             Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
             toast.show();
 
@@ -1174,6 +1193,14 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         String filePath = mTempImagePath;
 
+        if (imageUri == null) {
+
+            sendFullPost();
+
+            return;
+
+        }
+
         if (filePath == null) {
 
             filePath = FileUtils.getPathFromUri(this, imageUri);
@@ -1206,105 +1233,9 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                             image_id.put("id", imageProperties.id);
 
-                            List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
-
                             images.add(image_id);
 
-                            List<Map<String, Integer>> groups = new ArrayList<Map<String, Integer>>();
-
-                            try {
-
-                                Map<String, ?> groupKeys = associatedGroups.getAll();
-
-                                for (Map.Entry<String, ?> entry : groupKeys.entrySet()) {
-
-                                    Integer value = (Integer) entry.getValue();
-
-                                    if (value > 0) {
-
-                                        Map<String, Integer> groupId = new HashMap<String, Integer>();
-
-                                        groupId.put("id", value);
-
-                                        groups.add(groupId);
-
-                                    }
-
-                                }
-
-                            } catch (NullPointerException ne) {
-
-                                Log.d("groups", "No groups selected.");
-
-                            }
-
-                            ReportPostBody reportPostBody = new ReportPostBody(geometryResponse, groups,
-                                    images, true, dateText, commentsText, reportState);
-
-                            Log.d("groups", groups.toString());
-
-                            reportService.postReport(accessToken, "application/json", reportPostBody,
-                                    new Callback<Report>() {
-                                        @Override
-                                        public void success(Report report,
-                                                            Response response) {
-
-                                            // Hide ProgressBar
-
-                                            progressBar.setVisibility(View.INVISIBLE);
-
-                                            // Show success indicator
-
-                                            postSuccess.setVisibility(View.VISIBLE);
-
-                                            // Clear the app data cache
-
-                                            CacheManager.deleteCache(getBaseContext());
-
-                                            // Clear any stored group associations
-
-                                            associatedGroups.edit().clear().apply();
-
-                                            final Handler handler = new Handler();
-
-                                            handler.postDelayed(new Runnable() {
-                                                @Override
-                                                public void run() {
-
-                                                    final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
-
-                                                    int coreId = coreProfile.getInt("id", 0);
-
-                                                    UserProperties userProperties = new UserProperties(coreId, coreProfile.getString("description", ""),
-                                                            coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
-                                                            coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
-                                                            coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null);
-
-                                                    User coreUser = User.createUser(coreId, userProperties);
-
-                                                    UserHolder.setUser(coreUser);
-
-                                                    // Re-direct user to main activity feed, which has the effect of preventing
-                                                    // unwanted access to the history stack
-
-                                                    Intent intent = new Intent(PhotoMetaActivity.this, MainActivity.class);
-
-                                                    startActivity(intent);
-
-                                                    finish();
-
-                                                }
-
-                                            }, 2000);
-
-                                        }
-
-                                        @Override
-                                        public void failure(RetrofitError error) {
-                                            onPostError();
-                                        }
-
-                                    });
+                            sendFullPost();
 
                         }
 
@@ -1316,6 +1247,117 @@ public class PhotoMetaActivity extends AppCompatActivity
                     });
 
         }
+
+    }
+
+    // POST report data
+
+    private void sendFullPost() {
+
+        List<Map<String, Integer>> groups = new ArrayList<Map<String, Integer>>();
+
+        try {
+
+            Map<String, ?> groupKeys = associatedGroups.getAll();
+
+            for (Map.Entry<String, ?> entry : groupKeys.entrySet()) {
+
+                Integer value = (Integer) entry.getValue();
+
+                if (value > 0) {
+
+                    Map<String, Integer> groupId = new HashMap<String, Integer>();
+
+                    groupId.put("id", value);
+
+                    groups.add(groupId);
+
+                }
+
+            }
+
+        } catch (NullPointerException ne) {
+
+            Log.d("groups", "No groups selected.");
+
+        }
+
+        List<OpenGraphProperties> social = new ArrayList<OpenGraphProperties>();
+
+        if (openGraphProperties != null) {
+
+            social.add(openGraphProperties);
+
+        }
+
+        ReportPostBody reportPostBody = new ReportPostBody(geometryResponse, groups,
+                images, true, dateText, commentsText, reportState, social);
+
+        Log.d("groups", groups.toString());
+
+        reportService.postReport(accessToken, "application/json", reportPostBody,
+                new Callback<Report>() {
+                    @Override
+                    public void success(Report report,
+                                        Response response) {
+
+                        // Hide ProgressBar
+
+                        progressBar.setVisibility(View.INVISIBLE);
+
+                        // Show success indicator
+
+                        postSuccess.setVisibility(View.VISIBLE);
+
+                        // Clear the app data cache
+
+                        CacheManager.deleteCache(getBaseContext());
+
+                        // Clear any stored group associations
+
+                        associatedGroups.edit().clear().apply();
+
+                        final Handler handler = new Handler();
+
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+                                int coreId = coreProfile.getInt("id", 0);
+
+                                UserProperties userProperties = new UserProperties(coreId, coreProfile.getString("description", ""),
+                                        coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
+                                        coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
+                                        coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null);
+
+                                User coreUser = User.createUser(coreId, userProperties);
+
+                                UserHolder.setUser(coreUser);
+
+                                // Re-direct user to main activity feed, which has the effect of preventing
+                                // unwanted access to the history stack
+
+                                Intent intent = new Intent(PhotoMetaActivity.this, MainActivity.class);
+
+                                startActivity(intent);
+
+                                finish();
+
+                            }
+
+                        }, 2000);
+
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        onPostError();
+                    }
+
+                });
+
 
     }
 
