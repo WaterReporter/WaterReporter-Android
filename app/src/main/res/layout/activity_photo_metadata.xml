@@ -146,6 +146,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
                     android:animateLayoutChanges="true"
+                    android:background="@drawable/card_view_border"
                     android:orientation="vertical"
                     android:visibility="gone"
                     card_view:cardCornerRadius="4dp"

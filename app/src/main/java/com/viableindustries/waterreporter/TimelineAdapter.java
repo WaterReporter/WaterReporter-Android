@@ -630,21 +630,19 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         }
 
-        // Load report image and user avatar
-
-        Log.v("url", imagePath);
-
         // Load user avatar
 
         Picasso.with(context).load(feature.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(viewHolder.ownerAvatar);
 
-        // Primary post image
+        // Load primary post image
 
         if (feature.properties.images.size() > 0) {
 
             ReportPhoto image = (ReportPhoto) feature.properties.images.get(0);
 
             imagePath = (String) image.properties.square_retina;
+
+            viewHolder.reportThumb.setVisibility(View.VISIBLE);
 
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(context));
 
@@ -696,7 +694,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
             // Hide CardView
 
-            viewHolder.openGraphData.setVisibility(View.VISIBLE);
+            viewHolder.openGraphData.setVisibility(View.GONE);
 
             // Reset image
 

@@ -272,6 +272,7 @@
         android:layout_gravity="center"
         android:layout_margin="8dp"
         android:animateLayoutChanges="true"
+        android:background="@drawable/card_view_border"
         android:orientation="vertical"
         android:visibility="gone"
         card_view:cardCornerRadius="4dp"
