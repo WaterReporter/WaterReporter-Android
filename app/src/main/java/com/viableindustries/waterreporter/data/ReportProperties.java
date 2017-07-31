@@ -59,6 +59,9 @@ public class ReportProperties implements Serializable {
     @SerializedName("report_description")
     public String report_description;
 
+    @SerializedName("social")
+    public List<OpenGraphObject> open_graph;
+
     @SerializedName("state")
     public String state;
 

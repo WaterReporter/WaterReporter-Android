@@ -148,7 +148,8 @@
                     android:animateLayoutChanges="true"
                     android:orientation="vertical"
                     android:visibility="gone"
-                    card_view:cardCornerRadius="4dp">
+                    card_view:cardCornerRadius="4dp"
+                    card_view:cardElevation="0dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"

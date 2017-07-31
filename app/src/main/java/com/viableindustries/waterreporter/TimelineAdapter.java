@@ -25,6 +25,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.text.SpannableString;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -47,6 +48,8 @@ import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.HashTag;
 import com.viableindustries.waterreporter.data.HtmlCompat;
 import com.viableindustries.waterreporter.data.Favorite;
+import com.viableindustries.waterreporter.data.OpenGraph;
+import com.viableindustries.waterreporter.data.OpenGraphObject;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationProfileListener;
 import com.viableindustries.waterreporter.data.Report;
@@ -70,6 +73,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -144,6 +148,14 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         ImageView favoriteIconView;
         TextView favoriteCounter;
         TextView tracker;
+
+        // Open Graph
+
+        CardView openGraphData;
+        ImageView ogImage;
+        TextView ogTitle;
+        TextView ogDescription;
+        TextView ogUrl;
     }
 
     protected void presentShareDialog(final Report report) {
@@ -308,6 +320,14 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
             viewHolder.favoriteCounter = (TextView) convertView.findViewById(R.id.favorite_count);
             viewHolder.tracker = (TextView) convertView.findViewById(R.id.tracker);
 
+            // Open Graph
+
+            viewHolder.openGraphData = (CardView) convertView.findViewById(R.id.ogData);
+            viewHolder.ogImage = (ImageView) convertView.findViewById(R.id.ogImage);
+            viewHolder.ogTitle = (TextView) convertView.findViewById(R.id.ogTitle);
+            viewHolder.ogDescription = (TextView) convertView.findViewById(R.id.ogDescription);
+            viewHolder.ogUrl = (TextView) convertView.findViewById(R.id.ogUrl);
+
             convertView.setTag(viewHolder);
 
         } else {
@@ -320,10 +340,6 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         final Report feature = (Report) getItem(position);
 
         Log.d("target-report", feature.properties.toString());
-
-        ReportPhoto image = (ReportPhoto) feature.properties.images.get(0);
-
-        imagePath = (String) image.properties.square_retina;
 
         creationDate = (String) AttributeTransformUtility.relativeTime(feature.properties.created);
 
@@ -504,6 +520,8 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         } else {
 
+            viewHolder.reportCaption.setText("");
+
             viewHolder.reportCaption.setVisibility(View.GONE);
 
         }
@@ -518,11 +536,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
             for (Organization organization : feature.properties.groups) {
 
-//                TextView groupView = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.related_group_item, parent, false);
-
                 ImageView groupView = (ImageView) LayoutInflater.from(getContext()).inflate(R.layout.related_group_item, parent, false);
-
-//                groupView.setText(organization.properties.name);
 
                 Picasso.with(context).load(organization.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(groupView);
 
@@ -620,15 +634,83 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         Log.v("url", imagePath);
 
+        // Load user avatar
+
         Picasso.with(context).load(feature.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(viewHolder.ownerAvatar);
 
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(context));
+        // Primary post image
 
-        viewHolder.reportThumb.setLayoutParams(layoutParams);
+        if (feature.properties.images.size() > 0) {
 
-        Picasso.with(context).load(imagePath).fit().into(viewHolder.reportThumb);
+            ReportPhoto image = (ReportPhoto) feature.properties.images.get(0);
 
-        viewHolder.reportThumb.setTag(imagePath);
+            imagePath = (String) image.properties.square_retina;
+
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(context));
+
+            viewHolder.reportThumb.setLayoutParams(layoutParams);
+
+            Picasso.with(context).load(imagePath).fit().into(viewHolder.reportThumb);
+
+            viewHolder.reportThumb.setTag(imagePath);
+
+        } else {
+
+            viewHolder.reportThumb.setImageDrawable(null);
+
+            viewHolder.reportThumb.setVisibility(View.GONE);
+
+        }
+
+        // Display Open Graph information, if any
+
+        if (feature.properties.open_graph.size() > 0) {
+
+            OpenGraphObject openGraphObject = feature.properties.open_graph.get(0);
+
+            // Make CardView visible
+
+            viewHolder.openGraphData.setVisibility(View.VISIBLE);
+
+            // Load image
+
+            Picasso.with(context).load(openGraphObject.properties.imageUrl).fit().into(viewHolder.ogImage);
+
+            // Load title, description and URL
+
+            viewHolder.ogTitle.setText(openGraphObject.properties.openGraphTitle);
+
+            viewHolder.ogDescription.setText(openGraphObject.properties.description);
+
+            try {
+
+                viewHolder.ogUrl.setText(OpenGraph.getDomainName(openGraphObject.properties.url));
+
+            } catch (URISyntaxException e) {
+
+                viewHolder.ogUrl.setText("");
+
+            }
+
+        } else {
+
+            // Hide CardView
+
+            viewHolder.openGraphData.setVisibility(View.VISIBLE);
+
+            // Reset image
+
+            viewHolder.ogImage.setImageDrawable(null);
+
+            // Reset title, description and URL
+
+            viewHolder.ogTitle.setText("");
+
+            viewHolder.ogDescription.setText("");
+
+            viewHolder.ogUrl.setText("");
+
+        }
 
         // Context-dependent configuration
 
