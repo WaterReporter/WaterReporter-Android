@@ -561,7 +561,7 @@ public class PhotoMetaActivity extends AppCompatActivity
                 if (URLUtil.isValidUrl(lastWord)) {
 
                     try {
-                        openGraphProperties = fetchTags(lastWord);
+                        fetchTags(lastWord);
                     } catch (IOException e) {
                         Snackbar.make(parentLayout, "Unable to read URL.",
                                 Snackbar.LENGTH_SHORT)
@@ -631,7 +631,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
-    private OpenGraphProperties fetchTags(final String url) throws IOException {
+    private void fetchTags(final String url) throws IOException {
 
         final String[] ogTags = new String[]{
                 "og:url",
@@ -641,8 +641,6 @@ public class PhotoMetaActivity extends AppCompatActivity
         };
 
         final Map<String, String> ogIdx = new HashMap<>();
-
-        OpenGraphProperties openGraphProperties = null;
 
         OpenGraphTask openGraphTask = new OpenGraphTask(new OpenGraphResponse() {
 
@@ -664,6 +662,15 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                     }
 
+//                    String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(Calendar.getInstance().getTime());
+
+                    openGraphProperties = new OpenGraphProperties(
+                            ogIdx.get("og:image"),
+                            ogIdx.get("og:description"),
+                            ogIdx.get("og:title"),
+                            ogIdx.get("og:url"),
+                            prefs.getInt("user_id", 0));
+
                 } catch (NullPointerException e) {
 
                     Snackbar.make(parentLayout, "Unable to read URL.",
@@ -677,22 +684,6 @@ public class PhotoMetaActivity extends AppCompatActivity
         });
 
         openGraphTask.execute(url);
-
-        if (ogIdx.values().size() == 4) {
-
-            String timeStamp = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ss", Locale.US).format(Calendar.getInstance().getTime());
-
-            openGraphProperties = new OpenGraphProperties(
-                    timeStamp,
-                    ogIdx.get("og:image"),
-                    ogIdx.get("og:description"),
-                    ogIdx.get("og:title"),
-                    ogIdx.get("og:url"),
-                    prefs.getInt("user_id", 0));
-
-        }
-
-        return openGraphProperties;
 
     }
 

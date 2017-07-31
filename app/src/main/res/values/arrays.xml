@@ -13,10 +13,8 @@
         <item><![CDATA[<b>Save comment and re-open post</b>]]></item>
     </string-array>
     <string-array name="post_action_options">
-        <item><![CDATA[<b>Edit</b>]]></item>
-        <item><![CDATA[<b>Delete</b>]]></item>
-        <item><![CDATA[<b>Share</b>]]></item>
-        <item><![CDATA[<b>Directions</b>]]></item>
+        <item><![CDATA[<b>Edit this post</b>]]></item>
+        <item><![CDATA[<b>Delete this post</b>]]></item>
     </string-array>
     <string-array name="post_share_options_all">
         <item name="fb"><![CDATA[<b>Share on Facebook</b>]]></item>

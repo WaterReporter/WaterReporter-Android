@@ -99,22 +99,6 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
     private List<Report> features;
 
-    protected String creationDate;
-
-    protected Integer featureId;
-
-    protected String imagePath;
-
-    protected String watershedName;
-
-    protected List<String> groups;
-
-    protected String groupList;
-
-    protected int commentCount;
-
-    protected int favoriteCount;
-
     protected SharedPreferences prefs;
 
     final private String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
@@ -132,7 +116,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         TextView reportOwner;
         TextView reportWatershed;
         TextView reportComments;
-        TextView reportCaption;
+        TextView postCaption;
         FlexboxLayout reportGroups;
         ImageView ownerAvatar;
         ImageView reportThumb;
@@ -303,7 +287,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
             viewHolder.reportOwner = (TextView) convertView.findViewById(R.id.report_owner);
             viewHolder.reportWatershed = (TextView) convertView.findViewById(R.id.report_watershed);
             viewHolder.reportComments = (TextView) convertView.findViewById(R.id.comment_count);
-            viewHolder.reportCaption = (TextView) convertView.findViewById(R.id.report_caption);
+            viewHolder.postCaption = (TextView) convertView.findViewById(R.id.postCaption);
             viewHolder.ownerAvatar = (ImageView) convertView.findViewById(R.id.owner_avatar);
             viewHolder.reportGroups = (FlexboxLayout) convertView.findViewById(R.id.report_groups);
             viewHolder.reportThumb = (ImageView) convertView.findViewById(R.id.report_thumb);
@@ -336,8 +320,22 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         }
 
+        // Post attribute variables
+
+        String creationDate;
+        Integer featureId;
+        String imagePath;
+        String watershedName;
+        List<String> groups;
+        String groupList;
+        int commentCount;
+        int favoriteCount;
+        boolean openGraphOnly;
+
         // Get the data item for this position
         final Report feature = (Report) getItem(position);
+
+        openGraphOnly = true;
 
         Log.d("target-report", feature.properties.toString());
 
@@ -499,11 +497,15 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         viewHolder.reportWatershed.setOnClickListener(new TerritoryProfileListener(getContext(), feature.properties.territory));
 
+        // Display post caption, if any
+
         if (feature.properties.report_description != null && (feature.properties.report_description.length() > 0)) {
 
-            viewHolder.reportCaption.setVisibility(View.VISIBLE);
+            openGraphOnly = false;
 
-            viewHolder.reportCaption.setText(feature.properties.report_description.trim());
+            viewHolder.postCaption.setText(feature.properties.report_description.trim());
+
+            viewHolder.postCaption.setVisibility(View.VISIBLE);
 
             new PatternEditableBuilder().
                     addPattern(context, Pattern.compile("\\#(\\w+)"), ContextCompat.getColor(context, R.color.waterreporter_blue),
@@ -516,13 +518,13 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
                                     context.startActivity(intent);
 
                                 }
-                            }).into(viewHolder.reportCaption);
+                            }).into(viewHolder.postCaption);
 
         } else {
 
-            viewHolder.reportCaption.setText("");
+            viewHolder.postCaption.setText("");
 
-            viewHolder.reportCaption.setVisibility(View.GONE);
+            viewHolder.postCaption.setVisibility(View.GONE);
 
         }
 
@@ -638,6 +640,8 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         if (feature.properties.images.size() > 0) {
 
+            openGraphOnly = false;
+
             ReportPhoto image = (ReportPhoto) feature.properties.images.get(0);
 
             imagePath = (String) image.properties.square_retina;
@@ -664,11 +668,22 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         if (feature.properties.open_graph.size() > 0) {
 
-            OpenGraphObject openGraphObject = feature.properties.open_graph.get(0);
+            final OpenGraphObject openGraphObject = feature.properties.open_graph.get(0);
 
             // Make CardView visible
 
             viewHolder.openGraphData.setVisibility(View.VISIBLE);
+
+            viewHolder.openGraphData.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Uri webpage = Uri.parse(openGraphObject.properties.url);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+                    if (intent.resolveActivity(context.getPackageManager()) != null) {
+                        context.startActivity(intent);
+                    }
+                }
+            });
 
             // Load image
 
@@ -687,6 +702,26 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
             } catch (URISyntaxException e) {
 
                 viewHolder.ogUrl.setText("");
+
+            }
+
+            if (openGraphOnly) {
+
+                viewHolder.reportWatershed.setText("");
+
+                viewHolder.locationIcon.setOnClickListener(null);
+
+                viewHolder.locationIcon.setVisibility(View.GONE);
+
+                viewHolder.directionsIcon.setOnClickListener(null);
+
+                viewHolder.directionsIcon.setVisibility(View.GONE);
+
+            } else {
+
+                viewHolder.locationIcon.setVisibility(View.VISIBLE);
+
+                viewHolder.directionsIcon.setVisibility(View.VISIBLE);
 
             }
 
