@@ -65,45 +65,49 @@ public class PostCardAdapter extends RecyclerView.Adapter<PostCardAdapter.ViewHo
     private List<Report> mDataset;
 
     private Context mContext;
-    
+
     private SharedPreferences mPreferences;
 
     private boolean mIsProfile;
+
+    private OnLoadMoreListener loadMoreListener;
+    private boolean isLoading = false;
+    private boolean isMoreDataAvailable = true;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public LinearLayout postCard;
-        public TextView reportDate;
-        public TextView reportOwner;
-        public TextView reportWatershed;
-        public TextView reportComments;
-        public TextView postCaption;
-        public FlexboxLayout reportGroups;
-        public ImageView ownerAvatar;
-        public ImageView reportThumb;
-        public RelativeLayout actionBadge;
-        public LinearLayout reportStub;
-        public RelativeLayout locationIcon;
-        public RelativeLayout directionsIcon;
-        public  RelativeLayout commentIcon;
-        public RelativeLayout favoriteIcon;
-        public RelativeLayout shareIcon;
-        public RelativeLayout actionsEllipsis;
-        public ImageView commentIconView;
-        public ImageView favoriteIconView;
-        public TextView favoriteCounter;
-        public TextView tracker;
+        LinearLayout postCard;
+        TextView reportDate;
+        TextView reportOwner;
+        TextView reportWatershed;
+        TextView reportComments;
+        TextView postCaption;
+        FlexboxLayout reportGroups;
+        ImageView ownerAvatar;
+        ImageView reportThumb;
+        RelativeLayout actionBadge;
+        LinearLayout reportStub;
+        RelativeLayout locationIcon;
+        RelativeLayout directionsIcon;
+        RelativeLayout commentIcon;
+        RelativeLayout favoriteIcon;
+        RelativeLayout shareIcon;
+        RelativeLayout actionsEllipsis;
+        ImageView commentIconView;
+        ImageView favoriteIconView;
+        TextView favoriteCounter;
+        TextView tracker;
 
         // Open Graph
 
-        public CardView openGraphData;
-        public ImageView ogImage;
-        public TextView ogTitle;
-        public TextView ogDescription;
-        public TextView ogUrl;
+        CardView openGraphData;
+        ImageView ogImage;
+        TextView ogTitle;
+        TextView ogDescription;
+        TextView ogUrl;
 
         public ViewHolder(LinearLayout v) {
             super(v);
@@ -137,7 +141,7 @@ public class PostCardAdapter extends RecyclerView.Adapter<PostCardAdapter.ViewHo
             ogTitle = (TextView) v.findViewById(R.id.ogTitle);
             ogDescription = (TextView) v.findViewById(R.id.ogDescription);
             ogUrl = (TextView) v.findViewById(R.id.ogUrl);
-            
+
         }
     }
 
@@ -152,7 +156,7 @@ public class PostCardAdapter extends RecyclerView.Adapter<PostCardAdapter.ViewHo
     // Create new views (invoked by the layout manager)
     @Override
     public PostCardAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                           int viewType) {
+                                                         int viewType) {
         // create a new view
         LinearLayout v = (LinearLayout) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.timeline_item, parent, false);
@@ -165,6 +169,11 @@ public class PostCardAdapter extends RecyclerView.Adapter<PostCardAdapter.ViewHo
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(PostCardAdapter.ViewHolder holder, int position) {
+
+        if (position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
+            isLoading = true;
+            loadMoreListener.onLoadMore();
+        }
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         final Report post = mDataset.get(position);
@@ -665,7 +674,7 @@ public class PostCardAdapter extends RecyclerView.Adapter<PostCardAdapter.ViewHo
     public int getItemCount() {
         return mDataset.size();
     }
-    
+
     // Display the system share dialog
 
     private void presentShareDialog(final Report report) {
@@ -681,7 +690,7 @@ public class PostCardAdapter extends RecyclerView.Adapter<PostCardAdapter.ViewHo
         mContext.startActivity(Intent.createChooser(sendIntent, res.getText(R.string.share_report_chooser_title)));
 
     }
-    
+
     // Add favorite
 
     private void addFavorite(final int position, final Report post, final int currentCount, final TextView textView, final ImageView imageView) {
@@ -736,7 +745,7 @@ public class PostCardAdapter extends RecyclerView.Adapter<PostCardAdapter.ViewHo
         });
 
     }
-    
+
     // Undo favorite
 
     private void undoFavorite(final Report post, final int favoriteId, final int currentCount, final TextView textView, final ImageView imageView) {
@@ -798,6 +807,33 @@ public class PostCardAdapter extends RecyclerView.Adapter<PostCardAdapter.ViewHo
 
         });
 
+    }
+
+    static class LoadHolder extends RecyclerView.ViewHolder {
+        public LoadHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    public void setMoreDataAvailable(boolean moreDataAvailable) {
+        isMoreDataAvailable = moreDataAvailable;
+    }
+
+    /* notifyDataSetChanged is final method so we can't override it
+         call adapter.notifyDataChanged(); after update the list
+         */
+    public void notifyDataChanged() {
+        notifyDataSetChanged();
+        isLoading = false;
+    }
+
+
+    interface OnLoadMoreListener {
+        void onLoadMore();
+    }
+
+    public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
+        this.loadMoreListener = loadMoreListener;
     }
 
 }

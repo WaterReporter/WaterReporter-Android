@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements
 
                         reportCollection.addAll(reports);
 
-                        timelineAdapter.notifyDataSetChanged();
+                        postCardAdapter.notifyDataSetChanged();
 
                     }
 
@@ -276,11 +276,27 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    private void populateTimeline(List<Report> list) {
+    private void populateTimeline(final List<Report> list) {
 
 //        timelineAdapter = new TimelineAdapter(this, list, false);
 
         postCardAdapter = new PostCardAdapter(this, list, false);
+
+        postCardAdapter.setLoadMoreListener(new PostCardAdapter.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+
+                postList.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        int index = list.size() - 1;
+                        requestData(5, index, false, false);// a method which requests remote data
+                    }
+                });
+                //Calling loadMore function in Runnable to fix the
+                // java.lang.IllegalStateException: Cannot call this method while RecyclerView is computing a layout or scrolling error
+            }
+        });
 
         postList.setAdapter(postCardAdapter);
 

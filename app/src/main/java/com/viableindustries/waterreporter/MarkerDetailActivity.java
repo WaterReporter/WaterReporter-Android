@@ -283,15 +283,17 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
             for (Organization organization : report.properties.groups) {
 
-                TextView groupName = (TextView) LayoutInflater.from(this).inflate(R.layout.related_group_item, reportGroups, false);
+                // Inflate organization logo layout and add to FlexboxLayout
 
-                groupName.setText(organization.properties.name);
+                ImageView groupView = (ImageView) LayoutInflater.from(this).inflate(R.layout.related_group_item, reportGroups, false);
 
-                groupName.setTag(organization);
+                Picasso.with(this).load(organization.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(groupView);
 
-                groupName.setOnClickListener(new OrganizationProfileListener(this, organization));
+                groupView.setTag(organization);
 
-                reportGroups.addView(groupName);
+                groupView.setOnClickListener(new OrganizationProfileListener(this, organization));
+
+                reportGroups.addView(groupView);
 
             }
 
