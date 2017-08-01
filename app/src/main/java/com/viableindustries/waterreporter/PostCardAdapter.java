@@ -60,7 +60,7 @@ import static com.viableindustries.waterreporter.R.id.parent;
  * Created by brendanmcintyre on 8/1/17.
  */
 
-public class PostCardAdapter extends RecyclerView.Adapter<PostCardAdapter.ViewHolder> {
+public class PostCardAdapter extends RecyclerView.Adapter<PostCardHolder> {
 
     private List<Report> mDataset;
 
@@ -74,77 +74,6 @@ public class PostCardAdapter extends RecyclerView.Adapter<PostCardAdapter.ViewHo
     private boolean isLoading = false;
     private boolean isMoreDataAvailable = true;
 
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
-        LinearLayout postCard;
-        TextView reportDate;
-        TextView reportOwner;
-        TextView reportWatershed;
-        TextView reportComments;
-        TextView postCaption;
-        FlexboxLayout reportGroups;
-        ImageView ownerAvatar;
-        ImageView reportThumb;
-        RelativeLayout actionBadge;
-        LinearLayout reportStub;
-        RelativeLayout locationIcon;
-        RelativeLayout directionsIcon;
-        RelativeLayout commentIcon;
-        RelativeLayout favoriteIcon;
-        RelativeLayout shareIcon;
-        RelativeLayout actionsEllipsis;
-        ImageView commentIconView;
-        ImageView favoriteIconView;
-        TextView favoriteCounter;
-        TextView tracker;
-
-        // Open Graph
-
-        CardView openGraphData;
-        ImageView ogImage;
-        TextView ogTitle;
-        TextView ogDescription;
-        TextView ogUrl;
-
-        public ViewHolder(LinearLayout v) {
-            super(v);
-            postCard = v;
-
-            reportDate = (TextView) v.findViewById(R.id.report_date);
-            reportOwner = (TextView) v.findViewById(R.id.report_owner);
-            reportWatershed = (TextView) v.findViewById(R.id.report_watershed);
-            reportComments = (TextView) v.findViewById(R.id.comment_count);
-            postCaption = (TextView) v.findViewById(R.id.postCaption);
-            ownerAvatar = (ImageView) v.findViewById(R.id.owner_avatar);
-            reportGroups = (FlexboxLayout) v.findViewById(R.id.report_groups);
-            reportThumb = (ImageView) v.findViewById(R.id.report_thumb);
-            actionBadge = (RelativeLayout) v.findViewById(R.id.action_badge);
-            reportStub = (LinearLayout) v.findViewById(R.id.report_stub);
-            locationIcon = (RelativeLayout) v.findViewById(R.id.location_icon);
-            directionsIcon = (RelativeLayout) v.findViewById(R.id.directions_icon);
-            commentIcon = (RelativeLayout) v.findViewById(R.id.comment_icon);
-            favoriteIcon = (RelativeLayout) v.findViewById(R.id.favorite_icon);
-            shareIcon = (RelativeLayout) v.findViewById(R.id.share_icon);
-            actionsEllipsis = (RelativeLayout) v.findViewById(R.id.action_ellipsis);
-            commentIconView = (ImageView) v.findViewById(R.id.commentIconView);
-            favoriteIconView = (ImageView) v.findViewById(R.id.favoriteIconView);
-            favoriteCounter = (TextView) v.findViewById(R.id.favorite_count);
-            tracker = (TextView) v.findViewById(R.id.tracker);
-
-            // Open Graph
-
-            openGraphData = (CardView) v.findViewById(R.id.ogData);
-            ogImage = (ImageView) v.findViewById(R.id.ogImage);
-            ogTitle = (TextView) v.findViewById(R.id.ogTitle);
-            ogDescription = (TextView) v.findViewById(R.id.ogDescription);
-            ogUrl = (TextView) v.findViewById(R.id.ogUrl);
-
-        }
-    }
-
     // Provide a suitable constructor (depends on the kind of dataset)
     public PostCardAdapter(Activity activity, List<Report> reports, boolean isProfile) {
         mDataset = reports;
@@ -155,20 +84,20 @@ public class PostCardAdapter extends RecyclerView.Adapter<PostCardAdapter.ViewHo
 
     // Create new views (invoked by the layout manager)
     @Override
-    public PostCardAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+    public PostCardHolder onCreateViewHolder(ViewGroup parent,
                                                          int viewType) {
         // create a new view
         LinearLayout v = (LinearLayout) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.timeline_item, parent, false);
         // set the view's size, margins, paddings and layout parameters
 //        ...
-        PostCardAdapter.ViewHolder vh = new PostCardAdapter.ViewHolder(v);
+        PostCardHolder vh = new PostCardHolder(v);
         return vh;
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(PostCardAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(PostCardHolder holder, int position) {
 
         if (position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
             isLoading = true;
@@ -208,7 +137,7 @@ public class PostCardAdapter extends RecyclerView.Adapter<PostCardAdapter.ViewHo
             }
         });
 
-        final PostCardAdapter.ViewHolder mHolder = holder;
+        final PostCardHolder mHolder = holder;
 
         holder.favoriteIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -245,58 +174,58 @@ public class PostCardAdapter extends RecyclerView.Adapter<PostCardAdapter.ViewHo
             }
         });
 
-        holder.actionBadge.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+//        holder.actionBadge.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                ReportHolder.setReport(post);
+//
+//                Intent intent = new Intent(mContext, CommentActivity.class);
+//
+//                mContext.startActivity(intent);
+//
+//            }
+//        });
 
-                ReportHolder.setReport(post);
 
-                Intent intent = new Intent(mContext, CommentActivity.class);
+//        holder.locationIcon.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                ReportHolder.setReport(post);
+//
+//                Intent intent = new Intent(mContext, MapDetailActivity.class);
+//
+//                mContext.startActivity(intent);
+//
+//            }
+//        });
 
-                mContext.startActivity(intent);
-
-            }
-        });
-
-
-        holder.locationIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                ReportHolder.setReport(post);
-
-                Intent intent = new Intent(mContext, MapDetailActivity.class);
-
-                mContext.startActivity(intent);
-
-            }
-        });
-
-        holder.directionsIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Geometry geometry = post.geometry.geometries.get(0);
-
-                Log.d("geometry", geometry.toString());
-
-                // Build the intent
-                Uri location = Uri.parse(String.format("google.navigation:q=%s,%s", geometry.coordinates.get(1), geometry.coordinates.get(0)));
-
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, location);
-
-                // Verify it resolves
-                PackageManager packageManager = mContext.getPackageManager();
-                List<ResolveInfo> activities = packageManager.queryIntentActivities(mapIntent, 0);
-                boolean isIntentSafe = activities.size() > 0;
-
-                // Start an activity if it's safe
-                if (isIntentSafe) {
-                    mContext.startActivity(mapIntent);
-                }
-
-            }
-        });
+//        holder.directionsIcon.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                Geometry geometry = post.geometry.geometries.get(0);
+//
+//                Log.d("geometry", geometry.toString());
+//
+//                // Build the intent
+//                Uri location = Uri.parse(String.format("google.navigation:q=%s,%s", geometry.coordinates.get(1), geometry.coordinates.get(0)));
+//
+//                Intent mapIntent = new Intent(Intent.ACTION_VIEW, location);
+//
+//                // Verify it resolves
+//                PackageManager packageManager = mContext.getPackageManager();
+//                List<ResolveInfo> activities = packageManager.queryIntentActivities(mapIntent, 0);
+//                boolean isIntentSafe = activities.size() > 0;
+//
+//                // Start an activity if it's safe
+//                if (isIntentSafe) {
+//                    mContext.startActivity(mapIntent);
+//                }
+//
+//            }
+//        });
 
         // Allow user to share report content on Facebook/Twitter
         // if either or both of those applications is installed
@@ -313,8 +242,6 @@ public class PostCardAdapter extends RecyclerView.Adapter<PostCardAdapter.ViewHo
             }
 
         });
-
-        holder.shareIcon.setVisibility(View.VISIBLE);
 
         holder.shareIcon.setOnClickListener(new View.OnClickListener() {
             @Override

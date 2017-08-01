@@ -17,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
@@ -278,8 +279,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private void populateTimeline(final List<Report> list) {
 
-//        timelineAdapter = new TimelineAdapter(this, list, false);
-
         postCardAdapter = new PostCardAdapter(this, list, false);
 
         postCardAdapter.setLoadMoreListener(new PostCardAdapter.OnLoadMoreListener() {
@@ -298,12 +297,14 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+        // Attach the instance of PostCardAdapter to the RecyclerView (postList)
+
         postList.setAdapter(postCardAdapter);
 
-        // Attach the adapter to a ListView
-//        listView.setAdapter(timelineAdapter);
+        // Add standard RecyclerView animator
 
-        //attachScrollListener();
+        RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
+        postList.setItemAnimator(itemAnimator);
 
     }
 
@@ -514,7 +515,7 @@ public class MainActivity extends AppCompatActivity implements
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
-        postList.setHasFixedSize(true);
+        //postList.setHasFixedSize(true);
 
         postList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
