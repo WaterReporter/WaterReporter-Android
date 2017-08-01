@@ -16,7 +16,12 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,7 +32,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
 import com.google.gson.Gson;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.viableindustries.waterreporter.data.FeatureCollection;
@@ -68,8 +77,16 @@ public class MainActivity extends AppCompatActivity implements
     @Bind(R.id.timeline)
     SwipeRefreshLayout timeline;
 
-    @Bind(R.id.timeline_items)
-    ListView listView;
+//    @Bind(R.id.timeline_items)
+//    ListView listView;
+
+    @Bind(R.id.postList)
+    RecyclerView postList;
+
+    private PostCardAdapter postCardAdapter;
+
+    private RecyclerView.Adapter mAdapter;
+    private LinearLayoutManager mLayoutManager;
 
     static final int REGISTRATION_REQUEST = 1;
 
@@ -202,9 +219,13 @@ public class MainActivity extends AppCompatActivity implements
 
                     try {
 
-                        timelineAdapter.notifyDataSetChanged();
+//                        timelineAdapter.notifyDataSetChanged();
 
-                        listView.smoothScrollToPosition(0);
+                        postCardAdapter.notifyDataSetChanged();
+
+//                        listView.smoothScrollToPosition(0);
+
+                        mLayoutManager.scrollToPositionWithOffset(0, 0);
 
                     } catch (NullPointerException e) {
 
@@ -257,10 +278,14 @@ public class MainActivity extends AppCompatActivity implements
 
     private void populateTimeline(List<Report> list) {
 
-        timelineAdapter = new TimelineAdapter(this, list, false);
+//        timelineAdapter = new TimelineAdapter(this, list, false);
+
+        postCardAdapter = new PostCardAdapter(this, list, false);
+
+        postList.setAdapter(postCardAdapter);
 
         // Attach the adapter to a ListView
-        listView.setAdapter(timelineAdapter);
+//        listView.setAdapter(timelineAdapter);
 
         //attachScrollListener();
 
@@ -348,11 +373,11 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    private void attachScrollListener() {
-
-        listView.setOnScrollListener(scrollListener);
-
-    }
+//    private void attachScrollListener() {
+//
+//        listView.setOnScrollListener(scrollListener);
+//
+//    }
 
     protected void verifyPermissions() {
 
@@ -469,9 +494,26 @@ public class MainActivity extends AppCompatActivity implements
 
         timeline.setColorSchemeResources(R.color.waterreporter_blue);
 
+        // RecyclerView
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        postList.setHasFixedSize(true);
+
+        postList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(this);
+        postList.setLayoutManager(mLayoutManager);
+
         // Attach EndlessScrollListener to timeline ListView
 
-        attachScrollListener();
+//        attachScrollListener();
 
         // Check permissions and handle missing requirements as necessary
 

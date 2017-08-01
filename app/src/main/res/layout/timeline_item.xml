@@ -18,6 +18,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center_vertical|start"
+            android:contentDescription="Owner avatar"
             android:scaleType="fitXY" />
 
         <RelativeLayout
@@ -279,6 +280,7 @@
         android:animateLayoutChanges="true"
         android:background="@drawable/card_view_border"
         android:orientation="vertical"
+        android:padding="1dp"
         android:visibility="gone"
         card_view:cardCornerRadius="4dp"
         card_view:cardElevation="0dp"
@@ -293,11 +295,12 @@
             <ImageView
                 android:id="@+id/ogImage"
                 android:layout_width="match_parent"
-                android:layout_height="240dp"
+                android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:background="@color/gray_224"
                 android:contentDescription="Open Graph image"
-                android:scaleType="fitXY" />
+                android:minHeight="200dp"
+                android:scaleType="centerCrop" />
 
             <LinearLayout
                 android:layout_width="match_parent"

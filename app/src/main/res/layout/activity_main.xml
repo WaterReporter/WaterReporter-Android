@@ -36,16 +36,25 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ListView
-                android:id="@+id/timeline_items"
+            <!--<ListView-->
+            <!--android:id="@+id/timeline_items"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:divider="@color/gray_232"-->
+            <!--android:dividerHeight="0.5dp"-->
+            <!--android:fadingEdgeLength="0dp"-->
+            <!--android:listSelector="@drawable/timeline_selector"-->
+            <!--android:overScrollMode="never"-->
+            <!--android:scrollbars="none" />-->
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/postList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:divider="@color/gray_232"
-                android:dividerHeight="0.5dp"
-                android:fadingEdgeLength="0dp"
-                android:listSelector="@drawable/timeline_selector"
-                android:overScrollMode="never"
-                android:scrollbars="none" />
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="40dp"
+                android:background="@android:color/transparent"
+                android:orientation="vertical" />
 
         </android.support.v4.widget.SwipeRefreshLayout>
 

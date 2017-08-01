@@ -97,8 +97,6 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
     private final boolean isProfile;
 
-    private List<Report> features;
-
     protected SharedPreferences prefs;
 
     final private String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
@@ -107,7 +105,6 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         super(activity, 0, aFeatures);
         this.context = activity;
         this.isProfile = isProfile;
-        features = aFeatures;
         prefs = context.getSharedPreferences(context.getPackageName(), 0);
     }
 
@@ -333,6 +330,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         boolean openGraphOnly;
 
         // Get the data item for this position
+
         final Report feature = (Report) getItem(position);
 
         openGraphOnly = true;
@@ -458,8 +456,6 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         // Allow user to share report content on Facebook/Twitter
         // if either or both of those applications is installed
 
-//        if (socialOptions != 0) {
-
         viewHolder.reportThumb.setOnLongClickListener(new View.OnLongClickListener() {
 
             @Override
@@ -483,8 +479,6 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
             }
         });
-
-//        }
 
         // Populate the data into the template view using the data object
         viewHolder.reportDate.setText(creationDate);
