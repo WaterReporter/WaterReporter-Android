@@ -280,18 +280,7 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
         // Attach click listeners to active UI components
 
-        commentIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                ReportHolder.setReport(post);
-
-                Intent intent = new Intent(context, CommentActivity.class);
-
-                context.startActivity(intent);
-
-            }
-        });
+        commentIcon.setOnClickListener(new PostCommentListener(context, post));
 
         favoriteIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -331,35 +320,10 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
         });
 
         actionBadge.setOnClickListener(new PostCommentListener(context, post));
-
-
+        
         locationIcon.setOnClickListener(new PostMapListener(context, post));
 
-        directionsIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Geometry geometry = post.geometry.geometries.get(0);
-
-                Log.d("geometry", geometry.toString());
-
-                // Build the intent
-                Uri location = Uri.parse(String.format("google.navigation:q=%s,%s", geometry.coordinates.get(1), geometry.coordinates.get(0)));
-
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, location);
-
-                // Verify it resolves
-                PackageManager packageManager = context.getPackageManager();
-                List<ResolveInfo> activities = packageManager.queryIntentActivities(mapIntent, 0);
-                boolean isIntentSafe = activities.size() > 0;
-
-                // Start an activity if it's safe
-                if (isIntentSafe) {
-                    context.startActivity(mapIntent);
-                }
-
-            }
-        });
+        directionsIcon.setOnClickListener(new PostDirectionsListener(context, post));
 
         // Allow user to share report content on Facebook/Twitter
         // if either or both of those applications is installed
@@ -380,6 +344,10 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
         reportWatershed.setOnClickListener(new TerritoryProfileListener(context, post.properties.territory));
 
         // Display post caption, if any
+
+        postCaption.setText("");
+
+        postCaption.setVisibility(View.GONE);
 
         if (post.properties.report_description != null && (post.properties.report_description.length() > 0)) {
 
@@ -402,23 +370,17 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
                                 }
                             }).into(postCaption);
 
-        } else {
-
-            Log.d("no-caption", "!");
-
-            postCaption.setText("");
-
-            postCaption.setVisibility(View.GONE);
-
         }
 
         // Add clickable organization views, if any
 
-        reportGroups.setVisibility(View.VISIBLE);
+        reportGroups.setVisibility(View.GONE);
 
         reportGroups.removeAllViews();
 
         if (post.properties.groups.size() > 0) {
+
+            reportGroups.setVisibility(View.VISIBLE);
 
             for (Organization organization : post.properties.groups) {
 
@@ -434,25 +396,34 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
             }
 
-        } else {
-
-            reportGroups.setVisibility(View.GONE);
-
         }
 
         // Display badge if report is closed
+
+        actionBadge.setVisibility(View.GONE);
+
         if ("closed".equals(post.properties.state)) {
 
             actionBadge.setVisibility(View.VISIBLE);
-
-        } else {
-
-            actionBadge.setVisibility(View.GONE);
 
         }
 
         // Set value of comment count string
         int commentCount = post.properties.comments.size();
+
+        // Clear display comment count
+
+        reportComments.setText("");
+
+        // Revert comment icon opacity
+
+        commentIconView.setAlpha(0.4f);
+
+        // Revert comment icon color
+
+        Drawable commentIcon = ContextCompat.getDrawable(context, R.drawable.ic_mode_comment_black_24dp);
+        commentIcon.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
+        commentIconView.setImageDrawable(commentIcon);
 
         if (commentCount > 0) {
 
@@ -464,27 +435,27 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
             // Change comment icon color
 
-            Drawable myIcon = ContextCompat.getDrawable(context, R.drawable.ic_mode_comment_black_24dp);
-            myIcon.setColorFilter(ContextCompat.getColor(context, R.color.splash_blue), PorterDuff.Mode.SRC_ATOP);
-            commentIconView.setImageDrawable(myIcon);
-
-        } else {
-
-            reportComments.setText("");
-
-            // Revert comment icon opacity
-
-            commentIconView.setAlpha(0.4f);
-
-            // Revert comment icon color
-
-            Drawable myIcon = ContextCompat.getDrawable(context, R.drawable.ic_mode_comment_black_24dp);
-            myIcon.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
-            commentIconView.setImageDrawable(myIcon);
+            commentIcon.setColorFilter(ContextCompat.getColor(context, R.color.splash_blue), PorterDuff.Mode.SRC_ATOP);
+            commentIconView.setImageDrawable(commentIcon);
 
         }
 
+        // Set value of favorite count string
         int favoriteCount = post.properties.favorites.size();
+
+        // Clear display favorite count
+
+        favoriteCounter.setText("");
+
+        // Revert favorite icon opacity
+
+        favoriteIconView.setAlpha(0.4f);
+
+        // Revert icon color
+
+        Drawable favoriteIcon = ContextCompat.getDrawable(context, R.drawable.ic_favorite_black_24dp);
+        favoriteIcon.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
+        favoriteIconView.setImageDrawable(favoriteIcon);
 
         if (favoriteCount > 0) {
 
@@ -496,23 +467,8 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
             // Change favorite icon color
 
-            Drawable myIcon = ContextCompat.getDrawable(context, R.drawable.ic_favorite_black_24dp);
-            myIcon.setColorFilter(ContextCompat.getColor(context, R.color.favorite_red), PorterDuff.Mode.SRC_ATOP);
-            favoriteIconView.setImageDrawable(myIcon);
-
-        } else {
-
-            favoriteCounter.setText("");
-
-            // Revert favorite icon opacity
-
-            favoriteIconView.setAlpha(0.4f);
-
-            // Revert icon color
-
-            Drawable myIcon = ContextCompat.getDrawable(context, R.drawable.ic_favorite_black_24dp);
-            myIcon.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
-            favoriteIconView.setImageDrawable(myIcon);
+            favoriteIcon.setColorFilter(ContextCompat.getColor(context, R.color.favorite_red), PorterDuff.Mode.SRC_ATOP);
+            favoriteIconView.setImageDrawable(favoriteIcon);
 
         }
 
@@ -521,6 +477,10 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
         Picasso.with(context).load(post.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(ownerAvatar);
 
         // Load primary post image
+
+        reportThumb.setImageDrawable(null);
+
+        reportThumb.setVisibility(View.GONE);
 
         if (post.properties.images.size() > 0) {
 
@@ -540,15 +500,25 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
             reportThumb.setTag(imagePath);
 
-        } else {
-
-            reportThumb.setImageDrawable(null);
-
-            reportThumb.setVisibility(View.GONE);
-
         }
 
         // Display Open Graph information, if any
+
+        // Hide CardView
+
+        openGraphData.setVisibility(View.GONE);
+
+        // Reset image
+
+        ogImage.setImageDrawable(null);
+
+        // Reset title, description and URL
+
+        ogTitle.setText("");
+
+        ogDescription.setText("");
+
+        ogUrl.setText("");
 
         if (post.properties.open_graph.size() > 0) {
 
@@ -608,24 +578,6 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
                 directionsIcon.setVisibility(View.VISIBLE);
 
             }
-
-        } else {
-
-            // Hide CardView
-
-            openGraphData.setVisibility(View.GONE);
-
-            // Reset image
-
-            ogImage.setImageDrawable(null);
-
-            // Reset title, description and URL
-
-            ogTitle.setText("");
-
-            ogDescription.setText("");
-
-            ogUrl.setText("");
 
         }
 
