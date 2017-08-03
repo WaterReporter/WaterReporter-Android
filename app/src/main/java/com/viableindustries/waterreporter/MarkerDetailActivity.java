@@ -100,8 +100,8 @@ public class MarkerDetailActivity extends AppCompatActivity {
     @Bind(R.id.owner_avatar)
     ImageView ownerAvatar;
 
-    @Bind(R.id.report_thumb)
-    ImageView reportThumb;
+    @Bind(R.id.postThumb)
+    ImageView postThumb;
 
     @Bind(R.id.action_badge)
     RelativeLayout actionBadge;
@@ -153,7 +153,7 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(context));
 
-        reportThumb.setLayoutParams(layoutParams);
+        postThumb.setLayoutParams(layoutParams);
 
         // Retrieve report and attempt to display data
 
@@ -347,7 +347,7 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
         Picasso.with(this).load(report.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(ownerAvatar);
 
-        Picasso.with(this).load(imagePath).placeholder(R.drawable.reverse_letter_mark).fit().centerCrop().into(reportThumb);
+        Picasso.with(this).load(imagePath).placeholder(R.drawable.reverse_letter_mark).fit().centerCrop().into(postThumb);
 
     }
 
@@ -428,7 +428,7 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
         super.onDestroy();
 
-        Picasso.with(this).cancelRequest(reportThumb);
+        Picasso.with(this).cancelRequest(postThumb);
 
         Picasso.with(this).cancelRequest(ownerAvatar);
 

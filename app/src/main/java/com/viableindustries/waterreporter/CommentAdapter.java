@@ -59,7 +59,7 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
         TextView reportOwner;
         TextView reportCaption;
         ImageView ownerAvatar;
-        ImageView reportThumb;
+        ImageView postThumb;
         LinearLayout actionTaken;
         ImageView actionBadge;
         LinearLayout reportStub;
@@ -82,7 +82,7 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
             viewHolder.reportOwner = (TextView) convertView.findViewById(R.id.report_owner);
             viewHolder.reportCaption = (TextView) convertView.findViewById(R.id.report_caption);
             viewHolder.ownerAvatar = (ImageView) convertView.findViewById(R.id.owner_avatar);
-            viewHolder.reportThumb = (ImageView) convertView.findViewById(R.id.report_thumb);
+            viewHolder.postThumb = (ImageView) convertView.findViewById(R.id.postThumb);
             viewHolder.actionBadge = (ImageView) convertView.findViewById(R.id.action_badge);
             viewHolder.actionTaken = (LinearLayout) convertView.findViewById(R.id.action_taken);
             viewHolder.reportStub = (LinearLayout) convertView.findViewById(R.id.report_stub);
@@ -105,13 +105,13 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
 
             imagePath = (String) image.properties.square_retina;
 
-            viewHolder.reportThumb.setVisibility(View.VISIBLE);
+            viewHolder.postThumb.setVisibility(View.VISIBLE);
 
-            Picasso.with(context).load(imagePath).fit().centerCrop().into(viewHolder.reportThumb);
+            Picasso.with(context).load(imagePath).fit().centerCrop().into(viewHolder.postThumb);
 
         } catch (IndexOutOfBoundsException ib) {
 
-            viewHolder.reportThumb.setVisibility(View.GONE);
+            viewHolder.postThumb.setVisibility(View.GONE);
 
         }
 

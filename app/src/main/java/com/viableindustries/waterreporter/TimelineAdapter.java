@@ -116,7 +116,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         TextView postCaption;
         FlexboxLayout reportGroups;
         ImageView ownerAvatar;
-        ImageView reportThumb;
+        ImageView postThumb;
         RelativeLayout actionBadge;
         LinearLayout reportStub;
         RelativeLayout locationIcon;
@@ -287,7 +287,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
             viewHolder.postCaption = (TextView) convertView.findViewById(R.id.postCaption);
             viewHolder.ownerAvatar = (ImageView) convertView.findViewById(R.id.owner_avatar);
             viewHolder.reportGroups = (FlexboxLayout) convertView.findViewById(R.id.report_groups);
-            viewHolder.reportThumb = (ImageView) convertView.findViewById(R.id.report_thumb);
+            viewHolder.postThumb = (ImageView) convertView.findViewById(R.id.postThumb);
             viewHolder.actionBadge = (RelativeLayout) convertView.findViewById(R.id.action_badge);
             viewHolder.reportStub = (LinearLayout) convertView.findViewById(R.id.report_stub);
             viewHolder.locationIcon = (RelativeLayout) convertView.findViewById(R.id.location_icon);
@@ -456,7 +456,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         // Allow user to share report content on Facebook/Twitter
         // if either or both of those applications is installed
 
-        viewHolder.reportThumb.setOnLongClickListener(new View.OnLongClickListener() {
+        viewHolder.postThumb.setOnLongClickListener(new View.OnLongClickListener() {
 
             @Override
             public boolean onLongClick(View v) {
@@ -640,21 +640,21 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
             imagePath = (String) image.properties.square_retina;
 
-            viewHolder.reportThumb.setVisibility(View.VISIBLE);
+            viewHolder.postThumb.setVisibility(View.VISIBLE);
 
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(context));
 
-            viewHolder.reportThumb.setLayoutParams(layoutParams);
+            viewHolder.postThumb.setLayoutParams(layoutParams);
 
-            Picasso.with(context).load(imagePath).fit().into(viewHolder.reportThumb);
+            Picasso.with(context).load(imagePath).fit().into(viewHolder.postThumb);
 
-            viewHolder.reportThumb.setTag(imagePath);
+            viewHolder.postThumb.setTag(imagePath);
 
         } else {
 
-            viewHolder.reportThumb.setImageDrawable(null);
+            viewHolder.postThumb.setImageDrawable(null);
 
-            viewHolder.reportThumb.setVisibility(View.GONE);
+            viewHolder.postThumb.setVisibility(View.GONE);
 
         }
 

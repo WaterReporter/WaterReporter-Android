@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -112,7 +113,7 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
         postCaption = (TextView) v.findViewById(R.id.postCaption);
         ownerAvatar = (ImageView) v.findViewById(R.id.owner_avatar);
         postGroups = (FlexboxLayout) v.findViewById(R.id.post_groups);
-        postThumb = (ImageView) v.findViewById(R.id.post_thumb);
+        postThumb = (ImageView) v.findViewById(R.id.postThumb);
         actionBadge = (RelativeLayout) v.findViewById(R.id.action_badge);
         postStub = (LinearLayout) v.findViewById(R.id.post_stub);
         locationIcon = (RelativeLayout) v.findViewById(R.id.location_icon);
@@ -222,7 +223,7 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
                     textView.setText("");
 
                     // Change favorite icon color
-                    
+
                     imageView.setColorFilter(ContextCompat.getColor(mContext, R.color.icon_gray), PorterDuff.Mode.SRC_ATOP);
 
                 } else {
@@ -271,7 +272,7 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
             imageView.setVisibility(View.VISIBLE);
 
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(context));
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(context));
 
             imageView.setLayoutParams(layoutParams);
 

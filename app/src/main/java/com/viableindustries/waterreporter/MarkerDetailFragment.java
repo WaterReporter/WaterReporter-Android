@@ -76,7 +76,7 @@
 //        TextView reportCaption = (TextView) view.findViewById(R.id.report_caption);
 //        ImageView ownerAvatar = (ImageView) view.findViewById(R.id.owner_avatar);
 //        LinearLayout reportGroups = (LinearLayout) view.findViewById(R.id.reportGroups);
-//        ImageView reportThumb = (ImageView) view.findViewById(R.id.report_thumb);
+//        ImageView postThumb = (ImageView) view.findViewById(R.id.postThumb);
 //        RelativeLayout actionBadge = (RelativeLayout) view.findViewById(R.id.action_badge);
 //        LinearLayout reportStub = (LinearLayout) view.findViewById(R.id.report_stub);
 //        RelativeLayout locationIcon = (RelativeLayout) view.findViewById(R.id.location_icon);
@@ -205,7 +205,7 @@
 //
 //        Picasso.with(activity).load(feature.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(ownerAvatar);
 //
-//        Picasso.with(activity).load(imagePath).fit().centerCrop().into(reportThumb);
+//        Picasso.with(activity).load(imagePath).fit().centerCrop().into(postThumb);
 //
 //            ownerAvatar.setOnClickListener(new UserProfileListener(activity, feature.properties.owner));
 //
@@ -244,7 +244,7 @@
 ////
 ////        Picasso.with(getActivity()).load(userAvatar).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(ownerAvatar);
 ////
-////        Picasso.with(getActivity()).load(fullImage).fit().centerCrop().into(reportThumb);
+////        Picasso.with(getActivity()).load(fullImage).fit().centerCrop().into(postThumb);
 ////
 ////        // Display badge if report is closed
 ////        if (status.equals("closed")) {

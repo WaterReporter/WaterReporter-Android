@@ -58,6 +58,10 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:paddingBottom="0dp"
+                    android:paddingEnd="0dp"
+                    android:paddingLeft="0dp"
+                    android:paddingRight="0dp"
+                    android:paddingStart="0dp"
                     android:paddingTop="2dp"
                     android:textColor="@color/gray_186"
                     android:textSize="@dimen/small_text" />
@@ -72,7 +76,10 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:gravity="end"
-                android:padding="0dp"
+                android:paddingEnd="0dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="0dp"
+                android:paddingStart="16dp"
                 android:textColor="@color/gray_186"
                 android:textSize="@dimen/small_text" />
 
@@ -80,14 +87,38 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/post_thumb"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:adjustViewBounds="true"
-        android:background="@color/gray_224"
-        android:longClickable="true"
-        android:scaleType="fitXY" />
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/postThumb"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:background="@color/gray_224"
+            android:contentDescription="Post image"
+            android:longClickable="true"
+            android:scaleType="fitXY" />
+
+        <RelativeLayout
+            android:id="@+id/action_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|top"
+            android:layout_margin="16dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerInParent="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/action_badge_small" />
+
+        </RelativeLayout>
+
+    </FrameLayout>
 
     <com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -98,23 +129,23 @@
         app:flexDirection="row"
         app:flexWrap="nowrap">
 
-        <RelativeLayout
-            android:id="@+id/action_badge"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:minWidth="48dp"
-            android:visibility="gone"
-            app:layout_flexGrow="1"
-            app:layout_flexShrink="0">
+        <!--<RelativeLayout-->
+        <!--android:id="@+id/action_badge"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:minWidth="48dp"-->
+        <!--android:visibility="gone"-->
+        <!--app:layout_flexGrow="1"-->
+        <!--app:layout_flexShrink="0">-->
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_centerInParent="true"
-                android:scaleType="fitXY"
-                android:src="@drawable/action_badge_small" />
+        <!--<ImageView-->
+        <!--android:layout_width="24dp"-->
+        <!--android:layout_height="24dp"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--android:scaleType="fitXY"-->
+        <!--android:src="@drawable/action_badge_small" />-->
 
-        </RelativeLayout>
+        <!--</RelativeLayout>-->
 
         <RelativeLayout
             android:id="@+id/location_icon"
@@ -177,10 +208,6 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:paddingEnd="16dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="16dp"
-            android:paddingStart="8dp"
             android:textColor="@color/splash_blue"
             android:textSize="@dimen/small_text"
             app:layout_flexGrow="0"
@@ -231,10 +258,6 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:paddingEnd="16dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="16dp"
-            android:paddingStart="8dp"
             android:textColor="@color/favorite_red"
             android:textSize="@dimen/small_text" />
 
@@ -359,5 +382,10 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:visibility="gone" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gray_232" />
 
 </LinearLayout>
