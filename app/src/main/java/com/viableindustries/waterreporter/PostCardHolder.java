@@ -84,6 +84,9 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
     RelativeLayout favoriteIcon;
     RelativeLayout shareIcon;
     RelativeLayout actionsEllipsis;
+    ImageView locationIconView;
+    ImageView directionsIconView;
+    ImageView shareIconView;
     ImageView commentIconView;
     ImageView favoriteIconView;
     TextView favoriteCounter;
@@ -118,6 +121,9 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
         favoriteIcon = (RelativeLayout) v.findViewById(R.id.favorite_icon);
         shareIcon = (RelativeLayout) v.findViewById(R.id.share_icon);
         actionsEllipsis = (RelativeLayout) v.findViewById(R.id.action_ellipsis);
+        locationIconView = (ImageView) v.findViewById(R.id.locationIconView);
+        directionsIconView = (ImageView) v.findViewById(R.id.directionsIconView);
+        shareIconView = (ImageView) v.findViewById(R.id.shareIconView);
         commentIconView = (ImageView) v.findViewById(R.id.commentIconView);
         favoriteIconView = (ImageView) v.findViewById(R.id.favoriteIconView);
         favoriteCounter = (TextView) v.findViewById(R.id.favorite_count);
@@ -373,30 +379,17 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
         textView.setText("");
 
-        // Revert comment icon opacity
+        // Reset icon color
 
-        tapView.setAlpha(0.4f);
-
-        // Revert comment icon color
-
-        Drawable commentIcon = ContextCompat.getDrawable(context, R.drawable.ic_mode_comment_black_24dp);
-        commentIcon.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
+        imageView.setColorFilter(ContextCompat.getColor(context, R.color.icon_gray), PorterDuff.Mode.SRC_ATOP);
 
         if (commentCount > 0) {
 
             textView.setText(String.valueOf(commentCount));
 
-            // Make comment icon opaque
-
-            imageView.setAlpha(1.0f);
-
-            // Change comment icon color
-
-            commentIcon.setColorFilter(ContextCompat.getColor(context, R.color.splash_blue), PorterDuff.Mode.SRC_ATOP);
+            imageView.setColorFilter(ContextCompat.getColor(context, R.color.splash_blue), PorterDuff.Mode.SRC_ATOP);
 
         }
-
-        imageView.setImageDrawable(commentIcon);
 
     }
 
@@ -437,30 +430,17 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
         textView.setText("");
 
-        // Revert favorite icon opacity
+        // Reset icon color
 
-        imageView.setAlpha(0.4f);
-
-        // Revert icon color
-
-        Drawable favoriteIcon = ContextCompat.getDrawable(context, R.drawable.ic_favorite_black_24dp);
-        favoriteIcon.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
+        imageView.setColorFilter(ContextCompat.getColor(context, R.color.icon_gray), PorterDuff.Mode.SRC_ATOP);
 
         if (favoriteCount > 0) {
 
             textView.setText(String.valueOf(favoriteCount));
 
-            // Make favorite icon opaque
-
-            imageView.setAlpha(1.0f);
-
-            // Change favorite icon color
-
-            favoriteIcon.setColorFilter(ContextCompat.getColor(context, R.color.favorite_red), PorterDuff.Mode.SRC_ATOP);
+            imageView.setColorFilter(ContextCompat.getColor(context, R.color.favorite_red), PorterDuff.Mode.SRC_ATOP);
 
         }
-
-        imageView.setImageDrawable(favoriteIcon);
 
     }
 
@@ -525,6 +505,16 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
     }
 
+    private void setIconColors(final Context context, ImageView[] views) {
+
+        for (ImageView v : views) {
+
+            v.setColorFilter(ContextCompat.getColor(context, R.color.icon_gray), PorterDuff.Mode.SRC_ATOP);
+
+        }
+
+    }
+
     public void bindPost(final Report post, final Context context, final SharedPreferences sharedPreferences, final boolean mIsProfile) {
 
         boolean openGraphOnly = true;
@@ -532,6 +522,16 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
         Log.d("target-post", post.properties.toString());
 
         tracker.setText(String.valueOf(post.id));
+
+        // Set non-binary icon colors
+
+        ImageView[] icons = new ImageView[]{
+                locationIconView,
+                directionsIconView,
+                shareIconView
+        };
+
+        setIconColors(context, icons);
 
         // Set date
 
