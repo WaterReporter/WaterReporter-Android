@@ -168,15 +168,9 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
                 textView.setText(String.valueOf(newCount));
 
-                // Make favorite icon opaque
-
-                imageView.setAlpha(1.0f);
-
                 // Change favorite icon color
 
-                Drawable myIcon = ContextCompat.getDrawable(mContext, R.drawable.ic_favorite_black_24dp);
-                myIcon.setColorFilter(ContextCompat.getColor(mContext, R.color.favorite_red), PorterDuff.Mode.SRC_ATOP);
-                imageView.setImageDrawable(myIcon);
+                imageView.setColorFilter(ContextCompat.getColor(mContext, R.color.favorite_red), PorterDuff.Mode.SRC_ATOP);
 
                 // Replace the target post item with the
                 // updated API response object
@@ -227,15 +221,9 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
                     textView.setText("");
 
-                    // Make favorite icon opaque
-
-                    imageView.setAlpha(0.4f);
-
                     // Change favorite icon color
-
-                    Drawable myIcon = ContextCompat.getDrawable(mContext, R.drawable.ic_favorite_black_24dp);
-                    myIcon.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
-                    imageView.setImageDrawable(myIcon);
+                    
+                    imageView.setColorFilter(ContextCompat.getColor(mContext, R.color.icon_gray), PorterDuff.Mode.SRC_ATOP);
 
                 } else {
 
