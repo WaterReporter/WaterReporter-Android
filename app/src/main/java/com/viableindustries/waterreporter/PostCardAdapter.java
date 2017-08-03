@@ -117,6 +117,12 @@ public class PostCardAdapter extends RecyclerView.Adapter<PostCardHolder> {
         return mDataset.size();
     }
 
+    @Override
+    public int getItemViewType(int position)
+    {
+        return position;
+    }
+
     static class LoadHolder extends RecyclerView.ViewHolder {
         public LoadHolder(View itemView) {
             super(itemView);

@@ -493,11 +493,11 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         // Display post caption, if any
 
-        if (feature.properties.report_description != null && (feature.properties.report_description.length() > 0)) {
+        if (feature.properties.description != null && (feature.properties.description.length() > 0)) {
 
             openGraphOnly = false;
 
-            viewHolder.postCaption.setText(feature.properties.report_description.trim());
+            viewHolder.postCaption.setText(feature.properties.description.trim());
 
             viewHolder.postCaption.setVisibility(View.VISIBLE);
 

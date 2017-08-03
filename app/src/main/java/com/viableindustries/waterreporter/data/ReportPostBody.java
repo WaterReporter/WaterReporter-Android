@@ -30,7 +30,7 @@ public class ReportPostBody implements Serializable {
     public String report_date;
 
     @SerializedName("report_description")
-    public String report_description;
+    public String description;
 
     @SerializedName("social")
     public List<OpenGraphProperties> social;
@@ -51,7 +51,7 @@ public class ReportPostBody implements Serializable {
 
         this.report_date = aReportDate;
 
-        this.report_description = aDescription;
+        this.description = aDescription;
 
         this.state = aState;
 

@@ -573,11 +573,11 @@ public class CommentActivity extends AppCompatActivity implements
 
         // Load report caption
 
-        if (report.properties.report_description != null && (report.properties.report_description.length() > 0)) {
+        if (report.properties.description != null && (report.properties.description.length() > 0)) {
 
             reportCaption.setVisibility(View.VISIBLE);
 
-            reportCaption.setText(report.properties.report_description.trim());
+            reportCaption.setText(report.properties.description.trim());
 
             new PatternEditableBuilder().
                     addPattern(context, Pattern.compile("\\#(\\w+)"), ContextCompat.getColor(context, R.color.waterreporter_blue),

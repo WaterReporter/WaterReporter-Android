@@ -395,9 +395,9 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             // Set comment text
 
-            if (report.properties.report_description != null && (report.properties.report_description.length() > 0)) {
+            if (report.properties.description != null && (report.properties.description.length() > 0)) {
 
-                commentsField.setText(report.properties.report_description);
+                commentsField.setText(report.properties.description);
 
             }
 

@@ -78,9 +78,6 @@ public class MainActivity extends AppCompatActivity implements
     @Bind(R.id.timeline)
     SwipeRefreshLayout timeline;
 
-//    @Bind(R.id.timeline_items)
-//    ListView listView;
-
     @Bind(R.id.postList)
     RecyclerView postList;
 
@@ -280,6 +277,8 @@ public class MainActivity extends AppCompatActivity implements
     private void populateTimeline(final List<Report> list) {
 
         postCardAdapter = new PostCardAdapter(this, list, false);
+
+//        postCardAdapter.setHasStableIds(true);
 
         postCardAdapter.setLoadMoreListener(new PostCardAdapter.OnLoadMoreListener() {
             @Override

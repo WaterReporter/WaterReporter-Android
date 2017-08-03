@@ -86,7 +86,7 @@
 //
 //        try {
 //
-//            body = feature.properties.report_description.trim();
+//            body = feature.properties.description.trim();
 //
 //            int snippetLength = body.length();
 //

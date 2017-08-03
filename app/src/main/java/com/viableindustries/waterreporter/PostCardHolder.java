@@ -10,6 +10,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -67,16 +68,16 @@ import retrofit.client.Response;
 public class PostCardHolder extends RecyclerView.ViewHolder {
 
     LinearLayout postCard;
-    TextView reportDate;
-    TextView reportOwner;
-    TextView reportWatershed;
-    TextView reportComments;
+    TextView postDate;
+    TextView postOwner;
+    TextView postWatershed;
+    TextView postComments;
     TextView postCaption;
-    FlexboxLayout reportGroups;
+    FlexboxLayout postGroups;
     ImageView ownerAvatar;
-    ImageView reportThumb;
+    ImageView postThumb;
     RelativeLayout actionBadge;
-    LinearLayout reportStub;
+    LinearLayout postStub;
     RelativeLayout locationIcon;
     RelativeLayout directionsIcon;
     RelativeLayout commentIcon;
@@ -101,16 +102,16 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
         super(v);
         postCard = v;
 
-        reportDate = (TextView) v.findViewById(R.id.report_date);
-        reportOwner = (TextView) v.findViewById(R.id.report_owner);
-        reportWatershed = (TextView) v.findViewById(R.id.report_watershed);
-        reportComments = (TextView) v.findViewById(R.id.comment_count);
+        postDate = (TextView) v.findViewById(R.id.post_date);
+        postOwner = (TextView) v.findViewById(R.id.post_owner);
+        postWatershed = (TextView) v.findViewById(R.id.post_watershed);
+        postComments = (TextView) v.findViewById(R.id.comment_count);
         postCaption = (TextView) v.findViewById(R.id.postCaption);
         ownerAvatar = (ImageView) v.findViewById(R.id.owner_avatar);
-        reportGroups = (FlexboxLayout) v.findViewById(R.id.report_groups);
-        reportThumb = (ImageView) v.findViewById(R.id.report_thumb);
+        postGroups = (FlexboxLayout) v.findViewById(R.id.post_groups);
+        postThumb = (ImageView) v.findViewById(R.id.post_thumb);
         actionBadge = (RelativeLayout) v.findViewById(R.id.action_badge);
-        reportStub = (LinearLayout) v.findViewById(R.id.report_stub);
+        postStub = (LinearLayout) v.findViewById(R.id.post_stub);
         locationIcon = (RelativeLayout) v.findViewById(R.id.location_icon);
         directionsIcon = (RelativeLayout) v.findViewById(R.id.directions_icon);
         commentIcon = (RelativeLayout) v.findViewById(R.id.comment_icon);
@@ -262,25 +263,327 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
     }
 
-    public void bindPost(final Report post, final Context context, final SharedPreferences sharedPreferences, final boolean mIsProfile) {
+    private void setImage(final Context context, final Report post, ImageView imageView) {
 
-        boolean openGraphOnly = true;
+        imageView.setImageDrawable(null);
 
-        Log.d("target-report", post.properties.toString());
+        imageView.setVisibility(View.GONE);
+
+        if (post.properties.images.size() > 0) {
+
+            ReportPhoto image = (ReportPhoto) post.properties.images.get(0);
+
+            String imagePath = (String) image.properties.square_retina;
+
+            imageView.setVisibility(View.VISIBLE);
+
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(context));
+
+            imageView.setLayoutParams(layoutParams);
+
+            Picasso.with(context).load(imagePath).fit().into(imageView);
+
+            imageView.setTag(imagePath);
+
+        }
+
+    }
+    
+    private void setAuthor(final Context context, final Report post, TextView textView, ImageView imageView) {
+
+        // Load author avatar
+
+        Picasso.with(context).load(post.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(imageView);
+
+        // Display author name
+
+        textView.setText(String.format("%s %s", post.properties.owner.properties.first_name, post.properties.owner.properties.last_name));
+        
+    }
+
+    private void setDate(final Report post, TextView textView) {
 
         String creationDate = (String) AttributeTransformUtility.relativeTime(post.properties.created);
 
-        tracker.setText(String.valueOf(post.id));
+        textView.setText(creationDate);
+
+    }
+
+    private void setWatershed(final Context context, final Report post, TextView textView) {
 
         // Extract watershed name, if any
         String watershedName = AttributeTransformUtility.parseWatershedName(post.properties.territory);
 
-        // Extract group names, if any
-        String groupList = AttributeTransformUtility.groupListSize(post.properties.groups);
+        // Display watershed name and add click listener if
+        // a valid territory object is present
+
+        textView.setText(watershedName);
+
+        textView.setOnClickListener(new TerritoryProfileListener(context, post.properties.territory));
+
+    }
+
+    private void setCaption(final Context context, final Report post, TextView textView) {
+
+        textView.setText("");
+
+        textView.setVisibility(View.GONE);
+
+        if (post.properties.description != null && (post.properties.description.length() > 0)) {
+
+            textView.setText(post.properties.description.trim());
+
+            textView.setVisibility(View.VISIBLE);
+
+            new PatternEditableBuilder().
+                    addPattern(context, Pattern.compile("\\#(\\w+)"), ContextCompat.getColor(context, R.color.waterreporter_blue),
+                            new PatternEditableBuilder.SpannableClickedListener() {
+                                @Override
+                                public void onSpanClicked(String text) {
+
+                                    Intent intent = new Intent(context, TagProfileActivity.class);
+                                    intent.putExtra("tag", text);
+                                    context.startActivity(intent);
+
+                                }
+                            }).into(textView);
+
+        }
+
+    }
+
+    private void setActionBadge(final Report post, RelativeLayout relativeLayout) {
+
+        relativeLayout.setVisibility(View.GONE);
+
+        if ("closed".equals(post.properties.state)) {
+
+            relativeLayout.setVisibility(View.VISIBLE);
+
+        }
+
+    }
+
+    private void setCommentState(final Context context, final Report post, RelativeLayout tapView, TextView textView, ImageView imageView) {
+
+        // Set value of comment count string
+        int commentCount = post.properties.comments.size();
+
+        // Clear display comment count
+
+        textView.setText("");
+
+        // Revert comment icon opacity
+
+        tapView.setAlpha(0.4f);
+
+        // Revert comment icon color
+
+        Drawable commentIcon = ContextCompat.getDrawable(context, R.drawable.ic_mode_comment_black_24dp);
+        commentIcon.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
+
+        if (commentCount > 0) {
+
+            textView.setText(String.valueOf(commentCount));
+
+            // Make comment icon opaque
+
+            imageView.setAlpha(1.0f);
+
+            // Change comment icon color
+
+            commentIcon.setColorFilter(ContextCompat.getColor(context, R.color.splash_blue), PorterDuff.Mode.SRC_ATOP);
+
+        }
+
+        imageView.setImageDrawable(commentIcon);
+
+    }
+
+    private void setOrganizations(final Context context, final Report post, FlexboxLayout flexboxLayout) {
+
+        flexboxLayout.setVisibility(View.GONE);
+
+        flexboxLayout.removeAllViews();
+
+        if (post.properties.groups.size() > 0) {
+
+            flexboxLayout.setVisibility(View.VISIBLE);
+
+            for (Organization organization : post.properties.groups) {
+
+                ImageView groupView = (ImageView) LayoutInflater.from(context).inflate(R.layout.related_group_item, postCard, false);
+
+                Picasso.with(context).load(organization.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(groupView);
+
+                groupView.setTag(organization);
+
+                groupView.setOnClickListener(new OrganizationProfileListener(context, organization));
+
+                flexboxLayout.addView(groupView);
+
+            }
+
+        }
+
+    }
+
+    private void setFavoriteState(final Context context, final Report post, TextView textView, ImageView imageView) {
+
+        // Set value of favorite count string
+        int favoriteCount = post.properties.favorites.size();
+
+        // Clear display favorite count
+
+        textView.setText("");
+
+        // Revert favorite icon opacity
+
+        imageView.setAlpha(0.4f);
+
+        // Revert icon color
+
+        Drawable favoriteIcon = ContextCompat.getDrawable(context, R.drawable.ic_favorite_black_24dp);
+        favoriteIcon.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
+
+        if (favoriteCount > 0) {
+
+            textView.setText(String.valueOf(favoriteCount));
+
+            // Make favorite icon opaque
+
+            imageView.setAlpha(1.0f);
+
+            // Change favorite icon color
+
+            favoriteIcon.setColorFilter(ContextCompat.getColor(context, R.color.favorite_red), PorterDuff.Mode.SRC_ATOP);
+
+        }
+
+        imageView.setImageDrawable(favoriteIcon);
+
+    }
+
+    private void setOpenGraph(final Context context, final Report post, CardView cardView, ImageView imageView, TextView title, TextView description, TextView url) {
+
+        // Hide CardView
+
+        cardView.setVisibility(View.GONE);
+
+        // Reset image
+
+        imageView.setImageDrawable(null);
+
+        // Reset title, description and URL
+
+        title.setText("");
+
+        description.setText("");
+
+        url.setText("");
+
+        if (post.properties.open_graph.size() > 0) {
+
+            final OpenGraphObject openGraphObject = post.properties.open_graph.get(0);
+
+            // Make CardView visible
+
+            cardView.setVisibility(View.VISIBLE);
+
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Uri webpage = Uri.parse(openGraphObject.properties.url);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+                    if (intent.resolveActivity(context.getPackageManager()) != null) {
+                        context.startActivity(intent);
+                    }
+                }
+            });
+
+            // Load image
+
+            Picasso.with(context).load(openGraphObject.properties.imageUrl).fit().into(imageView);
+
+            // Load title, description and URL
+
+            title.setText(openGraphObject.properties.openGraphTitle);
+
+            description.setText(openGraphObject.properties.description);
+
+            try {
+
+                url.setText(OpenGraph.getDomainName(openGraphObject.properties.url));
+
+            } catch (URISyntaxException e) {
+
+                url.setText("");
+
+            }
+
+        }
+
+    }
+
+    public void bindPost(final Report post, final Context context, final SharedPreferences sharedPreferences, final boolean mIsProfile) {
+
+        boolean openGraphOnly = true;
+
+        Log.d("target-post", post.properties.toString());
+
+        tracker.setText(String.valueOf(post.id));
+
+        // Set date
+
+        setDate(post, postDate);
+        
+        // Set author (owner)
+        
+        setAuthor(context, post, postOwner, ownerAvatar);
+
+        // Set post image
+
+        setImage(context, post, postThumb);
+
+        // Set watershed
+
+        setWatershed(context, post, postWatershed);
+
+        // Set caption
+
+        setCaption(context, post, postCaption);
+
+        // Set comment state
+
+        setCommentState(context, post, commentIcon, postComments, commentIconView);
+
+        // Add clickable organization logos
+
+        setOrganizations(context, post, postGroups);
+
+        // Set action badge state
+
+        setActionBadge(post, actionBadge);
+
+        // Set favorite state
+
+        setFavoriteState(context, post, favoriteCounter, favoriteIconView);
+
+        // Display Open Graph information, if any
+
+        setOpenGraph(context, post, openGraphData, ogImage, ogTitle, ogDescription, ogUrl);
 
         // Attach click listeners to active UI components
 
         commentIcon.setOnClickListener(new PostCommentListener(context, post));
+
+        actionBadge.setOnClickListener(new PostCommentListener(context, post));
+
+        locationIcon.setOnClickListener(new PostMapListener(context, post));
+
+        directionsIcon.setOnClickListener(new PostDirectionsListener(context, post));
+
+        shareIcon.setOnClickListener(new PostShareListener(context, post));
 
         favoriteIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -319,275 +622,13 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
             }
         });
 
-        actionBadge.setOnClickListener(new PostCommentListener(context, post));
-        
-        locationIcon.setOnClickListener(new PostMapListener(context, post));
-
-        directionsIcon.setOnClickListener(new PostDirectionsListener(context, post));
-
-        // Allow user to share report content on Facebook/Twitter
-        // if either or both of those applications is installed
-
-//        reportThumb.setOnLongClickListener(new PostShareListener(context, post));
-
-        shareIcon.setOnClickListener(new PostShareListener(context, post));
-
-        // Populate the data into the template view using the data object
-        reportDate.setText(creationDate);
-        reportOwner.setText(String.format("%s %s", post.properties.owner.properties.first_name, post.properties.owner.properties.last_name));
-
-        // Display watershed name and add click listener if
-        // a valid territory object is present
-
-        reportWatershed.setText(watershedName);
-
-        reportWatershed.setOnClickListener(new TerritoryProfileListener(context, post.properties.territory));
-
-        // Display post caption, if any
-
-        postCaption.setText("");
-
-        postCaption.setVisibility(View.GONE);
-
-        if (post.properties.report_description != null && (post.properties.report_description.length() > 0)) {
-
-            openGraphOnly = false;
-
-            postCaption.setText(post.properties.report_description.trim());
-
-            postCaption.setVisibility(View.VISIBLE);
-
-            new PatternEditableBuilder().
-                    addPattern(context, Pattern.compile("\\#(\\w+)"), ContextCompat.getColor(context, R.color.waterreporter_blue),
-                            new PatternEditableBuilder.SpannableClickedListener() {
-                                @Override
-                                public void onSpanClicked(String text) {
-
-                                    Intent intent = new Intent(context, TagProfileActivity.class);
-                                    intent.putExtra("tag", text);
-                                    context.startActivity(intent);
-
-                                }
-                            }).into(postCaption);
-
-        }
-
-        // Add clickable organization views, if any
-
-        reportGroups.setVisibility(View.GONE);
-
-        reportGroups.removeAllViews();
-
-        if (post.properties.groups.size() > 0) {
-
-            reportGroups.setVisibility(View.VISIBLE);
-
-            for (Organization organization : post.properties.groups) {
-
-                ImageView groupView = (ImageView) LayoutInflater.from(context).inflate(R.layout.related_group_item, postCard, false);
-
-                Picasso.with(context).load(organization.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(groupView);
-
-                groupView.setTag(organization);
-
-                groupView.setOnClickListener(new OrganizationProfileListener(context, organization));
-
-                reportGroups.addView(groupView);
-
-            }
-
-        }
-
-        // Display badge if report is closed
-
-        actionBadge.setVisibility(View.GONE);
-
-        if ("closed".equals(post.properties.state)) {
-
-            actionBadge.setVisibility(View.VISIBLE);
-
-        }
-
-        // Set value of comment count string
-        int commentCount = post.properties.comments.size();
-
-        // Clear display comment count
-
-        reportComments.setText("");
-
-        // Revert comment icon opacity
-
-        commentIconView.setAlpha(0.4f);
-
-        // Revert comment icon color
-
-        Drawable commentIcon = ContextCompat.getDrawable(context, R.drawable.ic_mode_comment_black_24dp);
-        commentIcon.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
-        commentIconView.setImageDrawable(commentIcon);
-
-        if (commentCount > 0) {
-
-            reportComments.setText(String.valueOf(commentCount));
-
-            // Make comment icon opaque
-
-            commentIconView.setAlpha(1.0f);
-
-            // Change comment icon color
-
-            commentIcon.setColorFilter(ContextCompat.getColor(context, R.color.splash_blue), PorterDuff.Mode.SRC_ATOP);
-            commentIconView.setImageDrawable(commentIcon);
-
-        }
-
-        // Set value of favorite count string
-        int favoriteCount = post.properties.favorites.size();
-
-        // Clear display favorite count
-
-        favoriteCounter.setText("");
-
-        // Revert favorite icon opacity
-
-        favoriteIconView.setAlpha(0.4f);
-
-        // Revert icon color
-
-        Drawable favoriteIcon = ContextCompat.getDrawable(context, R.drawable.ic_favorite_black_24dp);
-        favoriteIcon.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
-        favoriteIconView.setImageDrawable(favoriteIcon);
-
-        if (favoriteCount > 0) {
-
-            favoriteCounter.setText(String.valueOf(favoriteCount));
-
-            // Make favorite icon opaque
-
-            favoriteIconView.setAlpha(1.0f);
-
-            // Change favorite icon color
-
-            favoriteIcon.setColorFilter(ContextCompat.getColor(context, R.color.favorite_red), PorterDuff.Mode.SRC_ATOP);
-            favoriteIconView.setImageDrawable(favoriteIcon);
-
-        }
-
-        // Load user avatar
-
-        Picasso.with(context).load(post.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(ownerAvatar);
-
-        // Load primary post image
-
-        reportThumb.setImageDrawable(null);
-
-        reportThumb.setVisibility(View.GONE);
-
-        if (post.properties.images.size() > 0) {
-
-            openGraphOnly = false;
-
-            ReportPhoto image = (ReportPhoto) post.properties.images.get(0);
-
-            String imagePath = (String) image.properties.square_retina;
-
-            reportThumb.setVisibility(View.VISIBLE);
-
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(context));
-
-            reportThumb.setLayoutParams(layoutParams);
-
-            Picasso.with(context).load(imagePath).fit().into(reportThumb);
-
-            reportThumb.setTag(imagePath);
-
-        }
-
-        // Display Open Graph information, if any
-
-        // Hide CardView
-
-        openGraphData.setVisibility(View.GONE);
-
-        // Reset image
-
-        ogImage.setImageDrawable(null);
-
-        // Reset title, description and URL
-
-        ogTitle.setText("");
-
-        ogDescription.setText("");
-
-        ogUrl.setText("");
-
-        if (post.properties.open_graph.size() > 0) {
-
-            final OpenGraphObject openGraphObject = post.properties.open_graph.get(0);
-
-            // Make CardView visible
-
-            openGraphData.setVisibility(View.VISIBLE);
-
-            openGraphData.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Uri webpage = Uri.parse(openGraphObject.properties.url);
-                    Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
-                    if (intent.resolveActivity(context.getPackageManager()) != null) {
-                        context.startActivity(intent);
-                    }
-                }
-            });
-
-            // Load image
-
-            Picasso.with(context).load(openGraphObject.properties.imageUrl).fit().into(ogImage);
-
-            // Load title, description and URL
-
-            ogTitle.setText(openGraphObject.properties.openGraphTitle);
-
-            ogDescription.setText(openGraphObject.properties.description);
-
-            try {
-
-                ogUrl.setText(OpenGraph.getDomainName(openGraphObject.properties.url));
-
-            } catch (URISyntaxException e) {
-
-                ogUrl.setText("");
-
-            }
-
-            if (openGraphOnly) {
-
-                reportWatershed.setText("");
-
-                locationIcon.setOnClickListener(null);
-
-                locationIcon.setVisibility(View.GONE);
-
-                directionsIcon.setOnClickListener(null);
-
-                directionsIcon.setVisibility(View.GONE);
-
-            } else {
-
-                locationIcon.setVisibility(View.VISIBLE);
-
-                directionsIcon.setVisibility(View.VISIBLE);
-
-            }
-
-        }
-
         // Context-dependent configuration
 
         if (!mIsProfile) {
 
             ownerAvatar.setOnClickListener(new UserProfileListener(context, post.properties.owner));
 
-            reportOwner.setOnClickListener(new UserProfileListener(context, post.properties.owner));
+            postOwner.setOnClickListener(new UserProfileListener(context, post.properties.owner));
 
             actionsEllipsis.setVisibility(View.GONE);
 
@@ -596,16 +637,16 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
             // Here we're inside the profile context
 
             // Even within the profile context, we need to account for the fact that users will
-            // take action on reports that they don't own. Therefore, profile routing should be
+            // take action on posts that they don't own. Therefore, profile routing should be
             // enabled when viewing a person's "actions" feed. We can determine the condition by
             // comparing the transient user id stored in the UserHolder class and the `owner_id`
-            // field of the current report.
+            // field of the current post.
 
             if (UserHolder.getUser().properties.id != post.properties.owner_id) {
 
                 ownerAvatar.setOnClickListener(new UserProfileListener(context, post.properties.owner));
 
-                reportOwner.setOnClickListener(new UserProfileListener(context, post.properties.owner));
+                postOwner.setOnClickListener(new UserProfileListener(context, post.properties.owner));
 
             }
 

@@ -143,11 +143,11 @@
 //        reportOwner.setText(String.format("%s %s", feature.properties.owner.properties.first_name, feature.properties.owner.properties.last_name));
 //        reportWatershed.setText(watershedName);
 //
-//        if (feature.properties.report_description != null && (feature.properties.report_description.length() > 0)) {
+//        if (feature.properties.description != null && (feature.properties.description.length() > 0)) {
 //
 //            reportCaption.setVisibility(View.VISIBLE);
 //
-//            reportCaption.setText(feature.properties.report_description.trim());
+//            reportCaption.setText(feature.properties.description.trim());
 //
 //        } else {
 //

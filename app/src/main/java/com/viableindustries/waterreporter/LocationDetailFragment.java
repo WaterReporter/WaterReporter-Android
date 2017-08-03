@@ -396,7 +396,7 @@
 //            options.position(new LatLng(geometry.coordinates.get(1), geometry.coordinates.get(0)));
 //            options.flat(true);
 //            options.reportId(report.id);
-//            options.reportDescription(report.properties.report_description.trim());
+//            options.reportDescription(report.properties.description.trim());
 //            options.thumbNail(report.properties.images.get(0).properties.icon_retina);
 //            options.fullImage(report.properties.images.get(0).properties.square_retina);
 //            options.creationDate(AttributeTransformUtility.parseDate(new SimpleDateFormat("MMM dd, yyyy", Locale.US), report.properties.created));

@@ -186,7 +186,7 @@
 //
 //                dateText.setText("Submitted on " + mDateStr);
 //
-//                commentsText.setText(report.properties.report_description);
+//                commentsText.setText(report.properties.description);
 //
 //            }
 //
