@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void populateTimeline(final List<Report> list) {
 
-        postCardAdapter = new PostCardAdapter(this, list, false);
+        postCardAdapter = new PostCardAdapter(this, list, false, false, 0);
 
 //        postCardAdapter.setHasStableIds(true);
 

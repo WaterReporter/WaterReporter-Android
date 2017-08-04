@@ -58,17 +58,13 @@
             android:layout_height="match_parent"
             android:layout_marginBottom="40dp">
 
-            <ListView
-                android:id="@+id/timeline_items"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/postList"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="40dp"
-                android:divider="@color/gray_232"
-                android:dividerHeight="0.5dp"
-                android:fadingEdgeLength="0dp"
-                android:listSelector="@drawable/timeline_selector"
-                android:overScrollMode="never"
-                android:scrollbars="none" />
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom"
+                android:background="@android:color/transparent"
+                android:orientation="vertical" />
 
         </android.support.v4.widget.SwipeRefreshLayout>
 

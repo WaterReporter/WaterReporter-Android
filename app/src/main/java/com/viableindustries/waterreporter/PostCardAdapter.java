@@ -41,6 +41,7 @@ import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.ReportPhoto;
 import com.viableindustries.waterreporter.data.TerritoryProfileListener;
 import com.viableindustries.waterreporter.data.UserHolder;
+import com.viableindustries.waterreporter.data.UserProfileHeader;
 import com.viableindustries.waterreporter.data.UserProfileListener;
 import com.viableindustries.waterreporter.dialogs.ReportActionDialogListener;
 
@@ -60,7 +61,12 @@ import static com.viableindustries.waterreporter.R.id.parent;
  * Created by brendanmcintyre on 8/1/17.
  */
 
-public class PostCardAdapter extends RecyclerView.Adapter<PostCardHolder> {
+public class PostCardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private static final int TYPE_HEADER = 0;
+    private static final int TYPE_ITEM = 1;
+
+    private boolean mHasHeader;
 
     private List<Report> mDataset;
 
@@ -70,44 +76,72 @@ public class PostCardAdapter extends RecyclerView.Adapter<PostCardHolder> {
 
     private boolean mIsProfile;
 
+    private int mHeaderId;
+
     private OnLoadMoreListener loadMoreListener;
     private boolean isLoading = false;
     private boolean isMoreDataAvailable = true;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public PostCardAdapter(Activity activity, List<Report> reports, boolean isProfile) {
+    public PostCardAdapter(Activity activity, List<Report> reports, boolean isProfile, boolean hasHeader, int headerId) {
         mDataset = reports;
         mContext = activity;
         mPreferences = mContext.getSharedPreferences(mContext.getPackageName(), 0);
         mIsProfile = isProfile;
+        mHasHeader = hasHeader;
+        mHeaderId = headerId;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
-    public PostCardHolder onCreateViewHolder(ViewGroup parent,
-                                                         int viewType) {
-        // create a new view
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent,
+                                                      int viewType) {
+
+        if (viewType == TYPE_HEADER) {
+
+            LinearLayout v = (LinearLayout) LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.user_profile_header, parent, false);
+
+            return new UserHeaderHolder(v);
+
+        }
+
         LinearLayout v = (LinearLayout) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.timeline_item, parent, false);
-        // set the view's size, margins, paddings and layout parameters
-//        ...
-        PostCardHolder vh = new PostCardHolder(v);
-        return vh;
+
+        return new PostCardHolder(v);
+
+
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(PostCardHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        if (position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
-            isLoading = true;
-            loadMoreListener.onLoadMore();
+        if (holder instanceof UserHeaderHolder) {
+
+            UserHeaderHolder userHeaderHolder = (UserHeaderHolder) holder;
+
+            final UserProfileHeader profileHeader = new UserProfileHeader();
+
+            profileHeader.setData(UserHolder.getUser());
+
+            userHeaderHolder.bindData(mContext,
+                    profileHeader.getName(),
+                    profileHeader.getTitle(),
+                    profileHeader.getDescription(),
+                    profileHeader.getAvatarUrl());
+
+        } else if (holder instanceof PostCardHolder) {
+
+            PostCardHolder postCardHolder = (PostCardHolder) holder;
+
+            // Get item from dataset at `position`
+            final Report post = mDataset.get(position);
+
+            postCardHolder.bindData(post, mContext, mPreferences, mIsProfile);
+
         }
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
-        final Report post = mDataset.get(position);
-
-        holder.bindPost(post, mContext, mPreferences, mIsProfile);
 
     }
 
@@ -115,12 +149,6 @@ public class PostCardAdapter extends RecyclerView.Adapter<PostCardHolder> {
     @Override
     public int getItemCount() {
         return mDataset.size();
-    }
-
-    @Override
-    public int getItemViewType(int position)
-    {
-        return position;
     }
 
     static class LoadHolder extends RecyclerView.ViewHolder {
@@ -141,6 +169,17 @@ public class PostCardAdapter extends RecyclerView.Adapter<PostCardHolder> {
         isLoading = false;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (isPositionHeader(position) && mHasHeader) {
+            return TYPE_HEADER;
+        }
+        return TYPE_ITEM;
+    }
+
+    private boolean isPositionHeader(int position) {
+        return position == 0;
+    }
 
     interface OnLoadMoreListener {
         void onLoadMore();

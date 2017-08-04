@@ -504,7 +504,7 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
     }
 
-    public void bindPost(final Report post, final Context context, final SharedPreferences sharedPreferences, final boolean mIsProfile) {
+    public void bindData(final Report post, final Context context, final SharedPreferences sharedPreferences, final boolean mIsProfile) {
 
         boolean openGraphOnly = true;
 
