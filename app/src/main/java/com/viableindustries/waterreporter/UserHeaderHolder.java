@@ -91,6 +91,7 @@ public class UserHeaderHolder extends RecyclerView.ViewHolder {
         mDescription.setText(description);
 
         mDescription.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
 
@@ -98,33 +99,38 @@ public class UserHeaderHolder extends RecyclerView.ViewHolder {
 
                 int maxLines = TextViewCompat.getMaxLines(mDescription);
 
-                if (maxLines == 2) {
+                int collapsedMaxLines = 3;
 
-                    mDescription.setEllipsize(null);
+                int lineCount = mDescription.getLineCount();
+
+                int duration = (lineCount - collapsedMaxLines) > 0 ? (lineCount - collapsedMaxLines) * 10 : 100;
+
+                Log.d("duration", String.valueOf(duration));
+
+                if (maxLines == collapsedMaxLines) {
 
                     animation = ObjectAnimator.ofInt(
                             mDescription,
                             "maxLines",
-                            2,
+                            collapsedMaxLines,
                             20);
 
                 } else {
 
-                    mDescription.setEllipsize(TextUtils.TruncateAt.END);
-
                     animation = ObjectAnimator.ofInt(
                             mDescription,
                             "maxLines",
-                            20,
-                            2);
+                            100,
+                            collapsedMaxLines);
 
                 }
 
-                animation.setDuration(100);
+                animation.setDuration(duration);
                 animation.setInterpolator(new LinearOutSlowInInterpolator());
                 animation.start();
 
             }
+
         });
 
         Picasso.with(context)
