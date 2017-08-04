@@ -229,7 +229,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
                     LatLng postLocation = new LatLng(geometry.coordinates.get(1), geometry.coordinates.get(0));
 
                     CameraPosition position = new CameraPosition.Builder()
-                        .target(new LatLng(postLocation.getLatitude(), postLocation.getLongitude())) // Sets the new camera position
+                            .target(new LatLng(postLocation.getLatitude(), postLocation.getLongitude())) // Sets the new camera position
                             .zoom(12) // Sets the zoom
                             .build(); // Creates a CameraPosition from the builder
 
@@ -240,28 +240,6 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
             }
         });
-
-//        SnapHelper snapHelper = new LinearSnapHelper() {
-//            @Override
-//            public int findTargetSnapPosition(RecyclerView.LayoutManager layoutManager, int velocityX, int velocityY) {
-//                int snapPosition = super.findTargetSnapPosition(layoutManager, velocityX, velocityY);
-//
-//                // Do something with snapPosition
-//                LatLng postLocation = latLngs.get(snapPosition);
-//
-//                CameraPosition position = new CameraPosition.Builder()
-//                        .target(new LatLng(postLocation.getLatitude(), postLocation.getLongitude())) // Sets the new camera position
-//                        .zoom(12) // Sets the zoom
-//                        .build(); // Creates a CameraPosition from the builder
-//
-//                mMapboxMap.animateCamera(CameraUpdateFactory
-//                        .newCameraPosition(position), 500);
-//
-//                return snapPosition;
-//            }
-//        };
-
-//        snapHelper.attachToRecyclerView(postList);
 
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -282,59 +260,6 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
                 fetchReports(50, 1, buildQuery(true, "report", null), false);
 
-//                mapboxMap.setOnMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
-//                    @Override
-//                    public boolean onMarkerClick(@NonNull Marker marker) {
-//
-//                        marker.
-//
-//                        Log.d("reportKeyFromMarkerTap", String.format("%s-%s", marker.getReportId(), "r"));
-//
-//                        Report r = mappedReportsHolder.getReport(String.format("%s-%s", marker.getReportId(), "r"));
-//
-//                        ReportHolder.setReport(r);
-//
-//                        CameraPosition position = new CameraPosition.Builder()
-//                                .target(new LatLng(marker.getPosition().getLatitude(), marker.getPosition().getLongitude())) // Sets the new camera position
-//                                .zoom(14) // Sets the zoom
-//                                .build(); // Creates a CameraPosition from the builder
-//
-//                        mapboxMap.animateCamera(CameraUpdateFactory
-//                                .newCameraPosition(position), 500);
-//
-//                        int idx = marker.getIndex();
-//                        return true;
-//                    }
-//                });
-
-//                String code = String.format("%s", territory.properties.huc_8_code);
-//                if (code.length() == 7) code = String.format("0%s", code);
-//                String url = String.format("https://huc.waterreporter.org/8/%s", code);
-//
-//                try {
-//
-//                    URL geoJsonUrl = new URL(url);
-//                    GeoJsonSource geoJsonSource = new GeoJsonSource("geojson", geoJsonUrl);
-//                    mapboxMap.addSource(geoJsonSource);
-//
-//                    // Create a FillLayer with style properties
-//
-//                    FillLayer layer = new FillLayer("geojson", "geojson");
-//
-//                    layer.withProperties(
-//                            //fillOutlineColor("#FFFFFF"),
-//                            fillColor("#6b4ab5"),
-//                            fillOpacity(0.4f)
-//                    );
-//
-//                    mapboxMap.addLayer(layer);
-//
-//                } catch (MalformedURLException e) {
-//
-//                    Log.d("Malformed URL", e.getMessage());
-//
-//                }
-
             }
         });
 
@@ -351,6 +276,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
                 finish();
             }
         });
+
     }
 
     protected void fetchGeometry() {
@@ -378,10 +304,6 @@ public class TerritoryMapActivity extends AppCompatActivity {
                 latLngs.add(northEast);
 
                 sStates.setText(hucFeature.properties.states.concat);
-
-//                // Move camera to watershed bounds
-//                LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(latLngs).build();
-//                mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 100, 100, 100, 100), 2000);
 
             }
 
@@ -512,9 +434,18 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
         // specify an adapter (see also next example)
         mAdapter = new MarkerCardAdapter(this, reports);
-        postList.setAdapter(mAdapter);
 
-//        List<LatLng> latLngs = new ArrayList<LatLng>();
+        try {
+
+            postList.setAdapter(mAdapter);
+
+        } catch (NullPointerException e) {
+
+            finish();
+
+            return;
+
+        }
 
         int idx = 0;
 
@@ -590,20 +521,6 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
                 convertView = inflater.inflate(R.layout.view_marker_dot, parent, false);
 
-//                if (marker.isInFocus() == 1) {
-//
-//                    convertView = inflater.inflate(R.layout.view_origin_marker, parent, false);
-//
-//                } else {
-//
-//                    convertView = inflater.inflate(R.layout.view_custom_marker, parent, false);
-//
-//                }
-
-//                viewHolder.markerContainer = (FrameLayout) convertView.findViewById(R.id.customMarker);
-//                viewHolder.image = (ImageView) convertView.findViewById(R.id.imageView);
-//                viewHolder.actionBadge = (ImageView) convertView.findViewById(R.id.actionBadge);
-
                 convertView.setTag(viewHolder);
 
             } else {
@@ -612,33 +529,8 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
             }
 
-//            // Display badge if report is closed
-//            if (marker.getStatus().equals("closed")) {
-//
-//                viewHolder.actionBadge.setVisibility(View.VISIBLE);
-//
-//            } else {
-//
-//                viewHolder.actionBadge.setVisibility(View.GONE);
-//
-//            }
-//
-//            int markerDimension;
-//
-//            // Display active marker pin if report is "source"
-//            if (marker.isInFocus() == 1) {
-//
-//                markerDimension = getContext().getResources().getDimensionPixelSize(R.dimen.origin_marker_size);
-//
-//            } else {
-//
-//                markerDimension = getContext().getResources().getDimensionPixelSize(R.dimen.default_marker_size);
-//
-//            }
-//
-//            Picasso.with(getContext()).load(marker.getThumbNail()).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(viewHolder.image);
-
             return convertView;
+
         }
 
         @Override
@@ -662,28 +554,10 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
             layoutManager.scrollToPositionWithOffset(idx, 0);
 
-//            recyclerView.smoothScrollToPosition(idx);
-
-//            // Check to see if marker detail is already open
-//            SharedPreferences prefs = getContext().getSharedPreferences(getContext().getPackageName(), MODE_PRIVATE);
-//
-//            boolean isOpen = prefs.getBoolean("markerDetailOpen", false);
-//
-////            if (!isOpen) {
-////
-////                prefs.edit().putBoolean("markerDetailOpen", true).apply();
-//
-//            Intent markerIntent = new Intent(getContext(), MarkerDetailActivity.class);
-//
-//            getContext().startActivity(markerIntent);
-//
-////            }
+            // false indicates that we are calling selectMarker ourselves
+            // true will let the system call it for you, which will result in showing an InfoWindow instantly
 
             return false;
-
-            // false indicates that we are calling selectMarker after our animation ourselves
-            // true will let the system call it for you, which will result in showing an InfoWindow instantly
-            //return false;
         }
 
         @Override

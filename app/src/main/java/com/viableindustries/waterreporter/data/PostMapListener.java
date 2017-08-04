@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.View;
 
 import com.viableindustries.waterreporter.MapDetailActivity;
+import com.viableindustries.waterreporter.TerritoryMapActivity;
 import com.viableindustries.waterreporter.UserProfileActivity;
 
 /**
@@ -27,7 +28,9 @@ public class PostMapListener implements View.OnClickListener {
 
         ReportHolder.setReport(post);
 
-        Intent intent = new Intent(context, MapDetailActivity.class);
+        TerritoryHolder.setTerritory(post.properties.territory);
+
+        Intent intent = new Intent(context, TerritoryMapActivity.class);
 
         context.startActivity(intent);
 
