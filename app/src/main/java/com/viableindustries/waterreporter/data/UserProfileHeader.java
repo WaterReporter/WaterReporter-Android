@@ -120,7 +120,15 @@ public class UserProfileHeader {
 
         // Set avatar URL
 
-        this.setAvatarUrl(user.properties.images.get(0).properties.thumbnail_retina);
+        if (user.properties.images != null && user.properties.images.size() > 0) {
+
+            this.setAvatarUrl(user.properties.images.get(0).properties.thumbnail_retina);
+
+        } else {
+
+            this.setAvatarUrl(user.properties.picture);
+
+        }
 
         // Set user name
 
