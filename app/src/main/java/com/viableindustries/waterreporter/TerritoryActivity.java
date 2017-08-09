@@ -150,6 +150,9 @@ public class TerritoryActivity extends AppCompatActivity {
     @Bind(R.id.backArrow)
     RelativeLayout backArrow;
 
+    @Bind(R.id.secondaryMapButton)
+    RelativeLayout secondaryMapButton;
+
 //    @Bind(R.id.sReportCount)
 //    TextView sReportCount;
 
@@ -351,6 +354,8 @@ public class TerritoryActivity extends AppCompatActivity {
                         sTerritoryName.setAlpha(1.0f);
                         sStates.setAlpha(0.8f);
 
+                        secondaryMapButton.setVisibility(View.VISIBLE);
+
                     }
 
                 } else {
@@ -375,6 +380,8 @@ public class TerritoryActivity extends AppCompatActivity {
 
                         sTerritoryName.setAlpha(0.0f);
                         sStates.setAlpha(0.0f);
+
+                        secondaryMapButton.setVisibility(View.INVISIBLE);
 
                     }
 
@@ -487,6 +494,13 @@ public class TerritoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+
+        secondaryMapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(context, TerritoryMapActivity.class));
             }
         });
 

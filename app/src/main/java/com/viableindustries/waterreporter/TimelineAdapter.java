@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -109,16 +110,16 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
     }
 
     protected static class ViewHolder {
-        TextView reportDate;
-        TextView reportOwner;
-        TextView reportWatershed;
-        TextView reportComments;
+        TextView postDate;
+        TextView postOwner;
+        TextView postWatershed;
+        TextView postComments;
         TextView postCaption;
-        FlexboxLayout reportGroups;
+        FlexboxLayout postGroups;
         ImageView ownerAvatar;
         ImageView postThumb;
         RelativeLayout actionBadge;
-        LinearLayout reportStub;
+        LinearLayout postStub;
         RelativeLayout locationIcon;
         RelativeLayout directionsIcon;
         RelativeLayout commentIcon;
@@ -280,16 +281,16 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
             viewHolder = new ViewHolder();
 
-            viewHolder.reportDate = (TextView) convertView.findViewById(R.id.report_date);
-            viewHolder.reportOwner = (TextView) convertView.findViewById(R.id.report_owner);
-            viewHolder.reportWatershed = (TextView) convertView.findViewById(R.id.report_watershed);
-            viewHolder.reportComments = (TextView) convertView.findViewById(R.id.comment_count);
+            viewHolder.postDate = (TextView) convertView.findViewById(R.id.post_date);
+            viewHolder.postOwner = (TextView) convertView.findViewById(R.id.post_owner);
+            viewHolder.postWatershed = (TextView) convertView.findViewById(R.id.post_watershed);
+            viewHolder.postComments = (TextView) convertView.findViewById(R.id.comment_count);
             viewHolder.postCaption = (TextView) convertView.findViewById(R.id.postCaption);
             viewHolder.ownerAvatar = (ImageView) convertView.findViewById(R.id.owner_avatar);
-            viewHolder.reportGroups = (FlexboxLayout) convertView.findViewById(R.id.report_groups);
+            viewHolder.postGroups = (FlexboxLayout) convertView.findViewById(R.id.post_groups);
             viewHolder.postThumb = (ImageView) convertView.findViewById(R.id.postThumb);
             viewHolder.actionBadge = (RelativeLayout) convertView.findViewById(R.id.action_badge);
-            viewHolder.reportStub = (LinearLayout) convertView.findViewById(R.id.report_stub);
+            viewHolder.postStub = (LinearLayout) convertView.findViewById(R.id.post_stub);
             viewHolder.locationIcon = (RelativeLayout) convertView.findViewById(R.id.location_icon);
             viewHolder.directionsIcon = (RelativeLayout) convertView.findViewById(R.id.directions_icon);
             viewHolder.commentIcon = (RelativeLayout) convertView.findViewById(R.id.comment_icon);
@@ -481,15 +482,15 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         });
 
         // Populate the data into the template view using the data object
-        viewHolder.reportDate.setText(creationDate);
-        viewHolder.reportOwner.setText(String.format("%s %s", feature.properties.owner.properties.first_name, feature.properties.owner.properties.last_name));
+        viewHolder.postDate.setText(creationDate);
+        viewHolder.postOwner.setText(String.format("%s %s", feature.properties.owner.properties.first_name, feature.properties.owner.properties.last_name));
 
         // Display watershed name and add click listener if
         // a valid territory object is present
 
-        viewHolder.reportWatershed.setText(watershedName);
+        viewHolder.postWatershed.setText(watershedName);
 
-        viewHolder.reportWatershed.setOnClickListener(new TerritoryProfileListener(getContext(), feature.properties.territory));
+        viewHolder.postWatershed.setOnClickListener(new TerritoryProfileListener(getContext(), feature.properties.territory));
 
         // Display post caption, if any
 
@@ -524,9 +525,9 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         // Add clickable organization views, if any
 
-        viewHolder.reportGroups.setVisibility(View.VISIBLE);
+        viewHolder.postGroups.setVisibility(View.VISIBLE);
 
-        viewHolder.reportGroups.removeAllViews();
+        viewHolder.postGroups.removeAllViews();
 
         if (feature.properties.groups.size() > 0) {
 
@@ -540,13 +541,13 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
                 groupView.setOnClickListener(new OrganizationProfileListener(getContext(), organization));
 
-                viewHolder.reportGroups.addView(groupView);
+                viewHolder.postGroups.addView(groupView);
 
             }
 
         } else {
 
-            viewHolder.reportGroups.setVisibility(View.GONE);
+            viewHolder.postGroups.setVisibility(View.GONE);
 
         }
 
@@ -566,7 +567,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         if (commentCount > 0) {
 
-            viewHolder.reportComments.setText(String.valueOf(commentCount));
+            viewHolder.postComments.setText(String.valueOf(commentCount));
 
             // Make comment icon opaque
 
@@ -580,7 +581,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         } else {
 
-            viewHolder.reportComments.setText("");
+            viewHolder.postComments.setText("");
 
             // Revert comment icon opacity
 
@@ -642,7 +643,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
             viewHolder.postThumb.setVisibility(View.VISIBLE);
 
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(context));
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(context));
 
             viewHolder.postThumb.setLayoutParams(layoutParams);
 
@@ -701,7 +702,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
             if (openGraphOnly) {
 
-                viewHolder.reportWatershed.setText("");
+                viewHolder.postWatershed.setText("");
 
                 viewHolder.locationIcon.setOnClickListener(null);
 
@@ -745,7 +746,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
             viewHolder.ownerAvatar.setOnClickListener(new UserProfileListener(getContext(), feature.properties.owner));
 
-            viewHolder.reportOwner.setOnClickListener(new UserProfileListener(getContext(), feature.properties.owner));
+            viewHolder.postOwner.setOnClickListener(new UserProfileListener(getContext(), feature.properties.owner));
 
             viewHolder.actionsEllipsis.setVisibility(View.GONE);
 
@@ -763,7 +764,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
                 viewHolder.ownerAvatar.setOnClickListener(new UserProfileListener(getContext(), feature.properties.owner));
 
-                viewHolder.reportOwner.setOnClickListener(new UserProfileListener(getContext(), feature.properties.owner));
+                viewHolder.postOwner.setOnClickListener(new UserProfileListener(getContext(), feature.properties.owner));
 
             }
 
