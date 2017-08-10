@@ -54,7 +54,7 @@
 //    @Bind(R.id.detail_container)
 //    LinearLayout detailContainer;
 //
-//    @Bind(R.id.report_content)
+//    @Bind(R.id.post_content)
 //    LinearLayout reportContent;
 //
 //    @Bind(R.id.loading_spinner)

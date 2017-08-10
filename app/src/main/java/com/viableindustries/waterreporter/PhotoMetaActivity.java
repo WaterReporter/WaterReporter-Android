@@ -124,7 +124,7 @@ public class PhotoMetaActivity extends AppCompatActivity
     @Bind(R.id.tag_results)
     LinearLayout tagResults;
 
-    @Bind(R.id.report_image_preview)
+    @Bind(R.id.post_image_preview)
     ImageView mImageView;
 
     @Bind(R.id.groups)
@@ -136,7 +136,7 @@ public class PhotoMetaActivity extends AppCompatActivity
     @Bind(R.id.camera_button_container)
     RelativeLayout cameraButtonContainer;
 
-    @Bind(R.id.add_report_image)
+    @Bind(R.id.add_post_image)
     ImageView addImageIcon;
 
     @Bind(R.id.location_component)
@@ -367,7 +367,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             mImageView.setVisibility(View.VISIBLE);
 
-            commentsField.setText(savedInstanceState.getString("report_description"));
+            commentsField.setText(savedInstanceState.getString("post_description"));
 
             latitude = savedInstanceState.getDouble("latitude", 0);
 
@@ -1671,9 +1671,9 @@ public class PhotoMetaActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putString("report_date", dateText);
+        outState.putString("post_date", dateText);
 
-        outState.putString("report_description", commentsText);
+        outState.putString("post_description", commentsText);
 
         outState.putDouble("latitude", latitude);
 

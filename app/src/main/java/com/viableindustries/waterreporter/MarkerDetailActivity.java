@@ -79,23 +79,23 @@ public class MarkerDetailActivity extends AppCompatActivity {
     @Bind(R.id.post_container)
     ScrollView postContainer;
 
-    @Bind(R.id.report_date)
-    TextView reportDate;
+    @Bind(R.id.post_date)
+    TextView postDate;
 
-    @Bind(R.id.report_owner)
-    TextView reportOwner;
+    @Bind(R.id.post_owner)
+    TextView postOwner;
 
-    @Bind(R.id.report_watershed)
-    TextView reportWatershed;
+    @Bind(R.id.post_watershed)
+    TextView postWatershed;
 
     @Bind(R.id.comment_count)
-    TextView reportComments;
+    TextView postComments;
 
-    @Bind(R.id.report_caption)
-    TextView reportCaption;
+    @Bind(R.id.post_caption)
+    TextView postCaption;
 
-    @Bind(R.id.report_groups)
-    FlexboxLayout reportGroups;
+    @Bind(R.id.post_groups)
+    FlexboxLayout postGroups;
 
     @Bind(R.id.owner_avatar)
     ImageView ownerAvatar;
@@ -115,7 +115,7 @@ public class MarkerDetailActivity extends AppCompatActivity {
     @Bind(R.id.text_descriptors)
     LinearLayout textDescriptors;
 
-    @Bind(R.id.report_stub)
+    @Bind(R.id.post_stub)
     LinearLayout reportStub;
 
     private String creationDate;
@@ -202,17 +202,17 @@ public class MarkerDetailActivity extends AppCompatActivity {
         imagePath = (String) image.properties.square_retina;
 
         // Display user name
-        reportOwner.setText(String.format("%s %s", report.properties.owner.properties.first_name, report.properties.owner.properties.last_name));
+        postOwner.setText(String.format("%s %s", report.properties.owner.properties.first_name, report.properties.owner.properties.last_name));
 
         creationDate = (String) AttributeTransformUtility.relativeTime(report.properties.created);
-        reportDate.setText(creationDate);
+        postDate.setText(creationDate);
 
         // Display watershed name, if any
 
         watershedName = AttributeTransformUtility.parseWatershedName(report.properties.territory);
-        reportWatershed.setText(watershedName);
+        postWatershed.setText(watershedName);
 
-        reportWatershed.setOnClickListener(new TerritoryProfileListener(this, report.properties.territory));
+        postWatershed.setOnClickListener(new TerritoryProfileListener(this, report.properties.territory));
 
         textDescriptors.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
 
@@ -224,9 +224,9 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
         if (report.properties.description != null && (report.properties.description.length() > 0)) {
 
-            reportCaption.setVisibility(View.VISIBLE);
+            postCaption.setVisibility(View.VISIBLE);
 
-            reportCaption.setText(report.properties.description.trim());
+            postCaption.setText(report.properties.description.trim());
 
             new PatternEditableBuilder().
                     addPattern(context, Pattern.compile("\\#(\\w+)"), ContextCompat.getColor(context, R.color.waterreporter_blue),
@@ -239,11 +239,11 @@ public class MarkerDetailActivity extends AppCompatActivity {
                                     startActivity(intent);
 
                                 }
-                            }).into(reportCaption);
+                            }).into(postCaption);
 
         } else {
 
-            reportCaption.setVisibility(View.GONE);
+            postCaption.setVisibility(View.GONE);
 
         }
 
@@ -275,9 +275,9 @@ public class MarkerDetailActivity extends AppCompatActivity {
             }
         });
 
-        reportGroups.setVisibility(View.VISIBLE);
+        postGroups.setVisibility(View.VISIBLE);
 
-        reportGroups.removeAllViews();
+        postGroups.removeAllViews();
 
         if (report.properties.groups.size() > 0) {
 
@@ -285,7 +285,7 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
                 // Inflate organization logo layout and add to FlexboxLayout
 
-                ImageView groupView = (ImageView) LayoutInflater.from(this).inflate(R.layout.related_group_item, reportGroups, false);
+                ImageView groupView = (ImageView) LayoutInflater.from(this).inflate(R.layout.related_group_item, postGroups, false);
 
                 Picasso.with(this).load(organization.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(groupView);
 
@@ -293,13 +293,13 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
                 groupView.setOnClickListener(new OrganizationProfileListener(this, organization));
 
-                reportGroups.addView(groupView);
+                postGroups.addView(groupView);
 
             }
 
         } else {
 
-            reportGroups.setVisibility(View.GONE);
+            postGroups.setVisibility(View.GONE);
 
         }
 
@@ -307,7 +307,7 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
         ownerAvatar.setOnClickListener(new UserProfileListener(this, report.properties.owner));
 
-        reportOwner.setOnClickListener(new UserProfileListener(this, report.properties.owner));
+        postOwner.setOnClickListener(new UserProfileListener(this, report.properties.owner));
 
         // Display badge if report is closed
 
@@ -324,7 +324,7 @@ public class MarkerDetailActivity extends AppCompatActivity {
         // Set value of comment count string
 
         commentCount = report.properties.comments.size();
-        reportComments.setText(getResources().getQuantityString(R.plurals.comment_label, commentCount, commentCount));
+        postComments.setText(getResources().getQuantityString(R.plurals.comment_label, commentCount, commentCount));
 
         shareIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -338,7 +338,7 @@ public class MarkerDetailActivity extends AppCompatActivity {
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, shareUrl);
                 sendIntent.setType("text/plain");
-                context.startActivity(Intent.createChooser(sendIntent, res.getText(R.string.share_report_chooser_title)));
+                context.startActivity(Intent.createChooser(sendIntent, res.getText(R.string.share_post_chooser_title)));
 
             }
         });

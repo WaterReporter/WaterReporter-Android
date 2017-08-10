@@ -541,11 +541,11 @@ public class CommentActivity extends AppCompatActivity implements
 
         ViewGroup header = (ViewGroup) inflater.inflate(R.layout.comment_list_header, commentList, false);
 
-        TextView reportOwner = (TextView) header.findViewById(R.id.report_owner);
+        TextView reportOwner = (TextView) header.findViewById(R.id.post_owner);
 
-        TextView reportDate = (TextView) header.findViewById(R.id.report_date);
+        TextView reportDate = (TextView) header.findViewById(R.id.post_date);
 
-        TextView reportCaption = (TextView) header.findViewById(R.id.report_caption);
+        TextView reportCaption = (TextView) header.findViewById(R.id.post_caption);
 
         ImageView ownerAvatar = (ImageView) header.findViewById(R.id.owner_avatar);
 

@@ -185,7 +185,7 @@
 //
 //                    String title = userName.equals("a citizen") ? "Check out this Water Reporter post: " : String.format("Check out this Water Reporter post from %s: ", userName);
 //
-//                    shareIntent.putExtra(Intent.EXTRA_TEXT, String.format(context.getResources().getString(R.string.share_report_text_body),
+//                    shareIntent.putExtra(Intent.EXTRA_TEXT, String.format(context.getResources().getString(R.string.share_post_text_body),
 //                            title, String.valueOf(feature.id)));
 //
 //                    // Set the target application to Twitter.
@@ -245,15 +245,15 @@
 //
 //        if (hasFacebook && hasTwitter) {
 //
-//            socialOptions = R.array.report_share_options_all;
+//            socialOptions = R.array.post_share_options_all;
 //
 //        } else if (hasFacebook) {
 //
-//            socialOptions = R.array.report_share_options_fb;
+//            socialOptions = R.array.post_share_options_fb;
 //
 //        } else if (hasTwitter) {
 //
-//            socialOptions = R.array.report_share_options_tt;
+//            socialOptions = R.array.post_share_options_tt;
 //
 //        } else {
 //

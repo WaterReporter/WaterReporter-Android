@@ -78,14 +78,14 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
 
             viewHolder = new ViewHolder();
 
-            viewHolder.reportDate = (TextView) convertView.findViewById(R.id.report_date);
-            viewHolder.reportOwner = (TextView) convertView.findViewById(R.id.report_owner);
-            viewHolder.reportCaption = (TextView) convertView.findViewById(R.id.report_caption);
+            viewHolder.reportDate = (TextView) convertView.findViewById(R.id.post_date);
+            viewHolder.reportOwner = (TextView) convertView.findViewById(R.id.post_owner);
+            viewHolder.reportCaption = (TextView) convertView.findViewById(R.id.post_caption);
             viewHolder.ownerAvatar = (ImageView) convertView.findViewById(R.id.owner_avatar);
             viewHolder.postThumb = (ImageView) convertView.findViewById(R.id.postThumb);
             viewHolder.actionBadge = (ImageView) convertView.findViewById(R.id.action_badge);
             viewHolder.actionTaken = (LinearLayout) convertView.findViewById(R.id.action_taken);
-            viewHolder.reportStub = (LinearLayout) convertView.findViewById(R.id.report_stub);
+            viewHolder.reportStub = (LinearLayout) convertView.findViewById(R.id.post_stub);
             viewHolder.tracker = (TextView) convertView.findViewById(R.id.tracker);
 
             convertView.setTag(viewHolder);
@@ -159,7 +159,7 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
 
         // Display badge if report is closed
 
-        if ("closed".equals(feature.properties.report_state)) {
+        if ("closed".equals(feature.properties.post_state)) {
 
             viewHolder.actionTaken.setVisibility(View.VISIBLE);
 

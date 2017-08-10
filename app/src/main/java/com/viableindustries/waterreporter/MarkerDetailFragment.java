@@ -69,16 +69,16 @@
 //
 //        // Set up handles to view objects
 //
-//        TextView reportDate = (TextView) view.findViewById(R.id.report_date);
-//        TextView reportOwner = (TextView) view.findViewById(R.id.report_owner);
-//        TextView reportWatershed = (TextView) view.findViewById(R.id.report_watershed);
+//        TextView reportDate = (TextView) view.findViewById(R.id.post_date);
+//        TextView reportOwner = (TextView) view.findViewById(R.id.post_owner);
+//        TextView reportWatershed = (TextView) view.findViewById(R.id.post_watershed);
 //        TextView reportComments = (TextView) view.findViewById(R.id.comment_count);
-//        TextView reportCaption = (TextView) view.findViewById(R.id.report_caption);
+//        TextView reportCaption = (TextView) view.findViewById(R.id.post_caption);
 //        ImageView ownerAvatar = (ImageView) view.findViewById(R.id.owner_avatar);
 //        LinearLayout reportGroups = (LinearLayout) view.findViewById(R.id.reportGroups);
 //        ImageView postThumb = (ImageView) view.findViewById(R.id.postThumb);
 //        RelativeLayout actionBadge = (RelativeLayout) view.findViewById(R.id.action_badge);
-//        LinearLayout reportStub = (LinearLayout) view.findViewById(R.id.report_stub);
+//        LinearLayout reportStub = (LinearLayout) view.findViewById(R.id.post_stub);
 //        RelativeLayout locationIcon = (RelativeLayout) view.findViewById(R.id.location_icon);
 //        RelativeLayout directionsIcon = (RelativeLayout) view.findViewById(R.id.directions_icon);
 //        RelativeLayout commentIcon = (RelativeLayout) view.findViewById(R.id.comment_icon);

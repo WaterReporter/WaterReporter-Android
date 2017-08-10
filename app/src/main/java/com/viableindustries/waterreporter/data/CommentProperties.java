@@ -28,14 +28,14 @@ public class CommentProperties implements Serializable {
     @SerializedName("owner")
     public User owner;
 
-    @SerializedName("report_id")
-    public int report_id;
+    @SerializedName("post_id")
+    public int post_id;
 
     @SerializedName("report")
     public Report report;
 
-    @SerializedName("report_state")
-    public String report_state;
+    @SerializedName("post_state")
+    public String post_state;
 
     @SerializedName("status")
     public String status;

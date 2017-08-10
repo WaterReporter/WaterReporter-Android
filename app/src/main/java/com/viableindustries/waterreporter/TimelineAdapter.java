@@ -150,7 +150,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT, shareUrl);
         sendIntent.setType("text/plain");
-        context.startActivity(Intent.createChooser(sendIntent, res.getText(R.string.share_report_chooser_title)));
+        context.startActivity(Intent.createChooser(sendIntent, res.getText(R.string.share_post_chooser_title)));
 
     }
 

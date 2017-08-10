@@ -16,7 +16,7 @@
     tools:context="com.viableindustries.waterreporter.PhotoMetaActivity">
 
     <LinearLayout
-        android:id="@+id/report_submission_container"
+        android:id="@+id/post_submission_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:descendantFocusability="beforeDescendants"
@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:text="@string/report_instruction"
+            android:text="@string/post_instruction"
             android:textSize="@dimen/base_text" />
 
         <LinearLayout
@@ -79,7 +79,7 @@
                     android:background="@color/gray_232" />
 
                 <ImageView
-                    android:id="@+id/add_report_image"
+                    android:id="@+id/add_post_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
@@ -87,7 +87,7 @@
                     android:src="@drawable/ic_camera_alt_black_24dp" />
 
                 <ImageView
-                    android:id="@+id/report_image_preview"
+                    android:id="@+id/post_image_preview"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_centerInParent="true"
@@ -311,7 +311,7 @@
                     android:paddingRight="16dp"
                     android:paddingStart="0dp"
                     android:paddingTop="16dp"
-                    android:text="@string/report_location_prompt"
+                    android:text="@string/post_location_prompt"
                     android:textSize="16sp" />
 
                 <View
@@ -343,7 +343,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="16dp"
-                android:text="@string/report_groups_prompt"
+                android:text="@string/post_groups_prompt"
                 android:textSize="@dimen/base_text" />
 
             <View
