@@ -10,7 +10,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
 import com.viableindustries.waterreporter.data.Favorite;
@@ -47,6 +49,9 @@ public class PostFavoriteListActivity extends AppCompatActivity {
     @Bind(R.id.memberList)
     ListView memberList;
 
+    @Bind(R.id.backArrow)
+    RelativeLayout backButton;
+
     private Context context;
 
     private Report post;
@@ -68,6 +73,13 @@ public class PostFavoriteListActivity extends AppCompatActivity {
 
         post = ReportHolder.getReport();
 
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         // Set refresh listener on report feed container
 
         memberListContainer.setOnRefreshListener(
@@ -85,6 +97,10 @@ public class PostFavoriteListActivity extends AppCompatActivity {
         // Set color of swipe refresh arrow animation
 
         memberListContainer.setColorSchemeResources(R.color.waterreporter_blue);
+
+        memberListContainer.setRefreshing(true);
+
+        fetchFavorites(100, 1, post.id, true);
 
     }
 
@@ -148,19 +164,33 @@ public class PostFavoriteListActivity extends AppCompatActivity {
 
                 if (!favorites.isEmpty()) {
 
-                    for (Favorite favorite : favorites) {
+                    if (refresh) {
 
-                        memberCollection.add(favorite.properties.owner);
+                        memberCollection = new ArrayList<User>();
+
+                        for (Favorite favorite : favorites) {
+
+                            memberCollection.add(favorite.properties.owner);
+
+                        }
+
+                        populateUsers(memberCollection);
+
+                    } else {
+
+                        for (Favorite favorite : favorites) {
+
+                            memberCollection.add(favorite.properties.owner);
+
+                        }
+
+                        userListAdapter.notifyDataSetChanged();
 
                     }
-
-                    userListAdapter.notifyDataSetChanged();
 
                 }
 
                 memberListContainer.setRefreshing(false);
-
-                populateUsers(memberCollection);
 
             }
 
