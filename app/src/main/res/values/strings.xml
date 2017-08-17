@@ -266,6 +266,10 @@
         <item quantity="one">%d comment</item>
         <item quantity="other">%d comments</item>
     </plurals>
+    <plurals name="favorite_label">
+        <item quantity="one">%d like</item>
+        <item quantity="other">%d likes</item>
+    </plurals>
     <string name="saving_profile">Saving profile&#8230;</string>
     <string name="title_activity_group_action_list">GroupActionListActivity</string>
     <string name="title_activity_comment">CommentActivity</string>

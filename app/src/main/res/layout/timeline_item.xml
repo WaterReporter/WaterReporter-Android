@@ -369,10 +369,12 @@
             android:id="@+id/commentCount"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:paddingBottom="8dp"
             android:paddingEnd="0dp"
             android:paddingLeft="16dp"
             android:paddingRight="0dp"
             android:paddingStart="16dp"
+            android:paddingTop="8dp"
             android:visibility="gone">
 
             <ImageView
@@ -389,8 +391,13 @@
                 android:layout_height="match_parent"
                 android:layout_toEndOf="@+id/commentCountIcon"
                 android:layout_toRightOf="@+id/commentCountIcon"
-                android:padding="16dp"
-                android:textSize="@dimen/small_text" />
+                android:paddingEnd="0dp"
+                android:paddingLeft="4dp"
+                android:paddingRight="0dp"
+                android:paddingStart="4dp"
+                android:textColor="@color/black"
+                android:textSize="@dimen/small_text"
+                android:textStyle="bold" />
 
         </RelativeLayout>
 
@@ -398,10 +405,12 @@
             android:id="@+id/favoriteCount"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:paddingBottom="8dp"
             android:paddingEnd="0dp"
             android:paddingLeft="16dp"
             android:paddingRight="0dp"
             android:paddingStart="16dp"
+            android:paddingTop="8dp"
             android:visibility="gone">
 
             <ImageView
@@ -418,8 +427,13 @@
                 android:layout_height="match_parent"
                 android:layout_toEndOf="@id/favoriteCountIcon"
                 android:layout_toRightOf="@id/favoriteCountIcon"
-                android:padding="16dp"
-                android:textSize="@dimen/small_text" />
+                android:paddingEnd="0dp"
+                android:paddingLeft="4dp"
+                android:paddingRight="0dp"
+                android:paddingStart="4dp"
+                android:textColor="@color/black"
+                android:textSize="@dimen/small_text"
+                android:textStyle="bold" />
 
         </RelativeLayout>
 

@@ -190,7 +190,7 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
                 relativeLayout.setVisibility(View.VISIBLE);
 
-                textView.setText(String.valueOf(newCount));
+                textView.setText(mContext.getResources().getQuantityString(R.plurals.favorite_label, newCount, newCount));
 
                 // Change favorite icon color
 
@@ -266,7 +266,7 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
                     // Set TextView value
 
-                    textView.setText(String.valueOf(newCount));
+                    textView.setText(mContext.getResources().getQuantityString(R.plurals.favorite_label, newCount, newCount));
 
                 }
 
@@ -416,7 +416,7 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
             relativeLayout.setVisibility(View.VISIBLE);
 
-            textView.setText(String.valueOf(commentCount));
+            textView.setText(context.getResources().getQuantityString(R.plurals.comment_label, commentCount, commentCount));
 
             imageView.setColorFilter(ContextCompat.getColor(context, R.color.splash_blue), PorterDuff.Mode.SRC_ATOP);
 
@@ -473,7 +473,7 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
             relativeLayout.setVisibility(View.VISIBLE);
 
-            textView.setText(String.valueOf(favoriteCount));
+            textView.setText(context.getResources().getQuantityString(R.plurals.favorite_label, favoriteCount, favoriteCount));
 
             imageView.setColorFilter(ContextCompat.getColor(context, R.color.favorite_red), PorterDuff.Mode.SRC_ATOP);
 
