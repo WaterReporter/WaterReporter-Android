@@ -366,6 +366,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.viableindustries.waterreporter.TerritoryActivity" />
         </activity>
+        <activity
+            android:name=".PostFavoriteListActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_post_favorite_list"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>

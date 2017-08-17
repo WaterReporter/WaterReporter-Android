@@ -1,5 +1,6 @@
 package com.viableindustries.waterreporter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -39,6 +40,7 @@ import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationProfileListener;
 import com.viableindustries.waterreporter.data.PostCommentListener;
 import com.viableindustries.waterreporter.data.PostDirectionsListener;
+import com.viableindustries.waterreporter.data.PostFavoriteCountListener;
 import com.viableindustries.waterreporter.data.PostMapListener;
 import com.viableindustries.waterreporter.data.PostShareListener;
 import com.viableindustries.waterreporter.data.Report;
@@ -48,6 +50,8 @@ import com.viableindustries.waterreporter.data.TerritoryProfileListener;
 import com.viableindustries.waterreporter.data.UserHolder;
 import com.viableindustries.waterreporter.data.UserProfileListener;
 import com.viableindustries.waterreporter.dialogs.ReportActionDialogListener;
+
+import org.jsoup.select.Evaluator;
 
 import java.net.URISyntaxException;
 import java.util.Iterator;
@@ -72,7 +76,6 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
     TextView postDate;
     TextView postOwner;
     TextView postWatershed;
-    TextView postComments;
     TextView postCaption;
     FlexboxLayout postGroups;
     ImageView ownerAvatar;
@@ -90,7 +93,15 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
     ImageView shareIconView;
     ImageView commentIconView;
     ImageView favoriteIconView;
-    TextView favoriteCounter;
+
+    // Action counts
+
+    TextView postFavorites;
+    RelativeLayout favoriteCount;
+
+    TextView postComments;
+    RelativeLayout commentCount;
+
     TextView tracker;
 
     // Open Graph
@@ -109,7 +120,6 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
         postDate = (TextView) v.findViewById(R.id.post_date);
         postOwner = (TextView) v.findViewById(R.id.post_owner);
         postWatershed = (TextView) v.findViewById(R.id.post_watershed);
-        postComments = (TextView) v.findViewById(R.id.comment_count);
         postCaption = (TextView) v.findViewById(R.id.postCaption);
         ownerAvatar = (ImageView) v.findViewById(R.id.owner_avatar);
         postGroups = (FlexboxLayout) v.findViewById(R.id.post_groups);
@@ -127,7 +137,15 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
         shareIconView = (ImageView) v.findViewById(R.id.shareIconView);
         commentIconView = (ImageView) v.findViewById(R.id.commentIconView);
         favoriteIconView = (ImageView) v.findViewById(R.id.favoriteIconView);
-        favoriteCounter = (TextView) v.findViewById(R.id.favorite_count);
+
+        // Action counts
+
+        postFavorites = (TextView) v.findViewById(R.id.favoriteCountText);
+        favoriteCount = (RelativeLayout) v.findViewById(R.id.favoriteCount);
+
+        postComments = (TextView) v.findViewById(R.id.commentCountText);
+        commentCount = (RelativeLayout) v.findViewById(R.id.commentCount);
+
         tracker = (TextView) v.findViewById(R.id.tracker);
 
         // Open Graph
@@ -145,6 +163,7 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
     private void addFavorite(final int position,
                              final Report post,
                              final int currentCount,
+                             final RelativeLayout relativeLayout,
                              final TextView textView,
                              final ImageView imageView,
                              final Context mContext,
@@ -166,6 +185,10 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
             public void success(Favorite favorite, Response response) {
 
                 int newCount = currentCount + 1;
+
+                // Show parent layout
+
+                relativeLayout.setVisibility(View.VISIBLE);
 
                 textView.setText(String.valueOf(newCount));
 
@@ -200,6 +223,7 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
     private void undoFavorite(final Report post,
                               final int favoriteId,
                               final int currentCount,
+                              final RelativeLayout relativeLayout,
                               final TextView textView,
                               final ImageView imageView,
                               final Context mContext,
@@ -220,6 +244,12 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
                 if (currentCount == 1) {
 
+                    // Hide parent layout
+
+                    relativeLayout.setVisibility(View.GONE);
+
+                    // Clear TextView contents
+
                     textView.setText("");
 
                     // Change favorite icon color
@@ -229,6 +259,12 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
                 } else {
 
                     int newCount = currentCount - 1;
+
+                    // Show parent layout
+
+                    relativeLayout.setVisibility(View.VISIBLE);
+
+                    // Set TextView value
 
                     textView.setText(String.valueOf(newCount));
 
@@ -283,7 +319,7 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
         }
 
     }
-    
+
     private void setAuthor(final Context context, final Report post, TextView textView, ImageView imageView) {
 
         // Load author avatar
@@ -293,7 +329,7 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
         // Display author name
 
         textView.setText(String.format("%s %s", post.properties.owner.properties.first_name, post.properties.owner.properties.last_name));
-        
+
     }
 
     private void setDate(final Report post, TextView textView) {
@@ -359,10 +395,14 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
     }
 
-    private void setCommentState(final Context context, final Report post, RelativeLayout tapView, TextView textView, ImageView imageView) {
+    private void setCommentState(final Context context, final Report post, RelativeLayout relativeLayout, TextView textView, ImageView imageView) {
 
         // Set value of comment count string
         int commentCount = post.properties.comments.size();
+
+        // Hide parent layout
+
+        relativeLayout.setVisibility(View.GONE);
 
         // Clear display comment count
 
@@ -373,6 +413,8 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
         imageView.setColorFilter(ContextCompat.getColor(context, R.color.icon_gray), PorterDuff.Mode.SRC_ATOP);
 
         if (commentCount > 0) {
+
+            relativeLayout.setVisibility(View.VISIBLE);
 
             textView.setText(String.valueOf(commentCount));
 
@@ -410,10 +452,14 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
     }
 
-    private void setFavoriteState(final Context context, final Report post, TextView textView, ImageView imageView) {
+    private void setFavoriteState(final Context context, final Report post, RelativeLayout relativeLayout, TextView textView, ImageView imageView) {
 
         // Set value of favorite count string
         int favoriteCount = post.properties.favorites.size();
+
+        // Hide parent layout
+
+        relativeLayout.setVisibility(View.GONE);
 
         // Clear display favorite count
 
@@ -424,6 +470,8 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
         imageView.setColorFilter(ContextCompat.getColor(context, R.color.icon_gray), PorterDuff.Mode.SRC_ATOP);
 
         if (favoriteCount > 0) {
+
+            relativeLayout.setVisibility(View.VISIBLE);
 
             textView.setText(String.valueOf(favoriteCount));
 
@@ -525,9 +573,9 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
         // Set date
 
         setDate(post, postDate);
-        
+
         // Set author (owner)
-        
+
         setAuthor(context, post, postOwner, ownerAvatar);
 
         // Set post image
@@ -544,7 +592,7 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
         // Set comment state
 
-        setCommentState(context, post, commentIcon, postComments, commentIconView);
+        setCommentState(context, post, commentCount, postComments, commentIconView);
 
         // Add clickable organization logos
 
@@ -556,13 +604,15 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
         // Set favorite state
 
-        setFavoriteState(context, post, favoriteCounter, favoriteIconView);
+        setFavoriteState(context, post, favoriteCount, postFavorites, favoriteIconView);
 
         // Display Open Graph information, if any
 
         setOpenGraph(context, post, openGraphData, ogImage, ogTitle, ogDescription, ogUrl);
 
         // Attach click listeners to active UI components
+
+        commentCount.setOnClickListener(new PostCommentListener(context, post));
 
         commentIcon.setOnClickListener(new PostCommentListener(context, post));
 
@@ -573,6 +623,8 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
         directionsIcon.setOnClickListener(new PostDirectionsListener(context, post));
 
         shareIcon.setOnClickListener(new PostShareListener(context, post));
+
+        favoriteCount.setOnClickListener(new PostFavoriteCountListener(context, post));
 
         favoriteIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -595,7 +647,8 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
                         undoFavorite(post,
                                 favorite.properties.id,
                                 post.properties.favorites.size(),
-                                favoriteCounter,
+                                favoriteCount,
+                                postFavorites,
                                 favoriteIconView,
                                 context,
                                 sharedPreferences);
@@ -606,7 +659,7 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
                 }
 
-                addFavorite(getAdapterPosition(), post, post.properties.favorites.size(), favoriteCounter, favoriteIconView, context, sharedPreferences);
+                addFavorite(getAdapterPosition(), post, post.properties.favorites.size(), favoriteCount, postFavorites, favoriteIconView, context, sharedPreferences);
 
             }
         });
@@ -692,7 +745,7 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
             }
 
         }
-        
+
     }
 
 }

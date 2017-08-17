@@ -79,6 +79,15 @@ public interface ReportService {
                                   @Query("q") String q,
                                   Callback<CommentCollection> commentCollectionCallback);
 
+    @GET("/data/report/{report}/likes")
+    public void getPostLikes(@Header("Authorization") String authorization,
+                                  @Header("Content-Type") String contentType,
+                                  @Path("report") int reportId,
+                                  @Query("page") int page,
+                                  @Query("results_per_page") int numResults,
+                                  @Query("q") String q,
+                                  Callback<FavoriteCollection> favoriteCollectionCallback);
+
     @POST("/data/report")
     public void postReport
             (@Header("Authorization") String authorization,

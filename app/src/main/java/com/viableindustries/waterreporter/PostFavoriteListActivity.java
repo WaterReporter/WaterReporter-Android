@@ -1,0 +1,215 @@
+package com.viableindustries.waterreporter;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.app.Activity;
+import android.support.v4.app.NavUtils;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.MenuItem;
+import android.widget.ListView;
+
+import com.google.gson.Gson;
+import com.viableindustries.waterreporter.data.Favorite;
+import com.viableindustries.waterreporter.data.FavoriteCollection;
+import com.viableindustries.waterreporter.data.Organization;
+import com.viableindustries.waterreporter.data.OrganizationHolder;
+import com.viableindustries.waterreporter.data.OrganizationMemberList;
+import com.viableindustries.waterreporter.data.OrganizationService;
+import com.viableindustries.waterreporter.data.QueryFilter;
+import com.viableindustries.waterreporter.data.QueryParams;
+import com.viableindustries.waterreporter.data.QuerySort;
+import com.viableindustries.waterreporter.data.Report;
+import com.viableindustries.waterreporter.data.ReportHolder;
+import com.viableindustries.waterreporter.data.ReportService;
+import com.viableindustries.waterreporter.data.User;
+import com.viableindustries.waterreporter.data.UserCollection;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
+public class PostFavoriteListActivity extends AppCompatActivity {
+
+    @Bind(R.id.memberListContainer)
+    SwipeRefreshLayout memberListContainer;
+
+    @Bind(R.id.memberList)
+    ListView memberList;
+
+    private Context context;
+
+    private Report post;
+
+    protected List<User> memberCollection = new ArrayList<User>();
+
+    protected UserListAdapter userListAdapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_post_favorite_list);
+
+        ButterKnife.bind(this);
+
+        context = this;
+
+        post = ReportHolder.getReport();
+
+        // Set refresh listener on report feed container
+
+        memberListContainer.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
+                        // This method performs the actual data-refresh operation.
+                        // The method calls setRefreshing(false) when it's finished.
+                        fetchFavorites(100, 1, post.id, true);
+                    }
+                }
+        );
+
+        // Set color of swipe refresh arrow animation
+
+        memberListContainer.setColorSchemeResources(R.color.waterreporter_blue);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void populateUsers(List<User> users) {
+
+        userListAdapter = new UserListAdapter(this, users, true);
+
+        memberList.setAdapter(userListAdapter);
+
+        attachScrollListener();
+
+    }
+
+    private void attachScrollListener() {
+
+        memberList.setOnScrollListener(new EndlessScrollListener() {
+
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+
+                // Triggered only when new data needs to be appended to the list
+
+                fetchFavorites(100, page, post.id, false);
+
+                return true; // ONLY if more data is actually being loaded; false otherwise.
+
+            }
+
+        });
+
+    }
+
+    protected void fetchFavorites(int limit, int page, int postId, final boolean refresh) {
+
+        final SharedPreferences prefs =
+                getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        final String accessToken = prefs.getString("access_token", "");
+
+        Log.d("", accessToken);
+
+        ReportService service = ReportService.restAdapter.create(ReportService.class);
+
+        service.getPostLikes(accessToken, "application/json", postId, page, limit, null, new Callback<FavoriteCollection>() {
+
+            @Override
+            public void success(FavoriteCollection favoriteCollection, Response response) {
+
+                ArrayList<Favorite> favorites = favoriteCollection.getFeatures();
+
+                if (!favorites.isEmpty()) {
+
+                    for (Favorite favorite : favorites) {
+
+                        memberCollection.add(favorite.properties.owner);
+
+                    }
+
+                    userListAdapter.notifyDataSetChanged();
+
+                }
+
+                memberListContainer.setRefreshing(false);
+
+                populateUsers(memberCollection);
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                memberListContainer.setRefreshing(false);
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(context, SignInActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+
+        ButterKnife.unbind(this);
+
+    }
+
+}

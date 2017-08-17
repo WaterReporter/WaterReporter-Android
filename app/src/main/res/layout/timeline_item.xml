@@ -299,16 +299,6 @@
 
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/comment_count"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:textColor="@color/splash_blue"
-            android:textSize="@dimen/small_text"
-            app:layout_flexGrow="0"
-            app:layout_flexShrink="0" />
-
         <RelativeLayout
             android:id="@+id/share_icon"
             android:layout_width="wrap_content"
@@ -349,14 +339,6 @@
 
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/favorite_count"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:textColor="@color/favorite_red"
-            android:textSize="@dimen/small_text" />
-
         <RelativeLayout
             android:id="@+id/action_ellipsis"
             android:layout_width="wrap_content"
@@ -376,6 +358,72 @@
         </RelativeLayout>
 
     </com.google.android.flexbox.FlexboxLayout>
+
+    <LinearLayout
+        android:id="@+id/actionCounts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/commentCount"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingEnd="0dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="0dp"
+            android:paddingStart="16dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/commentCountIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_mode_comment_black_24dp" />
+
+            <TextView
+                android:id="@+id/commentCountText"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@+id/commentCountIcon"
+                android:layout_toRightOf="@+id/commentCountIcon"
+                android:padding="16dp"
+                android:textSize="@dimen/small_text" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/favoriteCount"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingEnd="0dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="0dp"
+            android:paddingStart="16dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/favoriteCountIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_favorite_black_24dp" />
+
+            <TextView
+                android:id="@+id/favoriteCountText"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@id/favoriteCountIcon"
+                android:layout_toRightOf="@id/favoriteCountIcon"
+                android:padding="16dp"
+                android:textSize="@dimen/small_text" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tracker"

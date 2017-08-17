@@ -16,6 +16,9 @@ public class FavoriteProperties implements Serializable {
     @SerializedName("id")
     public int id;
 
+    @SerializedName("owner")
+    public User owner;
+
     @SerializedName("owner_id")
     public int owner_id;
 
