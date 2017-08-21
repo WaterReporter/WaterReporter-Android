@@ -28,9 +28,6 @@ import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -122,8 +119,8 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
     @Bind(R.id.timeline)
     SwipeRefreshLayout timeLineContainer;
 
-    @Bind(R.id.postList)
-    RecyclerView postList;
+    @Bind(R.id.timeline_items)
+    ListView timeLine;
 
     @Bind(R.id.listTabs)
     FrameLayout listTabs;
@@ -131,10 +128,11 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
     @Bind(R.id.log_out)
     ImageButton logOutButton;
 
-    private PostCardAdapter postCardAdapter;
+    @Bind(R.id.promptBlock)
+    LinearLayout promptBlock;
 
-    private RecyclerView.Adapter mAdapter;
-    private LinearLayoutManager mLayoutManager;
+    @Bind(R.id.prompt)
+    TextView promptMessage;
 
     protected TimelineAdapter timelineAdapter;
 
@@ -224,9 +222,9 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
                         // This method performs the actual data-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
 
-//                        countReports(complexQuery, "state");
+                        countReports(complexQuery, "state");
 
-//                        resetStats();
+                        resetStats();
 
                     }
                 }
@@ -238,17 +236,17 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         // Inflate and insert timeline header view
 
-//        addListViewHeader();
+        addListViewHeader();
 
         // Count reports with actions
 
         complexQuery = String.format(getResources().getString(R.string.complex_actions_query), userId, userId);
 
-//        countReports(complexQuery, "state");
+        countReports(complexQuery, "state");
 
         // Retrieve the user's groups
 
-//        fetchUserGroups(userId);
+        fetchUserGroups(userId);
 
         // Retrieve first batch of user's reports
 
@@ -287,7 +285,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         LayoutInflater inflater = getLayoutInflater();
 
-        ViewGroup header = (ViewGroup) inflater.inflate(R.layout.user_profile_header, postList, false);
+        ViewGroup header = (ViewGroup) inflater.inflate(R.layout.user_profile_header, timeLine, false);
 
         TextView userName = (TextView) header.findViewById(R.id.userName);
 
@@ -412,7 +410,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
             @Override
             public void onClick(View v) {
 
-//                resetStats();
+                resetStats();
 
             }
         });
@@ -429,9 +427,9 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
                 reportCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
                 reportCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
 
-                if (postList != null) {
+                if (timeLine != null) {
 
-                    mLayoutManager.scrollToPositionWithOffset(0, 0);
+                    timeLine.setSelection(0);
 
                 }
 
@@ -459,7 +457,22 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
             }
         });
 
-//        postList.addHeaderView(header, null, false);
+        timeLine.addHeaderView(header, null, false);
+
+    }
+
+    protected void setReportCountState(int count) {
+
+        reportCounter.setText(String.valueOf(reportCount));
+        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
+
+        if (count < 1) {
+
+            promptBlock.setVisibility(View.VISIBLE);
+
+            promptMessage.setText(getString(R.string.prompt_no_posts_user));
+
+        }
 
     }
 
@@ -489,8 +502,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
                         break;
                     default:
                         reportCount = count;
-                        reportCounter.setText(String.valueOf(reportCount));
-                        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
+                        setReportCountState(reportCount);
                         break;
                 }
 
@@ -584,7 +596,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     private void attachScrollListener() {
 
-//        postList.setOnScrollListener(scrollListener);
+        timeLine.setOnScrollListener(scrollListener);
 
     }
 
@@ -661,15 +673,17 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                 if (reportCount > 0) {
 
-//                    reportStat.setVisibility(View.VISIBLE);
-//
-//                    reportCounter.setText(String.valueOf(reportCount));
-//
-//                    reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
+                    reportStat.setVisibility(View.VISIBLE);
+
+                    reportCounter.setText(String.valueOf(reportCount));
+
+                    reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
 
                 } else {
 
-//                    reportStat.setVisibility(View.GONE);
+                    reportStat.setVisibility(View.GONE);
+
+                    setReportCountState(reportCount);
 
                 }
 
@@ -683,9 +697,9 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                     try {
 
-                        postCardAdapter.notifyDataSetChanged();
+                        timelineAdapter.notifyDataSetChanged();
 
-                        mLayoutManager.scrollToPositionWithOffset(0, 0);
+                        timeLine.smoothScrollToPosition(0);
 
                     } catch (NullPointerException e) {
 
@@ -699,7 +713,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                         reportCollection.addAll(reports);
 
-                        postCardAdapter.notifyDataSetChanged();
+                        timelineAdapter.notifyDataSetChanged();
 
                     }
 
@@ -756,25 +770,17 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     private void populateTimeline(List<Report> list) {
 
-        mLayoutManager = new LinearLayoutManager(this);
-        postList.setLayoutManager(mLayoutManager);
-
-        postCardAdapter = new PostCardAdapter(this, list, false, true, 0);
+        timelineAdapter = new TimelineAdapter(UserProfileActivity.this, list, true);
 
         // Attach the adapter to a ListView
 
-        if (postList != null) {
+        if (timeLine != null) {
 
-            postList.setAdapter(postCardAdapter);
+            timeLine.setAdapter(timelineAdapter);
 
             attachScrollListener();
 
         }
-
-        // Add standard RecyclerView animator
-
-        RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
-        postList.setItemAnimator(itemAnimator);
 
     }
 
@@ -847,7 +853,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                 ReportHolder.setReport(null);
 
-//                resetStats();
+                resetStats();
 
             }
 

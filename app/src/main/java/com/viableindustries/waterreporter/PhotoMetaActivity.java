@@ -602,7 +602,10 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         if (imageUrl.length() > 0) {
 
-            Picasso.with(this).load(openGraphObject.get("og:image")).into(ogImage);
+            Picasso.with(this)
+                    .load(openGraphObject.get("og:image"))
+                    .placeholder(R.drawable.open_graph_image_placeholder)
+                    .into(ogImage);
 
         }
 

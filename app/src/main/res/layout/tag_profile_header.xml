@@ -166,7 +166,7 @@
             android:maxLines="1"
             android:paddingBottom="16dp"
             android:paddingTop="16dp"
-            android:text="@string/start_conversation"
+            android:text="@string/prompt_no_posts_user"
             android:textColor="@color/black"
             android:textSize="@dimen/medium_text" />
 
