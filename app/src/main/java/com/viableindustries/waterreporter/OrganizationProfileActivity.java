@@ -6,34 +6,21 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.app.Activity;
-import android.os.Handler;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.LinearInterpolator;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +28,6 @@ import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Organization;
-import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.data.OrganizationHolder;
 import com.viableindustries.waterreporter.data.OrganizationMemberList;
 import com.viableindustries.waterreporter.data.OrganizationService;
@@ -52,11 +38,8 @@ import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserCollection;
-import com.viableindustries.waterreporter.data.UserFeatureCollection;
-import com.viableindustries.waterreporter.data.UserGroupList;
 import com.viableindustries.waterreporter.data.UserOrgPatch;
 import com.viableindustries.waterreporter.data.UserService;
-import com.viableindustries.waterreporter.dialogs.ShareActionDialogListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,9 +52,6 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import static java.lang.Boolean.TRUE;
-import static java.security.AccessController.getContext;
 
 public class OrganizationProfileActivity extends AppCompatActivity {
 
@@ -113,6 +93,12 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     @Bind(R.id.listTabs)
     FrameLayout listTabs;
+
+    @Bind(R.id.promptBlock)
+    LinearLayout promptBlock;
+
+    @Bind(R.id.prompt)
+    TextView promptMessage;
 
     protected TimelineAdapter timelineAdapter;
 
@@ -511,6 +497,33 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     }
 
+    protected void setReportCountState(int count) {
+
+        reportCounter.setText(String.valueOf(reportCount));
+        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
+
+        if (count < 1) {
+
+            try {
+
+                promptBlock.setVisibility(View.VISIBLE);
+
+                promptMessage.setText(getString(R.string.prompt_no_posts_group));
+
+            } catch (NullPointerException e) {
+
+                finish();
+
+            }
+
+        } else {
+
+            timeLineContainer.setVisibility(View.VISIBLE);
+
+        }
+
+    }
+
     protected void countReports(String query, final String filterName) {
 
         final String accessToken = prefs.getString("access_token", "");
@@ -718,6 +731,8 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                 } else {
 
                     reportStat.setVisibility(View.GONE);
+
+                    setReportCountState(reportCount);
 
                 }
 

@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -31,8 +30,6 @@ import com.viableindustries.waterreporter.data.QueryParams;
 import com.viableindustries.waterreporter.data.QuerySort;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportService;
-import com.viableindustries.waterreporter.data.TerritoryGroupList;
-import com.viableindustries.waterreporter.dialogs.ShareActionDialogListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +79,12 @@ public class TagProfileActivity extends AppCompatActivity {
 
     @Bind(R.id.listTabs)
     FrameLayout listTabs;
+
+    @Bind(R.id.promptBlock)
+    LinearLayout promptBlock;
+
+    @Bind(R.id.prompt)
+    TextView promptMessage;
 
     protected TimelineAdapter timelineAdapter;
 
@@ -330,6 +333,25 @@ public class TagProfileActivity extends AppCompatActivity {
 
     }
 
+    protected void setReportCountState(int count) {
+
+        reportCounter.setText(String.valueOf(reportCount));
+        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
+
+        if (count < 1) {
+
+            promptBlock.setVisibility(View.VISIBLE);
+
+            promptMessage.setText(getString(R.string.prompt_no_posts_hashtag));
+
+        } else {
+
+            timeLineContainer.setVisibility(View.VISIBLE);
+
+        }
+
+    }
+
     protected void countReports(String query, final String filterName) {
 
         final String accessToken = prefs.getString("access_token", "");
@@ -564,7 +586,9 @@ public class TagProfileActivity extends AppCompatActivity {
 
                         reportStat.setVisibility(View.GONE);
 
-                        sharePrompt.setVisibility(View.VISIBLE);
+                        setReportCountState(reportCount);
+
+//                        sharePrompt.setVisibility(View.VISIBLE);
 
                     } catch (NullPointerException e) {
 

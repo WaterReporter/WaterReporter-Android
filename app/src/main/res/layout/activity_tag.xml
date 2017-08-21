@@ -4,7 +4,7 @@
     android:id="@+id/activity_organization_profile"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FBFBFB"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:context="com.viableindustries.waterreporter.TagProfileActivity">
 
@@ -54,6 +54,8 @@
                 android:scrollbars="none" />
 
         </android.support.v4.widget.SwipeRefreshLayout>
+
+        <include layout="@layout/prompt_empty_profile" />
 
         <fragment
             android:id="@+id/navigationFragment"
