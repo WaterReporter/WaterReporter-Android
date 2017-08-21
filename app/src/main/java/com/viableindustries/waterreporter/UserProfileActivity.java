@@ -1,57 +1,29 @@
 package com.viableindustries.waterreporter;
 
 import android.animation.ObjectAnimator;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Bundle;
-import android.app.Activity;
-import android.os.Handler;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.LinearInterpolator;
-import android.widget.AbsListView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-import com.viableindustries.waterreporter.data.Comment;
-import com.viableindustries.waterreporter.data.CommentPost;
-import com.viableindustries.waterreporter.data.CommentService;
 import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
@@ -60,19 +32,13 @@ import com.viableindustries.waterreporter.data.QueryParams;
 import com.viableindustries.waterreporter.data.QuerySort;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportHolder;
-import com.viableindustries.waterreporter.data.ReportPhoto;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserGroupList;
 import com.viableindustries.waterreporter.data.UserHolder;
 import com.viableindustries.waterreporter.data.UserService;
-import com.viableindustries.waterreporter.dialogs.CommentActionDialogListener;
-import com.viableindustries.waterreporter.dialogs.CommentPhotoDialogListener;
 import com.viableindustries.waterreporter.dialogs.ReportActionDialogListener;
-import com.viableindustries.waterreporter.dialogs.ShareActionDialogListener;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,7 +50,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import static java.lang.Boolean.TRUE;
-import static java.security.AccessController.getContext;
 
 public class UserProfileActivity extends AppCompatActivity implements ReportActionDialogListener {
 
@@ -470,7 +435,11 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
             promptBlock.setVisibility(View.VISIBLE);
 
-            promptMessage.setText(getString(R.string.prompt_no_posts_user));
+            promptMessage.setText(getString(R.string.prompt_no_posts_user, user.properties.first_name));
+
+        } else {
+
+            timeLineContainer.setVisibility(View.VISIBLE);
 
         }
 

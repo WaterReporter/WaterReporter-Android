@@ -4,8 +4,10 @@
     android:id="@+id/promptBlock"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_gravity="center|bottom"
     android:background="#FFFFFF"
     android:orientation="vertical"
+    android:paddingBottom="64dp"
     android:visibility="gone">
 
     <ImageView
@@ -22,7 +24,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:padding="24dp"
+        android:gravity="center"
+        android:maxWidth="240dp"
+        android:paddingBottom="24dp"
+        android:paddingTop="8dp"
         android:textColor="@color/splash_blue"
         android:textSize="16sp" />
 
