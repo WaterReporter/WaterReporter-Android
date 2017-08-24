@@ -60,8 +60,7 @@ public class TimelineAdapterHelpers {
 
     // Add favorite
 
-    public static void addFavorite(final int position,
-                             final Report post,
+    public static void addFavorite(final Report post,
                              final int currentCount,
                              final RelativeLayout relativeLayout,
                              final TextView textView,

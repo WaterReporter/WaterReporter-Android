@@ -52,7 +52,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         this.mSharedPreferences = mContext.getSharedPreferences(mContext.getPackageName(), 0);
     }
 
-    protected static class ViewHolder {
+    public static class ViewHolder {
         TextView postDate;
         TextView postOwner;
         TextView postWatershed;
@@ -107,9 +107,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
     }
 
-    private void bindData(final Report post, final Context context, final SharedPreferences sharedPreferences, final boolean mIsProfile, final ViewHolder viewHolder, final int position) {
-
-        boolean openGraphOnly = true;
+    public static void bindData(final Report post, final Context context, final SharedPreferences sharedPreferences, final boolean mIsProfile, final ViewHolder viewHolder) {
 
         Log.d("target-post", post.properties.toString());
 
@@ -227,7 +225,6 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
                 }
 
                 TimelineAdapterHelpers.addFavorite(
-                        position,
                         post,
                         post.properties.favorites.size(),
                         viewHolder.favoriteCount,
@@ -335,22 +332,21 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
             viewHolder = new ViewHolder();
 
-            viewHolder.postDate = (TextView) convertView.findViewById(R.id.post_date);
-            viewHolder.postOwner = (TextView) convertView.findViewById(R.id.post_owner);
-            viewHolder.postWatershed = (TextView) convertView.findViewById(R.id.post_watershed);
-            viewHolder.postComments = (TextView) convertView.findViewById(R.id.comment_count);
+            viewHolder.postDate = (TextView) convertView.findViewById(R.id.postDate);
+            viewHolder.postOwner = (TextView) convertView.findViewById(R.id.postOwner);
+            viewHolder.postWatershed = (TextView) convertView.findViewById(R.id.postWatershed);
             viewHolder.postCaption = (TextView) convertView.findViewById(R.id.postCaption);
-            viewHolder.ownerAvatar = (ImageView) convertView.findViewById(R.id.owner_avatar);
-            viewHolder.postGroups = (FlexboxLayout) convertView.findViewById(R.id.post_groups);
+            viewHolder.ownerAvatar = (ImageView) convertView.findViewById(R.id.ownerAvatar);
+            viewHolder.postGroups = (FlexboxLayout) convertView.findViewById(R.id.postGroups);
             viewHolder.postThumb = (ImageView) convertView.findViewById(R.id.postThumb);
-            viewHolder.actionBadge = (RelativeLayout) convertView.findViewById(R.id.action_badge);
-            viewHolder.postStub = (LinearLayout) convertView.findViewById(R.id.post_stub);
-            viewHolder.locationIcon = (RelativeLayout) convertView.findViewById(R.id.location_icon);
-            viewHolder.directionsIcon = (RelativeLayout) convertView.findViewById(R.id.directions_icon);
-            viewHolder.commentIcon = (RelativeLayout) convertView.findViewById(R.id.comment_icon);
-            viewHolder.favoriteIcon = (RelativeLayout) convertView.findViewById(R.id.favorite_icon);
-            viewHolder.shareIcon = (RelativeLayout) convertView.findViewById(R.id.share_icon);
-            viewHolder.actionsEllipsis = (RelativeLayout) convertView.findViewById(R.id.action_ellipsis);
+            viewHolder.actionBadge = (RelativeLayout) convertView.findViewById(R.id.actionBadge);
+            viewHolder.postStub = (LinearLayout) convertView.findViewById(R.id.postStub);
+            viewHolder.locationIcon = (RelativeLayout) convertView.findViewById(R.id.locationIcon);
+            viewHolder.directionsIcon = (RelativeLayout) convertView.findViewById(R.id.directionsIcon);
+            viewHolder.commentIcon = (RelativeLayout) convertView.findViewById(R.id.commentIcon);
+            viewHolder.favoriteIcon = (RelativeLayout) convertView.findViewById(R.id.favoriteIcon);
+            viewHolder.shareIcon = (RelativeLayout) convertView.findViewById(R.id.shareIcon);
+            viewHolder.actionsEllipsis = (RelativeLayout) convertView.findViewById(R.id.actionEllipsis);
             viewHolder.locationIconView = (ImageView) convertView.findViewById(R.id.locationIconView);
             viewHolder.directionsIconView = (ImageView) convertView.findViewById(R.id.directionsIconView);
             viewHolder.shareIconView = (ImageView) convertView.findViewById(R.id.shareIconView);
@@ -387,7 +383,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         final Report feature = (Report) getItem(position);
 
-        bindData(feature, mContext, mSharedPreferences, mIsProfile, viewHolder, position);
+        bindData(feature, mContext, mSharedPreferences, mIsProfile, viewHolder);
 
         return convertView;
 

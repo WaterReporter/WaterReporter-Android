@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/post_stub"
+    android:id="@+id/postStub"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#FFFFFF"
@@ -14,7 +14,7 @@
         android:padding="16dp">
 
         <ImageView
-            android:id="@+id/owner_avatar"
+            android:id="@+id/ownerAvatar"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center_vertical|start"
@@ -31,18 +31,18 @@
             android:paddingStart="16dp">
 
             <LinearLayout
-                android:id="@+id/text_descriptors"
+                android:id="@+id/textDescriptors"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/post_date"
-                android:layout_toStartOf="@+id/post_date"
+                android:layout_toLeftOf="@+id/postDate"
+                android:layout_toStartOf="@+id/postDate"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/post_owner"
+                    android:id="@+id/postOwner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
@@ -52,7 +52,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/post_watershed"
+                    android:id="@+id/postWatershed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
@@ -69,7 +69,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/post_date"
+                android:id="@+id/postDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -102,7 +102,7 @@
             android:scaleType="fitXY" />
 
         <RelativeLayout
-            android:id="@+id/action_badge"
+            android:id="@+id/actionBadge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start|top"
@@ -203,7 +203,7 @@
 
     <com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/post_groups"
+        android:id="@+id/postGroups"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="16dp"
@@ -226,7 +226,7 @@
         app:flexWrap="nowrap">
 
         <RelativeLayout
-            android:id="@+id/location_icon"
+            android:id="@+id/locationIcon"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:minWidth="48dp"
@@ -245,7 +245,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/directions_icon"
+            android:id="@+id/directionsIcon"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:minWidth="48dp"
@@ -264,7 +264,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/comment_icon"
+            android:id="@+id/commentIcon"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:minWidth="48dp"
@@ -282,7 +282,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/share_icon"
+            android:id="@+id/shareIcon"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:minWidth="48dp"
@@ -302,7 +302,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/favorite_icon"
+            android:id="@+id/favoriteIcon"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:minWidth="48dp"
@@ -322,7 +322,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/action_ellipsis"
+            android:id="@+id/actionEllipsis"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             app:layout_flexGrow="1"
