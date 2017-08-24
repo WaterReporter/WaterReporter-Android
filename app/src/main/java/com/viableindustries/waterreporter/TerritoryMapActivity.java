@@ -121,14 +121,14 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     List<LatLng> latLngs = new ArrayList<LatLng>();
 
-    @Bind(R.id.sProfileMeta)
-    LinearLayout sProfileMeta;
+    @Bind(R.id.customActionBar)
+    LinearLayout customActionBar;
 
-    @Bind(R.id.sTerritoryName)
-    TextView sTerritoryName;
+    @Bind(R.id.actionBarTitle)
+    TextView actionBarTitle;
 
-    @Bind(R.id.sStates)
-    TextView sStates;
+    @Bind(R.id.actionBarSubtitle)
+    TextView actionBarSubtitle;
 
     @Bind(R.id.backArrow)
     RelativeLayout backArrow;
@@ -190,7 +190,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
         territoryNameText = territory.properties.huc_8_name;
 
-        sTerritoryName.setText(territoryNameText);
+        actionBarTitle.setText(territoryNameText);
 
         // Retrieve first batch of posts
 
@@ -270,7 +270,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
             }
         });
 
-        sProfileMeta.setOnClickListener(new View.OnClickListener() {
+        customActionBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
@@ -303,7 +303,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
                 latLngs.add(southWest);
                 latLngs.add(northEast);
 
-                sStates.setText(hucFeature.properties.states.concat);
+                actionBarSubtitle.setText(hucFeature.properties.states.concat);
 
             }
 

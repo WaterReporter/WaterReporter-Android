@@ -47,6 +47,15 @@ public class MarkerDetailActivity extends AppCompatActivity {
     @Bind(R.id.postThumb)
     ImageView postThumb;
 
+    @Bind(R.id.customActionBar)
+    LinearLayout customActionBar;
+
+    @Bind(R.id.actionBarTitle)
+    TextView actionBarTitle;
+
+    @Bind(R.id.actionBarSubtitle)
+    TextView actionBarSubtitle;
+
     protected List<String> groups;
 
     private Context context;

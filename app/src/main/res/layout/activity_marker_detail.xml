@@ -7,26 +7,7 @@
     android:orientation="vertical"
     tools:context="com.viableindustries.waterreporter.MarkerDetailActivity">
 
-    <RelativeLayout
-        android:id="@+id/masthead"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="#FFFFFF">
-
-        <ImageView
-            android:layout_width="88dp"
-            android:layout_height="24dp"
-            android:layout_centerInParent="true"
-            android:scaleType="fitXY"
-            android:src="@drawable/logo_horizontal_lockup" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/gray_232" />
-
-    </RelativeLayout>
+    <include layout="@layout/custom_action_bar" />
 
     <ScrollView
         android:id="@+id/postContainer"

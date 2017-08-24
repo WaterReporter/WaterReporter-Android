@@ -19,6 +19,16 @@ import java.util.Locale;
 
 public class AttributeTransformUtility {
 
+    public static String getTerritoryCode(Territory territory) {
+
+        String code = String.format("%s", territory.properties.huc_8_code);
+
+        if (code.length() == 7) code = String.format("0%s", code);
+
+        return code;
+
+    }
+
     public static String parseDate(SimpleDateFormat simpleDateFormat, String dateString) {
 
         String parsedDate = "";

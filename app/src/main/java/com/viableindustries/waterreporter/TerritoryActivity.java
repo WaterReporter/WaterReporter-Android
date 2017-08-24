@@ -1,7 +1,6 @@
 package com.viableindustries.waterreporter;
 
 import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
@@ -9,82 +8,50 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.app.Activity;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.animation.LinearOutSlowInInterpolator;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.AlphaAnimation;
 import android.widget.AbsListView;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.annotations.MarkerViewManager;
-import com.mapbox.mapboxsdk.annotations.PolygonOptions;
-import com.mapbox.mapboxsdk.annotations.PolylineOptions;
-import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-import com.mapbox.mapboxsdk.style.functions.stops.Stops;
 import com.mapbox.mapboxsdk.style.layers.FillLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
-import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.FeatureCollection;
-import com.viableindustries.waterreporter.data.GroupListHolder;
 import com.viableindustries.waterreporter.data.HUCFeature;
 import com.viableindustries.waterreporter.data.HUCGeometryCollection;
 import com.viableindustries.waterreporter.data.HUCGeometryService;
-import com.viableindustries.waterreporter.data.Organization;
-import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
-import com.viableindustries.waterreporter.data.OrganizationHolder;
-import com.viableindustries.waterreporter.data.OrganizationMemberList;
-import com.viableindustries.waterreporter.data.OrganizationService;
 import com.viableindustries.waterreporter.data.QueryFilter;
 import com.viableindustries.waterreporter.data.QueryParams;
 import com.viableindustries.waterreporter.data.QuerySort;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.Territory;
-import com.viableindustries.waterreporter.data.TerritoryGroupList;
 import com.viableindustries.waterreporter.data.TerritoryHolder;
-import com.viableindustries.waterreporter.data.User;
-import com.viableindustries.waterreporter.data.UserCollection;
-import com.viableindustries.waterreporter.data.UserOrgPatch;
-import com.viableindustries.waterreporter.data.UserService;
-
-import org.w3c.dom.Text;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -93,28 +60,14 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-import static com.mapbox.mapboxsdk.style.functions.Function.property;
-import static com.mapbox.mapboxsdk.style.functions.stops.Stop.stop;
-import static com.mapbox.mapboxsdk.style.functions.stops.Stops.exponential;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillColor;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillOpacity;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillOutlineColor;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineColor;
-import static java.lang.Boolean.TRUE;
 
 public class TerritoryActivity extends AppCompatActivity {
 
-//    LinearLayout profileMeta;
-
     FlexboxLayout profileMeta;
 
-    LinearLayout profileStats;
-
-    LinearLayout reportStat;
-
     TextView reportCounter;
-
-    TextView reportCountLabel;
 
     LinearLayout actionStat;
 
@@ -122,53 +75,31 @@ public class TerritoryActivity extends AppCompatActivity {
 
     TextView actionCountLabel;
 
-    LinearLayout groupStat;
-
-    TextView groupCounter;
-
-    TextView groupCountLabel;
-
     TextView territoryName;
 
     TextView territoryStates;
 
-    LinearLayout sharePrompt;
-
-    FloatingActionButton jumpStart;
-
     List<LatLng> latLngs = new ArrayList<LatLng>();
 
-    @Bind(R.id.sProfileMeta)
-    LinearLayout sProfileMeta;
+    @Bind(R.id.customActionBar)
+    LinearLayout customActionBar;
 
-    @Bind(R.id.sTerritoryName)
-    TextView sTerritoryName;
+    @Bind(R.id.actionBarTitle)
+    TextView actionBarTitle;
 
-    @Bind(R.id.sStates)
-    TextView sStates;
+    @Bind(R.id.actionBarSubtitle)
+    TextView actionBarSubtitle;
 
     @Bind(R.id.backArrow)
     RelativeLayout backArrow;
-
-    @Bind(R.id.secondaryMapButton)
-    RelativeLayout secondaryMapButton;
-
-//    @Bind(R.id.sReportCount)
-//    TextView sReportCount;
 
     @Bind(R.id.mapview)
     MapView mapView;
 
     private MapboxMap mMapboxMap;
 
-    //    @Bind(R.id.timeline)
-//    SwipeRefreshLayout timeLineContainer;
-//
     @Bind(R.id.timeline_items)
     ListView timeLine;
-//
-//    @Bind(R.id.listTabs)
-//    FrameLayout listTabs;
 
     FloatingActionButton accessMap;
 
@@ -178,11 +109,9 @@ public class TerritoryActivity extends AppCompatActivity {
 
     private String territoryNameText;
 
-    private String complexQuery;
-
-    private ViewGroup.LayoutParams listViewParams;
-
     private int territoryId;
+
+    private String complexQuery;
 
     private int actionCount = 0;
 
@@ -190,15 +119,11 @@ public class TerritoryActivity extends AppCompatActivity {
 
     private boolean actionFocus = false;
 
-    private boolean hasGroups = false;
-
     private Context context;
 
     private Territory territory;
 
     private SharedPreferences prefs;
-
-    private int socialOptions;
 
     private Resources resources;
 
@@ -216,7 +141,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        if (Build.VERSION.SDK_INT >= 19){
+        if (Build.VERSION.SDK_INT >= 19) {
 
             setStatusBarTranslucent(true);
 
@@ -232,8 +157,8 @@ public class TerritoryActivity extends AppCompatActivity {
 
         // Hide the docked metadata view
 //        sProfileMeta.setAlpha(0.0f);
-        sTerritoryName.setAlpha(0.0f);
-        sStates.setAlpha(0.0f);
+        actionBarTitle.setAlpha(0.0f);
+        actionBarSubtitle.setAlpha(0.0f);
 
         // Set refresh listener on report feed container
 
@@ -333,7 +258,7 @@ public class TerritoryActivity extends AppCompatActivity {
 //
 //                    }
 
-                    if (sTerritoryName.getAlpha() < 1.0) {
+                    if (actionBarTitle.getAlpha() < 1.0) {
 
 //                        sProfileMeta.setBackgroundColor(ContextCompat.getColor(TerritoryActivity.this, R.color.splash_blue));
 
@@ -345,24 +270,20 @@ public class TerritoryActivity extends AppCompatActivity {
 
                             @Override
                             public void onAnimationUpdate(ValueAnimator animator) {
-                                sProfileMeta.setBackgroundColor((int) animator.getAnimatedValue());
+                                customActionBar.setBackgroundColor((int) animator.getAnimatedValue());
                             }
 
                         });
                         colorAnimation.start();
 
-                        sTerritoryName.setAlpha(1.0f);
-                        sStates.setAlpha(0.8f);
-
-                        secondaryMapButton.setVisibility(View.VISIBLE);
+                        actionBarTitle.setAlpha(1.0f);
+                        actionBarSubtitle.setAlpha(0.8f);
 
                     }
 
                 } else {
 
-//                    sProfileMeta.setBackgroundColor(Color.TRANSPARENT);
-
-                    if (sTerritoryName.getAlpha() > 0.0) {
+                    if (actionBarTitle.getAlpha() > 0.0) {
 
                         int colorFrom = ContextCompat.getColor(TerritoryActivity.this, R.color.splash_blue);
                         int colorTo = Color.TRANSPARENT;
@@ -372,64 +293,22 @@ public class TerritoryActivity extends AppCompatActivity {
 
                             @Override
                             public void onAnimationUpdate(ValueAnimator animator) {
-                                sProfileMeta.setBackgroundColor((int) animator.getAnimatedValue());
+                                customActionBar.setBackgroundColor((int) animator.getAnimatedValue());
                             }
 
                         });
                         colorAnimation.start();
 
-                        sTerritoryName.setAlpha(0.0f);
-                        sStates.setAlpha(0.0f);
-
-                        secondaryMapButton.setVisibility(View.INVISIBLE);
+                        actionBarTitle.setAlpha(0.0f);
+                        actionBarSubtitle.setAlpha(0.0f);
 
                     }
 
-//                    sProfileMeta.setAlpha(0.0f);
-
-//                    sProfileMeta.setVisibility(View.GONE);
-//
-//                    AlphaAnimation fadeOut = new AlphaAnimation(1.0f, 0.0f);
-//                    fadeOut.setDuration(250);
-////                    fadeOut.setFillAfter(true);
-//                    sProfileMeta.setAlpha(0.0f);
-//                    sProfileMeta.startAnimation(fadeOut);
-
                 }
-
-//                try {
-//                    timeLine.offsetDescendantRectToMyCoords(profileMeta, offsetViewBounds);
-//                    int relativeTop = offsetViewBounds.top;
-//
-//                    if (relativeTop <= 16) {
-//
-//                        sProfileMeta.setVisibility(View.VISIBLE);
-//
-//                    } else {
-//
-//                        sProfileMeta.setVisibility(View.GONE);
-//
-//                    }
-//
-//                    Log.v("header-offset", "" + relativeTop);
-//                } catch (IllegalArgumentException e) {
-//                    return;
-//                }
 
             }
 
         };
-
-        // Add click listener to share button
-
-//        jumpStart.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                startPost();
-//
-//            }
-//        });
 
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(new OnMapReadyCallback() {
@@ -438,32 +317,57 @@ public class TerritoryActivity extends AppCompatActivity {
 
                 mMapboxMap = mapboxMap;
 
-//                mapboxMap.setMaxZoomPreference(7);
-//                mapboxMap.setMinZoomPreference(7);
+                TerritoryHelpers.fetchTerritoryGeometry(context, territory, new TerritoryGeometryCallbacks() {
 
-//                mapboxMap.getUiSettings().setAllGesturesEnabled(false);
+                    @Override
+                    public void onSuccess(@NonNull HUCFeature hucFeature) {
 
-                fetchGeometry();
+                        LatLng southWest = new LatLng(hucFeature.properties.bounds.get(1), hucFeature.properties.bounds.get(0));
+                        LatLng northEast = new LatLng(hucFeature.properties.bounds.get(3), hucFeature.properties.bounds.get(2));
 
-//                final MarkerViewManager markerViewManager = mapboxMap.getMarkerViewManager();
-//
-//                latitude = originalPost.geometry.geometries.get(0).coordinates.get(1);
-//                longitude = originalPost.geometry.geometries.get(0).coordinates.get(0);
-//
-//                CameraPosition position = new CameraPosition.Builder()
-//                        .target(new LatLng(latitude, longitude)) // Sets the new camera position
-//                        .zoom(14) // Sets the zoom
-//                        .build(); // Creates a CameraPosition from the builder
+                        latLngs.add(southWest);
+                        latLngs.add(northEast);
 
-//                mapboxMap.animateCamera(CameraUpdateFactory
-//                        .newCameraPosition(position), 4000);
+                        territoryStates.setText(hucFeature.properties.states.concat);
+                        actionBarSubtitle.setText(hucFeature.properties.states.concat);
 
-                //
+                        // Move camera to watershed bounds
+                        LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(latLngs).build();
+                        mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 100, 100, 100, 100), 3000);
+
+                    }
+
+                    @Override
+                    public void onError(@NonNull RetrofitError error) {
+
+                        if (error == null) return;
+
+                        Response errorResponse = error.getResponse();
+
+                        // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                        if (errorResponse != null) {
+
+                            int status = errorResponse.getStatus();
+
+                            if (status == 403) {
+
+                                context.startActivity(new Intent(context, SignInActivity.class));
+
+                            }
+
+                        }
+                    }
+
+                });
+
                 String code = String.format("%s", territory.properties.huc_8_code);
                 if (code.length() == 7) code = String.format("0%s", code);
                 String url = String.format("https://huc.waterreporter.org/8/%s", code);
 
-                try {
+                try
+
+                {
 
                     URL geoJsonUrl = new URL(url);
                     GeoJsonSource geoJsonSource = new GeoJsonSource("geojson", geoJsonUrl);
@@ -474,14 +378,16 @@ public class TerritoryActivity extends AppCompatActivity {
                     FillLayer layer = new FillLayer("geojson", "geojson");
 
                     layer.withProperties(
-                            //fillOutlineColor("#FFFFFF"),
                             fillColor("#6b4ab5"),
                             fillOpacity(0.4f)
                     );
 
                     mapboxMap.addLayer(layer);
 
-                } catch (MalformedURLException e) {
+                } catch (
+                        MalformedURLException e)
+
+                {
 
                     Log.d("Malformed URL", e.getMessage());
 
@@ -490,17 +396,12 @@ public class TerritoryActivity extends AppCompatActivity {
             }
         });
 
-        backArrow.setOnClickListener(new View.OnClickListener() {
+        backArrow.setOnClickListener(new View.OnClickListener()
+
+        {
             @Override
             public void onClick(View view) {
                 finish();
-            }
-        });
-
-        secondaryMapButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(context, TerritoryMapActivity.class));
             }
         });
 
@@ -512,44 +413,11 @@ public class TerritoryActivity extends AppCompatActivity {
 
         ViewGroup header = (ViewGroup) inflater.inflate(R.layout.watershed_profile_header, timeLine, false);
 
-//        sharePrompt = (LinearLayout) header.findViewById(R.id.share_cta);
-//
-//        jumpStart = (FloatingActionButton) header.findViewById(R.id.jump_start);
-//
-//        jumpStart.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.green_1)));
-//
-//        // Add click listener to share button
-//
-//        jumpStart.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                startPost();
-//
-//            }
-//        });
-
         territoryName = (TextView) header.findViewById(R.id.territoryName);
 
         territoryStates = (TextView) header.findViewById(R.id.states);
 
         reportCounter = (TextView) header.findViewById(R.id.reportCount);
-//
-//        actionCounter = (TextView) header.findViewById(R.id.actionCount);
-//
-//        groupCounter = (TextView) header.findViewById(R.id.groupCount);
-//
-//        reportCountLabel = (TextView) header.findViewById(R.id.reportCountLabel);
-//
-//        actionCountLabel = (TextView) header.findViewById(R.id.actionCountLabel);
-//
-//        groupCountLabel = (TextView) header.findViewById(R.id.groupCountLabel);
-//
-//        reportStat = (LinearLayout) header.findViewById(R.id.reportStat);
-//
-//        actionStat = (LinearLayout) header.findViewById(R.id.actionStat);
-//
-//        groupStat = (LinearLayout) header.findViewById(R.id.groupStat);
 
         profileMeta = (FlexboxLayout) header.findViewById(R.id.profileMeta);
 
@@ -560,12 +428,9 @@ public class TerritoryActivity extends AppCompatActivity {
         accessMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                accessMap.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.splash_blue_dark)));
                 startActivity(new Intent(TerritoryActivity.this, TerritoryMapActivity.class));
             }
         });
-
-//        profileStats = (LinearLayout) header.findViewById(R.id.profileStats);
 
         try {
 
@@ -582,60 +447,7 @@ public class TerritoryActivity extends AppCompatActivity {
         territoryNameText = territory.properties.huc_8_name;
 
         territoryName.setText(territoryNameText);
-        sTerritoryName.setText(territoryNameText);
-
-        // Attach click listeners to stat elements
-
-//        reportStat.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                resetStats();
-//
-//            }
-//        });
-
-//        actionStat.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                actionFocus = true;
-//
-//                actionCounter.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
-//                actionCountLabel.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
-//
-//                reportCounter.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
-//                reportCountLabel.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
-//
-//                if (timeLine != null) {
-//
-//                    timeLine.setSelection(0);
-//
-//                }
-//
-//                timeLineContainer.setRefreshing(true);
-//
-//                fetchReports(5, 1, complexQuery, true);
-//
-//            }
-//        });
-
-//        groupStat.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                if (hasGroups) {
-//
-//                    Intent intent = new Intent(context, RelatedGroupsActivity.class);
-//
-//                    intent.putExtra("GENERIC_USER", TRUE);
-//
-//                    startActivity(intent);
-//
-//                }
-//
-//            }
-//        });
+        actionBarTitle.setText(territoryNameText);
 
         // Add populated header view to report timeline
 
@@ -656,90 +468,6 @@ public class TerritoryActivity extends AppCompatActivity {
 //        timeLineContainer.setRefreshing(true);
 
 //        fetchReports(5, 1, buildQuery(true, "report", null), true);
-
-    }
-
-    protected void fetchGeometry() {
-
-        RestAdapter restAdapter = HUCGeometryService.restAdapter;
-
-        HUCGeometryService service = restAdapter.create(HUCGeometryService.class);
-
-        String code = String.format("%s", territory.properties.huc_8_code);
-        if (code.length() == 7) code = String.format("0%s", code);
-
-        service.getGeometry("application/json", code, new Callback<HUCGeometryCollection>() {
-
-            @Override
-            public void success(HUCGeometryCollection hucGeometryCollection, Response response) {
-
-                HUCFeature hucFeature = hucGeometryCollection.features.get(0);
-
-                Log.v("huc-feature", hucFeature.toString());
-
-//                List<List<Double>> coordinatePairs = hucFeature.geometry.coordinates.get(0);
-//
-//                for (List<Double> point : coordinatePairs) {
-//
-//                    Log.v("point", point.toString());
-//
-//                    LatLng latLng = new LatLng(point.get(1), point.get(0));
-//
-//                    latLngs.add(latLng);
-//
-//                }
-
-                LatLng southWest = new LatLng(hucFeature.properties.bounds.get(1), hucFeature.properties.bounds.get(0));
-                LatLng northEast = new LatLng(hucFeature.properties.bounds.get(3), hucFeature.properties.bounds.get(2));
-
-                latLngs.add(southWest);
-                latLngs.add(northEast);
-
-                territoryStates.setText(hucFeature.properties.states.concat);
-                sStates.setText(hucFeature.properties.states.concat);
-
-                // Draw a polygon on the map
-//                mMapboxMap.addPolygon(new PolygonOptions()
-//                        .addAll(latLngs)
-//                        //.strokeColor(Color.parseColor("#FFFFFF"))
-//                        .fillColor(Color.parseColor("#806b4ab5")));
-//
-//                // Draw polyline on the map
-//                mMapboxMap.addPolyline(new PolylineOptions()
-//                        .addAll(latLngs)
-//                        .color(Color.parseColor("#FFFFFF"))
-//                        .width(2));
-
-                // Move camera to watershed bounds
-                LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(latLngs).build();
-                mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 100, 100, 100, 100), 3000);
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-                if (error == null) return;
-
-                Response errorResponse = error.getResponse();
-
-                // If we have a valid response object, check the status code and redirect to log in view if necessary
-
-                if (errorResponse != null) {
-
-                    int status = errorResponse.getStatus();
-
-                    if (status == 403) {
-
-                        startActivity(new Intent(context, SignInActivity.class));
-
-                    }
-
-                }
-
-            }
-
-        });
 
     }
 
@@ -770,8 +498,6 @@ public class TerritoryActivity extends AppCompatActivity {
                     default:
                         reportCount = count;
                         reportCounter.setText(String.format("%s %s", reportCount, resources.getQuantityString(R.plurals.post_label, reportCount, reportCount)).toLowerCase());
-//                        sReportCount.setText(String.format("%s %s", reportCount, resources.getQuantityString(R.plurals.post_label, reportCount, reportCount)).toLowerCase());
-//                        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
                         break;
                 }
 
@@ -959,32 +685,6 @@ public class TerritoryActivity extends AppCompatActivity {
                 String count = String.format("%s %s", reportCount, resources.getQuantityString(R.plurals.post_label, reportCount, reportCount)).toLowerCase();
                 reportCounter.setText(count);
 
-//                if (reportCount > 0) {
-//
-//                    sharePrompt.setVisibility(View.GONE);
-//
-//                    reportStat.setVisibility(View.VISIBLE);
-//
-//                    reportCounter.setText(String.valueOf(reportCount));
-//
-//                    reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
-//
-//                } else {
-//
-//                    try {
-//
-//                        reportStat.setVisibility(View.GONE);
-//
-//                        sharePrompt.setVisibility(View.VISIBLE);
-//
-//                    } catch (NullPointerException e) {
-//
-//                        finish();
-//
-//                    }
-//
-//                }
-
                 if (refresh || reportCollection.isEmpty()) {
 
                     reportCollection.clear();
@@ -996,8 +696,6 @@ public class TerritoryActivity extends AppCompatActivity {
                     try {
 
                         timelineAdapter.notifyDataSetChanged();
-
-//                        timeLine.smoothScrollToPosition(0);
 
                     } catch (NullPointerException e) {
 
