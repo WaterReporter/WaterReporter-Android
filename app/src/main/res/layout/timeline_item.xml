@@ -225,24 +225,6 @@
         app:flexDirection="row"
         app:flexWrap="nowrap">
 
-        <!--<RelativeLayout-->
-        <!--android:id="@+id/action_badge"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:minWidth="48dp"-->
-        <!--android:visibility="gone"-->
-        <!--app:layout_flexGrow="1"-->
-        <!--app:layout_flexShrink="0">-->
-
-        <!--<ImageView-->
-        <!--android:layout_width="24dp"-->
-        <!--android:layout_height="24dp"-->
-        <!--android:layout_centerInParent="true"-->
-        <!--android:scaleType="fitXY"-->
-        <!--android:src="@drawable/action_badge_small" />-->
-
-        <!--</RelativeLayout>-->
-
         <RelativeLayout
             android:id="@+id/location_icon"
             android:layout_width="wrap_content"

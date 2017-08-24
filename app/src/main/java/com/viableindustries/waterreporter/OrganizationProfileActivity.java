@@ -100,6 +100,9 @@ public class OrganizationProfileActivity extends AppCompatActivity {
     @Bind(R.id.prompt)
     TextView promptMessage;
 
+    @Bind(R.id.startPost)
+    Button startPostButton;
+
     protected TimelineAdapter timelineAdapter;
 
     protected List<Report> reportCollection = new ArrayList<Report>();
@@ -227,6 +230,32 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
             }
         };
+
+        // Add text and click listener to startPostButton
+
+        startPostButton.setText(getString(R.string.share_post_prompt));
+
+        startPostButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startPost();
+            }
+        });
+
+    }
+
+    private void startPost(){
+
+        Intent intent = new Intent(context, PhotoMetaActivity.class);
+
+        TextView tagName = (TextView) findViewById(R.id.organizationName);
+
+        intent.putExtra("autoTag", String.format("\u0023%s", tagName.getText().toString().replaceAll("[^a-zA-Z0-9]+", "")));
+
+        startActivity(intent);
+
+        this.overridePendingTransition(R.anim.animation_enter_right,
+                R.anim.animation_exit_left);
 
     }
 

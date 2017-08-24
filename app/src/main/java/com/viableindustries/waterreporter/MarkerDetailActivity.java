@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -91,7 +92,7 @@ public class MarkerDetailActivity extends AppCompatActivity {
     @Bind(R.id.comment_count)
     TextView postComments;
 
-    @Bind(R.id.post_caption)
+    @Bind(R.id.postCaption)
     TextView postCaption;
 
     @Bind(R.id.post_groups)
@@ -151,7 +152,7 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
         // Set dimensions of post image
 
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(context));
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(context));
 
         postThumb.setLayoutParams(layoutParams);
 

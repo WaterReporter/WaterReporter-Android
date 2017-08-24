@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -85,6 +86,9 @@ public class TagProfileActivity extends AppCompatActivity {
 
     @Bind(R.id.prompt)
     TextView promptMessage;
+
+    @Bind(R.id.startPost)
+    Button startPostButton;
 
     protected TimelineAdapter timelineAdapter;
 
@@ -210,6 +214,17 @@ public class TagProfileActivity extends AppCompatActivity {
             }
         };
 
+        // Add text and click listener to startPostButton
+
+        startPostButton.setText(getString(R.string.share_post_prompt));
+
+        startPostButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startPost();
+            }
+        });
+
     }
 
     protected void addListViewHeader() {
@@ -218,22 +233,22 @@ public class TagProfileActivity extends AppCompatActivity {
 
         ViewGroup header = (ViewGroup) inflater.inflate(R.layout.tag_profile_header, timeLine, false);
 
-        sharePrompt = (LinearLayout) header.findViewById(R.id.share_cta);
-
-        jumpStart = (FloatingActionButton) header.findViewById(R.id.jump_start);
-
-        jumpStart.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.green_1)));
-
-        // Add click listener to share button
-
-        jumpStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                startPost();
-
-            }
-        });
+//        sharePrompt = (LinearLayout) header.findViewById(R.id.share_cta);
+//
+//        jumpStart = (FloatingActionButton) header.findViewById(R.id.jump_start);
+//
+//        jumpStart.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.green_1)));
+//
+//        // Add click listener to share button
+//
+//        jumpStart.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                startPost();
+//
+//            }
+//        });
 
         tagNameView = (TextView) header.findViewById(R.id.tag_name);
         tagNameView.setText(tagName);

@@ -26,9 +26,25 @@
         android:layout_gravity="center_horizontal"
         android:gravity="center"
         android:maxWidth="240dp"
-        android:paddingBottom="24dp"
+        android:paddingBottom="16dp"
         android:paddingTop="8dp"
         android:textColor="@color/splash_blue"
         android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/startPost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="32dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_blue_button"
+        android:paddingBottom="8dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingTop="8dp"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/base_text" />
 
 </LinearLayout>
