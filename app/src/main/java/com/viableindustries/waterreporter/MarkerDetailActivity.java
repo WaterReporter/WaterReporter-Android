@@ -4,11 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -19,6 +22,7 @@ import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.HUCFeature;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.ReportService;
@@ -73,6 +77,12 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
         context = this;
 
+        if (Build.VERSION.SDK_INT >= 19) {
+
+            AttributeTransformUtility.setStatusBarTranslucent(getWindow(), true);
+
+        }
+
         // Retrieve report and attempt to display data
 
         Report report = ReportHolder.getReport();
@@ -104,6 +114,50 @@ public class MarkerDetailActivity extends AppCompatActivity {
         }
 
         sharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        // Fetch watershed geometry and metadata related to current post
+
+        TerritoryHelpers.fetchTerritoryGeometry(context, report.properties.territory, new TerritoryGeometryCallbacks() {
+
+            @Override
+            public void onSuccess(@NonNull HUCFeature hucFeature) {
+
+                actionBarTitle.setText(hucFeature.properties.name);
+
+                actionBarSubtitle.setText(hucFeature.properties.states.concat);
+
+                customActionBar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        finish();
+                    }
+                });
+
+            }
+
+            @Override
+            public void onError(@NonNull RetrofitError error) {
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        context.startActivity(new Intent(context, SignInActivity.class));
+
+                    }
+
+                }
+            }
+
+        });
 
     }
 

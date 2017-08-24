@@ -1,7 +1,10 @@
 package com.viableindustries.waterreporter;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.text.format.DateUtils;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.viableindustries.waterreporter.data.Comment;
 import com.viableindustries.waterreporter.data.Organization;
@@ -18,6 +21,15 @@ import java.util.Locale;
  */
 
 public class AttributeTransformUtility {
+
+    public static void setStatusBarTranslucent(Window window, boolean makeTranslucent) {
+
+        if (makeTranslucent) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        } else {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+    }
 
     public static String getTerritoryCode(Territory territory) {
 

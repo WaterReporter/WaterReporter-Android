@@ -174,7 +174,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
         if (Build.VERSION.SDK_INT >= 19) {
 
-            setStatusBarTranslucent(true);
+            AttributeTransformUtility.setStatusBarTranslucent(getWindow(), true);
 
         }
 
@@ -478,14 +478,6 @@ public class TerritoryMapActivity extends AppCompatActivity {
         LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(latLngs).build();
         mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 100, 100, 100, 100), 2000);
 
-    }
-
-    protected void setStatusBarTranslucent(boolean makeTranslucent) {
-        if (makeTranslucent) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        } else {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
     }
 
     // Adapter for our custom marker view
