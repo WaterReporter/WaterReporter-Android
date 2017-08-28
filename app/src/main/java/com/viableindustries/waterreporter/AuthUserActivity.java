@@ -748,7 +748,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
     private void populateTimeline(List<Report> list) {
 
-        timelineAdapter = new TimelineAdapter(AuthUserActivity.this, list, true);
+        timelineAdapter = new TimelineAdapter(AuthUserActivity.this, list, true, getSupportFragmentManager());
 
         // Attach the adapter to a ListView
         if (timeLine != null) {

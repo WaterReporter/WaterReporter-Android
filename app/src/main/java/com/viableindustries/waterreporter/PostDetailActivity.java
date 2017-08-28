@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
@@ -40,7 +41,7 @@ import retrofit.client.Response;
  * Created by Ryan Hamley on 10/14/14.
  * This activity displays detailed information about a report after clicking on its map marker.
  */
-public class MarkerDetailActivity extends AppCompatActivity {
+public class PostDetailActivity extends AppCompatActivity {
 
     @Bind(R.id.postContainer)
     ScrollView postContainer;
@@ -65,6 +66,8 @@ public class MarkerDetailActivity extends AppCompatActivity {
     private Context context;
 
     private SharedPreferences sharedPreferences;
+
+    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +117,8 @@ public class MarkerDetailActivity extends AppCompatActivity {
         }
 
         sharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        fragmentManager = getSupportFragmentManager();
 
         // Fetch watershed geometry and metadata related to current post
 
@@ -214,7 +219,7 @@ public class MarkerDetailActivity extends AppCompatActivity {
 
         postContainer.setTag(viewHolder);
 
-        TimelineAdapter.bindData(post, context, sharedPreferences, false, viewHolder);
+        TimelineAdapter.bindData(post, context, sharedPreferences, fragmentManager, false, viewHolder);
 
     }
 

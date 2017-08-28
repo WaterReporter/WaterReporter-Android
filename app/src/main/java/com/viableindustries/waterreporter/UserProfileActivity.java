@@ -739,7 +739,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     private void populateTimeline(List<Report> list) {
 
-        timelineAdapter = new TimelineAdapter(UserProfileActivity.this, list, true);
+        timelineAdapter = new TimelineAdapter(UserProfileActivity.this, list, true, getSupportFragmentManager());
 
         // Attach the adapter to a ListView
 

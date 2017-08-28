@@ -156,7 +156,7 @@ public class TerritoryActivity extends AppCompatActivity {
         territory = TerritoryHolder.getTerritory();
 
         // Hide the docked metadata view
-//        sProfileMeta.setAlpha(0.0f);
+        customActionBar.setBackgroundColor(Color.TRANSPARENT);
         actionBarTitle.setAlpha(0.0f);
         actionBarSubtitle.setAlpha(0.0f);
 
@@ -230,17 +230,8 @@ public class TerritoryActivity extends AppCompatActivity {
 
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-                // Determine the vertical offset of the profile view in the ListView header
-//                Rect myViewRect = new Rect();
-//                profileMeta.getGlobalVisibleRect(myViewRect);
-//                float x = myViewRect.left;
-//                float y = myViewRect.top;
-//                Log.v("header-offset", "" + y);
 
-//                Rect offsetViewBounds = new Rect();
-//                //returns the visible bounds
-//                profileMeta.getDrawingRect(offsetViewBounds);
-                //calculates the relative coordinates to the parent
+                // Determine the vertical offset of the profile view in the ListView header
 
                 int[] locations = new int[2];
                 profileMeta.getLocationOnScreen(locations);
@@ -249,18 +240,7 @@ public class TerritoryActivity extends AppCompatActivity {
                 Log.v("header-offset", "" + y);
                 if (y <= 24) {
 
-//                    if (sProfileMeta.getAlpha() < 1.0) {
-//
-//                        AlphaAnimation fadeIn = new AlphaAnimation(0.0f, 1.0f);
-//                        fadeIn.setDuration(250);
-//                        sProfileMeta.setAlpha(1.0f);
-//                        sProfileMeta.startAnimation(fadeIn);
-//
-//                    }
-
                     if (actionBarTitle.getAlpha() < 1.0) {
-
-//                        sProfileMeta.setBackgroundColor(ContextCompat.getColor(TerritoryActivity.this, R.color.splash_blue));
 
                         int colorFrom = Color.TRANSPARENT;
                         int colorTo = ContextCompat.getColor(TerritoryActivity.this, R.color.splash_blue);
@@ -766,7 +746,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
     private void populateTimeline(List<Report> list) {
 
-        timelineAdapter = new TimelineAdapter(this, list, false);
+        timelineAdapter = new TimelineAdapter(this, list, false, getSupportFragmentManager());
 
         // Attach the adapter to a ListView
         if (timeLine != null) {

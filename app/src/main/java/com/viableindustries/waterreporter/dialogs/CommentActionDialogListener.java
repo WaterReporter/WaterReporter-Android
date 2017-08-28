@@ -6,6 +6,6 @@ package com.viableindustries.waterreporter.dialogs;
 
 public interface CommentActionDialogListener {
 
-    void onSelectAction(int index);
+    void onSelectAction(int id);
 
 }

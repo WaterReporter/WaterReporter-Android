@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:orientation="vertical"
-    tools:context="com.viableindustries.waterreporter.MarkerDetailActivity">
+    tools:context="com.viableindustries.waterreporter.PostDetailActivity">
 
     <include layout="@layout/custom_action_bar" />
 

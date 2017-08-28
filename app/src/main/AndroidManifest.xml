@@ -164,7 +164,7 @@
                 android:value="com.viableindustries.waterreporter.MainActivity" />
         </activity>
         <activity
-            android:name=".MarkerDetailActivity"
+            android:name=".PostDetailActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:parentActivityName=".MapDetailActivity"

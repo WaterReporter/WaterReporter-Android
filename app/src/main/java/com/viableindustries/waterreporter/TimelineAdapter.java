@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.util.Log;
@@ -23,6 +24,7 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.viableindustries.waterreporter.data.Favorite;
 import com.viableindustries.waterreporter.data.HtmlCompat;
 import com.viableindustries.waterreporter.data.PostCommentListener;
+import com.viableindustries.waterreporter.data.PostDetailListener;
 import com.viableindustries.waterreporter.data.PostDirectionsListener;
 import com.viableindustries.waterreporter.data.PostFavoriteCountListener;
 import com.viableindustries.waterreporter.data.PostMapListener;
@@ -31,6 +33,7 @@ import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.UserHolder;
 import com.viableindustries.waterreporter.data.UserProfileListener;
+import com.viableindustries.waterreporter.dialogs.ReportActionDialog;
 import com.viableindustries.waterreporter.dialogs.ReportActionDialogListener;
 
 import java.util.List;
@@ -43,13 +46,16 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
     protected SharedPreferences mSharedPreferences;
 
+    final private FragmentManager mFragmentManager;
+
     final private String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
 
-    public TimelineAdapter(Activity activity, List<Report> aFeatures, boolean isProfile) {
+    public TimelineAdapter(Activity activity, List<Report> aFeatures, boolean isProfile, FragmentManager fragmentManager) {
         super(activity, 0, aFeatures);
         this.mContext = activity;
         this.mIsProfile = isProfile;
         this.mSharedPreferences = mContext.getSharedPreferences(mContext.getPackageName(), 0);
+        this.mFragmentManager = fragmentManager;
     }
 
     public static class ViewHolder {
@@ -107,7 +113,12 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
     }
 
-    public static void bindData(final Report post, final Context context, final SharedPreferences sharedPreferences, final boolean mIsProfile, final ViewHolder viewHolder) {
+    public static void bindData(final Report post,
+                                final Context context,
+                                final SharedPreferences sharedPreferences,
+                                final FragmentManager fragmentManager,
+                                final boolean mIsProfile,
+                                final ViewHolder viewHolder) {
 
         Log.d("target-post", post.properties.toString());
 
@@ -175,7 +186,20 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
                 viewHolder.ogDescription,
                 viewHolder.ogUrl);
 
-        // Attach click listeners to active UI components
+        // Attach gesture listeners to active UI components
+
+        viewHolder.postThumb.setOnClickListener(new PostDetailListener(context, post));
+
+        viewHolder.postThumb.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+
+                TimelineAdapterHelpers.saveImage(context, post);
+
+                return false;
+
+            }
+        });
 
         viewHolder.commentCount.setOnClickListener(new PostCommentListener(context, post));
 
@@ -276,36 +300,11 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
                     @Override
                     public void onClick(View view) {
 
-                        Resources res = context.getResources();
+                        ReportHolder.setReport(post);
 
-                        String[] options = res.getStringArray(R.array.post_action_options);
+                        ReportActionDialog reportActionDialog = new ReportActionDialog();
 
-                        CharSequence[] renders = new CharSequence[2];
-
-                        for (int i = 0; i < options.length; i++) {
-
-                            renders[i] = HtmlCompat.fromHtml(options[i]);
-
-                        }
-
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
-                        builder.setItems(renders, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                ReportHolder.setReport(post);
-
-                                // The 'which' argument contains the index position
-                                // of the selected item
-                                ReportActionDialogListener activity = (ReportActionDialogListener) context;
-
-                                activity.onSelectAction(which);
-
-                            }
-                        });
-
-                        // Create the AlertDialog object and return it
-                        builder.create().show();
+                        reportActionDialog.show(fragmentManager, "post-action-dialog");
 
                     }
                 });
@@ -383,7 +382,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         final Report feature = (Report) getItem(position);
 
-        bindData(feature, mContext, mSharedPreferences, mIsProfile, viewHolder);
+        bindData(feature, mContext, mSharedPreferences, mFragmentManager, mIsProfile, viewHolder);
 
         return convertView;
 

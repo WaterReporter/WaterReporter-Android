@@ -1,5 +1,6 @@
 package com.viableindustries.waterreporter;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -45,6 +47,7 @@ import com.viableindustries.waterreporter.data.UserProfileListener;
 import com.viableindustries.waterreporter.dialogs.ReportActionDialogListener;
 
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 
@@ -52,21 +55,49 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import static android.content.Context.DOWNLOAD_SERVICE;
+
 /**
  * Created by brendanmcintyre on 8/18/17.
  */
 
 public class TimelineAdapterHelpers {
 
+    // Download image
+
+    public static void saveImage(Context context, Report post) {
+
+        DownloadManager downloadManager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
+
+        Uri uri = Uri.parse(post.properties.images.get(0).properties.original);
+
+        String fileName = String.format("%s-%s.jpg", Math.random(), new Date().getTime());
+
+        Environment
+                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                .mkdirs();
+
+        downloadManager.enqueue(new DownloadManager.Request(uri)
+                .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI |
+                        DownloadManager.Request.NETWORK_MOBILE)
+                .setAllowedOverRoaming(false)
+                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                .setTitle("Downloading image")
+                .setDescription("Downloading image from Water Reporter")
+                .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
+                        fileName));
+
+    }
+
     // Add favorite
 
     public static void addFavorite(final Report post,
-                             final int currentCount,
-                             final RelativeLayout relativeLayout,
-                             final TextView textView,
-                             final ImageView imageView,
-                             final Context mContext,
-                             final SharedPreferences mPreferences) {
+                                   final int currentCount,
+                                   final RelativeLayout relativeLayout,
+                                   final TextView textView,
+                                   final ImageView imageView,
+                                   final Context mContext,
+                                   final SharedPreferences mPreferences) {
 
         // Retrieve API token
 
@@ -120,13 +151,13 @@ public class TimelineAdapterHelpers {
     // Undo favorite
 
     public static void undoFavorite(final Report post,
-                              final int favoriteId,
-                              final int currentCount,
-                              final RelativeLayout relativeLayout,
-                              final TextView textView,
-                              final ImageView imageView,
-                              final Context mContext,
-                              final SharedPreferences mPreferences) {
+                                    final int favoriteId,
+                                    final int currentCount,
+                                    final RelativeLayout relativeLayout,
+                                    final TextView textView,
+                                    final ImageView imageView,
+                                    final Context mContext,
+                                    final SharedPreferences mPreferences) {
 
         // Retrieve API token
 

@@ -3,21 +3,17 @@ package com.viableindustries.waterreporter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -78,7 +74,7 @@ public class MarkerCardAdapter extends RecyclerView.Adapter<MarkerCardAdapter.Vi
             @Override
             public void onClick(View view) {
                 ReportHolder.setReport(r);
-                Intent markerIntent = new Intent(mContext, MarkerDetailActivity.class);
+                Intent markerIntent = new Intent(mContext, PostDetailActivity.class);
                 mContext.startActivity(markerIntent);
             }
         });

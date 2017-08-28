@@ -81,6 +81,11 @@
     <string name="saving">Please sit tight while we save your report&#8230;</string>
     <string name="post_received">Great! Your report was successfully broadcast on Water Reporter.</string>
 
+    <!-- Post actions -->
+    <string name="action_edit_post">Edit post</string>
+    <string name="action_delete_post">Delete post</string>
+    <string name="action_download_image">Save image</string>
+
     <!-- Location -->
     <string name="find_location">Find an address.</string>
 
