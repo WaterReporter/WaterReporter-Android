@@ -24,6 +24,8 @@ import android.widget.TextView;
 import com.google.android.flexbox.FlexboxLayout;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.HUCFeature;
+import com.viableindustries.waterreporter.data.PostCommentListener;
+import com.viableindustries.waterreporter.data.PostFavoriteCountListener;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.ReportService;
@@ -60,6 +62,18 @@ public class PostDetailActivity extends AppCompatActivity {
 
     @Bind(R.id.actionBarSubtitle)
     TextView actionBarSubtitle;
+
+    @Bind(R.id.commentCount)
+    RelativeLayout mCommentCount;
+
+    @Bind(R.id.fullCommentCount)
+    TextView mFullCommentCount;
+
+    @Bind(R.id.favoriteCount)
+    RelativeLayout mFavoriteCount;
+
+    @Bind(R.id.fullFavoriteCount)
+    TextView mFullFavoriteCount;
 
     protected List<String> groups;
 
@@ -168,6 +182,32 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private void populateView(final Report post) {
 
+        // Set value of comment count string
+        int commentCount = post.properties.comments.size();
+
+        if (commentCount > 0) {
+
+            mCommentCount.setVisibility(View.VISIBLE);
+
+            mFullCommentCount.setText(context.getResources().getQuantityString(R.plurals.comment_label, commentCount, commentCount));
+
+            mCommentCount.setOnClickListener(new PostCommentListener(context, post));
+
+        }
+
+        // Set value of favorite count string
+        int favoriteCount = post.properties.favorites.size();
+
+        if (favoriteCount > 0) {
+
+            mFavoriteCount.setVisibility(View.VISIBLE);
+
+            mFullFavoriteCount.setText(context.getResources().getQuantityString(R.plurals.favorite_label, favoriteCount, favoriteCount));
+
+            mFullFavoriteCount.setOnClickListener(new PostFavoriteCountListener(context, post));
+
+        }
+
         final TimelineAdapter.ViewHolder viewHolder;
 
         viewHolder = new TimelineAdapter.ViewHolder();
@@ -183,11 +223,12 @@ public class PostDetailActivity extends AppCompatActivity {
         viewHolder.postStub = (LinearLayout) postContainer.findViewById(R.id.postStub);
         viewHolder.locationIcon = (RelativeLayout) postContainer.findViewById(R.id.locationIcon);
 
-        viewHolder.commentIcon = (RelativeLayout) postContainer.findViewById(R.id.commentIcon);
-        viewHolder.favoriteIcon = (RelativeLayout) postContainer.findViewById(R.id.favoriteIcon);
+        viewHolder.commentIcon = (FlexboxLayout) postContainer.findViewById(R.id.commentIcon);
+        viewHolder.favoriteIcon = (FlexboxLayout) postContainer.findViewById(R.id.favoriteIcon);
         viewHolder.shareIcon = (RelativeLayout) postContainer.findViewById(R.id.shareIcon);
         viewHolder.actionsEllipsis = (RelativeLayout) postContainer.findViewById(R.id.actionEllipsis);
         viewHolder.locationIconView = (ImageView) postContainer.findViewById(R.id.locationIconView);
+        viewHolder.extraActionsIconView = (ImageView) postContainer.findViewById(R.id.extraActionsIconView);
 
         viewHolder.shareIconView = (ImageView) postContainer.findViewById(R.id.shareIconView);
         viewHolder.commentIconView = (ImageView) postContainer.findViewById(R.id.commentIconView);

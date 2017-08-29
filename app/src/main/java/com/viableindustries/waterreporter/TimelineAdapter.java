@@ -71,12 +71,12 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         LinearLayout postStub;
         RelativeLayout locationIcon;
 
-        RelativeLayout commentIcon;
-        RelativeLayout favoriteIcon;
+        FlexboxLayout commentIcon;
+        FlexboxLayout favoriteIcon;
         RelativeLayout shareIcon;
         RelativeLayout actionsEllipsis;
         ImageView locationIconView;
-
+        ImageView extraActionsIconView;
         ImageView shareIconView;
 
         // Action counts
@@ -127,7 +127,8 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         ImageView[] icons = new ImageView[]{
                 viewHolder.locationIconView,
-                viewHolder.shareIconView
+                viewHolder.shareIconView,
+                viewHolder.extraActionsIconView
         };
 
         TimelineAdapterHelpers.setIconColors(context, icons);
@@ -333,8 +334,8 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
             viewHolder.postStub = (LinearLayout) convertView.findViewById(R.id.postStub);
             viewHolder.locationIcon = (RelativeLayout) convertView.findViewById(R.id.locationIcon);
 
-            viewHolder.commentIcon = (RelativeLayout) convertView.findViewById(R.id.commentIcon);
-            viewHolder.favoriteIcon = (RelativeLayout) convertView.findViewById(R.id.favoriteIcon);
+            viewHolder.commentIcon = (FlexboxLayout) convertView.findViewById(R.id.commentIcon);
+            viewHolder.favoriteIcon = (FlexboxLayout) convertView.findViewById(R.id.favoriteIcon);
             viewHolder.shareIcon = (RelativeLayout) convertView.findViewById(R.id.shareIcon);
             viewHolder.actionsEllipsis = (RelativeLayout) convertView.findViewById(R.id.actionEllipsis);
             viewHolder.locationIconView = (ImageView) convertView.findViewById(R.id.locationIconView);
@@ -342,6 +343,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
             viewHolder.shareIconView = (ImageView) convertView.findViewById(R.id.shareIconView);
             viewHolder.commentIconView = (ImageView) convertView.findViewById(R.id.commentIconView);
             viewHolder.favoriteIconView = (ImageView) convertView.findViewById(R.id.favoriteIconView);
+            viewHolder.extraActionsIconView = (ImageView) convertView.findViewById(R.id.extraActionsIconView);
 
             // Action counts
 

@@ -115,7 +115,7 @@ public class TimelineAdapterHelpers {
 
                 int newCount = currentCount + 1;
 
-                textView.setText(newCount);
+                textView.setText(String.format("%s", newCount));
 
                 // Change favorite icon color
 
@@ -182,7 +182,7 @@ public class TimelineAdapterHelpers {
 
                     // Set TextView value
 
-                    textView.setText(newCount);
+                    textView.setText(String.format("%s", newCount));
 
                 }
 
@@ -332,7 +332,7 @@ public class TimelineAdapterHelpers {
 
         if (commentCount > 0) {
 
-            textView.setText(commentCount);
+            textView.setText(String.format("%s", commentCount));
 
             imageView.setColorFilter(ContextCompat.getColor(context, R.color.splash_blue), PorterDuff.Mode.SRC_ATOP);
 
@@ -389,7 +389,7 @@ public class TimelineAdapterHelpers {
 
         if (favoriteCount > 0) {
 
-            textView.setText(favoriteCount);
+            textView.setText(String.format("%s", favoriteCount));
 
             imageView.setColorFilter(ContextCompat.getColor(context, R.color.favorite_red), PorterDuff.Mode.SRC_ATOP);
 

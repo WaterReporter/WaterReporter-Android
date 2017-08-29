@@ -245,11 +245,13 @@
 
         </RelativeLayout>
 
-        <RelativeLayout
+        <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/commentIcon"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:minWidth="48dp"
+            app:alignItems="center"
+            app:justifyContent="center"
             app:layout_flexGrow="1"
             app:layout_flexShrink="0">
 
@@ -257,19 +259,20 @@
                 android:id="@+id/commentIconView"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_centerInParent="true"
+                android:layout_gravity="center_vertical"
                 android:scaleType="fitXY"
                 android:src="@drawable/ic_mode_comment_black_24dp" />
 
             <TextView
                 android:id="@+id/abbrCommentCount"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center"
+                android:padding="4dp"
                 android:textColor="@color/splash_blue"
                 android:textSize="14sp" />
 
-        </RelativeLayout>
+        </com.google.android.flexbox.FlexboxLayout>
 
         <RelativeLayout
             android:id="@+id/shareIcon"
@@ -291,11 +294,13 @@
 
         </RelativeLayout>
 
-        <RelativeLayout
+        <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/favoriteIcon"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:minWidth="48dp"
+            app:alignItems="center"
+            app:justifyContent="center"
             app:layout_flexGrow="1"
             app:layout_flexShrink="0">
 
@@ -303,7 +308,6 @@
                 android:id="@+id/favoriteIconView"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_centerInParent="true"
                 android:layout_gravity="center_vertical"
                 android:contentDescription="Favorite icon"
                 android:scaleType="fitXY"
@@ -312,12 +316,13 @@
             <TextView
                 android:id="@+id/abbrFavoriteCount"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center"
+                android:padding="4dp"
                 android:textColor="@color/favorite_red"
                 android:textSize="14sp" />
 
-        </RelativeLayout>
+        </com.google.android.flexbox.FlexboxLayout>
 
         <RelativeLayout
             android:id="@+id/actionEllipsis"
@@ -327,6 +332,7 @@
             app:layout_flexShrink="0">
 
             <ImageView
+                android:id="@+id/extraActionsIconView"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_centerInParent="true"
@@ -338,87 +344,6 @@
         </RelativeLayout>
 
     </com.google.android.flexbox.FlexboxLayout>
-
-    <!--<LinearLayout-->
-    <!--android:id="@+id/actionCounts"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:orientation="horizontal"-->
-    <!--android:visibility="gone">-->
-
-    <!--<RelativeLayout-->
-    <!--android:id="@+id/commentCount"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_marginBottom="16dp"-->
-    <!--android:layout_marginTop="8dp"-->
-    <!--android:paddingEnd="0dp"-->
-    <!--android:paddingLeft="16dp"-->
-    <!--android:paddingRight="0dp"-->
-    <!--android:paddingStart="16dp"-->
-    <!--android:visibility="gone">-->
-
-    <!--<ImageView-->
-    <!--android:id="@+id/commentCountIcon"-->
-    <!--android:layout_width="20dp"-->
-    <!--android:layout_height="20dp"-->
-    <!--android:layout_centerVertical="true"-->
-    <!--android:scaleType="fitXY"-->
-    <!--android:src="@drawable/ic_mode_comment_black_24dp" />-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/commentCountText"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_toEndOf="@+id/commentCountIcon"-->
-    <!--android:layout_toRightOf="@+id/commentCountIcon"-->
-    <!--android:paddingEnd="0dp"-->
-    <!--android:paddingLeft="4dp"-->
-    <!--android:paddingRight="0dp"-->
-    <!--android:paddingStart="4dp"-->
-    <!--android:textColor="@color/black"-->
-    <!--android:textSize="@dimen/small_text"-->
-    <!--android:textStyle="bold" />-->
-
-    <!--</RelativeLayout>-->
-
-    <!--<RelativeLayout-->
-    <!--android:id="@+id/favoriteCount"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_marginBottom="16dp"-->
-    <!--android:layout_marginTop="8dp"-->
-    <!--android:paddingEnd="0dp"-->
-    <!--android:paddingLeft="24dp"-->
-    <!--android:paddingRight="0dp"-->
-    <!--android:paddingStart="24dp"-->
-    <!--android:visibility="gone">-->
-
-    <!--<ImageView-->
-    <!--android:id="@+id/favoriteCountIcon"-->
-    <!--android:layout_width="20dp"-->
-    <!--android:layout_height="20dp"-->
-    <!--android:layout_centerVertical="true"-->
-    <!--android:scaleType="fitXY"-->
-    <!--android:src="@drawable/ic_favorite_black_24dp" />-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/favoriteCountText"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_toEndOf="@id/favoriteCountIcon"-->
-    <!--android:layout_toRightOf="@id/favoriteCountIcon"-->
-    <!--android:paddingEnd="0dp"-->
-    <!--android:paddingLeft="4dp"-->
-    <!--android:paddingRight="0dp"-->
-    <!--android:paddingStart="4dp"-->
-    <!--android:textColor="@color/black"-->
-    <!--android:textSize="@dimen/small_text"-->
-    <!--android:textStyle="bold" />-->
-
-    <!--</RelativeLayout>-->
-
-    <!--</LinearLayout>-->
 
     <TextView
         android:id="@+id/tracker"
