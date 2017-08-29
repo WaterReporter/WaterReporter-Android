@@ -30,7 +30,7 @@ public class TerritoryHelpers {
 //
 //    private Context mContext;
 //
-//    public TerritoryHelpers(Context context, Territory territory){
+//    public TerritoryHelpers(Context aContext, Territory territory){
 //        this.mContext= context;
 //        this.mTerritory = territory;
 //    };

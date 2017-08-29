@@ -145,7 +145,7 @@ public class ReportActionDialog extends DialogFragment implements View.OnClickLi
 
     }
 
-    private void getDirections(Context context, Report post) {
+    private void getDirections(Context aContext, Report post) {
 
         // Retrieve post location
 
@@ -157,13 +157,13 @@ public class ReportActionDialog extends DialogFragment implements View.OnClickLi
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, location);
 
         // Verify that the map intent resolves
-        PackageManager packageManager = context.getPackageManager();
+        PackageManager packageManager = aContext.getPackageManager();
         List<ResolveInfo> activities = packageManager.queryIntentActivities(mapIntent, 0);
         boolean isIntentSafe = activities.size() > 0;
 
         // If safe, dispatch map intent
         if (isIntentSafe) {
-            context.startActivity(mapIntent);
+            aContext.startActivity(mapIntent);
         }
 
     }

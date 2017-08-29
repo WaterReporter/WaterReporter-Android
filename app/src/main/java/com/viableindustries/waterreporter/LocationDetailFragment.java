@@ -222,7 +222,7 @@
 //        private MapboxMap mapboxMap;
 //
 //        public MarkerAdapter(@NonNull Context context, @NonNull MapboxMap mapboxMap) {
-//            super(context);
+//            super(aContext);
 //            this.inflater = LayoutInflater.from(context);
 //            this.mapboxMap = mapboxMap;
 //        }

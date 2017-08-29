@@ -432,7 +432,7 @@
 //
 //    }
 //
-//    protected static int getImageProperty(Context context, Uri photoUri, String column) {
+//    protected static int getImageProperty(Context aContext, Uri photoUri, String column) {
 //
 //        String[] proj = {MediaStore.Images.ImageColumns.ORIENTATION};
 //

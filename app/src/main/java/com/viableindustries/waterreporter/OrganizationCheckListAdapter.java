@@ -42,7 +42,7 @@ import retrofit.client.Response;
  */
 public class OrganizationCheckListAdapter extends ArrayAdapter<AbbreviatedOrganization> {
 
-    private final Context context;
+    private final Context mContext;
 
     protected String name;
 
@@ -56,17 +56,17 @@ public class OrganizationCheckListAdapter extends ArrayAdapter<AbbreviatedOrgani
 
     protected SharedPreferences associatedGroups;
 
-    public OrganizationCheckListAdapter(Context context, ArrayList<AbbreviatedOrganization> features) {
+    public OrganizationCheckListAdapter(Context aContext, ArrayList<AbbreviatedOrganization> features) {
 
-        super(context, 0, features);
+        super(aContext, 0, features);
 
         this.sourceList = features;
 
-        this.context = context;
+        this.mContext = aContext;
 
-        prefs = context.getSharedPreferences(context.getPackageName(), 0);
+        prefs = mContext.getSharedPreferences(mContext.getPackageName(), 0);
 
-        associatedGroups = context.getSharedPreferences(context.getString(R.string.associated_group_key), 0);
+        associatedGroups = mContext.getSharedPreferences(mContext.getString(R.string.associated_group_key), 0);
 
     }
 

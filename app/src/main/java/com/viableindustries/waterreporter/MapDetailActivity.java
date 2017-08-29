@@ -174,9 +174,9 @@ public class MapDetailActivity extends AppCompatActivity {
         private MapboxMap mapboxMap;
         private MappedReportsHolder mappedReportsHolder;
 
-        public MarkerAdapter(@NonNull Context context, @NonNull MapboxMap mapboxMap, @NonNull MappedReportsHolder mappedReportsHolder) {
-            super(context);
-            this.inflater = LayoutInflater.from(context);
+        public MarkerAdapter(@NonNull Context aContext, @NonNull MapboxMap mapboxMap, @NonNull MappedReportsHolder mappedReportsHolder) {
+            super(aContext);
+            this.inflater = LayoutInflater.from(aContext);
             this.mapboxMap = mapboxMap;
             this.mappedReportsHolder = mappedReportsHolder;
         }

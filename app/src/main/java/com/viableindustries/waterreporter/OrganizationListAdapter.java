@@ -44,7 +44,7 @@ import retrofit.client.Response;
 
 public class OrganizationListAdapter extends ArrayAdapter<Organization> implements Filterable {
 
-    private final Context context;
+    private final Context mContext;
 
     protected String name;
 
@@ -56,15 +56,15 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
     private OrganizationFilter mFilter;
 
-    public OrganizationListAdapter(Context context, ArrayList<Organization> features, boolean aShowLeaveButton) {
+    public OrganizationListAdapter(Context aContext, ArrayList<Organization> features, boolean aShowLeaveButton) {
 
-        super(context, 0, features);
+        super(aContext, 0, features);
 
         this.sourceList = features;
 
         this.filteredList = features;
 
-        this.context = context;
+        this.mContext = aContext;
 
     }
 
@@ -131,7 +131,7 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
         viewHolder.organizationName.setText(organization.properties.name);
 
-        Picasso.with(context).load(organization.properties.picture).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(viewHolder.organizationLogo);
+        Picasso.with(mContext).load(organization.properties.picture).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(viewHolder.organizationLogo);
 
         // Add click listeners to layout elements
 
@@ -141,7 +141,7 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
                 OrganizationHolder.setOrganization(organization);
 
-                context.startActivity(new Intent(context, OrganizationProfileActivity.class));
+                mContext.startActivity(new Intent(mContext, OrganizationProfileActivity.class));
 
             }
         });

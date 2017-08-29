@@ -13,23 +13,23 @@ import com.viableindustries.waterreporter.UserProfileActivity;
 
 public class OrganizationProfileListener implements View.OnClickListener {
 
-    private Context context;
+    private Context mContext;
 
     private Organization organization;
 
-    public OrganizationProfileListener(Context context, Organization organization) {
-        this.context = context;
+    public OrganizationProfileListener(Context aContext, Organization organization) {
+        this.mContext = aContext;
         this.organization = organization;
     }
 
     @Override
     public void onClick(View view) {
 
-        Intent intent = new Intent(context, OrganizationProfileActivity.class);
+        Intent intent = new Intent(mContext, OrganizationProfileActivity.class);
 
         OrganizationHolder.setOrganization(organization);
 
-        context.startActivity(intent);
+        mContext.startActivity(intent);
 
     }
 

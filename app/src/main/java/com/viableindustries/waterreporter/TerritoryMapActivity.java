@@ -149,7 +149,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     private String territoryNameText;
 
-    private Context context;
+    private Context mContext;
 
     private Territory territory;
 
@@ -180,7 +180,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        context = this;
+        mContext = this;
 
         resources = getResources();
 
@@ -256,7 +256,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
                 final MarkerViewManager markerViewManager = mapboxMap.getMarkerViewManager();
 
-                markerViewManager.addMarkerViewAdapter(new MarkerAdapter(context, postList, mLayoutManager, mapboxMap, mappedReportsHolder));
+                markerViewManager.addMarkerViewAdapter(new MarkerAdapter(mContext, postList, mLayoutManager, mapboxMap, mappedReportsHolder));
 
                 fetchReports(50, 1, buildQuery(true, "report", null), false);
 
@@ -322,7 +322,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
                     if (status == 403) {
 
-                        startActivity(new Intent(context, SignInActivity.class));
+                        startActivity(new Intent(mContext, SignInActivity.class));
 
                     }
 
@@ -418,7 +418,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
                     if (status == 403) {
 
-                        startActivity(new Intent(context, SignInActivity.class));
+                        startActivity(new Intent(mContext, SignInActivity.class));
 
                     }
 
@@ -491,10 +491,10 @@ public class TerritoryMapActivity extends AppCompatActivity {
         private RecyclerView recyclerView;
         private LinearLayoutManager layoutManager;
 
-        public MarkerAdapter(@NonNull Context context, @NonNull RecyclerView recyclerView, @NonNull LinearLayoutManager layoutManager, @NonNull MapboxMap mapboxMap, @NonNull MappedReportsHolder mappedReportsHolder) {
-            super(context);
-            this.ctxt = context;
-            this.inflater = LayoutInflater.from(context);
+        public MarkerAdapter(@NonNull Context aContext, @NonNull RecyclerView recyclerView, @NonNull LinearLayoutManager layoutManager, @NonNull MapboxMap mapboxMap, @NonNull MappedReportsHolder mappedReportsHolder) {
+            super(aContext);
+            this.ctxt = aContext;
+            this.inflater = LayoutInflater.from(aContext);
             this.mapboxMap = mapboxMap;
             this.mappedReportsHolder = mappedReportsHolder;
             this.recyclerView = recyclerView;

@@ -104,7 +104,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
     private boolean hasGroups = false;
 
-    private Context context;
+    private Context mContext;
 
     private SharedPreferences prefs;
 
@@ -127,7 +127,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        context = this;
+        mContext = this;
 
         resources = getResources();
 

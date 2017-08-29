@@ -203,7 +203,7 @@ public class CommentActivity extends AppCompatActivity implements
 
     private SharedPreferences prefs;
 
-    private Context context;
+    private Context mContext;
 
     ArrayList<HashTag> baseTagList;
 
@@ -226,7 +226,7 @@ public class CommentActivity extends AppCompatActivity implements
 
         ButterKnife.bind(this);
 
-        context = this;
+        mContext = this;
 
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
@@ -580,14 +580,14 @@ public class CommentActivity extends AppCompatActivity implements
             reportCaption.setText(report.properties.description.trim());
 
             new PatternEditableBuilder().
-                    addPattern(context, Pattern.compile("\\#(\\w+)"), ContextCompat.getColor(context, R.color.waterreporter_blue),
+                    addPattern(mContext, Pattern.compile("\\#(\\w+)"), ContextCompat.getColor(mContext, R.color.waterreporter_blue),
                             new PatternEditableBuilder.SpannableClickedListener() {
                                 @Override
                                 public void onSpanClicked(String text) {
 
-                                    Intent intent = new Intent(context, TagProfileActivity.class);
+                                    Intent intent = new Intent(mContext, TagProfileActivity.class);
                                     intent.putExtra("tag", text);
-                                    context.startActivity(intent);
+                                    mContext.startActivity(intent);
 
                                 }
                             }).into(reportCaption);
@@ -690,7 +690,7 @@ public class CommentActivity extends AppCompatActivity implements
 
     private void populateComments(List<Comment> comments) {
 
-        commentAdapter = new CommentAdapter(this, comments, true);
+        commentAdapter = new CommentAdapter(this, comments);
 
         commentList.setAdapter(commentAdapter);
 

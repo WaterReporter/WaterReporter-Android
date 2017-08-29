@@ -14,12 +14,12 @@ import com.viableindustries.waterreporter.TerritoryActivity;
 
 public class TerritoryProfileListener implements View.OnClickListener {
 
-    private Context context;
+    private Context mContext;
 
     private Territory territory;
 
-    public TerritoryProfileListener(Context context, @Nullable Territory territory) {
-        this.context = context;
+    public TerritoryProfileListener(Context aContext, @Nullable Territory territory) {
+        this.mContext = aContext;
         this.territory = territory;
     }
 
@@ -28,11 +28,11 @@ public class TerritoryProfileListener implements View.OnClickListener {
 
         if (territory != null) {
 
-            Intent intent = new Intent(context, TerritoryActivity.class);
+            Intent intent = new Intent(mContext, TerritoryActivity.class);
 
             TerritoryHolder.setTerritory(territory);
 
-            context.startActivity(intent);
+            mContext.startActivity(intent);
 
         }
 

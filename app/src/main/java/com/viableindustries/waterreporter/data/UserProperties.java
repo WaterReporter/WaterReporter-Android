@@ -41,6 +41,9 @@ public class UserProperties implements Serializable {
     @SerializedName("can_notify_owner_comment_on_owned_report")
     private boolean can_notify_owner_comment_on_owned_report;
 
+    @SerializedName("can_notify_owner_like_on_owned_report")
+    private boolean can_notify_owner_like_on_owned_report;
+
     // Descriptive attributes, identifiers and related content
 
     @SerializedName("description")
@@ -149,6 +152,7 @@ public class UserProperties implements Serializable {
         notificationSettings.put("can_notify_admin_user_submits_report_in_territory", this.can_notify_admin_user_submits_report_in_territory);
         notificationSettings.put("can_notify_owner_admin_closes_owned_report", this.can_notify_owner_admin_closes_owned_report);
         notificationSettings.put("can_notify_owner_comment_on_owned_report", this.can_notify_owner_comment_on_owned_report);
+        notificationSettings.put("can_notify_owner_like_on_owned_report", this.can_notify_owner_like_on_owned_report);
 
         return notificationSettings;
 
@@ -157,8 +161,9 @@ public class UserProperties implements Serializable {
     public String[] getNotificationSettingFields() {
 
         return new String[]{
-                "can_notify_owner_admin_closes_owned_report",
-                "can_notify_owner_comment_on_owned_report"
+                "can_notify_owner_like_on_owned_report",
+                "can_notify_owner_comment_on_owned_report",
+                "can_notify_owner_admin_closes_owned_report"
         };
 
     }
@@ -166,8 +171,9 @@ public class UserProperties implements Serializable {
     public String[] getAdminNotificationSettingFields() {
 
         return new String[]{
-                "can_notify_owner_admin_closes_owned_report",
+                "can_notify_owner_like_on_owned_report",
                 "can_notify_owner_comment_on_owned_report",
+                "can_notify_owner_admin_closes_owned_report",
                 "can_notify_admin_admin_closes_report_in_group",
                 "can_notify_admin_admin_closes_report_in_territory",
                 "can_notify_admin_comment_on_report_in_group",

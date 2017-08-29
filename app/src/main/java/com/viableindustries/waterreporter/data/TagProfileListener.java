@@ -12,23 +12,23 @@ import com.viableindustries.waterreporter.OrganizationProfileActivity;
 
 public class TagProfileListener implements View.OnClickListener {
 
-        private Context context;
+        private Context mContext;
 
         private HashTag hashTag;
 
-        public TagProfileListener(Context context, HashTag hashTag) {
-            this.context = context;
+        public TagProfileListener(Context aContext, HashTag hashTag) {
+            this.mContext = aContext;
             this.hashTag = hashTag;
         }
 
         @Override
         public void onClick(View view) {
 
-            Intent intent = new Intent(context, OrganizationProfileActivity.class);
+            Intent intent = new Intent(mContext, OrganizationProfileActivity.class);
 
             TagHolder.setHashTag(hashTag);
 
-            context.startActivity(intent);
+            mContext.startActivity(intent);
 
         }
 }

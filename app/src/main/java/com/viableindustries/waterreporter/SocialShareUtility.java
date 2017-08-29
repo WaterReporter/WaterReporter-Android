@@ -216,7 +216,7 @@
 //
 //    }
 //
-//    public static boolean verifyTarget(Context context, String packageName) {
+//    public static boolean verifyTarget(Context aContext, String packageName) {
 //
 //        boolean packagedInstalled;
 //
@@ -236,7 +236,7 @@
 //
 //    }
 //
-//    public static int getShareOptions(Context context) {
+//    public static int getShareOptions(Context aContext) {
 //
 //        int socialOptions;
 //

@@ -18,12 +18,12 @@ import java.util.List;
 
 public class PostDirectionsListener implements View.OnClickListener {
 
-    private Context context;
+    private Context mContext;
 
     private Report post;
 
-    public PostDirectionsListener(Context context, Report post) {
-        this.context = context;
+    public PostDirectionsListener(Context aContext, Report post) {
+        this.mContext = aContext;
         this.post = post;
     }
 
@@ -40,13 +40,13 @@ public class PostDirectionsListener implements View.OnClickListener {
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, location);
 
         // Verify that the map intent resolves
-        PackageManager packageManager = context.getPackageManager();
+        PackageManager packageManager = mContext.getPackageManager();
         List<ResolveInfo> activities = packageManager.queryIntentActivities(mapIntent, 0);
         boolean isIntentSafe = activities.size() > 0;
 
         // If safe, dispatch map intent
         if (isIntentSafe) {
-            context.startActivity(mapIntent);
+            mContext.startActivity(mapIntent);
         }
 
     }

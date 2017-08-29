@@ -14,12 +14,12 @@ import com.viableindustries.waterreporter.R;
 
 public class PostShareListener implements View.OnClickListener {
 
-    private Context context;
+    private Context mContext;
 
     private Report post;
 
-    public PostShareListener(Context context, Report post) {
-        this.context = context;
+    public PostShareListener(Context aContext, Report post) {
+        this.mContext = aContext;
         this.post = post;
     }
 
@@ -28,7 +28,7 @@ public class PostShareListener implements View.OnClickListener {
 
         // Display the system share dialog
 
-        Resources res = context.getResources();
+        Resources res = mContext.getResources();
 
         String shareUrl = res.getString(R.string.share_post_url, post.id);
 
@@ -36,7 +36,7 @@ public class PostShareListener implements View.OnClickListener {
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT, shareUrl);
         sendIntent.setType("text/plain");
-        context.startActivity(Intent.createChooser(sendIntent, res.getText(R.string.share_post_chooser_title)));
+        mContext.startActivity(Intent.createChooser(sendIntent, res.getText(R.string.share_post_chooser_title)));
 
     }
 

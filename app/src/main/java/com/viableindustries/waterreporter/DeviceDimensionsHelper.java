@@ -12,14 +12,14 @@ import android.util.TypedValue;
 public class DeviceDimensionsHelper {
 
     // DeviceDimensionsHelper.getDisplayWidth(context) => (display width in pixels)
-    public static int getDisplayWidth(Context context) {
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+    public static int getDisplayWidth(Context aContext) {
+        DisplayMetrics displayMetrics = aContext.getResources().getDisplayMetrics();
         return displayMetrics.widthPixels;
     }
 
     // DeviceDimensionsHelper.getDisplayHeight(context) => (display height in pixels)
-    public static int getDisplayHeight(Context context) {
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+    public static int getDisplayHeight(Context aContext) {
+        DisplayMetrics displayMetrics = aContext.getResources().getDisplayMetrics();
         return displayMetrics.heightPixels;
     }
 

@@ -39,7 +39,7 @@ import retrofit.client.Response;
 
 public class GroupActionListAdapter extends ArrayAdapter<Organization> implements Filterable {
 
-    private final Context context;
+    private final Context mContext;
 
     protected String name;
 
@@ -59,19 +59,19 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
     private boolean showLeaveButton;
 
-    public GroupActionListAdapter(Context context, ArrayList<Organization> features, boolean aShowLeaveButton) {
+    public GroupActionListAdapter(Context aContext, ArrayList<Organization> features, boolean aShowLeaveButton) {
 
-        super(context, 0, features);
+        super(aContext, 0, features);
 
         this.sourceList = features;
 
         this.filteredList = features;
 
-        this.context = context;
+        this.mContext = aContext;
 
-        prefs = context.getSharedPreferences(context.getPackageName(), 0);
+        prefs = mContext.getSharedPreferences(mContext.getPackageName(), 0);
 
-        groupPrefs = context.getSharedPreferences(context.getString(R.string.group_membership_key), 0);
+        groupPrefs = mContext.getSharedPreferences(mContext.getString(R.string.group_membership_key), 0);
 
         showLeaveButton = aShowLeaveButton;
 
@@ -185,7 +185,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
                 CharSequence text = String.format("Successfully %s %s", action, organization.properties.name);
                 int duration = Toast.LENGTH_SHORT;
 
-                Toast toast = Toast.makeText(context, text, duration);
+                Toast toast = Toast.makeText(mContext, text, duration);
                 toast.show();
 
             }
@@ -236,7 +236,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
         viewHolder.organizationName.setText(organization.properties.name);
 
-        Picasso.with(context).load(organization.properties.picture).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(viewHolder.organizationLogo);
+        Picasso.with(mContext).load(organization.properties.picture).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(viewHolder.organizationLogo);
 
         // Check group membership
 

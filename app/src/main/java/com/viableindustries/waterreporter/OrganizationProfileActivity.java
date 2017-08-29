@@ -129,7 +129,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     private boolean hasMembers = false;
 
-    private Context context;
+    private Context mContext;
 
     private Organization organization;
 
@@ -156,7 +156,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         groupPrefs = getSharedPreferences(getString(R.string.group_membership_key), 0);
 
-        context = this;
+        mContext = this;
 
         resources = getResources();
 

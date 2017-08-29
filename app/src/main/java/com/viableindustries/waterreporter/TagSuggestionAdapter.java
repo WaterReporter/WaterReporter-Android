@@ -26,7 +26,7 @@ import java.util.List;
 
 public class TagSuggestionAdapter extends ArrayAdapter<HashTag> {
 
-    private final Context context;
+    private final Context mContext;
 
     protected String name;
 
@@ -34,13 +34,13 @@ public class TagSuggestionAdapter extends ArrayAdapter<HashTag> {
 
     private List<HashTag> sourceList;
 
-    public TagSuggestionAdapter(Context context, List<HashTag> features) {
+    public TagSuggestionAdapter(Context aContext, List<HashTag> features) {
 
-        super(context, 0, features);
+        super(aContext, 0, features);
 
         this.sourceList = features;
 
-        this.context = context;
+        this.mContext = aContext;
 
     }
 
@@ -98,7 +98,7 @@ public class TagSuggestionAdapter extends ArrayAdapter<HashTag> {
 
             viewHolder.useCount.setVisibility(View.VISIBLE);
 
-            String quantityString = context.getResources().getQuantityString(R.plurals.post_label_lower, reportCount, reportCount);
+            String quantityString = mContext.getResources().getQuantityString(R.plurals.post_label_lower, reportCount, reportCount);
 
             viewHolder.useCount.setText(String.format("%s %s", hashTag.properties.reports.size(), quantityString));
 
@@ -120,9 +120,9 @@ public class TagSuggestionAdapter extends ArrayAdapter<HashTag> {
 
                 int hashIndex = CursorPositionTracker.getHashIndex();
 
-                EditText postCaptionView = (EditText) ((Activity) context).findViewById(R.id.comment_input);
+                EditText postCaptionView = (EditText) ((Activity) mContext).findViewById(R.id.comment_input);
 
-                HorizontalScrollView tagList = (HorizontalScrollView) ((Activity) context).findViewById(R.id.tag_component);
+                HorizontalScrollView tagList = (HorizontalScrollView) ((Activity) mContext).findViewById(R.id.tag_component);
 
                 String postCaptionText = postCaptionView.getText().toString();
 

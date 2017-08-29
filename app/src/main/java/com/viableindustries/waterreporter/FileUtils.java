@@ -35,27 +35,19 @@ public class FileUtils {
 
     private static final String CAMERA_DIR = "/dcim/";
 
-    public static File createImageFile(Context context) throws IOException {
+    public static File createImageFile(Context aContext) throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
-        File albumF = getAlbumDir(context);
+        File albumF = getAlbumDir(aContext);
         return File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, albumF);
-        //Need java 7
-//        UserDefinedFileAttributeView view =
-//                MediaStore.Files.getFileAttributeView(file.getAbsolutePath(), UserDefinedFileAttributeView.class);
-//        view.write("user.mimetype", Charset.defaultCharset().encode("text/html"));
-//        return file;
     }
 
-    private static File getAlbumDir(Context context) {
+    private static File getAlbumDir(Context aContext) {
 
         File storageDir = null;
 
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-
-//            storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + CAMERA_DIR
-//                    + context.getResources().getString(R.string.album_name));
 
             storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 
@@ -67,7 +59,7 @@ public class FileUtils {
             }
 
         } else {
-            Log.v(context.getResources().getString(R.string.app_name),
+            Log.v(aContext.getResources().getString(R.string.app_name),
                     "External storage is not mounted READ/WRITE.");
         }
 
@@ -75,7 +67,7 @@ public class FileUtils {
 
     }
 
-    public static void galleryAddPic(Context context, String filePath) {
+    public static void galleryAddPic(Context aContext, String filePath) {
 
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 
@@ -85,15 +77,15 @@ public class FileUtils {
         // See: https://developer.android.com/training/camera/photobasics.html
         // https://developer.android.com/reference/android/os/FileUriExposedException.html
 
-        Uri contentUri = FileProvider.getUriForFile(context, "com.viableindustries.waterreporter.fileprovider", f);
+        Uri contentUri = FileProvider.getUriForFile(aContext, "com.viableindustries.waterreporter.fileprovider", f);
 
         Log.d("addToGallery", contentUri.toString());
 
         mediaScanIntent.setData(contentUri);
 
-        context.sendBroadcast(mediaScanIntent);
+        aContext.sendBroadcast(mediaScanIntent);
 
-        MediaScannerConnection.scanFile(context,
+        MediaScannerConnection.scanFile(aContext,
                 new String[]{f.getAbsolutePath()}, null, null);
 
     }
@@ -124,15 +116,15 @@ public class FileUtils {
     //but if we don't the system will remove them when running low.
     //see: https://developer.android.com/training/basics/data-storage/files.html
     //Exple to /data/data/com.myscript.nebo.debug/cache/_nebo/
-    public static File getAppTempDir(Context context, String folder) {
-        return createDir(context.getCacheDir(), folder);
+    public static File getAppTempDir(Context aContext, String folder) {
+        return createDir(aContext.getCacheDir(), folder);
     }
 
     //Used for data we want to keep forever but want to hide from the user.
     //Exple to /data/data/com.myscript.nebo.debug/file/My folder/_nebo/
     //see: https://developer.android.com/training/basics/data-storage/files.html
-    public static File getAppDir(Context context, String folder) {
-        return createDir(context.getFilesDir(), folder);
+    public static File getAppDir(Context aContext, String folder) {
+        return createDir(aContext.getFilesDir(), folder);
     }
 
     //Used for data we want visible to the user and other apps. And data we want in a general directory.
@@ -250,9 +242,9 @@ public class FileUtils {
         }
     }
 
-    public static InputStream getStream(Context context, Uri uri) {
+    public static InputStream getStream(Context aContext, Uri uri) {
         try {
-            return context.getContentResolver().openInputStream(uri);
+            return aContext.getContentResolver().openInputStream(uri);
         } catch (FileNotFoundException e) {
             Log.e(TAG, "An error occured while getting file stream", e);
             return null;
@@ -350,7 +342,7 @@ public class FileUtils {
 
     }
 
-    public static String getPathFromUri(Context context, final Uri uri) {
+    public static String getPathFromUri(Context aContext, final Uri uri) {
 
         final String[] projection = { MediaStore.Images.Media.DATA };
 
@@ -358,7 +350,7 @@ public class FileUtils {
 
         try {
 
-            cursor = context.getContentResolver().query(uri, projection, null, null, null);
+            cursor = aContext.getContentResolver().query(uri, projection, null, null, null);
 
             if (cursor != null) {
 

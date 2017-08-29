@@ -14,12 +14,12 @@ import com.viableindustries.waterreporter.UserProfileActivity;
 
 public class PostMapListener implements View.OnClickListener {
 
-    private Context context;
+    private Context mContext;
 
     private Report post;
 
-    public PostMapListener(Context context, Report post) {
-        this.context = context;
+    public PostMapListener(Context aContext, Report post) {
+        this.mContext = aContext;
         this.post = post;
     }
 
@@ -30,9 +30,9 @@ public class PostMapListener implements View.OnClickListener {
 
         TerritoryHolder.setTerritory(post.properties.territory);
 
-        Intent intent = new Intent(context, TerritoryMapActivity.class);
+        Intent intent = new Intent(mContext, TerritoryMapActivity.class);
 
-        context.startActivity(intent);
+        mContext.startActivity(intent);
 
     }
 

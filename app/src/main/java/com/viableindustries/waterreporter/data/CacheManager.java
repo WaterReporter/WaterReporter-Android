@@ -19,9 +19,9 @@ public class CacheManager {
 
     }
 
-    public static void deleteCache(Context context) {
+    public static void deleteCache(Context aContext) {
         try {
-            File dir = context.getCacheDir();
+            File dir = aContext.getCacheDir();
             deleteDir(dir);
         } catch (Exception e) {
             //
@@ -45,7 +45,7 @@ public class CacheManager {
         }
     }
 
-//    public static void cacheData(Context context, byte[] data, String name) throws IOException {
+//    public static void cacheData(Context aContext, byte[] data, String name) throws IOException {
 //
 //        File cacheDir = context.getCacheDir();
 //        long size = getDirSize(cacheDir);
@@ -70,7 +70,7 @@ public class CacheManager {
 //        }
 //    }
 //
-//    public static byte[] retrieveData(Context context, String name) throws IOException {
+//    public static byte[] retrieveData(Context aContext, String name) throws IOException {
 //
 //        File cacheDir = context.getCacheDir();
 //        File file = new File(cacheDir, name);

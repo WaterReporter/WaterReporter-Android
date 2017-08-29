@@ -98,20 +98,6 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         TextView ogUrl;
     }
 
-    protected void presentShareDialog(final Report report) {
-
-        Resources res = mContext.getResources();
-
-        String shareUrl = res.getString(R.string.share_post_url, report.id);
-
-        Intent sendIntent = new Intent();
-        sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, shareUrl);
-        sendIntent.setType("text/plain");
-        mContext.startActivity(Intent.createChooser(sendIntent, res.getText(R.string.share_post_chooser_title)));
-
-    }
-
     public static void bindData(final Report post,
                                 final Context context,
                                 final SharedPreferences sharedPreferences,

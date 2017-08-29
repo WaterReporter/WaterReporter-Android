@@ -44,7 +44,7 @@ import retrofit.client.Response;
 
 public class UserListAdapter extends ArrayAdapter<User> implements Filterable {
 
-    private final Context context;
+    private final Context mContext;
 
     protected String name;
 
@@ -56,15 +56,15 @@ public class UserListAdapter extends ArrayAdapter<User> implements Filterable {
 
 //    private UserFilter mFilter;
 
-    public UserListAdapter(Context context, List<User> features, boolean aShowLeaveButton) {
+    public UserListAdapter(Context aContext, List<User> features, boolean aShowLeaveButton) {
 
-        super(context, 0, features);
+        super(aContext, 0, features);
 
         this.sourceList = features;
 
         this.filteredList = features;
 
-        this.context = context;
+        this.mContext = aContext;
 
     }
 
@@ -131,7 +131,7 @@ public class UserListAdapter extends ArrayAdapter<User> implements Filterable {
 
         viewHolder.userName.setText(String.format("%s %s", user.properties.first_name, user.properties.last_name));
 
-        Picasso.with(context).load(user.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(viewHolder.userAvatar);
+        Picasso.with(mContext).load(user.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(viewHolder.userAvatar);
 
         // Add click listeners to layout elements
 
@@ -141,7 +141,7 @@ public class UserListAdapter extends ArrayAdapter<User> implements Filterable {
 
                 UserHolder.setUser(user);
 
-                context.startActivity(new Intent(context, UserProfileActivity.class));
+                mContext.startActivity(new Intent(mContext, UserProfileActivity.class));
 
             }
         });

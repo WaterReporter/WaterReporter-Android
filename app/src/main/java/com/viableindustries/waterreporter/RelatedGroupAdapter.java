@@ -18,9 +18,9 @@ public class RelatedGroupAdapter extends ArrayAdapter {
 
     private final Context context;
 
-    public RelatedGroupAdapter(Context context, List features) {
-        super(context, 0, features);
-        this.context = context;
+    public RelatedGroupAdapter(Context aContext, List features) {
+        super(aContext, 0, features);
+        this.mContext = aContext;
     }
 
     private static class ViewHolder {

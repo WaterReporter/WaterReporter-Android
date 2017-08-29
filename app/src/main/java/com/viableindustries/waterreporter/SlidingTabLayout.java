@@ -81,16 +81,16 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
     private final SlidingTabStrip mTabStrip;
 
-    public SlidingTabLayout(Context context) {
+    public SlidingTabLayout(Context aContext) {
         this(context, null);
     }
 
-    public SlidingTabLayout(Context context, AttributeSet attrs) {
+    public SlidingTabLayout(Context aContext, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SlidingTabLayout(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+    public SlidingTabLayout(Context aContext, AttributeSet attrs, int defStyle) {
+        super(aContext, attrs, defStyle);
 
         // Disable the Scroll Bar
         setHorizontalScrollBarEnabled(false);
@@ -170,7 +170,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
      * Create a default view to be used for tabs. This is called if a custom tab view is not set via
      * {@link #setCustomTabView(int, int)}.
      */
-    protected TextView createDefaultTabView(Context context) {
+    protected TextView createDefaultTabView(Context aContext) {
 
         String activity = context.toString();
 

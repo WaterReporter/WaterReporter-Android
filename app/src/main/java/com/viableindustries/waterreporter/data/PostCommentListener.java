@@ -13,12 +13,12 @@ import com.viableindustries.waterreporter.MapDetailActivity;
 
 public class PostCommentListener implements View.OnClickListener {
 
-    private Context context;
+    private Context mContext;
 
     private Report post;
 
-    public PostCommentListener(Context context, Report post) {
-        this.context = context;
+    public PostCommentListener(Context aContext, Report post) {
+        this.mContext = aContext;
         this.post = post;
     }
 
@@ -27,9 +27,9 @@ public class PostCommentListener implements View.OnClickListener {
 
         ReportHolder.setReport(post);
 
-        Intent intent = new Intent(context, CommentActivity.class);
+        Intent intent = new Intent(mContext, CommentActivity.class);
 
-        context.startActivity(intent);
+        mContext.startActivity(intent);
 
     }
 

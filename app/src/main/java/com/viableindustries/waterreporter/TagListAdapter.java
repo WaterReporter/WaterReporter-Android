@@ -33,13 +33,13 @@ public class TagListAdapter extends ArrayAdapter<HashTag> {
 
     private List<HashTag> sourceList;
 
-    public TagListAdapter(Context context, List<HashTag> features, boolean aShowLeaveButton) {
+    public TagListAdapter(Context aContext, List<HashTag> features, boolean aShowLeaveButton) {
 
-        super(context, 0, features);
+        super(aContext, 0, features);
 
         this.sourceList = features;
 
-        this.context = context;
+        this.mContext = aContext;
 
     }
 

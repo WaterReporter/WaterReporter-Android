@@ -39,15 +39,15 @@ public class TerritoryListAdapter extends ArrayAdapter<Territory> {
 
 //    private OrganizationListAdapter.OrganizationFilter mFilter;
 
-    public TerritoryListAdapter(Context context, ArrayList<Territory> features, boolean aShowLeaveButton) {
+    public TerritoryListAdapter(Context aContext, ArrayList<Territory> features, boolean aShowLeaveButton) {
 
-        super(context, 0, features);
+        super(aContext, 0, features);
 
         this.sourceList = features;
 
 //        this.filteredList = features;
 
-        this.context = context;
+        this.mContext = aContext;
 
     }
 

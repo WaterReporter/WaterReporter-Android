@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 
 public class CommentAdapter extends ArrayAdapter<Comment> {
 
-    private final Context context;
+    private final Context mContext;
 
     private String creationDate;
 
@@ -49,9 +49,9 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
 
     protected String groupList;
 
-    public CommentAdapter(Context context, List<Comment> features, boolean isProfile) {
-        super(context, 0, features);
-        this.context = context;
+    public CommentAdapter(Context aContext, List<Comment> features) {
+        super(aContext, 0, features);
+        this.mContext = aContext;
     }
 
     protected static class ViewHolder {
@@ -107,7 +107,7 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
 
             viewHolder.postThumb.setVisibility(View.VISIBLE);
 
-            Picasso.with(context).load(imagePath).fit().centerCrop().into(viewHolder.postThumb);
+            Picasso.with(mContext).load(imagePath).fit().centerCrop().into(viewHolder.postThumb);
 
         } catch (IndexOutOfBoundsException ib) {
 
@@ -139,14 +139,14 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
             viewHolder.reportCaption.setText(feature.properties.body.trim());
 
             new PatternEditableBuilder().
-                    addPattern(context, Pattern.compile("\\#(\\w+)"), ContextCompat.getColor(context, R.color.waterreporter_blue),
+                    addPattern(mContext, Pattern.compile("\\#(\\w+)"), ContextCompat.getColor(mContext, R.color.waterreporter_blue),
                             new PatternEditableBuilder.SpannableClickedListener() {
                                 @Override
                                 public void onSpanClicked(String text) {
 
-                                    Intent intent = new Intent(context, TagProfileActivity.class);
+                                    Intent intent = new Intent(mContext, TagProfileActivity.class);
                                     intent.putExtra("tag", text);
-                                    context.startActivity(intent);
+                                    mContext.startActivity(intent);
 
                                 }
                             }).into(viewHolder.reportCaption);
@@ -169,7 +169,7 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
 
         }
 
-        Picasso.with(context).load(feature.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(viewHolder.ownerAvatar);
+        Picasso.with(mContext).load(feature.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(viewHolder.ownerAvatar);
 
         // Return the completed view to render on screen
         return convertView;

@@ -28,16 +28,16 @@
 //    private int mRatioWidth = 0;
 //    private int mRatioHeight = 0;
 //
-//    public AutoFitTextureView(Context context) {
+//    public AutoFitTextureView(Context aContext) {
 //        this(context, null);
 //    }
 //
-//    public AutoFitTextureView(Context context, AttributeSet attrs) {
+//    public AutoFitTextureView(Context aContext, AttributeSet attrs) {
 //        this(context, attrs, 0);
 //    }
 //
-//    public AutoFitTextureView(Context context, AttributeSet attrs, int defStyle) {
-//        super(context, attrs, defStyle);
+//    public AutoFitTextureView(Context aContext, AttributeSet attrs, int defStyle) {
+//        super(aContext, attrs, defStyle);
 //    }
 //
 //    /**

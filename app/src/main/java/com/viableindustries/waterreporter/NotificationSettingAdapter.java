@@ -41,11 +41,11 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class NotificationSettingAdapter extends ArrayAdapter {
 
-    private final Context context;
+    private final Context mContext;
 
-    public NotificationSettingAdapter(Context context, List features, boolean isProfile) {
-        super(context, 0, features);
-        this.context = context;
+    public NotificationSettingAdapter(Context aContext, List features, boolean isProfile) {
+        super(aContext, 0, features);
+        this.mContext = aContext;
     }
 
     protected static class ViewHolder {
@@ -95,12 +95,12 @@ public class NotificationSettingAdapter extends ArrayAdapter {
                 CharSequence text = "Updating notification setting...";
                 int duration = Toast.LENGTH_SHORT;
 
-                Toast toast = Toast.makeText(context, text, duration);
+                Toast toast = Toast.makeText(mContext, text, duration);
                 toast.show();
 
-                final SharedPreferences coreProfile = context.getSharedPreferences(context.getString(R.string.active_user_profile_key), MODE_PRIVATE);
+                final SharedPreferences coreProfile = mContext.getSharedPreferences(mContext.getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
-                final SharedPreferences prefs = context.getSharedPreferences(context.getPackageName(), 0);
+                final SharedPreferences prefs = mContext.getSharedPreferences(mContext.getPackageName(), 0);
 
                 // Retrieve API token
 
@@ -142,7 +142,7 @@ public class NotificationSettingAdapter extends ArrayAdapter {
                         CharSequence text = "Notification setting successfully changed.";
                         int duration = Toast.LENGTH_SHORT;
 
-                        Toast toast = Toast.makeText(context, text, duration);
+                        Toast toast = Toast.makeText(mContext, text, duration);
                         toast.show();
 
                     }
@@ -162,7 +162,7 @@ public class NotificationSettingAdapter extends ArrayAdapter {
 
                             if (status == 403) {
 
-                                context.startActivity(new Intent(context, SignInActivity.class));
+                                mContext.startActivity(new Intent(mContext, SignInActivity.class));
 
                             }
 

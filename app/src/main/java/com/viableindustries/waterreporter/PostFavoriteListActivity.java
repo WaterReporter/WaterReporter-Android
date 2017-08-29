@@ -52,7 +52,7 @@ public class PostFavoriteListActivity extends AppCompatActivity {
     @Bind(R.id.backArrow)
     RelativeLayout backButton;
 
-    private Context context;
+    private Context mContext;
 
     private Report post;
 
@@ -69,7 +69,7 @@ public class PostFavoriteListActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        context = this;
+        mContext = this;
 
         post = ReportHolder.getReport();
 

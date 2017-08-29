@@ -77,7 +77,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
     protected List<String> groups;
 
-    private Context context;
+    private Context mContext;
 
     private SharedPreferences sharedPreferences;
 
@@ -92,7 +92,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        context = this;
+        mContext = this;
 
         if (Build.VERSION.SDK_INT >= 19) {
 

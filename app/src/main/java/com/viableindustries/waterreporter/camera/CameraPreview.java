@@ -19,9 +19,9 @@
 //
 //    private Camera mCamera;
 //
-//    public CameraPreview(Context context, Camera camera) {
+//    public CameraPreview(Context aContext, Camera camera) {
 //
-//        super(context);
+//        super(aContext);
 //
 //        mCamera = camera;
 //

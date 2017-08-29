@@ -33,13 +33,13 @@
 //
 //    private ArrayList sourceList;
 //
-//    public SearchResultListAdapter(Context context, ArrayList features, boolean aShowLeaveButton) {
+//    public SearchResultListAdapter(Context aContext, ArrayList features, boolean aShowLeaveButton) {
 //
-//        super(context, 0, features);
+//        super(aContext, 0, features);
 //
 //        this.sourceList = features;
 //
-//        this.context = context;
+//        this.mContext = aContext;
 //
 //    }
 //

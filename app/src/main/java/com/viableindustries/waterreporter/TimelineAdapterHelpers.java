@@ -65,7 +65,7 @@ public class TimelineAdapterHelpers {
 
     // Download image
 
-    public static void saveImage(Context context, Report post) {
+    public static void saveImage(Context aContext, Report post) {
 
         DownloadManager downloadManager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
 
@@ -279,7 +279,14 @@ public class TimelineAdapterHelpers {
 
         textView.setVisibility(View.GONE);
 
+        textView.setPadding(0,0,0,0);
+
         if (post.properties.description != null && (post.properties.description.length() > 0)) {
+
+            float d = context.getResources().getDisplayMetrics().density;
+            int padding = (int) (16 * d); // margin in pixels
+
+            textView.setPadding(padding, padding, padding, padding);
 
             textView.setText(post.properties.description.trim());
 

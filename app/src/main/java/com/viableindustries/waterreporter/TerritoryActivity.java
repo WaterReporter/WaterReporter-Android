@@ -119,7 +119,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
     private boolean actionFocus = false;
 
-    private Context context;
+    private Context mContext;
 
     private Territory territory;
 
@@ -149,7 +149,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        context = this;
+        mContext = this;
 
         resources = getResources();
 

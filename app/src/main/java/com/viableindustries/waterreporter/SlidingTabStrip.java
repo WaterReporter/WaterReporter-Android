@@ -52,12 +52,12 @@ class SlidingTabStrip extends LinearLayout {
     private SlidingTabLayout.TabColorizer mCustomTabColorizer;
     private final SimpleTabColorizer mDefaultTabColorizer;
 
-    SlidingTabStrip(Context context) {
+    SlidingTabStrip(Context aContext) {
         this(context, null);
     }
 
-    SlidingTabStrip(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    SlidingTabStrip(Context aContext, AttributeSet attrs) {
+        super(aContext, attrs);
         setWillNotDraw(false);
 
         final float density = getResources().getDisplayMetrics().density;

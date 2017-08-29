@@ -20,7 +20,7 @@
         android:paddingLeft="0dp"
         android:paddingRight="16dp"
         android:paddingStart="0dp"
-        android:text="@string/can_notify_admin_admin_closes_post_in_group"
+        android:text="@string/can_notify_admin_admin_closes_report_in_group"
         android:textSize="@dimen/small_text" />
 
     <android.support.v7.widget.SwitchCompat

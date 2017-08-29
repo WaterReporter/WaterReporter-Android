@@ -12,12 +12,12 @@ import com.viableindustries.waterreporter.UserProfileActivity;
 
 public class UserProfileListener implements View.OnClickListener {
 
-    private Context context;
+    private Context mContext;
 
     private User user;
 
-    public UserProfileListener(Context context, User user) {
-        this.context = context;
+    public UserProfileListener(Context aContext, User user) {
+        this.mContext = aContext;
         this.user = user;
     }
 
@@ -44,9 +44,9 @@ public class UserProfileListener implements View.OnClickListener {
 
         UserHolder.setUser(user);
 
-        Intent intent = new Intent(context, UserProfileActivity.class);
+        Intent intent = new Intent(mContext, UserProfileActivity.class);
 
-        context.startActivity(intent);
+        mContext.startActivity(intent);
 
     }
 
