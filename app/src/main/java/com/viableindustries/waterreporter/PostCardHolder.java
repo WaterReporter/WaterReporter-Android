@@ -83,13 +83,13 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
     RelativeLayout actionBadge;
     LinearLayout postStub;
     RelativeLayout locationIcon;
-    RelativeLayout directionsIcon;
+//    RelativeLayout directionsIcon;
     RelativeLayout commentIcon;
     RelativeLayout favoriteIcon;
     RelativeLayout shareIcon;
     RelativeLayout actionsEllipsis;
     ImageView locationIconView;
-    ImageView directionsIconView;
+//    ImageView directionsIconView;
     ImageView shareIconView;
     ImageView commentIconView;
     ImageView favoriteIconView;
@@ -127,13 +127,13 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
         actionBadge = (RelativeLayout) v.findViewById(R.id.actionBadge);
         postStub = (LinearLayout) v.findViewById(R.id.postStub);
         locationIcon = (RelativeLayout) v.findViewById(R.id.locationIcon);
-        directionsIcon = (RelativeLayout) v.findViewById(R.id.directionsIcon);
+//        directionsIcon = (RelativeLayout) v.findViewById(R.id.directionsIcon);
         commentIcon = (RelativeLayout) v.findViewById(R.id.commentIcon);
         favoriteIcon = (RelativeLayout) v.findViewById(R.id.favoriteIcon);
         shareIcon = (RelativeLayout) v.findViewById(R.id.shareIcon);
         actionsEllipsis = (RelativeLayout) v.findViewById(R.id.actionEllipsis);
         locationIconView = (ImageView) v.findViewById(R.id.locationIconView);
-        directionsIconView = (ImageView) v.findViewById(R.id.directionsIconView);
+//        directionsIconView = (ImageView) v.findViewById(R.id.directionsIconView);
         shareIconView = (ImageView) v.findViewById(R.id.shareIconView);
         commentIconView = (ImageView) v.findViewById(R.id.commentIconView);
         favoriteIconView = (ImageView) v.findViewById(R.id.favoriteIconView);
@@ -564,7 +564,7 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
         ImageView[] icons = new ImageView[]{
                 locationIconView,
-                directionsIconView,
+//                directionsIconView,
                 shareIconView
         };
 
@@ -620,7 +620,7 @@ public class PostCardHolder extends RecyclerView.ViewHolder {
 
         locationIcon.setOnClickListener(new PostMapListener(context, post));
 
-        directionsIcon.setOnClickListener(new PostDirectionsListener(context, post));
+//        directionsIcon.setOnClickListener(new PostDirectionsListener(context, post));
 
         shareIcon.setOnClickListener(new PostShareListener(context, post));
 

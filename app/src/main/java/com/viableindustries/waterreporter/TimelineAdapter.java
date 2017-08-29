@@ -70,7 +70,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         RelativeLayout actionBadge;
         LinearLayout postStub;
         RelativeLayout locationIcon;
-        RelativeLayout directionsIcon;
+//        RelativeLayout directionsIcon;
         RelativeLayout commentIcon;
         RelativeLayout favoriteIcon;
         RelativeLayout shareIcon;
@@ -129,7 +129,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         ImageView[] icons = new ImageView[]{
                 viewHolder.locationIconView,
-                viewHolder.directionsIconView,
+//                viewHolder.directionsIconView,
                 viewHolder.shareIconView
         };
 
@@ -210,7 +210,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         viewHolder.locationIcon.setOnClickListener(new PostMapListener(context, post));
 
-        viewHolder.directionsIcon.setOnClickListener(new PostDirectionsListener(context, post));
+//        viewHolder.directionsIcon.setOnClickListener(new PostDirectionsListener(context, post));
 
         viewHolder.shareIcon.setOnClickListener(new PostShareListener(context, post));
 
@@ -344,13 +344,13 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
             viewHolder.actionBadge = (RelativeLayout) convertView.findViewById(R.id.actionBadge);
             viewHolder.postStub = (LinearLayout) convertView.findViewById(R.id.postStub);
             viewHolder.locationIcon = (RelativeLayout) convertView.findViewById(R.id.locationIcon);
-            viewHolder.directionsIcon = (RelativeLayout) convertView.findViewById(R.id.directionsIcon);
+//            viewHolder.directionsIcon = (RelativeLayout) convertView.findViewById(R.id.directionsIcon);
             viewHolder.commentIcon = (RelativeLayout) convertView.findViewById(R.id.commentIcon);
             viewHolder.favoriteIcon = (RelativeLayout) convertView.findViewById(R.id.favoriteIcon);
             viewHolder.shareIcon = (RelativeLayout) convertView.findViewById(R.id.shareIcon);
             viewHolder.actionsEllipsis = (RelativeLayout) convertView.findViewById(R.id.actionEllipsis);
             viewHolder.locationIconView = (ImageView) convertView.findViewById(R.id.locationIconView);
-            viewHolder.directionsIconView = (ImageView) convertView.findViewById(R.id.directionsIconView);
+//            viewHolder.directionsIconView = (ImageView) convertView.findViewById(R.id.directionsIconView);
             viewHolder.shareIconView = (ImageView) convertView.findViewById(R.id.shareIconView);
             viewHolder.commentIconView = (ImageView) convertView.findViewById(R.id.commentIconView);
             viewHolder.favoriteIconView = (ImageView) convertView.findViewById(R.id.favoriteIconView);

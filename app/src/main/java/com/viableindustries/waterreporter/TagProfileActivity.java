@@ -587,7 +587,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
                 if (reportCount > 0) {
 
-                    sharePrompt.setVisibility(View.GONE);
+//                    sharePrompt.setVisibility(View.GONE);
 
                     reportStat.setVisibility(View.VISIBLE);
 

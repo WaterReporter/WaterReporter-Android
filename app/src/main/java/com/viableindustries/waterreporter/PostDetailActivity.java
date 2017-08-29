@@ -182,13 +182,13 @@ public class PostDetailActivity extends AppCompatActivity {
         viewHolder.actionBadge = (RelativeLayout) postContainer.findViewById(R.id.actionBadge);
         viewHolder.postStub = (LinearLayout) postContainer.findViewById(R.id.postStub);
         viewHolder.locationIcon = (RelativeLayout) postContainer.findViewById(R.id.locationIcon);
-        viewHolder.directionsIcon = (RelativeLayout) postContainer.findViewById(R.id.directionsIcon);
+//        viewHolder.directionsIcon = (RelativeLayout) postContainer.findViewById(R.id.directionsIcon);
         viewHolder.commentIcon = (RelativeLayout) postContainer.findViewById(R.id.commentIcon);
         viewHolder.favoriteIcon = (RelativeLayout) postContainer.findViewById(R.id.favoriteIcon);
         viewHolder.shareIcon = (RelativeLayout) postContainer.findViewById(R.id.shareIcon);
         viewHolder.actionsEllipsis = (RelativeLayout) postContainer.findViewById(R.id.actionEllipsis);
         viewHolder.locationIconView = (ImageView) postContainer.findViewById(R.id.locationIconView);
-        viewHolder.directionsIconView = (ImageView) postContainer.findViewById(R.id.directionsIconView);
+//        viewHolder.directionsIconView = (ImageView) postContainer.findViewById(R.id.directionsIconView);
         viewHolder.shareIconView = (ImageView) postContainer.findViewById(R.id.shareIconView);
         viewHolder.commentIconView = (ImageView) postContainer.findViewById(R.id.commentIconView);
         viewHolder.favoriteIconView = (ImageView) postContainer.findViewById(R.id.favoriteIconView);
