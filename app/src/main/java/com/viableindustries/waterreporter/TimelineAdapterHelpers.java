@@ -93,7 +93,6 @@ public class TimelineAdapterHelpers {
 
     public static void addFavorite(final Report post,
                                    final int currentCount,
-                                   final RelativeLayout relativeLayout,
                                    final TextView textView,
                                    final ImageView imageView,
                                    final Context mContext,
@@ -116,11 +115,7 @@ public class TimelineAdapterHelpers {
 
                 int newCount = currentCount + 1;
 
-                // Show parent layout
-
-                relativeLayout.setVisibility(View.VISIBLE);
-
-                textView.setText(mContext.getResources().getQuantityString(R.plurals.favorite_label, newCount, newCount));
+                textView.setText(newCount);
 
                 // Change favorite icon color
 
@@ -153,7 +148,6 @@ public class TimelineAdapterHelpers {
     public static void undoFavorite(final Report post,
                                     final int favoriteId,
                                     final int currentCount,
-                                    final RelativeLayout relativeLayout,
                                     final TextView textView,
                                     final ImageView imageView,
                                     final Context mContext,
@@ -174,10 +168,6 @@ public class TimelineAdapterHelpers {
 
                 if (currentCount == 1) {
 
-                    // Hide parent layout
-
-                    relativeLayout.setVisibility(View.GONE);
-
                     // Clear TextView contents
 
                     textView.setText("");
@@ -190,13 +180,9 @@ public class TimelineAdapterHelpers {
 
                     int newCount = currentCount - 1;
 
-                    // Show parent layout
-
-                    relativeLayout.setVisibility(View.VISIBLE);
-
                     // Set TextView value
 
-                    textView.setText(mContext.getResources().getQuantityString(R.plurals.favorite_label, newCount, newCount));
+                    textView.setText(newCount);
 
                 }
 
@@ -250,7 +236,10 @@ public class TimelineAdapterHelpers {
 
     }
 
-    public static void setAuthor(final Context context, final Report post, TextView textView, ImageView imageView) {
+    public static void setAuthor(final Context context,
+                                 final Report post,
+                                 TextView textView,
+                                 ImageView imageView) {
 
         // Load author avatar
 
@@ -325,14 +314,13 @@ public class TimelineAdapterHelpers {
 
     }
 
-    public static void setCommentState(final Context context, final Report post, RelativeLayout relativeLayout, TextView textView, ImageView imageView) {
+    public static void setCommentState(final Context context,
+                                       final Report post,
+                                       TextView textView,
+                                       ImageView imageView) {
 
         // Set value of comment count string
         int commentCount = post.properties.comments.size();
-
-        // Hide parent layout
-
-        relativeLayout.setVisibility(View.GONE);
 
         // Clear display comment count
 
@@ -344,9 +332,7 @@ public class TimelineAdapterHelpers {
 
         if (commentCount > 0) {
 
-            relativeLayout.setVisibility(View.VISIBLE);
-
-            textView.setText(context.getResources().getQuantityString(R.plurals.comment_label, commentCount, commentCount));
+            textView.setText(commentCount);
 
             imageView.setColorFilter(ContextCompat.getColor(context, R.color.splash_blue), PorterDuff.Mode.SRC_ATOP);
 
@@ -354,7 +340,10 @@ public class TimelineAdapterHelpers {
 
     }
 
-    public static void setOrganizations(final Context context, final LinearLayout parent, final Report post, FlexboxLayout flexboxLayout) {
+    public static void setOrganizations(final Context context,
+                                        final LinearLayout parent,
+                                        final Report post,
+                                        FlexboxLayout flexboxLayout) {
 
         flexboxLayout.setVisibility(View.GONE);
 
@@ -382,14 +371,13 @@ public class TimelineAdapterHelpers {
 
     }
 
-    public static void setFavoriteState(final Context context, final Report post, RelativeLayout relativeLayout, TextView textView, ImageView imageView) {
+    public static void setFavoriteState(final Context context,
+                                        final Report post,
+                                        TextView textView,
+                                        ImageView imageView) {
 
         // Set value of favorite count string
         int favoriteCount = post.properties.favorites.size();
-
-        // Hide parent layout
-
-        relativeLayout.setVisibility(View.GONE);
 
         // Clear display favorite count
 
@@ -401,9 +389,7 @@ public class TimelineAdapterHelpers {
 
         if (favoriteCount > 0) {
 
-            relativeLayout.setVisibility(View.VISIBLE);
-
-            textView.setText(context.getResources().getQuantityString(R.plurals.favorite_label, favoriteCount, favoriteCount));
+            textView.setText(favoriteCount);
 
             imageView.setColorFilter(ContextCompat.getColor(context, R.color.favorite_red), PorterDuff.Mode.SRC_ATOP);
 
@@ -411,7 +397,13 @@ public class TimelineAdapterHelpers {
 
     }
 
-    public static void setOpenGraph(final Context context, final Report post, CardView cardView, ImageView imageView, TextView title, TextView description, TextView url) {
+    public static void setOpenGraph(final Context context,
+                                    final Report post,
+                                    CardView cardView,
+                                    ImageView imageView,
+                                    TextView title,
+                                    TextView description,
+                                    TextView url) {
 
         // Hide CardView
 

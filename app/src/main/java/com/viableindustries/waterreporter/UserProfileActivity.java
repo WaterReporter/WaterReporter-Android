@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -90,14 +91,14 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
     @Bind(R.id.listTabs)
     FrameLayout listTabs;
 
-    @Bind(R.id.log_out)
-    ImageButton logOutButton;
-
     @Bind(R.id.promptBlock)
     LinearLayout promptBlock;
 
     @Bind(R.id.prompt)
     TextView promptMessage;
+
+    @Bind(R.id.startPost)
+    Button startPostButton;
 
     protected TimelineAdapter timelineAdapter;
 
@@ -167,12 +168,6 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
             startActivity(new Intent(this, MainActivity.class));
 
             finish();
-
-        }
-
-        if (prefs.getInt("user_id", 0) == userId) {
-
-            logOutButton.setVisibility(View.VISIBLE);
 
         }
 
@@ -432,6 +427,8 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
         reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
 
         if (count < 1) {
+
+            startPostButton.setVisibility(View.GONE);
 
             promptBlock.setVisibility(View.VISIBLE);
 

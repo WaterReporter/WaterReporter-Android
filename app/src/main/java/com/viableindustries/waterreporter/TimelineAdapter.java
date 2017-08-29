@@ -70,24 +70,22 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         RelativeLayout actionBadge;
         LinearLayout postStub;
         RelativeLayout locationIcon;
-//        RelativeLayout directionsIcon;
+
         RelativeLayout commentIcon;
         RelativeLayout favoriteIcon;
         RelativeLayout shareIcon;
         RelativeLayout actionsEllipsis;
         ImageView locationIconView;
-        ImageView directionsIconView;
+
         ImageView shareIconView;
-        ImageView commentIconView;
-        ImageView favoriteIconView;
 
         // Action counts
 
-        TextView postFavorites;
-        RelativeLayout favoriteCount;
+        TextView abbrFavoriteCount;
+        ImageView favoriteIconView;
 
-        TextView postComments;
-        RelativeLayout commentCount;
+        TextView abbrCommentCount;
+        ImageView commentIconView;
 
         TextView tracker;
 
@@ -118,8 +116,8 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
                                 final Context context,
                                 final SharedPreferences sharedPreferences,
                                 final FragmentManager fragmentManager,
-                                final boolean mIsProfile,
-                                final ViewHolder viewHolder) {
+                                final ViewHolder viewHolder,
+                                final boolean mIsProfile) {
 
         Log.d("target-post", post.properties.toString());
 
@@ -129,7 +127,6 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         ImageView[] icons = new ImageView[]{
                 viewHolder.locationIconView,
-//                viewHolder.directionsIconView,
                 viewHolder.shareIconView
         };
 
@@ -157,7 +154,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         // Set comment state
 
-        TimelineAdapterHelpers.setCommentState(context, post, viewHolder.commentCount, viewHolder.postComments, viewHolder.commentIconView);
+        TimelineAdapterHelpers.setCommentState(context, post, viewHolder.abbrCommentCount, viewHolder.commentIconView);
 
         // Add clickable organization logos
 
@@ -172,8 +169,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         TimelineAdapterHelpers.setFavoriteState(
                 context,
                 post,
-                viewHolder.favoriteCount,
-                viewHolder.postFavorites,
+                viewHolder.abbrFavoriteCount,
                 viewHolder.favoriteIconView);
 
         // Display Open Graph information, if any
@@ -202,19 +198,13 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
             }
         });
 
-        viewHolder.commentCount.setOnClickListener(new PostCommentListener(context, post));
-
         viewHolder.commentIcon.setOnClickListener(new PostCommentListener(context, post));
 
         viewHolder.actionBadge.setOnClickListener(new PostCommentListener(context, post));
 
         viewHolder.locationIcon.setOnClickListener(new PostMapListener(context, post));
 
-//        viewHolder.directionsIcon.setOnClickListener(new PostDirectionsListener(context, post));
-
         viewHolder.shareIcon.setOnClickListener(new PostShareListener(context, post));
-
-        viewHolder.favoriteCount.setOnClickListener(new PostFavoriteCountListener(context, post));
 
         viewHolder.favoriteIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -237,8 +227,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
                         TimelineAdapterHelpers.undoFavorite(post,
                                 favorite.properties.id,
                                 post.properties.favorites.size(),
-                                viewHolder.favoriteCount,
-                                viewHolder.postFavorites,
+                                viewHolder.abbrFavoriteCount,
                                 viewHolder.favoriteIconView,
                                 context,
                                 sharedPreferences);
@@ -252,8 +241,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
                 TimelineAdapterHelpers.addFavorite(
                         post,
                         post.properties.favorites.size(),
-                        viewHolder.favoriteCount,
-                        viewHolder.postFavorites,
+                        viewHolder.abbrFavoriteCount,
                         viewHolder.favoriteIconView,
                         context,
                         sharedPreferences);
@@ -344,24 +332,22 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
             viewHolder.actionBadge = (RelativeLayout) convertView.findViewById(R.id.actionBadge);
             viewHolder.postStub = (LinearLayout) convertView.findViewById(R.id.postStub);
             viewHolder.locationIcon = (RelativeLayout) convertView.findViewById(R.id.locationIcon);
-//            viewHolder.directionsIcon = (RelativeLayout) convertView.findViewById(R.id.directionsIcon);
+
             viewHolder.commentIcon = (RelativeLayout) convertView.findViewById(R.id.commentIcon);
             viewHolder.favoriteIcon = (RelativeLayout) convertView.findViewById(R.id.favoriteIcon);
             viewHolder.shareIcon = (RelativeLayout) convertView.findViewById(R.id.shareIcon);
             viewHolder.actionsEllipsis = (RelativeLayout) convertView.findViewById(R.id.actionEllipsis);
             viewHolder.locationIconView = (ImageView) convertView.findViewById(R.id.locationIconView);
-//            viewHolder.directionsIconView = (ImageView) convertView.findViewById(R.id.directionsIconView);
+
             viewHolder.shareIconView = (ImageView) convertView.findViewById(R.id.shareIconView);
             viewHolder.commentIconView = (ImageView) convertView.findViewById(R.id.commentIconView);
             viewHolder.favoriteIconView = (ImageView) convertView.findViewById(R.id.favoriteIconView);
 
             // Action counts
 
-            viewHolder.postFavorites = (TextView) convertView.findViewById(R.id.favoriteCountText);
-            viewHolder.favoriteCount = (RelativeLayout) convertView.findViewById(R.id.favoriteCount);
+            viewHolder.abbrFavoriteCount = (TextView) convertView.findViewById(R.id.abbrFavoriteCount);
 
-            viewHolder.postComments = (TextView) convertView.findViewById(R.id.commentCountText);
-            viewHolder.commentCount = (RelativeLayout) convertView.findViewById(R.id.commentCount);
+            viewHolder.abbrCommentCount = (TextView) convertView.findViewById(R.id.abbrCommentCount);
 
             viewHolder.tracker = (TextView) convertView.findViewById(R.id.tracker);
 
@@ -385,7 +371,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         final Report feature = (Report) getItem(position);
 
-        bindData(feature, mContext, mSharedPreferences, mFragmentManager, mIsProfile, viewHolder);
+        bindData(feature, mContext, mSharedPreferences, mFragmentManager, viewHolder, mIsProfile);
 
         return convertView;
 

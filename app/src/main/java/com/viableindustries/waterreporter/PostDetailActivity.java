@@ -74,7 +74,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_marker_detail);
+        setContentView(R.layout.activity_post_detail);
 
         ButterKnife.bind(this);
 
@@ -182,13 +182,13 @@ public class PostDetailActivity extends AppCompatActivity {
         viewHolder.actionBadge = (RelativeLayout) postContainer.findViewById(R.id.actionBadge);
         viewHolder.postStub = (LinearLayout) postContainer.findViewById(R.id.postStub);
         viewHolder.locationIcon = (RelativeLayout) postContainer.findViewById(R.id.locationIcon);
-//        viewHolder.directionsIcon = (RelativeLayout) postContainer.findViewById(R.id.directionsIcon);
+
         viewHolder.commentIcon = (RelativeLayout) postContainer.findViewById(R.id.commentIcon);
         viewHolder.favoriteIcon = (RelativeLayout) postContainer.findViewById(R.id.favoriteIcon);
         viewHolder.shareIcon = (RelativeLayout) postContainer.findViewById(R.id.shareIcon);
         viewHolder.actionsEllipsis = (RelativeLayout) postContainer.findViewById(R.id.actionEllipsis);
         viewHolder.locationIconView = (ImageView) postContainer.findViewById(R.id.locationIconView);
-//        viewHolder.directionsIconView = (ImageView) postContainer.findViewById(R.id.directionsIconView);
+
         viewHolder.shareIconView = (ImageView) postContainer.findViewById(R.id.shareIconView);
         viewHolder.commentIconView = (ImageView) postContainer.findViewById(R.id.commentIconView);
         viewHolder.favoriteIconView = (ImageView) postContainer.findViewById(R.id.favoriteIconView);
@@ -201,11 +201,9 @@ public class PostDetailActivity extends AppCompatActivity {
 
         // Action counts
 
-        viewHolder.postFavorites = (TextView) postContainer.findViewById(R.id.favoriteCountText);
-        viewHolder.favoriteCount = (RelativeLayout) postContainer.findViewById(R.id.favoriteCount);
+        viewHolder.abbrFavoriteCount = (TextView) postContainer.findViewById(R.id.abbrFavoriteCount);
 
-        viewHolder.postComments = (TextView) postContainer.findViewById(R.id.commentCountText);
-        viewHolder.commentCount = (RelativeLayout) postContainer.findViewById(R.id.commentCount);
+        viewHolder.abbrCommentCount = (TextView) postContainer.findViewById(R.id.abbrCommentCount);
 
         viewHolder.tracker = (TextView) postContainer.findViewById(R.id.tracker);
 
@@ -219,7 +217,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         postContainer.setTag(viewHolder);
 
-        TimelineAdapter.bindData(post, context, sharedPreferences, fragmentManager, false, viewHolder);
+        TimelineAdapter.bindData(post, context, sharedPreferences, fragmentManager, viewHolder, false);
 
     }
 
