@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -262,13 +263,13 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         // Context-dependent configuration
 
+        int layoutType = 0;
+
         if (!mIsProfile) {
 
             viewHolder.ownerAvatar.setOnClickListener(new UserProfileListener(context, post.properties.owner));
 
             viewHolder.postOwner.setOnClickListener(new UserProfileListener(context, post.properties.owner));
-
-            viewHolder.actionsEllipsis.setVisibility(View.GONE);
 
         } else {
 
@@ -294,28 +295,30 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
             if (sharedPreferences.getInt("user_id", 0) == post.properties.owner_id) {
 
-                viewHolder.actionsEllipsis.setVisibility(View.VISIBLE);
-
-                viewHolder.actionsEllipsis.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        ReportHolder.setReport(post);
-
-                        ReportActionDialog reportActionDialog = new ReportActionDialog();
-
-                        reportActionDialog.show(fragmentManager, "post-action-dialog");
-
-                    }
-                });
-
-            } else {
-
-                viewHolder.actionsEllipsis.setVisibility(View.GONE);
+                layoutType = 1;
 
             }
 
         }
+
+        final Bundle args = new Bundle();
+
+        args.putInt("layout_type", layoutType);
+
+        viewHolder.actionsEllipsis.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                ReportHolder.setReport(post);
+
+                ReportActionDialog reportActionDialog = new ReportActionDialog();
+
+                reportActionDialog.setArguments(args);
+
+                reportActionDialog.show(fragmentManager, "post-action-dialog");
+
+            }
+        });
 
     }
 

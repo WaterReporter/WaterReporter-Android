@@ -82,7 +82,7 @@ public class TimelineAdapterHelpers {
                         DownloadManager.Request.NETWORK_MOBILE)
                 .setAllowedOverRoaming(false)
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                .setTitle("Downloading image")
+                .setTitle("Saving image from Water Reporter")
                 .setDescription("Downloading image from Water Reporter")
                 .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
                         fileName));
