@@ -84,6 +84,8 @@
     <!-- Post actions -->
     <string name="action_edit_post">Edit post</string>
     <string name="action_delete_post">Delete post</string>
+    <string name="action_share_post">Share post</string>
+    <string name="action_get_directions">Get directions</string>
     <string name="action_download_image">Save image</string>
 
     <!-- Location -->
