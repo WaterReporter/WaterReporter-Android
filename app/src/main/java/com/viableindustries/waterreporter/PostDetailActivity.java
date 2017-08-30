@@ -7,10 +7,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,14 +20,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.squareup.picasso.Picasso;
+import com.google.gson.Gson;
+import com.viableindustries.waterreporter.data.Comment;
+import com.viableindustries.waterreporter.data.CommentCollection;
 import com.viableindustries.waterreporter.data.HUCFeature;
 import com.viableindustries.waterreporter.data.PostCommentListener;
 import com.viableindustries.waterreporter.data.PostFavoriteCountListener;
+import com.viableindustries.waterreporter.data.QueryParams;
+import com.viableindustries.waterreporter.data.QuerySort;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.ReportService;
@@ -47,28 +51,27 @@ import retrofit.client.Response;
  */
 public class PostDetailActivity extends AppCompatActivity {
 
-    @Bind(R.id.timeline_items)
-    ListView timeLine;
+    @Bind(R.id.commentList)
+    ListView commentList;
 
-    @Bind(R.id.customActionBar)
-    LinearLayout customActionBar;
+//    @Nullable
+//    @Bind(R.id.customActionBar)
+//    LinearLayout customActionBar;
+//
+//    @Nullable
+//    @Bind(R.id.actionBarTitle)
+//    TextView actionBarTitle;
+//
+//    @Nullable
+//    @Bind(R.id.actionBarSubtitle)
+//    TextView actionBarSubtitle;
 
-    @Bind(R.id.actionBarTitle)
-    TextView actionBarTitle;
-
-    @Bind(R.id.actionBarSubtitle)
-    TextView actionBarSubtitle;
-
-    @Bind(R.id.commentCount)
     RelativeLayout mCommentCount;
 
-    @Bind(R.id.fullCommentCount)
     TextView mFullCommentCount;
 
-    @Bind(R.id.favoriteCount)
     RelativeLayout mFavoriteCount;
 
-    @Bind(R.id.fullFavoriteCount)
     TextView mFullFavoriteCount;
 
     protected List<String> groups;
@@ -76,6 +79,14 @@ public class PostDetailActivity extends AppCompatActivity {
     private Context mContext;
 
     private SharedPreferences sharedPreferences;
+
+    protected CommentAdapter commentAdapter;
+
+    protected List<Comment> commentCollectionList = new ArrayList<Comment>();
+
+    protected Report mPost;
+
+    protected ViewGroup mListViewHeader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +99,8 @@ public class PostDetailActivity extends AppCompatActivity {
 
         mContext = this;
 
+        sharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
         if (Build.VERSION.SDK_INT >= 19) {
 
             AttributeTransformUtility.setStatusBarTranslucent(getWindow(), true);
@@ -96,11 +109,15 @@ public class PostDetailActivity extends AppCompatActivity {
 
         // Retrieve report and attempt to display data
 
-        Report report = ReportHolder.getReport();
+        mPost = ReportHolder.getReport();
+
+        fetchComments(50, 1);
 
         try {
 
-            populateView(report);
+            addListViewHeader(mPost);
+
+//            fetchComments(50, 1);
 
         } catch (NullPointerException e) {
 
@@ -124,72 +141,132 @@ public class PostDetailActivity extends AppCompatActivity {
 
         }
 
-        sharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
-
         // Fetch watershed geometry and metadata related to current post
 
-        if (report.properties.territory != null) {
-
-            TerritoryHelpers.fetchTerritoryGeometry(mContext, report.properties.territory, new TerritoryGeometryCallbacks() {
-
-                @Override
-                public void onSuccess(@NonNull HUCFeature hucFeature) {
-
-                    actionBarTitle.setText(hucFeature.properties.name);
-
-                    actionBarSubtitle.setText(hucFeature.properties.states.concat);
-
-                    customActionBar.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            finish();
-                        }
-                    });
-
-                }
-
-                @Override
-                public void onError(@NonNull RetrofitError error) {
-
-                    if (error == null) return;
-
-                    Response errorResponse = error.getResponse();
-
-                    // If we have a valid response object, check the status code and redirect to log in view if necessary
-
-                    if (errorResponse != null) {
-
-                        int status = errorResponse.getStatus();
-
-                        if (status == 403) {
-
-                            mContext.startActivity(new Intent(mContext, SignInActivity.class));
-
-                        }
-
-                    }
-                }
-
-            });
-
-        }
+//        if (mPost.properties.territory != null) {
+//
+//            TerritoryHelpers.fetchTerritoryGeometry(mContext, mPost.properties.territory, new TerritoryGeometryCallbacks() {
+//
+//                @Override
+//                public void onSuccess(@NonNull HUCFeature hucFeature) {
+//
+//                    actionBarTitle.setText(hucFeature.properties.name);
+//
+//                    actionBarSubtitle.setText(hucFeature.properties.states.concat);
+//
+//                    customActionBar.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            finish();
+//                        }
+//                    });
+//
+//                }
+//
+//                @Override
+//                public void onError(@NonNull RetrofitError error) {
+//
+//                    if (error == null) return;
+//
+//                    Response errorResponse = error.getResponse();
+//
+//                    // If we have a valid response object, check the status code and redirect to log in view if necessary
+//
+//                    if (errorResponse != null) {
+//
+//                        int status = errorResponse.getStatus();
+//
+//                        if (status == 403) {
+//
+//                            mContext.startActivity(new Intent(mContext, SignInActivity.class));
+//
+//                        }
+//
+//                    }
+//                }
+//
+//            });
+//
+//        }
 
     }
 
-    private void populateView(final Report post) {
+    protected void addListViewHeader(Report post) {
 
-        List<Report> list = new ArrayList<>();
+        LayoutInflater inflater = getLayoutInflater();
 
-        list.add(post);
+        mListViewHeader = (ViewGroup) inflater.inflate(R.layout.post_detail_header, commentList, false);
 
-        TimelineAdapter timelineAdapter = new TimelineAdapter(this, list, false, getSupportFragmentManager());
+        LinearLayout postContainer = (LinearLayout) mListViewHeader.findViewById(R.id.postContainer);
 
-        // Attach the adapter to a ListView
-        if (timeLine != null) {
+        final TimelineAdapter.ViewHolder viewHolder;
 
-            timeLine.setAdapter(timelineAdapter);
+        viewHolder = new TimelineAdapter.ViewHolder();
 
-        }
+        viewHolder.postDate = (TextView) postContainer.findViewById(R.id.postDate);
+        viewHolder.postOwner = (TextView) postContainer.findViewById(R.id.postOwner);
+        viewHolder.postWatershed = (TextView) postContainer.findViewById(R.id.postWatershed);
+        viewHolder.postCaption = (TextView) postContainer.findViewById(R.id.postCaption);
+        viewHolder.ownerAvatar = (ImageView) postContainer.findViewById(R.id.ownerAvatar);
+        viewHolder.postGroups = (FlexboxLayout) postContainer.findViewById(R.id.postGroups);
+        viewHolder.postThumb = (ImageView) postContainer.findViewById(R.id.postThumb);
+        viewHolder.actionBadge = (RelativeLayout) postContainer.findViewById(R.id.actionBadge);
+        viewHolder.postStub = (LinearLayout) postContainer.findViewById(R.id.postStub);
+        viewHolder.locationIcon = (RelativeLayout) postContainer.findViewById(R.id.locationIcon);
+
+        viewHolder.commentIcon = (FlexboxLayout) postContainer.findViewById(R.id.commentIcon);
+        viewHolder.favoriteIcon = (FlexboxLayout) postContainer.findViewById(R.id.favoriteIcon);
+        viewHolder.shareIcon = (RelativeLayout) postContainer.findViewById(R.id.shareIcon);
+        viewHolder.actionsEllipsis = (RelativeLayout) postContainer.findViewById(R.id.actionEllipsis);
+        viewHolder.locationIconView = (ImageView) postContainer.findViewById(R.id.locationIconView);
+        viewHolder.extraActionsIconView = (ImageView) postContainer.findViewById(R.id.extraActionsIconView);
+
+        viewHolder.shareIconView = (ImageView) postContainer.findViewById(R.id.shareIconView);
+        viewHolder.commentIconView = (ImageView) postContainer.findViewById(R.id.commentIconView);
+        viewHolder.favoriteIconView = (ImageView) postContainer.findViewById(R.id.favoriteIconView);
+
+        // Set dimensions of post image container
+
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(mContext));
+
+        viewHolder.postThumb.setLayoutParams(layoutParams);
+
+        // Action counts
+
+        viewHolder.abbrFavoriteCount = (TextView) postContainer.findViewById(R.id.abbrFavoriteCount);
+
+        viewHolder.abbrCommentCount = (TextView) postContainer.findViewById(R.id.abbrCommentCount);
+
+        viewHolder.tracker = (TextView) postContainer.findViewById(R.id.tracker);
+
+        // Open Graph
+
+        viewHolder.openGraphData = (CardView) postContainer.findViewById(R.id.ogData);
+        viewHolder.ogImage = (ImageView) postContainer.findViewById(R.id.ogImage);
+        viewHolder.ogTitle = (TextView) postContainer.findViewById(R.id.ogTitle);
+        viewHolder.ogDescription = (TextView) postContainer.findViewById(R.id.ogDescription);
+        viewHolder.ogUrl = (TextView) postContainer.findViewById(R.id.ogUrl);
+
+        postContainer.setTag(viewHolder);
+
+        TimelineAdapter.bindData(post, mContext, sharedPreferences, getSupportFragmentManager(), viewHolder, false);
+
+        // Display comment and favorite counts
+
+        populateActionCounts(mListViewHeader, post);
+
+        // Add populated header view to report timeline
+
+        commentList.addHeaderView(mListViewHeader, null, false);
+
+    }
+
+    private void populateActionCounts(final ViewGroup viewGroup, final Report post) {
+
+        mCommentCount = (RelativeLayout) viewGroup.findViewById(R.id.commentCount);
+        mFullCommentCount = (TextView) viewGroup.findViewById(R.id.fullCommentCount);
+        mFavoriteCount = (RelativeLayout) viewGroup.findViewById(R.id.favoriteCount);
+        mFullFavoriteCount = (TextView) viewGroup.findViewById(R.id.fullFavoriteCount);
 
         // Set value of comment count string
         int commentCount = post.properties.comments.size();
@@ -230,7 +307,11 @@ public class PostDetailActivity extends AppCompatActivity {
             @Override
             public void success(Report report, Response response) {
 
-                populateView(report);
+                mPost = report;
+
+                addListViewHeader(mPost);
+
+                fetchComments(50, 1);
 
             }
 
@@ -252,6 +333,86 @@ public class PostDetailActivity extends AppCompatActivity {
             }
 
         });
+
+    }
+
+    private void fetchComments(int limit, int page) {
+
+        final String accessToken = sharedPreferences.getString("access_token", "");
+
+        Log.d("", accessToken);
+
+        // Create order_by list and add a sort parameter
+
+        List<QuerySort> queryOrder = new ArrayList<QuerySort>();
+
+        QuerySort querySort = new QuerySort("created", "desc");
+
+        queryOrder.add(querySort);
+
+        // Create query string from new QueryParams
+
+        QueryParams queryParams = new QueryParams(null, queryOrder);
+
+        String query = new Gson().toJson(queryParams);
+
+        Log.d("URL", query);
+
+        ReportService service = ReportService.restAdapter.create(ReportService.class);
+
+//        commentListContainer.setRefreshing(true);
+
+        service.getReportComments(accessToken, "application/json", mPost.id, page, limit, query, new Callback<CommentCollection>() {
+
+            @Override
+            public void success(CommentCollection commentCollection, Response response) {
+
+                List<Comment> comments = commentCollection.getFeatures();
+
+                Log.v("list", comments.toString());
+
+                commentCollectionList = comments;
+
+                populateComments(commentCollectionList);
+
+//                commentListContainer.setRefreshing(false);
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+//                commentListContainer.setRefreshing(false);
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(mContext, SignInActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+    private void populateComments(List<Comment> comments) {
+
+        commentAdapter = new CommentAdapter(this, comments);
+
+        commentList.setAdapter(commentAdapter);
 
     }
 
