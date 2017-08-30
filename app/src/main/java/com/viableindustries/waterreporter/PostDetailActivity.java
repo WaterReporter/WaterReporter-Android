@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -30,6 +31,7 @@ import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.ReportService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -45,14 +47,8 @@ import retrofit.client.Response;
  */
 public class PostDetailActivity extends AppCompatActivity {
 
-    @Bind(R.id.postContainer)
-    ScrollView postContainer;
-
-    @Bind(R.id.ownerAvatar)
-    ImageView ownerAvatar;
-
-    @Bind(R.id.postThumb)
-    ImageView postThumb;
+    @Bind(R.id.timeline_items)
+    ListView timeLine;
 
     @Bind(R.id.customActionBar)
     LinearLayout customActionBar;
@@ -80,8 +76,6 @@ public class PostDetailActivity extends AppCompatActivity {
     private Context mContext;
 
     private SharedPreferences sharedPreferences;
-
-    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,55 +126,70 @@ public class PostDetailActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        fragmentManager = getSupportFragmentManager();
-
         // Fetch watershed geometry and metadata related to current post
 
-        TerritoryHelpers.fetchTerritoryGeometry(mContext, report.properties.territory, new TerritoryGeometryCallbacks() {
+        if (report.properties.territory != null) {
 
-            @Override
-            public void onSuccess(@NonNull HUCFeature hucFeature) {
+            TerritoryHelpers.fetchTerritoryGeometry(mContext, report.properties.territory, new TerritoryGeometryCallbacks() {
 
-                actionBarTitle.setText(hucFeature.properties.name);
+                @Override
+                public void onSuccess(@NonNull HUCFeature hucFeature) {
 
-                actionBarSubtitle.setText(hucFeature.properties.states.concat);
+                    actionBarTitle.setText(hucFeature.properties.name);
 
-                customActionBar.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        finish();
-                    }
-                });
+                    actionBarSubtitle.setText(hucFeature.properties.states.concat);
 
-            }
-
-            @Override
-            public void onError(@NonNull RetrofitError error) {
-
-                if (error == null) return;
-
-                Response errorResponse = error.getResponse();
-
-                // If we have a valid response object, check the status code and redirect to log in view if necessary
-
-                if (errorResponse != null) {
-
-                    int status = errorResponse.getStatus();
-
-                    if (status == 403) {
-
-                        mContext.startActivity(new Intent(mContext, SignInActivity.class));
-
-                    }
+                    customActionBar.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            finish();
+                        }
+                    });
 
                 }
-            }
 
-        });
+                @Override
+                public void onError(@NonNull RetrofitError error) {
+
+                    if (error == null) return;
+
+                    Response errorResponse = error.getResponse();
+
+                    // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                    if (errorResponse != null) {
+
+                        int status = errorResponse.getStatus();
+
+                        if (status == 403) {
+
+                            mContext.startActivity(new Intent(mContext, SignInActivity.class));
+
+                        }
+
+                    }
+                }
+
+            });
+
+        }
 
     }
 
     private void populateView(final Report post) {
+
+        List<Report> list = new ArrayList<>();
+
+        list.add(post);
+
+        TimelineAdapter timelineAdapter = new TimelineAdapter(this, list, false, getSupportFragmentManager());
+
+        // Attach the adapter to a ListView
+        if (timeLine != null) {
+
+            timeLine.setAdapter(timelineAdapter);
+
+        }
 
         // Set value of comment count string
         int commentCount = post.properties.comments.size();
@@ -207,58 +216,6 @@ public class PostDetailActivity extends AppCompatActivity {
             mFullFavoriteCount.setOnClickListener(new PostFavoriteCountListener(mContext, post));
 
         }
-
-        final TimelineAdapter.ViewHolder viewHolder;
-
-        viewHolder = new TimelineAdapter.ViewHolder();
-
-        viewHolder.postDate = (TextView) postContainer.findViewById(R.id.postDate);
-        viewHolder.postOwner = (TextView) postContainer.findViewById(R.id.postOwner);
-        viewHolder.postWatershed = (TextView) postContainer.findViewById(R.id.postWatershed);
-        viewHolder.postCaption = (TextView) postContainer.findViewById(R.id.postCaption);
-        viewHolder.ownerAvatar = (ImageView) postContainer.findViewById(R.id.ownerAvatar);
-        viewHolder.postGroups = (FlexboxLayout) postContainer.findViewById(R.id.postGroups);
-        viewHolder.postThumb = (ImageView) postContainer.findViewById(R.id.postThumb);
-        viewHolder.actionBadge = (RelativeLayout) postContainer.findViewById(R.id.actionBadge);
-        viewHolder.postStub = (LinearLayout) postContainer.findViewById(R.id.postStub);
-        viewHolder.locationIcon = (RelativeLayout) postContainer.findViewById(R.id.locationIcon);
-
-        viewHolder.commentIcon = (FlexboxLayout) postContainer.findViewById(R.id.commentIcon);
-        viewHolder.favoriteIcon = (FlexboxLayout) postContainer.findViewById(R.id.favoriteIcon);
-        viewHolder.shareIcon = (RelativeLayout) postContainer.findViewById(R.id.shareIcon);
-        viewHolder.actionsEllipsis = (RelativeLayout) postContainer.findViewById(R.id.actionEllipsis);
-        viewHolder.locationIconView = (ImageView) postContainer.findViewById(R.id.locationIconView);
-        viewHolder.extraActionsIconView = (ImageView) postContainer.findViewById(R.id.extraActionsIconView);
-
-        viewHolder.shareIconView = (ImageView) postContainer.findViewById(R.id.shareIconView);
-        viewHolder.commentIconView = (ImageView) postContainer.findViewById(R.id.commentIconView);
-        viewHolder.favoriteIconView = (ImageView) postContainer.findViewById(R.id.favoriteIconView);
-
-        // Set dimensions of post image container
-
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(mContext));
-
-        viewHolder.postThumb.setLayoutParams(layoutParams);
-
-        // Action counts
-
-        viewHolder.abbrFavoriteCount = (TextView) postContainer.findViewById(R.id.abbrFavoriteCount);
-
-        viewHolder.abbrCommentCount = (TextView) postContainer.findViewById(R.id.abbrCommentCount);
-
-        viewHolder.tracker = (TextView) postContainer.findViewById(R.id.tracker);
-
-        // Open Graph
-
-        viewHolder.openGraphData = (CardView) postContainer.findViewById(R.id.ogData);
-        viewHolder.ogImage = (ImageView) postContainer.findViewById(R.id.ogImage);
-        viewHolder.ogTitle = (TextView) postContainer.findViewById(R.id.ogTitle);
-        viewHolder.ogDescription = (TextView) postContainer.findViewById(R.id.ogDescription);
-        viewHolder.ogUrl = (TextView) postContainer.findViewById(R.id.ogUrl);
-
-        postContainer.setTag(viewHolder);
-
-        TimelineAdapter.bindData(post, mContext, sharedPreferences, fragmentManager, viewHolder, false);
 
     }
 
@@ -338,10 +295,6 @@ public class PostDetailActivity extends AppCompatActivity {
     protected void onDestroy() {
 
         super.onDestroy();
-
-        Picasso.with(this).cancelRequest(postThumb);
-
-        Picasso.with(this).cancelRequest(ownerAvatar);
 
         ButterKnife.unbind(this);
 

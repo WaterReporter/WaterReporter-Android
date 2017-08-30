@@ -66,6 +66,7 @@ import retrofit.client.Response;
 
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillColor;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillOpacity;
+import static java.lang.Boolean.TRUE;
 
 public class TerritoryActivity extends AppCompatActivity {
 
@@ -448,6 +449,51 @@ public class TerritoryActivity extends AppCompatActivity {
         territoryName.setText(territoryNameText);
         actionBarTitle.setText(territoryNameText);
 
+        // Attach click listeners to stat elements
+
+        fblPostCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                resetStats();
+
+            }
+        });
+
+        fblActionCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                actionFocus = true;
+
+                actionCountLabel.setTextColor(ContextCompat.getColor(mContext, R.color.splash_blue));
+
+                postCountLabel.setTextColor(ContextCompat.getColor(mContext, R.color.material_blue_grey950));
+
+                if (timeLine != null) {
+
+                    timeLine.setSelection(0);
+
+                }
+
+                fetchReports(5, 1, complexQuery, true);
+
+            }
+        });
+
+        fblGroupCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(mContext, RelatedGroupsActivity.class);
+
+                intent.putExtra("GENERIC_USER", TRUE);
+
+                startActivity(intent);
+
+            }
+        });
+
         // Add populated header view to report timeline
 
         timeLine.addHeaderView(header, null, false);
@@ -673,9 +719,9 @@ public class TerritoryActivity extends AppCompatActivity {
                     reportCount = featureCollection.getProperties().num_results;
 
                 }
-                
+
                 if (reportCount > 0) {
-                    
+
                     fblPostCount.setVisibility(View.VISIBLE);
 
                     String count = String.format("%s %s", reportCount, resources.getQuantityString(R.plurals.post_label, reportCount, reportCount)).toLowerCase();
