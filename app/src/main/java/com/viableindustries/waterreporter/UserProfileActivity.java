@@ -428,11 +428,15 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         if (count < 1) {
 
-            startPostButton.setVisibility(View.GONE);
+            if (promptBlock != null) {
 
-            promptBlock.setVisibility(View.VISIBLE);
+                startPostButton.setVisibility(View.GONE);
 
-            promptMessage.setText(getString(R.string.prompt_no_posts_user, user.properties.first_name));
+                promptBlock.setVisibility(View.VISIBLE);
+
+                promptMessage.setText(getString(R.string.prompt_no_posts_user, user.properties.first_name));
+
+            }
 
         } else {
 

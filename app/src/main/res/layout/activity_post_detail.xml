@@ -36,6 +36,7 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         android:divider="@color/gray_232"
-        android:dividerHeight="0.5dp" />
+        android:dividerHeight="0.5dp"
+        android:scrollbars="none" />
 
 </LinearLayout>

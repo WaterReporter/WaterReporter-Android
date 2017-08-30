@@ -24,6 +24,11 @@ import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.gson.Gson;
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.MarkerViewManager;
+import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.viableindustries.waterreporter.data.Comment;
 import com.viableindustries.waterreporter.data.CommentCollection;
 import com.viableindustries.waterreporter.data.HUCFeature;
@@ -88,10 +93,15 @@ public class PostDetailActivity extends AppCompatActivity {
 
     protected ViewGroup mListViewHeader;
 
+    private MapboxMap mMapboxMap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        // Mapbox access token is configured here.
+        Mapbox.getInstance(this, getString(R.string.mapBoxToken));
 
         setContentView(R.layout.activity_post_detail);
 
@@ -101,23 +111,21 @@ public class PostDetailActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        if (Build.VERSION.SDK_INT >= 19) {
-
-            AttributeTransformUtility.setStatusBarTranslucent(getWindow(), true);
-
-        }
+//        if (Build.VERSION.SDK_INT >= 19) {
+//
+//            AttributeTransformUtility.setStatusBarTranslucent(getWindow(), true);
+//
+//        }
 
         // Retrieve report and attempt to display data
 
         mPost = ReportHolder.getReport();
 
-        fetchComments(50, 1);
-
         try {
 
             addListViewHeader(mPost);
 
-//            fetchComments(50, 1);
+            fetchComments(50, 1);
 
         } catch (NullPointerException e) {
 
@@ -141,15 +149,19 @@ public class PostDetailActivity extends AppCompatActivity {
 
         }
 
-        // Fetch watershed geometry and metadata related to current post
+    }
 
-//        if (mPost.properties.territory != null) {
-//
-//            TerritoryHelpers.fetchTerritoryGeometry(mContext, mPost.properties.territory, new TerritoryGeometryCallbacks() {
-//
-//                @Override
-//                public void onSuccess(@NonNull HUCFeature hucFeature) {
-//
+    // Fetch watershed geometry and metadata related to current post
+
+    private void fetchGeometry(Report post) {
+
+        if (post.properties.territory != null) {
+
+            TerritoryHelpers.fetchTerritoryGeometry(mContext, post.properties.territory, new TerritoryGeometryCallbacks() {
+
+                @Override
+                public void onSuccess(@NonNull HUCFeature hucFeature) {
+
 //                    actionBarTitle.setText(hucFeature.properties.name);
 //
 //                    actionBarSubtitle.setText(hucFeature.properties.states.concat);
@@ -160,34 +172,32 @@ public class PostDetailActivity extends AppCompatActivity {
 //                            finish();
 //                        }
 //                    });
-//
-//                }
-//
-//                @Override
-//                public void onError(@NonNull RetrofitError error) {
-//
-//                    if (error == null) return;
-//
-//                    Response errorResponse = error.getResponse();
-//
-//                    // If we have a valid response object, check the status code and redirect to log in view if necessary
-//
-//                    if (errorResponse != null) {
-//
-//                        int status = errorResponse.getStatus();
-//
-//                        if (status == 403) {
-//
-//                            mContext.startActivity(new Intent(mContext, SignInActivity.class));
-//
-//                        }
-//
-//                    }
-//                }
-//
-//            });
-//
-//        }
+
+                }
+
+                @Override
+                public void onError(@NonNull RetrofitError error) {
+
+                    Response errorResponse = error.getResponse();
+
+                    // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                    if (errorResponse != null) {
+
+                        int status = errorResponse.getStatus();
+
+                        if (status == 403) {
+
+                            mContext.startActivity(new Intent(mContext, SignInActivity.class));
+
+                        }
+
+                    }
+                }
+
+            });
+
+        }
 
     }
 
