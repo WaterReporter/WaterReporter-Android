@@ -73,15 +73,15 @@ public class TerritoryActivity extends AppCompatActivity {
 
     LinearLayout profileStats;
 
-    LinearLayout llReportCount;
+    FlexboxLayout fblPostCount;
 
     TextView postCountLabel;
 
-    LinearLayout llActionCount;
+    FlexboxLayout fblActionCount;
 
     TextView actionCountLabel;
 
-    LinearLayout llGroupCount;
+    FlexboxLayout fblGroupCount;
 
     TextView groupCountLabel;
 
@@ -404,11 +404,11 @@ public class TerritoryActivity extends AppCompatActivity {
 
         territoryStates = (TextView) header.findViewById(R.id.states);
 
-        llReportCount = (LinearLayout) header.findViewById(R.id.postCount);
+        fblPostCount = (FlexboxLayout) header.findViewById(R.id.postCount);
 
-        llActionCount = (LinearLayout) header.findViewById(R.id.actionCount);
+        fblActionCount = (FlexboxLayout) header.findViewById(R.id.actionCount);
 
-        llGroupCount = (LinearLayout) header.findViewById(R.id.groupCount);
+        fblGroupCount = (FlexboxLayout) header.findViewById(R.id.groupCount);
 
         postCountLabel = (TextView) header.findViewById(R.id.postCountLabel);
 
@@ -486,7 +486,7 @@ public class TerritoryActivity extends AppCompatActivity {
                 switch (filterName) {
                     case "state":
                         if (count > 0) {
-                            llActionCount.setVisibility(View.VISIBLE);
+                            fblActionCount.setVisibility(View.VISIBLE);
                             actionCount = count;
                             actionCountLabel.setText(String.format("%s %s", actionCount, resources.getQuantityString(R.plurals.action_label, actionCount, actionCount)).toLowerCase());
                         }
@@ -547,7 +547,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
                     int groupCount = organizations.size();
 
-                    llGroupCount.setVisibility(View.VISIBLE);
+                    fblGroupCount.setVisibility(View.VISIBLE);
                     groupCountLabel.setText(String.format("%s %s", groupCount, resources.getQuantityString(R.plurals.group_label, groupCount, groupCount)).toLowerCase());
 
                     GroupListHolder.setList(organizations);
@@ -673,9 +673,15 @@ public class TerritoryActivity extends AppCompatActivity {
                     reportCount = featureCollection.getProperties().num_results;
 
                 }
+                
+                if (reportCount > 0) {
+                    
+                    fblPostCount.setVisibility(View.VISIBLE);
 
-                String count = String.format("%s %s", reportCount, resources.getQuantityString(R.plurals.post_label, reportCount, reportCount)).toLowerCase();
-                postCountLabel.setText(count);
+                    String count = String.format("%s %s", reportCount, resources.getQuantityString(R.plurals.post_label, reportCount, reportCount)).toLowerCase();
+                    postCountLabel.setText(count);
+
+                }
 
                 if (refresh || reportCollection.isEmpty()) {
 
