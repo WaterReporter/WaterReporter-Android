@@ -67,7 +67,7 @@ public class TimelineAdapterHelpers {
 
     public static void saveImage(Context aContext, Report post) {
 
-        DownloadManager downloadManager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
+        DownloadManager downloadManager = (DownloadManager) aContext.getSystemService(DOWNLOAD_SERVICE);
 
         Uri uri = Uri.parse(post.properties.images.get(0).properties.original);
 

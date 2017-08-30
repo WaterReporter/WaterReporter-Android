@@ -25,7 +25,7 @@ import java.util.List;
 
 public class TagListAdapter extends ArrayAdapter<HashTag> {
 
-    private final Context context;
+    private final Context mContext;
 
     protected String name;
 
@@ -95,11 +95,11 @@ public class TagListAdapter extends ArrayAdapter<HashTag> {
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(context, TagProfileActivity.class);
+                Intent intent = new Intent(mContext, TagProfileActivity.class);
 
                 intent.putExtra("tag", String.format("\u0023%s", hashTag.properties.tag));
 
-                context.startActivity(intent);
+                mContext.startActivity(intent);
 
             }
         });

@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 public class TerritoryListAdapter extends ArrayAdapter<Territory> {
 
-    private final Context context;
+    private final Context mContext;
 
     protected String name;
 
@@ -35,17 +35,11 @@ public class TerritoryListAdapter extends ArrayAdapter<Territory> {
 
     private ArrayList<Territory> sourceList;
 
-//    private ArrayList<Organization> filteredList;
-
-//    private OrganizationListAdapter.OrganizationFilter mFilter;
-
     public TerritoryListAdapter(Context aContext, ArrayList<Territory> features, boolean aShowLeaveButton) {
 
         super(aContext, 0, features);
 
         this.sourceList = features;
-
-//        this.filteredList = features;
 
         this.mContext = aContext;
 
@@ -124,7 +118,7 @@ public class TerritoryListAdapter extends ArrayAdapter<Territory> {
 
                 TerritoryHolder.setTerritory(territory);
 
-                context.startActivity(new Intent(context, TerritoryActivity.class));
+                mContext.startActivity(new Intent(mContext, TerritoryActivity.class));
 
             }
         });

@@ -37,9 +37,13 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.style.layers.FillLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.viableindustries.waterreporter.data.FeatureCollection;
+import com.viableindustries.waterreporter.data.GroupListHolder;
 import com.viableindustries.waterreporter.data.HUCFeature;
 import com.viableindustries.waterreporter.data.HUCGeometryCollection;
 import com.viableindustries.waterreporter.data.HUCGeometryService;
+import com.viableindustries.waterreporter.data.Organization;
+import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
+import com.viableindustries.waterreporter.data.OrganizationService;
 import com.viableindustries.waterreporter.data.QueryFilter;
 import com.viableindustries.waterreporter.data.QueryParams;
 import com.viableindustries.waterreporter.data.QuerySort;
@@ -67,13 +71,19 @@ public class TerritoryActivity extends AppCompatActivity {
 
     FlexboxLayout profileMeta;
 
-    TextView reportCounter;
+    LinearLayout profileStats;
 
-    LinearLayout actionStat;
+    LinearLayout llReportCount;
 
-    TextView actionCounter;
+    TextView postCountLabel;
+
+    LinearLayout llActionCount;
 
     TextView actionCountLabel;
+
+    LinearLayout llGroupCount;
+
+    TextView groupCountLabel;
 
     TextView territoryName;
 
@@ -192,11 +202,11 @@ public class TerritoryActivity extends AppCompatActivity {
                 {"state", "eq", "closed"}
         });
 
-//        countReports(complexQuery, "state");
+        countReports(complexQuery, "state");
 
         // Count related groups
 
-//        fetchOrganizations(10, 1, buildQuery(false, "group", null));
+        fetchOrganizations(10, 1, buildQuery(false, "group", null));
 
         // Retrieve first batch of posts
 
@@ -297,7 +307,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
                 mMapboxMap = mapboxMap;
 
-                TerritoryHelpers.fetchTerritoryGeometry(context, territory, new TerritoryGeometryCallbacks() {
+                TerritoryHelpers.fetchTerritoryGeometry(mContext, territory, new TerritoryGeometryCallbacks() {
 
                     @Override
                     public void onSuccess(@NonNull HUCFeature hucFeature) {
@@ -320,8 +330,6 @@ public class TerritoryActivity extends AppCompatActivity {
                     @Override
                     public void onError(@NonNull RetrofitError error) {
 
-                        if (error == null) return;
-
                         Response errorResponse = error.getResponse();
 
                         // If we have a valid response object, check the status code and redirect to log in view if necessary
@@ -332,7 +340,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
                             if (status == 403) {
 
-                                context.startActivity(new Intent(context, SignInActivity.class));
+                                mContext.startActivity(new Intent(mContext, SignInActivity.class));
 
                             }
 
@@ -341,8 +349,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
                 });
 
-                String code = String.format("%s", territory.properties.huc_8_code);
-                if (code.length() == 7) code = String.format("0%s", code);
+                String code = AttributeTransformUtility.getTerritoryCode(territory);
                 String url = String.format("https://huc.waterreporter.org/8/%s", code);
 
                 try
@@ -358,7 +365,7 @@ public class TerritoryActivity extends AppCompatActivity {
                     FillLayer layer = new FillLayer("geojson", "geojson");
 
                     layer.withProperties(
-                            fillColor("#6b4ab5"),
+                            fillColor("#4355b8"),
                             fillOpacity(0.4f)
                     );
 
@@ -397,9 +404,21 @@ public class TerritoryActivity extends AppCompatActivity {
 
         territoryStates = (TextView) header.findViewById(R.id.states);
 
-        reportCounter = (TextView) header.findViewById(R.id.reportCount);
+        llReportCount = (LinearLayout) header.findViewById(R.id.postCount);
+
+        llActionCount = (LinearLayout) header.findViewById(R.id.actionCount);
+
+        llGroupCount = (LinearLayout) header.findViewById(R.id.groupCount);
+
+        postCountLabel = (TextView) header.findViewById(R.id.postCountLabel);
+
+        actionCountLabel = (TextView) header.findViewById(R.id.actionCountLabel);
+
+        groupCountLabel = (TextView) header.findViewById(R.id.groupCountLabel);
 
         profileMeta = (FlexboxLayout) header.findViewById(R.id.profileMeta);
+
+        profileStats = (LinearLayout) header.findViewById(R.id.profileStats);
 
         accessMap = (FloatingActionButton) header.findViewById(R.id.accessMap);
 
@@ -437,17 +456,15 @@ public class TerritoryActivity extends AppCompatActivity {
 
     private void resetStats() {
 
-//        reportCounter.setTextColor(ContextCompat.getColor(TerritoryActivity.this, R.color.base_blue));
-//        reportCountLabel.setTextColor(ContextCompat.getColor(TerritoryActivity.this, R.color.base_blue));
-//
-//        actionCounter.setTextColor(ContextCompat.getColor(TerritoryActivity.this, R.color.material_blue_grey950));
-//        actionCountLabel.setTextColor(ContextCompat.getColor(TerritoryActivity.this, R.color.material_blue_grey950));
-//
-//        actionFocus = false;
+        postCountLabel.setTextColor(ContextCompat.getColor(TerritoryActivity.this, R.color.base_blue));
+
+        actionCountLabel.setTextColor(ContextCompat.getColor(TerritoryActivity.this, R.color.material_blue_grey950));
+
+        actionFocus = false;
 
 //        timeLineContainer.setRefreshing(true);
 
-//        fetchReports(5, 1, buildQuery(true, "report", null), true);
+        fetchReports(5, 1, buildQuery(true, "report", null), true);
 
     }
 
@@ -469,15 +486,14 @@ public class TerritoryActivity extends AppCompatActivity {
                 switch (filterName) {
                     case "state":
                         if (count > 0) {
-                            actionStat.setVisibility(View.VISIBLE);
+                            llActionCount.setVisibility(View.VISIBLE);
                             actionCount = count;
-                            actionCounter.setText(String.valueOf(actionCount));
-                            actionCountLabel.setText(resources.getQuantityString(R.plurals.action_label, actionCount, actionCount));
+                            actionCountLabel.setText(String.format("%s %s", actionCount, resources.getQuantityString(R.plurals.action_label, actionCount, actionCount)).toLowerCase());
                         }
                         break;
                     default:
                         reportCount = count;
-                        reportCounter.setText(String.format("%s %s", reportCount, resources.getQuantityString(R.plurals.post_label, reportCount, reportCount)).toLowerCase());
+                        postCountLabel.setText(String.format("%s %s", reportCount, resources.getQuantityString(R.plurals.post_label, reportCount, reportCount)).toLowerCase());
                         break;
                 }
 
@@ -498,7 +514,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
                     if (status == 403) {
 
-                        startActivity(new Intent(context, SignInActivity.class));
+                        startActivity(new Intent(mContext, SignInActivity.class));
 
                     }
 
@@ -510,66 +526,62 @@ public class TerritoryActivity extends AppCompatActivity {
 
     }
 
-//    protected void fetchOrganizations(int limit, int page, final String query) {
-//
-//        final String accessToken = prefs.getString("access_token", "");
-//
-//        Log.d("", accessToken);
-//
-//        RestAdapter restAdapter = OrganizationService.restAdapter;
-//
-//        OrganizationService service = restAdapter.create(OrganizationService.class);
-//
-//        service.getOrganizations(accessToken, "application/json", page, limit, query, new Callback<OrganizationFeatureCollection>() {
-//
-//            @Override
-//            public void success(OrganizationFeatureCollection organizationFeatureCollection, Response response) {
-//
-//                ArrayList<Organization> organizations = organizationFeatureCollection.getFeatures();
-//
-//                if (!organizations.isEmpty()) {
-//
-//                    int groupCount = organizations.size();
-//
-//                    groupCounter.setText(String.valueOf(groupCount));
-//                    groupCountLabel.setText(resources.getQuantityString(R.plurals.group_label, groupCount, groupCount));
-//
-//                    groupStat.setVisibility(View.VISIBLE);
-//
-//                    GroupListHolder.setList(organizations);
-//
-//                    hasGroups = true;
-//
-//                }
-//
-//            }
-//
-//            @Override
-//            public void failure(RetrofitError error) {
-//
-//                if (error == null) return;
-//
-//                Response errorResponse = error.getResponse();
-//
-//                // If we have a valid response object, check the status code and redirect to log in view if necessary
-//
-//                if (errorResponse != null) {
-//
-//                    int status = errorResponse.getStatus();
-//
-//                    if (status == 403) {
-//
-//                        startActivity(new Intent(context, SignInActivity.class));
-//
-//                    }
-//
-//                }
-//
-//            }
-//
-//        });
-//
-//    }
+    protected void fetchOrganizations(int limit, int page, final String query) {
+
+        final String accessToken = prefs.getString("access_token", "");
+
+        Log.d("", accessToken);
+
+        RestAdapter restAdapter = OrganizationService.restAdapter;
+
+        OrganizationService service = restAdapter.create(OrganizationService.class);
+
+        service.getOrganizations(accessToken, "application/json", page, limit, query, new Callback<OrganizationFeatureCollection>() {
+
+            @Override
+            public void success(OrganizationFeatureCollection organizationFeatureCollection, Response response) {
+
+                ArrayList<Organization> organizations = organizationFeatureCollection.getFeatures();
+
+                if (!organizations.isEmpty()) {
+
+                    int groupCount = organizations.size();
+
+                    llGroupCount.setVisibility(View.VISIBLE);
+                    groupCountLabel.setText(String.format("%s %s", groupCount, resources.getQuantityString(R.plurals.group_label, groupCount, groupCount)).toLowerCase());
+
+                    GroupListHolder.setList(organizations);
+
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(mContext, SignInActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
 
     private void attachScrollListener() {
 
@@ -663,7 +675,7 @@ public class TerritoryActivity extends AppCompatActivity {
                 }
 
                 String count = String.format("%s %s", reportCount, resources.getQuantityString(R.plurals.post_label, reportCount, reportCount)).toLowerCase();
-                reportCounter.setText(count);
+                postCountLabel.setText(count);
 
                 if (refresh || reportCollection.isEmpty()) {
 
@@ -732,7 +744,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
                     if (status == 403) {
 
-                        startActivity(new Intent(context, SignInActivity.class));
+                        startActivity(new Intent(mContext, SignInActivity.class));
 
                     }
 

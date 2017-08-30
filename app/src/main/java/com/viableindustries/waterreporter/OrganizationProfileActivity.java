@@ -246,7 +246,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     private void startPost(){
 
-        Intent intent = new Intent(context, PhotoMetaActivity.class);
+        Intent intent = new Intent(mContext, PhotoMetaActivity.class);
 
         TextView tagName = (TextView) findViewById(R.id.organizationName);
 
@@ -291,7 +291,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                 CharSequence text = String.format("Successfully %s %s", action, organization.properties.name);
                 int duration = Toast.LENGTH_SHORT;
 
-                Toast toast = Toast.makeText(context, text, duration);
+                Toast toast = Toast.makeText(mContext, text, duration);
                 toast.show();
 
             }
@@ -392,14 +392,14 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             organizationDescription.setText(organizationDescriptionText);
 
             new PatternEditableBuilder().
-                    addPattern(context, Pattern.compile("\\#(\\w+)"), ContextCompat.getColor(context, R.color.waterreporter_blue),
+                    addPattern(mContext, Pattern.compile("\\#(\\w+)"), ContextCompat.getColor(mContext, R.color.waterreporter_blue),
                             new PatternEditableBuilder.SpannableClickedListener() {
                                 @Override
                                 public void onSpanClicked(String text) {
 
-                                    Intent intent = new Intent(context, TagProfileActivity.class);
+                                    Intent intent = new Intent(mContext, TagProfileActivity.class);
                                     intent.putExtra("tag", text);
-                                    context.startActivity(intent);
+                                    mContext.startActivity(intent);
 
                                 }
                             }).into(organizationDescription);
@@ -470,11 +470,11 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                 actionFocus = true;
 
-                actionCounter.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
-                actionCountLabel.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
+                actionCounter.setTextColor(ContextCompat.getColor(mContext, R.color.base_blue));
+                actionCountLabel.setTextColor(ContextCompat.getColor(mContext, R.color.base_blue));
 
-                reportCounter.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
-                reportCountLabel.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
+                reportCounter.setTextColor(ContextCompat.getColor(mContext, R.color.material_blue_grey950));
+                reportCountLabel.setTextColor(ContextCompat.getColor(mContext, R.color.material_blue_grey950));
 
                 if (timeLine != null) {
 
@@ -495,7 +495,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                 if (hasMembers) {
 
-                    Intent intent = new Intent(context, OrganizationMembersActivity.class);
+                    Intent intent = new Intent(mContext, OrganizationMembersActivity.class);
 
                     startActivity(intent);
 
@@ -601,7 +601,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                     if (status == 403) {
 
-                        startActivity(new Intent(context, SignInActivity.class));
+                        startActivity(new Intent(mContext, SignInActivity.class));
 
                     }
 
@@ -660,7 +660,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                     if (status == 403) {
 
-                        startActivity(new Intent(context, SignInActivity.class));
+                        startActivity(new Intent(mContext, SignInActivity.class));
 
                     }
 
@@ -818,7 +818,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                     if (status == 403) {
 
-                        startActivity(new Intent(context, SignInActivity.class));
+                        startActivity(new Intent(mContext, SignInActivity.class));
 
                     }
 

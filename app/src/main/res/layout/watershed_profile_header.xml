@@ -47,25 +47,100 @@
                 android:layout_height="wrap_content"
                 android:alpha="0.8"
                 android:gravity="start|center_vertical"
-                android:paddingBottom="8dp"
+                android:paddingBottom="16dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="0dp"
                 android:paddingTop="4dp"
                 android:textColor="@color/material_blue_grey950"
                 android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/reportCount"
+            <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/watershed_gradient_overlay"
-                android:gravity="start|center_vertical"
-                android:paddingBottom="16dp"
+                android:animateLayoutChanges="true"
+                android:paddingEnd="0dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="0dp"
-                android:paddingTop="0dp"
-                android:textColor="@color/gray_186"
-                android:textSize="16sp" />
+                android:paddingStart="16dp"
+                app:alignItems="center">
+
+                <LinearLayout
+                    android:id="@+id/postCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/locationIconView"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_timeline_black_24dp" />
+
+                    <TextView
+                        android:id="@+id/postCountLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/watershed_gradient_overlay"
+                        android:gravity="start|center_vertical"
+                        android:padding="8dp"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/actionCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/actionIconView"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_verified_user_black_24dp" />
+
+                    <TextView
+                        android:id="@+id/actionCountLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/watershed_gradient_overlay"
+                        android:gravity="start|center_vertical"
+                        android:padding="8dp"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/groupCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <ImageView
+                        android:id="@+id/groupIconView"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_group_black_24dp" />
+
+                    <TextView
+                        android:id="@+id/groupCountLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/watershed_gradient_overlay"
+                        android:gravity="start|center_vertical"
+                        android:padding="8dp"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+
+            </com.google.android.flexbox.FlexboxLayout>
 
         </LinearLayout>
 

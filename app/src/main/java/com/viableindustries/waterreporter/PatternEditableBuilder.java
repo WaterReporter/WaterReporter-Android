@@ -49,17 +49,18 @@ public class PatternEditableBuilder {
     /* This stores a particular pattern item
        complete with pattern, span styles, and click listener */
     public class SpannablePatternItem {
+
+        public Context mContext;
+        public Pattern pattern;
+        public int textColor;
+        public SpannableClickedListener listener;
+
         public SpannablePatternItem(Context aContext, Pattern pattern, int textColor, SpannableClickedListener listener) {
             this.mContext = aContext;
             this.pattern = pattern;
             this.textColor = textColor;
             this.listener = listener;
         }
-
-        public Context context;
-        public Pattern pattern;
-        public int textColor;
-        public SpannableClickedListener listener;
     }
 
     /* This stores the style listener for a pattern item
@@ -130,7 +131,7 @@ public class PatternEditableBuilder {
     /* These are the `addPattern` overloaded signatures */
     // Each allows us to add a span pattern with different arguments
     public PatternEditableBuilder addPattern(Context aContext, Pattern pattern, int textColor, SpannableClickedListener listener) {
-        patterns.add(new SpannablePatternItem(context, pattern, textColor, listener));
+        patterns.add(new SpannablePatternItem(aContext, pattern, textColor, listener));
         return this;
     }
 

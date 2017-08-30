@@ -290,11 +290,11 @@ public class TagProfileActivity extends AppCompatActivity {
 
                 actionFocus = true;
 
-                actionCounter.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
-                actionCountLabel.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
+                actionCounter.setTextColor(ContextCompat.getColor(mContext, R.color.base_blue));
+                actionCountLabel.setTextColor(ContextCompat.getColor(mContext, R.color.base_blue));
 
-                reportCounter.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
-                reportCountLabel.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
+                reportCounter.setTextColor(ContextCompat.getColor(mContext, R.color.material_blue_grey950));
+                reportCountLabel.setTextColor(ContextCompat.getColor(mContext, R.color.material_blue_grey950));
 
                 if (timeLine != null) {
 
@@ -315,7 +315,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
                 if (hasGroups) {
 
-                    Intent intent = new Intent(context, RelatedGroupsActivity.class);
+                    Intent intent = new Intent(mContext, RelatedGroupsActivity.class);
 
                     intent.putExtra("GENERIC_USER", TRUE);
 
@@ -415,7 +415,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
                     if (status == 403) {
 
-                        startActivity(new Intent(context, SignInActivity.class));
+                        startActivity(new Intent(mContext, SignInActivity.class));
 
                     }
 
@@ -546,7 +546,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
                     if (status == 403) {
 
-                        startActivity(new Intent(context, SignInActivity.class));
+                        startActivity(new Intent(mContext, SignInActivity.class));
 
                     }
 
@@ -682,7 +682,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
                     if (status == 403) {
 
-                        startActivity(new Intent(context, SignInActivity.class));
+                        startActivity(new Intent(mContext, SignInActivity.class));
 
                     }
 

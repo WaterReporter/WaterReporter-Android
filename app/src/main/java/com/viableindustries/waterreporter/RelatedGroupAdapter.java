@@ -16,7 +16,7 @@ import java.util.List;
 
 public class RelatedGroupAdapter extends ArrayAdapter {
 
-    private final Context context;
+    private final Context mContext;
 
     public RelatedGroupAdapter(Context aContext, List features) {
         super(aContext, 0, features);
@@ -58,7 +58,7 @@ public class RelatedGroupAdapter extends ArrayAdapter {
 
         try {
 
-            Picasso.with(context).load(organization.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(viewHolder.groupView);
+            Picasso.with(mContext).load(organization.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(viewHolder.groupView);
 
 //            viewHolder.groupView.setText(organization.properties.name);
 

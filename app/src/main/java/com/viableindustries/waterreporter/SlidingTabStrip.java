@@ -53,7 +53,7 @@ class SlidingTabStrip extends LinearLayout {
     private final SimpleTabColorizer mDefaultTabColorizer;
 
     SlidingTabStrip(Context aContext) {
-        this(context, null);
+        this(aContext, null);
     }
 
     SlidingTabStrip(Context aContext, AttributeSet attrs) {
@@ -63,7 +63,7 @@ class SlidingTabStrip extends LinearLayout {
         final float density = getResources().getDisplayMetrics().density;
 
         TypedValue outValue = new TypedValue();
-        context.getTheme().resolveAttribute(R.attr.colorAccent, outValue, true);
+        aContext.getTheme().resolveAttribute(R.attr.colorAccent, outValue, true);
         final int themeForegroundColor = outValue.data;
 
         mDefaultBottomBorderColor = setColorAlpha(themeForegroundColor,

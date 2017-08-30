@@ -211,7 +211,7 @@ public class PostFavoriteListActivity extends AppCompatActivity {
 
                     if (status == 403) {
 
-                        startActivity(new Intent(context, SignInActivity.class));
+                        startActivity(new Intent(mContext, SignInActivity.class));
 
                     }
 

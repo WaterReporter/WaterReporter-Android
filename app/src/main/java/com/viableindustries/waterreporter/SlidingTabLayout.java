@@ -82,11 +82,11 @@ public class SlidingTabLayout extends HorizontalScrollView {
     private final SlidingTabStrip mTabStrip;
 
     public SlidingTabLayout(Context aContext) {
-        this(context, null);
+        this(aContext, null);
     }
 
     public SlidingTabLayout(Context aContext, AttributeSet attrs) {
-        this(context, attrs, 0);
+        this(aContext, attrs, 0);
     }
 
     public SlidingTabLayout(Context aContext, AttributeSet attrs, int defStyle) {
@@ -99,13 +99,13 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
         mTitleOffset = (int) (TITLE_OFFSET_DIPS * getResources().getDisplayMetrics().density);
 
-        mTabStrip = new SlidingTabStrip(context);
+        mTabStrip = new SlidingTabStrip(aContext);
         addView(mTabStrip, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
     }
 
     /**
      * Set the custom {@link TabColorizer} to be used.
-     *
+     * <p>
      * If you only require simple custmisation then you can use
      * {@link #setSelectedIndicatorColors(int...)} and {@link #setDividerColors(int...)} to achieve
      * similar effects.
@@ -145,7 +145,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
      * Set the custom layout to be inflated for the tab views.
      *
      * @param layoutResId Layout id to be inflated
-     * @param textViewId id of the {@link TextView} in the inflated view
+     * @param textViewId  id of the {@link TextView} in the inflated view
      */
     public void setCustomTabView(int layoutResId, int textViewId) {
         mTabViewLayoutId = layoutResId;
@@ -172,11 +172,11 @@ public class SlidingTabLayout extends HorizontalScrollView {
      */
     protected TextView createDefaultTabView(Context aContext) {
 
-        String activity = context.toString();
+        String activity = aContext.toString();
 
-        Log.v("tab_context",activity);
+        Log.v("tab_context", activity);
 
-        TextView textView = new TextView(context);
+        TextView textView = new TextView(aContext);
 
         if (activity.contains("SingleReport")) {
 

@@ -124,7 +124,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
             } catch (NumberFormatException nfe) {
 
-                startActivity(new Intent(context, MainActivity.class));
+                startActivity(new Intent(mContext, MainActivity.class));
 
             }
 
@@ -136,7 +136,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         // Fetch watershed geometry and metadata related to current post
 
-        TerritoryHelpers.fetchTerritoryGeometry(context, report.properties.territory, new TerritoryGeometryCallbacks() {
+        TerritoryHelpers.fetchTerritoryGeometry(mContext, report.properties.territory, new TerritoryGeometryCallbacks() {
 
             @Override
             public void onSuccess(@NonNull HUCFeature hucFeature) {
@@ -169,7 +169,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
                     if (status == 403) {
 
-                        context.startActivity(new Intent(context, SignInActivity.class));
+                        mContext.startActivity(new Intent(mContext, SignInActivity.class));
 
                     }
 
@@ -189,9 +189,9 @@ public class PostDetailActivity extends AppCompatActivity {
 
             mCommentCount.setVisibility(View.VISIBLE);
 
-            mFullCommentCount.setText(context.getResources().getQuantityString(R.plurals.comment_label, commentCount, commentCount));
+            mFullCommentCount.setText(mContext.getResources().getQuantityString(R.plurals.comment_label, commentCount, commentCount));
 
-            mCommentCount.setOnClickListener(new PostCommentListener(context, post));
+            mCommentCount.setOnClickListener(new PostCommentListener(mContext, post));
 
         }
 
@@ -202,9 +202,9 @@ public class PostDetailActivity extends AppCompatActivity {
 
             mFavoriteCount.setVisibility(View.VISIBLE);
 
-            mFullFavoriteCount.setText(context.getResources().getQuantityString(R.plurals.favorite_label, favoriteCount, favoriteCount));
+            mFullFavoriteCount.setText(mContext.getResources().getQuantityString(R.plurals.favorite_label, favoriteCount, favoriteCount));
 
-            mFullFavoriteCount.setOnClickListener(new PostFavoriteCountListener(context, post));
+            mFullFavoriteCount.setOnClickListener(new PostFavoriteCountListener(mContext, post));
 
         }
 
@@ -236,7 +236,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         // Set dimensions of post image container
 
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(context));
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(mContext));
 
         viewHolder.postThumb.setLayoutParams(layoutParams);
 
@@ -258,7 +258,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         postContainer.setTag(viewHolder);
 
-        TimelineAdapter.bindData(post, context, sharedPreferences, fragmentManager, viewHolder, false);
+        TimelineAdapter.bindData(post, mContext, sharedPreferences, fragmentManager, viewHolder, false);
 
     }
 
@@ -288,7 +288,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
                 if (errorResponse != null) {
 
-                    startActivity(new Intent(context, MainActivity.class));
+                    startActivity(new Intent(mContext, MainActivity.class));
 
                 }
 
