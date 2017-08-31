@@ -4,12 +4,14 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.GestureDetectorCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
@@ -222,6 +224,8 @@ public class PostDetailActivity extends AppCompatActivity {
                 @Override
                 public void onMapReady(final MapboxMap mapboxMap) {
 
+                    mapboxMap.getUiSettings().setAllGesturesEnabled(false);
+
                     TerritoryHelpers.fetchTerritoryGeometry(mContext, territory, new TerritoryGeometryCallbacks() {
 
                         @Override
@@ -238,15 +242,6 @@ public class PostDetailActivity extends AppCompatActivity {
                             // Move camera to watershed bounds
                             LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(latLngs).build();
                             mapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 100, 100, 100, 100), 500);
-
-                            mapMask.postDelayed(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                    if (mapMask != null) mapMask.setVisibility(View.GONE);
-                                }
-
-                            }, 2000);
 
                         }
 
@@ -317,6 +312,51 @@ public class PostDetailActivity extends AppCompatActivity {
         int topPadding = linearLayout.getPaddingTop();
         int targetPadding = (topPadding == 0) ? 240 : 0;
 
+        try {
+
+            if (targetPadding == 240) {
+
+                mapMask.setVisibility(View.GONE);
+                mapMask.setEnabled(false);
+                mapMask.setBackgroundColor(Color.TRANSPARENT);
+
+                linearLayout.setClickable(false);
+                linearLayout.setFocusable(false);
+                linearLayout.setFocusableInTouchMode(false);
+                linearLayout.setEnabled(false);
+
+                commentList.setClickable(false);
+                commentList.setFocusable(false);
+
+            } else {
+
+                linearLayout.setClickable(true);
+                linearLayout.setFocusable(true);
+                linearLayout.setFocusableInTouchMode(true);
+                linearLayout.setEnabled(true);
+
+                commentList.setClickable(true);
+                commentList.setFocusable(true);
+
+                mapMask.postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        mapMask.setVisibility(View.VISIBLE);
+                        mapMask.setEnabled(true);
+                        mapMask.setBackgroundColor(Color.WHITE);
+                    }
+
+                }, 250);
+
+            }
+
+        } catch (NullPointerException e) {
+
+            finish();
+
+        }
+
         float scale = getResources().getDisplayMetrics().density;
         final int pixels = (int) (targetPadding * scale);
 
@@ -338,7 +378,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         mListViewHeader = (ViewGroup) inflater.inflate(R.layout.post_detail_header, commentList, false);
 
-        LinearLayout postContainer = (LinearLayout) mListViewHeader.findViewById(R.id.postContainer);
+        final LinearLayout postContainer = (LinearLayout) mListViewHeader.findViewById(R.id.postContainer);
 
         final TimelineAdapter.ViewHolder viewHolder;
 
@@ -372,6 +412,15 @@ public class PostDetailActivity extends AppCompatActivity {
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(mContext));
 
         viewHolder.postThumb.setLayoutParams(layoutParams);
+
+        viewHolder.postThumb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+
+                setHeaderPadding(postContainer);
+
+            }
+        });
 
         // Action counts
 
