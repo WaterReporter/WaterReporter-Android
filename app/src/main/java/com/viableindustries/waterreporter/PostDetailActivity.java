@@ -1,5 +1,6 @@
 package com.viableindustries.waterreporter;
 
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
@@ -76,11 +77,20 @@ public class PostDetailActivity extends AppCompatActivity {
     @Bind(R.id.commentList)
     ListView commentList;
 
+    @Bind(R.id.mapGroup)
+    FrameLayout mapGroup;
+
     @Bind(R.id.mapview)
     MapView mapView;
 
     @Bind(R.id.mapMask)
     View mapMask;
+
+    @Bind(R.id.listViewLock)
+    View listViewLock;
+
+    @Bind(R.id.listViewGroup)
+    LinearLayout listViewGroup;
 
 //    @Nullable
 //    @Bind(R.id.customActionBar)
@@ -120,6 +130,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private GestureDetectorCompat mDetector;
 
+    private boolean mDisplayMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,36 +150,11 @@ public class PostDetailActivity extends AppCompatActivity {
 
         mapView.onCreate(savedInstanceState);
 
-        mDetector = new GestureDetectorCompat(this, new PostHeaderGestureListener() {
+        mDisplayMap = false;
 
-            @Override
-            public boolean onDown(MotionEvent event) {
-
-                final LinearLayout postContainer = (LinearLayout) mListViewHeader.findViewById(R.id.postContainer);
-
-                float scale = getResources().getDisplayMetrics().density;
-                final int pixels = (int) (240 * scale);
-
-                ValueAnimator animator = ValueAnimator.ofInt(postContainer.getPaddingTop(), pixels);
-                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                        postContainer.setPadding(0, (Integer) valueAnimator.getAnimatedValue(), 0, 0);
-                    }
-                });
-                animator.setDuration(250);
-                animator.start();
-
-//                TranslateAnimation anim = new TranslateAnimation(0, 0 , 0, 240);
-//                anim.setDuration(1000);
-//                anim.setFillAfter(true);
-//                commentList.startAnimation(anim);
-
-                return true;
-
-            }
-
-        });
+        listViewLock.setVisibility(View.GONE);
+        listViewLock.setClickable(false);
+        listViewLock.setFocusable(false);
 
 //        if (Build.VERSION.SDK_INT >= 19) {
 //
@@ -307,36 +293,34 @@ public class PostDetailActivity extends AppCompatActivity {
 
     }
 
-    protected void setHeaderPadding(final LinearLayout linearLayout) {
+    protected void setHeaderMargin(final LinearLayout linearLayout) {
 
-        int topPadding = linearLayout.getPaddingTop();
-        int targetPadding = (topPadding == 0) ? 240 : 0;
+        if (!mDisplayMap) {
 
-        try {
-
-            if (targetPadding == 240) {
+            try {
 
                 mapMask.setVisibility(View.GONE);
                 mapMask.setEnabled(false);
                 mapMask.setBackgroundColor(Color.TRANSPARENT);
 
-                linearLayout.setClickable(false);
-                linearLayout.setFocusable(false);
-                linearLayout.setFocusableInTouchMode(false);
-                linearLayout.setEnabled(false);
+            } catch (NullPointerException e) {
 
-                commentList.setClickable(false);
-                commentList.setFocusable(false);
+                finish();
 
-            } else {
+            }
 
-                linearLayout.setClickable(true);
-                linearLayout.setFocusable(true);
-                linearLayout.setFocusableInTouchMode(true);
-                linearLayout.setEnabled(true);
+            float scale = getResources().getDisplayMetrics().density;
+            final int pixels = (int) (240 * scale);
 
-                commentList.setClickable(true);
-                commentList.setFocusable(true);
+            listViewGroup.animate().y(pixels).setDuration(250).start();
+
+            listViewLock.setVisibility(View.VISIBLE);
+            listViewLock.setClickable(true);
+            listViewLock.setFocusable(true);
+
+        } else {
+
+            try {
 
                 mapMask.postDelayed(new Runnable() {
 
@@ -349,26 +333,21 @@ public class PostDetailActivity extends AppCompatActivity {
 
                 }, 250);
 
+            } catch (NullPointerException e) {
+
+                finish();
+
             }
 
-        } catch (NullPointerException e) {
+            listViewGroup.animate().y(0).setDuration(250).start();
 
-            finish();
+            listViewLock.setVisibility(View.GONE);
+            listViewLock.setClickable(false);
+            listViewLock.setFocusable(false);
 
         }
 
-        float scale = getResources().getDisplayMetrics().density;
-        final int pixels = (int) (targetPadding * scale);
-
-        ValueAnimator animator = ValueAnimator.ofInt(topPadding, pixels);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                linearLayout.setPadding(0, (Integer) valueAnimator.getAnimatedValue(), 0, 0);
-            }
-        });
-        animator.setDuration(250);
-        animator.start();
+        mDisplayMap = !mDisplayMap;
 
     }
 
@@ -413,11 +392,11 @@ public class PostDetailActivity extends AppCompatActivity {
 
         viewHolder.postThumb.setLayoutParams(layoutParams);
 
-        viewHolder.postThumb.setOnClickListener(new View.OnClickListener() {
+        postContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
 
-                setHeaderPadding(postContainer);
+                setHeaderMargin(listViewGroup);
 
             }
         });
@@ -440,11 +419,11 @@ public class PostDetailActivity extends AppCompatActivity {
 
         // Set click listeners on post header
 
-        postContainer.setOnClickListener(new View.OnClickListener() {
+        listViewLock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
 
-                setHeaderPadding((LinearLayout) view);
+                setHeaderMargin(listViewGroup);
 
             }
         });
