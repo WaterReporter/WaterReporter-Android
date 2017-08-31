@@ -60,6 +60,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
     }
 
     public static class ViewHolder {
+        LinearLayout postHeader;
         TextView postDate;
         TextView postOwner;
         TextView postWatershed;
@@ -309,6 +310,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
             viewHolder = new ViewHolder();
 
+            viewHolder.postHeader = (LinearLayout) convertView.findViewById(R.id.postHeader);
             viewHolder.postDate = (TextView) convertView.findViewById(R.id.postDate);
             viewHolder.postOwner = (TextView) convertView.findViewById(R.id.postOwner);
             viewHolder.postWatershed = (TextView) convertView.findViewById(R.id.postWatershed);
