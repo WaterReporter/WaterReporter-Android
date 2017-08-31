@@ -257,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void populateTimeline(List<Report> list) {
 
-        timelineAdapter = new TimelineAdapter(this, list, false, getSupportFragmentManager());
+        timelineAdapter = new TimelineAdapter(this, list, false, false, getSupportFragmentManager());
 
         // Attach the adapter to a ListView
         listView.setAdapter(timelineAdapter);

@@ -810,7 +810,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
     private void populateTimeline(List<Report> list) {
 
-        timelineAdapter = new TimelineAdapter(this, list, false, getSupportFragmentManager());
+        timelineAdapter = new TimelineAdapter(this, list, false, false, getSupportFragmentManager());
 
         // Attach the adapter to a ListView
         if (timeLine != null) {

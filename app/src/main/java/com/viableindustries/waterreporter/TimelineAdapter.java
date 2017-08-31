@@ -45,16 +45,23 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
     private final boolean mIsProfile;
 
+    private final boolean mSelfContain;
+
     protected SharedPreferences mSharedPreferences;
 
     final private FragmentManager mFragmentManager;
 
     final private String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
 
-    public TimelineAdapter(Activity activity, List<Report> aFeatures, boolean isProfile, FragmentManager fragmentManager) {
+    public TimelineAdapter(Activity activity,
+                           List<Report> aFeatures,
+                           boolean isProfile,
+                           boolean selfContain,
+                           FragmentManager fragmentManager) {
         super(activity, 0, aFeatures);
         this.mContext = activity;
         this.mIsProfile = isProfile;
+        this.mSelfContain = selfContain;
         this.mSharedPreferences = mContext.getSharedPreferences(mContext.getPackageName(), 0);
         this.mFragmentManager = fragmentManager;
     }
@@ -104,7 +111,8 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
                                 final SharedPreferences sharedPreferences,
                                 final FragmentManager fragmentManager,
                                 final ViewHolder viewHolder,
-                                final boolean mIsProfile) {
+                                final boolean mIsProfile,
+                                final boolean selfContain) {
 
         Log.d("target-post", post.properties.toString());
 
@@ -173,18 +181,9 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         // Attach gesture listeners to active UI components
 
-        viewHolder.postThumb.setOnClickListener(new PostDetailListener(context, post));
+        // Check post context to avoid creating new instances of PostDetailActivity
 
-        viewHolder.postThumb.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-
-                TimelineAdapterHelpers.saveImage(context, post);
-
-                return false;
-
-            }
-        });
+        if (!selfContain) viewHolder.postThumb.setOnClickListener(new PostDetailListener(context, post));
 
         viewHolder.commentIcon.setOnClickListener(new PostCommentListener(context, post));
 
@@ -361,7 +360,13 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         final Report feature = (Report) getItem(position);
 
-        bindData(feature, mContext, mSharedPreferences, mFragmentManager, viewHolder, mIsProfile);
+        bindData(feature,
+                mContext,
+                mSharedPreferences,
+                mFragmentManager,
+                viewHolder,
+                mIsProfile,
+                mSelfContain);
 
         return convertView;
 

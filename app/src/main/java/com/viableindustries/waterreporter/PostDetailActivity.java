@@ -77,6 +77,9 @@ public class PostDetailActivity extends AppCompatActivity {
     @Bind(R.id.mapview)
     MapView mapView;
 
+    @Bind(R.id.mapMask)
+    View mapMask;
+
 //    @Nullable
 //    @Bind(R.id.customActionBar)
 //    LinearLayout customActionBar;
@@ -234,7 +237,16 @@ public class PostDetailActivity extends AppCompatActivity {
 
                             // Move camera to watershed bounds
                             LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(latLngs).build();
-                            mapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 100, 100, 100, 100), 2000);
+                            mapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 100, 100, 100, 100), 500);
+
+                            mapMask.postDelayed(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    if (mapMask != null) mapMask.setVisibility(View.GONE);
+                                }
+
+                            }, 2000);
 
                         }
 
@@ -300,7 +312,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
     }
 
-    protected void setHeaderPadding(final LinearLayout linearLayout){
+    protected void setHeaderPadding(final LinearLayout linearLayout) {
 
         int topPadding = linearLayout.getPaddingTop();
         int targetPadding = (topPadding == 0) ? 240 : 0;
@@ -390,7 +402,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         postContainer.setTag(viewHolder);
 
-        TimelineAdapter.bindData(post, mContext, sharedPreferences, getSupportFragmentManager(), viewHolder, false);
+        TimelineAdapter.bindData(post, mContext, sharedPreferences, getSupportFragmentManager(), viewHolder, false, true);
 
         // Display comment and favorite counts
 
