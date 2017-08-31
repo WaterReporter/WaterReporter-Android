@@ -205,49 +205,6 @@ public class PostDetailActivity extends AppCompatActivity {
 
         }
 
-        commentList.setOnTouchListener(new View.OnTouchListener() {
-
-            float height;
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                int action = event.getAction();
-
-                float height = event.getY();
-
-                if (action == MotionEvent.ACTION_DOWN) {
-
-                    this.height = height;
-
-                } else if (action == MotionEvent.ACTION_UP) {
-
-                    if (this.height < height) {
-
-                        final LinearLayout postContainer = (LinearLayout) mListViewHeader.findViewById(R.id.postContainer);
-
-//                        float scale = getResources().getDisplayMetrics().density;
-//                        final int pixels = (int) (240 * scale);
-
-                        ValueAnimator animator = ValueAnimator.ofInt(postContainer.getPaddingTop(), 0);
-                        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                            @Override
-                            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                                postContainer.setPadding(0, (Integer) valueAnimator.getAnimatedValue(), 0, 0);
-                            }
-                        });
-                        animator.setDuration(200);
-                        animator.start();
-
-                    }
-
-                }
-
-                return false;
-
-            }
-
-        });
     }
 
     // Fetch watershed geometry and metadata related to current post
@@ -343,11 +300,25 @@ public class PostDetailActivity extends AppCompatActivity {
 
     }
 
-//    @Override
-//    public boolean onTouchEvent(MotionEvent event){
-//        this.mDetector.onTouchEvent(event);
-//        return super.onTouchEvent(event);
-//    }
+    protected void setHeaderPadding(final LinearLayout linearLayout){
+
+        int topPadding = linearLayout.getPaddingTop();
+        int targetPadding = (topPadding == 0) ? 240 : 0;
+
+        float scale = getResources().getDisplayMetrics().density;
+        final int pixels = (int) (targetPadding * scale);
+
+        ValueAnimator animator = ValueAnimator.ofInt(topPadding, pixels);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                linearLayout.setPadding(0, (Integer) valueAnimator.getAnimatedValue(), 0, 0);
+            }
+        });
+        animator.setDuration(250);
+        animator.start();
+
+    }
 
     protected void addListViewHeader(Report post) {
 
@@ -406,38 +377,13 @@ public class PostDetailActivity extends AppCompatActivity {
         viewHolder.ogDescription = (TextView) postContainer.findViewById(R.id.ogDescription);
         viewHolder.ogUrl = (TextView) postContainer.findViewById(R.id.ogUrl);
 
-        // Set touch listener on post header
+        // Set click listeners on post header
 
-//        viewHolder.postHeader.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//
-//                return mDetector.onTouchEvent(motionEvent);
-//
-//            }
-//        });
-
-        viewHolder.postHeader.setOnClickListener(new View.OnClickListener() {
+        postContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
 
-                final LinearLayout postContainer = (LinearLayout) mListViewHeader.findViewById(R.id.postContainer);
-
-                int topPadding = postContainer.getPaddingTop();
-                int targetPadding = (topPadding == 0) ? 240 : 0;
-
-                float scale = getResources().getDisplayMetrics().density;
-                final int pixels = (int) (targetPadding * scale);
-
-                ValueAnimator animator = ValueAnimator.ofInt(topPadding, pixels);
-                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                        postContainer.setPadding(0, (Integer) valueAnimator.getAnimatedValue(), 0, 0);
-                    }
-                });
-                animator.setDuration(250);
-                animator.start();
+                setHeaderPadding((LinearLayout) view);
 
             }
         });
