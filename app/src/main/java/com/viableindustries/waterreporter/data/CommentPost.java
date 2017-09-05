@@ -19,10 +19,10 @@ public class CommentPost {
     @SerializedName("images")
     public List<Map<String, Integer>> images;
 
-    @SerializedName("post_id")
+    @SerializedName("report_id")
     public int reportId;
 
-    @SerializedName("post_state")
+    @SerializedName("report_state")
     public String reportState;
 
     @SerializedName("status")

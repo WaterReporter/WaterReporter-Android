@@ -62,7 +62,7 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="0dp"
                 android:paddingStart="16dp"
-                app:alignItems="center">
+                app:alignItems="flex_start">
 
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/postCount"
@@ -72,7 +72,7 @@
                     android:visibility="gone"
                     app:alignItems="center"
                     app:justifyContent="center"
-                    app:layout_flexGrow="1"
+                    app:layout_flexGrow="0"
                     app:layout_flexShrink="0">
 
                     <ImageView
@@ -100,7 +100,7 @@
                     android:visibility="gone"
                     app:alignItems="center"
                     app:justifyContent="center"
-                    app:layout_flexGrow="1"
+                    app:layout_flexGrow="0"
                     app:layout_flexShrink="0">
 
                     <ImageView
@@ -129,7 +129,7 @@
                     android:visibility="gone"
                     app:alignItems="center"
                     app:justifyContent="center"
-                    app:layout_flexGrow="1"
+                    app:layout_flexGrow="0"
                     app:layout_flexShrink="0">
 
                     <ImageView
