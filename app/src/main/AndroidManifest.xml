@@ -27,6 +27,10 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
 
+        <service
+            android:name=".ImagePostService"
+            android:exported="false"/>
+
         <!-- Mapbox telemetry service -->
         <!-- <service android:name="com.mapbox.mapboxsdk.telemetry.TelemetryService" /> -->
 
@@ -371,7 +375,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_post_favorite_list"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 
 </manifest>

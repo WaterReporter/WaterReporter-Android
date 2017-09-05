@@ -15,19 +15,18 @@ import retrofit.mime.TypedFile;
  */
 public interface ImageService {
 
-    final String ENDPOINT = "https://api.waterreporter.org/v2";
+    String ENDPOINT = "https://api.waterreporter.org/v2";
 
-    public static RestAdapter restAdapter = new RestAdapter.Builder()
+    RestAdapter restAdapter = new RestAdapter.Builder()
             .setLogLevel(RestAdapter.LogLevel.HEADERS_AND_ARGS)
             .setEndpoint(ENDPOINT)
             .build();
 
     @Multipart
     @POST("/media/image")
-    public void postImage
+    ImageProperties postImage
             (@Header("Authorization") String authorization,
-             @Part("image") TypedFile photo,
-             Callback<ImageProperties> imagePropertiesCallback);
+             @Part("image") TypedFile photo);
 
 //    @Multipart
 //    @POST("/media/image")

@@ -784,48 +784,48 @@ public class CommentActivity extends AppCompatActivity implements
 
         TypedFile typedPhoto = new TypedFile(mimeType, photo);
 
-        imageService.postImage(accessToken, typedPhoto,
-                new Callback<ImageProperties>() {
-                    @Override
-                    public void success(ImageProperties imageProperties,
-                                        Response response) {
-
-                        // Immediately delete the cached image file now that we no longer need it
-
-                        File tempFile = new File(filePath);
-
-                        boolean imageDeleted = tempFile.delete();
-
-                        Log.w("Delete Check", "File deleted: " + tempFile + imageDeleted);
-
-                        // Clear the app data cache
-
-                        CacheManager.deleteCache(getBaseContext());
-
-                        mTempImagePath = null;
-
-                        // Retrieve the image id and create a new report
-
-                        final Map<String, Integer> image_id = new HashMap<String, Integer>();
-
-                        image_id.put("id", imageProperties.id);
-
-                        List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
-
-                        images.add(image_id);
-
-                        CommentPost commentPost = new CommentPost(body, images, report.id, reportState, "public");
-
-                        sendComment(commentPost);
-
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        onPostError(error);
-                    }
-
-                });
+//        imageService.postImage(accessToken, typedPhoto,
+//                new Callback<ImageProperties>() {
+//                    @Override
+//                    public void success(ImageProperties imageProperties,
+//                                        Response response) {
+//
+//                        // Immediately delete the cached image file now that we no longer need it
+//
+//                        File tempFile = new File(filePath);
+//
+//                        boolean imageDeleted = tempFile.delete();
+//
+//                        Log.w("Delete Check", "File deleted: " + tempFile + imageDeleted);
+//
+//                        // Clear the app data cache
+//
+//                        CacheManager.deleteCache(getBaseContext());
+//
+//                        mTempImagePath = null;
+//
+//                        // Retrieve the image id and create a new report
+//
+//                        final Map<String, Integer> image_id = new HashMap<String, Integer>();
+//
+//                        image_id.put("id", imageProperties.id);
+//
+//                        List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
+//
+//                        images.add(image_id);
+//
+//                        CommentPost commentPost = new CommentPost(body, images, report.id, reportState, "public");
+//
+//                        sendComment(commentPost);
+//
+//                    }
+//
+//                    @Override
+//                    public void failure(RetrofitError error) {
+//                        onPostError(error);
+//                    }
+//
+//                });
 
     }
 

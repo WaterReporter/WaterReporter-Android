@@ -314,53 +314,53 @@ public class EditProfileActivity extends AppCompatActivity implements
 
             TypedFile typedPhoto = new TypedFile(mimeType, photo);
 
-            imageService.postImage(accessToken, typedPhoto,
-                    new Callback<ImageProperties>() {
-                        @Override
-                        public void success(ImageProperties imageProperties,
-                                            Response response) {
-
-                            // Revoke Uri permissions
-
-                            getBaseContext().revokeUriPermission(imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                            // Clear the app data cache
-
-                            CacheManager.deleteCache(getBaseContext());
-
-                            // Retrieve the image id and add relation to PATCH request body
-
-                            Map<String, Object> userPatch = new HashMap<String, Object>();
-
-                            final Map<String, Integer> image_id = new HashMap<String, Integer>();
-
-                            image_id.put("id", imageProperties.id);
-
-                            List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
-
-                            images.add(image_id);
-
-                            userPatch.put("images", images);
-
-                            // The value of the `picture` attribute must be supplied
-                            // manually as the system doesn't populate this field
-                            // automatically.
-
-                            userPatch.put("picture", imageProperties.icon_retina);
-
-                            // Complete request body and send PATCH request
-
-                            updateProfile(userPatch);
-
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-                            savingMessage.setVisibility(View.GONE);
-                            savingMessage.setText(getResources().getString(R.string.save));
-                        }
-
-                    });
+//            imageService.postImage(accessToken, typedPhoto,
+//                    new Callback<ImageProperties>() {
+//                        @Override
+//                        public void success(ImageProperties imageProperties,
+//                                            Response response) {
+//
+//                            // Revoke Uri permissions
+//
+//                            getBaseContext().revokeUriPermission(imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//
+//                            // Clear the app data cache
+//
+//                            CacheManager.deleteCache(getBaseContext());
+//
+//                            // Retrieve the image id and add relation to PATCH request body
+//
+//                            Map<String, Object> userPatch = new HashMap<String, Object>();
+//
+//                            final Map<String, Integer> image_id = new HashMap<String, Integer>();
+//
+//                            image_id.put("id", imageProperties.id);
+//
+//                            List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
+//
+//                            images.add(image_id);
+//
+//                            userPatch.put("images", images);
+//
+//                            // The value of the `picture` attribute must be supplied
+//                            // manually as the system doesn't populate this field
+//                            // automatically.
+//
+//                            userPatch.put("picture", imageProperties.icon_retina);
+//
+//                            // Complete request body and send PATCH request
+//
+//                            updateProfile(userPatch);
+//
+//                        }
+//
+//                        @Override
+//                        public void failure(RetrofitError error) {
+//                            savingMessage.setVisibility(View.GONE);
+//                            savingMessage.setText(getResources().getString(R.string.save));
+//                        }
+//
+//                    });
 
         }
 

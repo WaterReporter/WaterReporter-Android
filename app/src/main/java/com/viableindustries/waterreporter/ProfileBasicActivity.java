@@ -283,107 +283,107 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
                 TypedFile typedPhoto = new TypedFile(mimeType, photo);
 
-                imageService.postImage(accessToken, typedPhoto,
-                        new Callback<ImageProperties>() {
-                            @Override
-                            public void success(ImageProperties imageProperties,
-                                                Response response) {
-
-                                // Retrieve the image id and add relation to PATCH request body
-
-                                Map<String, Object> userPatch = new HashMap<String, Object>();
-
-                                final Map<String, Integer> image_id = new HashMap<String, Integer>();
-
-                                image_id.put("id", imageProperties.id);
-
-                                List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
-
-                                images.add(image_id);
-
-                                userPatch.put("images", images);
-
-                                // Build out remaining values
-
-                                userPatch.put("first_name", firstName);
-                                userPatch.put("last_name", lastName);
-
-                                // The value of the `picture` attribute must be supplied
-                                // manually as the system doesn't populate this field
-                                // automatically.
-
-                                userPatch.put("picture", imageProperties.icon_retina);
-
-                                if (!description.isEmpty())
-                                    userPatch.put("description", description);
-
-                                userService.updateUser(accessToken,
-                                        "application/json",
-                                        userId,
-                                        userPatch,
-                                        new Callback<User>() {
-                                            @Override
-                                            public void success(User user,
-                                                                Response response) {
-
-                                                // Clear the app data cache
-
-                                                CacheManager.deleteCache(getBaseContext());
-
-                                                final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
-
-                                                coreProfile.edit()
-                                                        //.putBoolean("active", user.properties.active)
-                                                        .putInt("id", user.id)
-                                                        .putString("picture", user.properties.images.get(0).properties.icon_retina)
-                                                        .apply();
-
-                                                // Model strings
-                                                String[] KEYS = {"description", "first_name",
-                                                        "last_name", "organization_name", //"picture",
-                                                        "public_email", "title"};
-
-                                                for (String key : KEYS) {
-
-                                                    coreProfile.edit().putString(key, user.properties.getStringProperties().get(key)).apply();
-
-                                                }
-
-                                                final Handler handler = new Handler();
-
-                                                handler.postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-
-                                                        Intent intent = new Intent(ProfileBasicActivity.this, GroupActionListActivity.class);
-
-                                                        intent.putExtra("POST_REGISTER", true);
-
-                                                        startActivity(intent);
-
-                                                    }
-
-                                                }, 100);
-
-                                            }
-
-                                            @Override
-                                            public void failure(RetrofitError error) {
-                                                savingMessage.setVisibility(View.GONE);
-                                                savingMessage.setText(getResources().getString(R.string.save));
-                                            }
-
-                                        });
-
-                            }
-
-                            @Override
-                            public void failure(RetrofitError error) {
-                                savingMessage.setVisibility(View.GONE);
-                                savingMessage.setText(getResources().getString(R.string.save));
-                            }
-
-                        });
+//                imageService.postImage(accessToken, typedPhoto,
+//                        new Callback<ImageProperties>() {
+//                            @Override
+//                            public void success(ImageProperties imageProperties,
+//                                                Response response) {
+//
+//                                // Retrieve the image id and add relation to PATCH request body
+//
+//                                Map<String, Object> userPatch = new HashMap<String, Object>();
+//
+//                                final Map<String, Integer> image_id = new HashMap<String, Integer>();
+//
+//                                image_id.put("id", imageProperties.id);
+//
+//                                List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
+//
+//                                images.add(image_id);
+//
+//                                userPatch.put("images", images);
+//
+//                                // Build out remaining values
+//
+//                                userPatch.put("first_name", firstName);
+//                                userPatch.put("last_name", lastName);
+//
+//                                // The value of the `picture` attribute must be supplied
+//                                // manually as the system doesn't populate this field
+//                                // automatically.
+//
+//                                userPatch.put("picture", imageProperties.icon_retina);
+//
+//                                if (!description.isEmpty())
+//                                    userPatch.put("description", description);
+//
+//                                userService.updateUser(accessToken,
+//                                        "application/json",
+//                                        userId,
+//                                        userPatch,
+//                                        new Callback<User>() {
+//                                            @Override
+//                                            public void success(User user,
+//                                                                Response response) {
+//
+//                                                // Clear the app data cache
+//
+//                                                CacheManager.deleteCache(getBaseContext());
+//
+//                                                final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+//
+//                                                coreProfile.edit()
+//                                                        //.putBoolean("active", user.properties.active)
+//                                                        .putInt("id", user.id)
+//                                                        .putString("picture", user.properties.images.get(0).properties.icon_retina)
+//                                                        .apply();
+//
+//                                                // Model strings
+//                                                String[] KEYS = {"description", "first_name",
+//                                                        "last_name", "organization_name", //"picture",
+//                                                        "public_email", "title"};
+//
+//                                                for (String key : KEYS) {
+//
+//                                                    coreProfile.edit().putString(key, user.properties.getStringProperties().get(key)).apply();
+//
+//                                                }
+//
+//                                                final Handler handler = new Handler();
+//
+//                                                handler.postDelayed(new Runnable() {
+//                                                    @Override
+//                                                    public void run() {
+//
+//                                                        Intent intent = new Intent(ProfileBasicActivity.this, GroupActionListActivity.class);
+//
+//                                                        intent.putExtra("POST_REGISTER", true);
+//
+//                                                        startActivity(intent);
+//
+//                                                    }
+//
+//                                                }, 100);
+//
+//                                            }
+//
+//                                            @Override
+//                                            public void failure(RetrofitError error) {
+//                                                savingMessage.setVisibility(View.GONE);
+//                                                savingMessage.setText(getResources().getString(R.string.save));
+//                                            }
+//
+//                                        });
+//
+//                            }
+//
+//                            @Override
+//                            public void failure(RetrofitError error) {
+//                                savingMessage.setVisibility(View.GONE);
+//                                savingMessage.setText(getResources().getString(R.string.save));
+//                            }
+//
+//                        });
 
             }
 

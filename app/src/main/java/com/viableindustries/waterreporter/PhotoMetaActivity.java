@@ -3,6 +3,7 @@ package com.viableindustries.waterreporter;
 import android.Manifest;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -202,6 +203,8 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     protected Map<String, Integer> groupMap = new HashMap<>();
 
+    private Context mContext;
+
     private ReportService reportService;
 
     private ImageService imageService;
@@ -259,6 +262,8 @@ public class PhotoMetaActivity extends AppCompatActivity
         setContentView(R.layout.activity_photo_metadata);
 
         ButterKnife.bind(this);
+
+        mContext = this;
 
         // Set ProgressBar appearance
 
@@ -895,7 +900,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                         FileOutputStream fOut = new FileOutputStream(thumb);
 
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
 
                         fOut.flush();
 
@@ -970,7 +975,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                                     FileOutputStream fOut = new FileOutputStream(thumb);
 
-                                    image.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+                                    image.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
 
                                     fOut.flush();
 
@@ -1105,7 +1110,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         geometryResponse = new GeometryResponse(geometryList, type);
 
-        if (openGraphProperties == null && !editMode) {
+        if ((commentsText.isEmpty() && openGraphProperties == null) && !editMode) {
 
             CharSequence text = "Please add a photo, write a comment, or paste a link to share.";
             Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
@@ -1203,42 +1208,48 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         if (filePath != null) {
 
-            final File photo = new File(filePath);
+            Intent postImageIntent = new Intent(mContext, ImagePostService.class);
+            postImageIntent.putExtra("file_path", filePath);
+            postImageIntent.putExtra("access_token", accessToken);
 
-            FileNameMap fileNameMap = URLConnection.getFileNameMap();
+            mContext.startService(postImageIntent);
 
-            String mimeType = fileNameMap.getContentTypeFor(filePath);
+//            final File photo = new File(filePath);
+//
+//            FileNameMap fileNameMap = URLConnection.getFileNameMap();
+//
+//            String mimeType = fileNameMap.getContentTypeFor(filePath);
+//
+//            TypedFile typedPhoto = new TypedFile(mimeType, photo);
 
-            TypedFile typedPhoto = new TypedFile(mimeType, photo);
-
-            imageService.postImage(accessToken, typedPhoto,
-                    new Callback<ImageProperties>() {
-                        @Override
-                        public void success(ImageProperties imageProperties,
-                                            Response response) {
-
-                            // Revoke Uri permissions
-
-                            getBaseContext().revokeUriPermission(imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                            // Retrieve the image id and create a new report
-
-                            final Map<String, Integer> image_id = new HashMap<String, Integer>();
-
-                            image_id.put("id", imageProperties.id);
-
-                            images.add(image_id);
-
-                            sendFullPost();
-
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-                            onPostError();
-                        }
-
-                    });
+//            imageService.postImage(accessToken, typedPhoto,
+//                    new Callback<ImageProperties>() {
+//                        @Override
+//                        public void success(ImageProperties imageProperties,
+//                                            Response response) {
+//
+//                            // Revoke Uri permissions
+//
+//                            getBaseContext().revokeUriPermission(imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//
+//                            // Retrieve the image id and create a new report
+//
+//                            final Map<String, Integer> image_id = new HashMap<String, Integer>();
+//
+//                            image_id.put("id", imageProperties.id);
+//
+//                            images.add(image_id);
+//
+//                            sendFullPost();
+//
+//                        }
+//
+//                        @Override
+//                        public void failure(RetrofitError error) {
+//                            onPostError();
+//                        }
+//
+//                    });
 
         }
 

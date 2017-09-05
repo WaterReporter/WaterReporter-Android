@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -14,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -25,6 +27,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -65,6 +68,12 @@ import retrofit.client.Response;
 public class MainActivity extends AppCompatActivity implements
         EasyPermissions.PermissionCallbacks {
 
+    @Bind(R.id.uploadProgressBar)
+    ProgressBar uploadProgressBar;
+
+    @Bind(R.id.uploadProgress)
+    LinearLayout uploadProgress;
+
     @Bind(R.id.timeline)
     SwipeRefreshLayout timeline;
 
@@ -102,6 +111,9 @@ public class MainActivity extends AppCompatActivity implements
     private EndlessScrollListener scrollListener;
 
     private int socialOptions;
+
+    // An instance of the status broadcast receiver
+    UploadStateReceiver mUploadStateReceiver;
 
     protected void connectionStatus() {
 
@@ -433,6 +445,9 @@ public class MainActivity extends AppCompatActivity implements
 
         ButterKnife.bind(this);
 
+        uploadProgressBar.getIndeterminateDrawable().setColorFilter(
+                ContextCompat.getColor(this, R.color.splash_blue), android.graphics.PorterDuff.Mode.SRC_IN);
+
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
@@ -477,17 +492,56 @@ public class MainActivity extends AppCompatActivity implements
 
         verifyPermissions();
 
-        // Test Open Graph parser
+        /*
+         * Creates an intent filter for DownloadStateReceiver that intercepts broadcast Intents
+         */
 
-//        try {
-//
-//            openGraphTrial();
-//
-//        } catch (IOException e) {
-//
-//            Log.v("OGError", e.getMessage());
-//
-//        }
+        // The filter's action is BROADCAST_ACTION
+        IntentFilter statusIntentFilter = new IntentFilter(
+                Constants.BROADCAST_ACTION);
+
+        // Sets the filter's category to DEFAULT
+        statusIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
+
+        // Instantiates a new DownloadStateReceiver
+        mUploadStateReceiver = new UploadStateReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (intent.getIntExtra(Constants.EXTENDED_DATA_STATUS,
+                        Constants.STATE_ACTION_COMPLETE)) {
+
+                    // Logs "started" state
+                    case Constants.STATE_ACTION_STARTED:
+                        //
+                        break;
+                    // Logs "connecting to network" state
+                    case Constants.STATE_ACTION_CONNECTING:
+                        //
+                        break;
+                    // Logs "parsing the RSS feed" state
+                    case Constants.STATE_ACTION_PARSING:
+                        //
+                        break;
+                    // Logs "Writing the parsed data to the content provider" state
+                    case Constants.STATE_ACTION_WRITING:
+                        //
+                        break;
+                    // Starts displaying data when the RSS download is complete
+                    case Constants.STATE_ACTION_COMPLETE:
+                        // Logs the status
+                        Log.d("UploadService", "State: COMPLETE");
+                        uploadProgress.setVisibility(View.GONE);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
+
+        // Registers the DownloadStateReceiver and its intent filters
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                mUploadStateReceiver,
+                statusIntentFilter);
 
     }
 
@@ -515,6 +569,12 @@ public class MainActivity extends AppCompatActivity implements
         super.onDestroy();
 
         ButterKnife.unbind(this);
+
+        // If the DownloadStateReceiver still exists, unregister it and set it to null
+        if (mUploadStateReceiver != null) {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(mUploadStateReceiver);
+            mUploadStateReceiver = null;
+        }
 
     }
 
