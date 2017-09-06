@@ -10,9 +10,11 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.Space;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -109,7 +111,7 @@ public class TerritoryActivity extends AppCompatActivity {
     @Bind(R.id.backArrow)
     RelativeLayout backArrow;
 
-    @Bind(R.id.mapview)
+    //    @Bind(R.id.mapview)
     MapView mapView;
 
     private MapboxMap mMapboxMap;
@@ -201,6 +203,14 @@ public class TerritoryActivity extends AppCompatActivity {
         // Inflate and insert timeline header view
 
         addListViewHeader();
+
+        // Initialize MapView
+
+        mapView.onCreate(savedInstanceState);
+
+        // With the header layout in place, render the map
+
+        renderMap(mapView);
 
         // Count reports with actions
 
@@ -306,89 +316,6 @@ public class TerritoryActivity extends AppCompatActivity {
 
         };
 
-        mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(final MapboxMap mapboxMap) {
-
-                mMapboxMap = mapboxMap;
-
-                TerritoryHelpers.fetchTerritoryGeometry(mContext, territory, new TerritoryGeometryCallbacks() {
-
-                    @Override
-                    public void onSuccess(@NonNull HucFeature hucFeature) {
-
-                        LatLng southWest = new LatLng(hucFeature.properties.bounds.get(1), hucFeature.properties.bounds.get(0));
-                        LatLng northEast = new LatLng(hucFeature.properties.bounds.get(3), hucFeature.properties.bounds.get(2));
-
-                        latLngs.add(southWest);
-                        latLngs.add(northEast);
-
-                        territoryStates.setText(hucFeature.properties.states.concat);
-                        actionBarSubtitle.setText(hucFeature.properties.states.concat);
-
-                        // Move camera to watershed bounds
-                        LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(latLngs).build();
-                        mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 100, 100, 100, 100), 3000);
-
-                    }
-
-                    @Override
-                    public void onError(@NonNull RetrofitError error) {
-
-                        Response errorResponse = error.getResponse();
-
-                        // If we have a valid response object, check the status code and redirect to log in view if necessary
-
-                        if (errorResponse != null) {
-
-                            int status = errorResponse.getStatus();
-
-                            if (status == 403) {
-
-                                mContext.startActivity(new Intent(mContext, SignInActivity.class));
-
-                            }
-
-                        }
-                    }
-
-                });
-
-                String code = AttributeTransformUtility.getTerritoryCode(territory);
-                String url = String.format("https://huc.waterreporter.org/8/%s", code);
-
-                try
-
-                {
-
-                    URL geoJsonUrl = new URL(url);
-                    GeoJsonSource geoJsonSource = new GeoJsonSource("geojson", geoJsonUrl);
-                    mapboxMap.addSource(geoJsonSource);
-
-                    // Create a FillLayer with style properties
-
-                    FillLayer layer = new FillLayer("geojson", "geojson");
-
-                    layer.withProperties(
-                            fillColor("#4355b8"),
-                            fillOpacity(0.4f)
-                    );
-
-                    mapboxMap.addLayer(layer);
-
-                } catch (
-                        MalformedURLException e)
-
-                {
-
-                    Log.d("Malformed URL", e.getMessage());
-
-                }
-
-            }
-        });
-
         backArrow.setOnClickListener(new View.OnClickListener()
 
         {
@@ -397,6 +324,104 @@ public class TerritoryActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+    }
+
+    protected void renderMap(final MapView mapView) {
+
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+
+                mapView.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(final MapboxMap mapboxMap) {
+
+                        mMapboxMap = mapboxMap;
+
+                        mapboxMap.getUiSettings().setAllGesturesEnabled(false);
+
+                        mapboxMap.setMinZoomPreference(6);
+
+                        TerritoryHelpers.fetchTerritoryGeometry(mContext, territory, new TerritoryGeometryCallbacks() {
+
+                            @Override
+                            public void onSuccess(@NonNull HucFeature hucFeature) {
+
+                                LatLng southWest = new LatLng(hucFeature.properties.bounds.get(1), hucFeature.properties.bounds.get(0));
+                                LatLng northEast = new LatLng(hucFeature.properties.bounds.get(3), hucFeature.properties.bounds.get(2));
+
+                                latLngs.add(southWest);
+                                latLngs.add(northEast);
+
+                                territoryStates.setText(hucFeature.properties.states.concat);
+                                actionBarSubtitle.setText(hucFeature.properties.states.concat);
+
+                                // Move camera to watershed bounds
+                                LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(latLngs).build();
+                                mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 0, 0, 0, 0), 2000);
+
+                            }
+
+                            @Override
+                            public void onError(@NonNull RetrofitError error) {
+
+                                Response errorResponse = error.getResponse();
+
+                                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                                if (errorResponse != null) {
+
+                                    int status = errorResponse.getStatus();
+
+                                    if (status == 403) {
+
+                                        mContext.startActivity(new Intent(mContext, SignInActivity.class));
+
+                                    }
+
+                                }
+                            }
+
+                        });
+
+                        String code = AttributeTransformUtility.getTerritoryCode(territory);
+                        String url = String.format("https://huc.waterreporter.org/8/%s", code);
+
+                        try
+
+                        {
+
+                            URL geoJsonUrl = new URL(url);
+                            GeoJsonSource geoJsonSource = new GeoJsonSource("geojson", geoJsonUrl);
+                            mapboxMap.addSource(geoJsonSource);
+
+                            // Create a FillLayer with style properties
+
+                            FillLayer layer = new FillLayer("geojson", "geojson");
+
+                            layer.withProperties(
+                                    fillColor("#4355b8"),
+                                    fillOpacity(0.4f)
+                            );
+
+                            mapboxMap.addLayer(layer);
+
+                        } catch (MalformedURLException e) {
+
+                            Log.d("Malformed URL", e.getMessage());
+
+                        }
+
+                    }
+                });
+
+            }
+
+        };
+
+        Handler h = new Handler();
+        h.postDelayed(r, 100);
 
     }
 
@@ -430,6 +455,8 @@ public class TerritoryActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
 
         ViewGroup header = (ViewGroup) inflater.inflate(R.layout.watershed_profile_header, timeLine, false);
+
+        mapView = (MapView) header.findViewById(R.id.mapView);
 
         promptBlock = (LinearLayout) header.findViewById(R.id.promptBlock);
         promptMessage = (TextView) header.findViewById(R.id.prompt);
@@ -489,7 +516,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
         }
 
-        territoryNameText = territory.properties.huc_8_name;
+        territoryNameText = AttributeTransformUtility.parseWatershedName(territory);
 
         territoryName.setText(territoryNameText);
         actionBarTitle.setText(territoryNameText);

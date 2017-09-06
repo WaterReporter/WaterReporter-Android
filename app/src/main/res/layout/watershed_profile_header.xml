@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:mapbox="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_user_profile"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <Space
+    <!--<Space-->
+        <!--android:id="@+id/mapOffsetSpace"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="320dp" />-->
+
+    <com.mapbox.mapboxsdk.maps.MapView
+        android:id="@+id/mapView"
         android:layout_width="match_parent"
-        android:layout_height="320dp" />
+        android:layout_height="320dp"
+        mapbox:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v9" />
 
     <com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -53,11 +61,6 @@
                 android:paddingTop="4dp"
                 android:textColor="@color/material_blue_grey950"
                 android:textSize="16sp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/gray_232" />
 
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="match_parent"
