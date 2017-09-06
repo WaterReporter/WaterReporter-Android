@@ -1,6 +1,7 @@
 package com.viableindustries.waterreporter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.Nullable;
 import android.text.format.DateUtils;
 import android.view.Window;
@@ -21,6 +22,15 @@ import java.util.Locale;
  */
 
 public class AttributeTransformUtility {
+
+    public static int getStatusBarHeight(Resources resources) {
+        int result = 0;
+        int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = resources.getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
 
     public static void setStatusBarTranslucent(Window window, boolean makeTranslucent) {
 
@@ -79,11 +89,11 @@ public class AttributeTransformUtility {
 
     }
 
-    public static String parseWatershedName(Territory territory) {
+    public static String parseWatershedName(Territory territory, boolean appendLabel) {
 
         try {
 
-            return String.format("%s Watershed", territory.properties.huc_8_name);
+            return appendLabel ? String.format("%s Watershed", territory.properties.huc_8_name) : territory.properties.huc_8_name;
 
         } catch (NullPointerException ne) {
 

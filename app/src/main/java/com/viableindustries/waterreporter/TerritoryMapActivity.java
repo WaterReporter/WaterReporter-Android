@@ -231,7 +231,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     protected void setActionBarTitle() {
 
-        territoryNameText = AttributeTransformUtility.parseWatershedName(territory);
+        territoryNameText = AttributeTransformUtility.parseWatershedName(territory, false);
 
         actionBarTitle.setText(territoryNameText);
 

@@ -262,7 +262,7 @@ public class TimelineAdapterHelpers {
     public static void setWatershed(final Context context, final Report post, TextView textView) {
 
         // Extract watershed name, if any
-        String watershedName = AttributeTransformUtility.parseWatershedName(post.properties.territory);
+        String watershedName = AttributeTransformUtility.parseWatershedName(post.properties.territory, true);
 
         // Display watershed name and add click listener if
         // a valid territory object is present

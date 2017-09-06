@@ -31,6 +31,7 @@ import android.widget.TextView;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
@@ -97,8 +98,6 @@ public class TerritoryActivity extends AppCompatActivity {
 
     Button startPostButton;
 
-    List<LatLng> latLngs = new ArrayList<LatLng>();
-
     @Bind(R.id.customActionBar)
     LinearLayout customActionBar;
 
@@ -119,6 +118,7 @@ public class TerritoryActivity extends AppCompatActivity {
     @Bind(R.id.timeline_items)
     ListView timeLine;
 
+    @Bind(R.id.accessMap)
     FloatingActionButton accessMap;
 
     protected TimelineAdapter timelineAdapter;
@@ -136,6 +136,8 @@ public class TerritoryActivity extends AppCompatActivity {
     private int reportCount = 99999999;
 
     private boolean actionFocus = false;
+
+    private int mapButtonTopOffset;
 
     private Context mContext;
 
@@ -159,17 +161,40 @@ public class TerritoryActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        if (Build.VERSION.SDK_INT >= 19) {
-
-            setStatusBarTranslucent(true);
-
-        }
-
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         mContext = this;
 
         resources = getResources();
+
+//        mapButtonTopOffset = 320 - 28;
+
+        float scale = getResources().getDisplayMetrics().density;
+        int mapButtonTopOffsetPixels = (int) (296 * scale);
+
+        if (Build.VERSION.SDK_INT >= 19) {
+
+            setStatusBarTranslucent(true);
+
+            int statusBarHeight = AttributeTransformUtility.getStatusBarHeight(resources);
+
+            mapButtonTopOffsetPixels -= statusBarHeight;
+
+        }
+
+//        float scale = getResources().getDisplayMetrics().density;
+//        final int mapButtonTopOffsetPixels = (int) (mapButtonTopOffset * scale);
+
+        accessMap.animate().y(mapButtonTopOffsetPixels).setDuration(250).start();
+
+        accessMap.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.splash_blue)));
+
+        accessMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(TerritoryActivity.this, TerritoryMapActivity.class));
+            }
+        });
 
         territory = TerritoryHolder.getTerritory();
 
@@ -337,16 +362,25 @@ public class TerritoryActivity extends AppCompatActivity {
                     @Override
                     public void onMapReady(final MapboxMap mapboxMap) {
 
-                        mMapboxMap = mapboxMap;
-
                         mapboxMap.getUiSettings().setAllGesturesEnabled(false);
 
-                        mapboxMap.setMinZoomPreference(6);
+                        mapboxMap.setMinZoomPreference(6.0f);
+                        mapboxMap.setMaxZoomPreference(10.0f);
+
+                        CameraPosition position = new CameraPosition.Builder()
+                                .target(new LatLng(0, 0)) // Sets the new camera position
+                                .zoom(10) // Sets the zoom to level 10
+                                .build(); // Builds the CameraPosition object from the builder
+
+                        mapboxMap.animateCamera(CameraUpdateFactory
+                                .newCameraPosition(position), 500);
 
                         TerritoryHelpers.fetchTerritoryGeometry(mContext, territory, new TerritoryGeometryCallbacks() {
 
                             @Override
                             public void onSuccess(@NonNull HucFeature hucFeature) {
+
+                                List<LatLng> latLngs = new ArrayList<LatLng>();
 
                                 LatLng southWest = new LatLng(hucFeature.properties.bounds.get(1), hucFeature.properties.bounds.get(0));
                                 LatLng northEast = new LatLng(hucFeature.properties.bounds.get(3), hucFeature.properties.bounds.get(2));
@@ -359,7 +393,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
                                 // Move camera to watershed bounds
                                 LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(latLngs).build();
-                                mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 0, 0, 0, 0), 2000);
+                                mapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 20), 500);
 
                             }
 
@@ -388,9 +422,7 @@ public class TerritoryActivity extends AppCompatActivity {
                         String code = AttributeTransformUtility.getTerritoryCode(territory);
                         String url = String.format("https://huc.waterreporter.org/8/%s", code);
 
-                        try
-
-                        {
+                        try {
 
                             URL geoJsonUrl = new URL(url);
                             GeoJsonSource geoJsonSource = new GeoJsonSource("geojson", geoJsonUrl);
@@ -493,17 +525,6 @@ public class TerritoryActivity extends AppCompatActivity {
 
         profileStats = (LinearLayout) header.findViewById(R.id.profileStats);
 
-        accessMap = (FloatingActionButton) header.findViewById(R.id.accessMap);
-
-        accessMap.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.splash_blue)));
-
-        accessMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(TerritoryActivity.this, TerritoryMapActivity.class));
-            }
-        });
-
         try {
 
             territoryId = territory.id;
@@ -516,7 +537,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
         }
 
-        territoryNameText = AttributeTransformUtility.parseWatershedName(territory);
+        territoryNameText = AttributeTransformUtility.parseWatershedName(territory, false);
 
         territoryName.setText(territoryNameText);
         actionBarTitle.setText(territoryNameText);

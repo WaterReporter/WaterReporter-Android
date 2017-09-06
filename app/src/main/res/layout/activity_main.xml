@@ -28,31 +28,7 @@
 
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/uploadProgress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sending post..."
-            android:textColor="@color/black"
-            android:textSize="14sp" />
-
-        <ProgressBar
-            android:id="@+id/uploadProgressBar"
-            style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:layout_marginBottom="0dp"
-            android:layout_marginTop="4dp"
-            android:indeterminate="true"
-            android:visibility="visible" />
-
-    </LinearLayout>
+    <include layout="@layout/post_upload_progress" />
 
     <FrameLayout
         android:layout_width="match_parent"

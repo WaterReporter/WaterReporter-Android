@@ -1,46 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:mapbox="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_territory"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FBFBFB"
-    android:orientation="vertical"
     tools:context="com.viableindustries.waterreporter.TerritoryActivity">
 
-    <FrameLayout
+    <!--<com.mapbox.mapboxsdk.maps.MapView-->
+    <!--android:id="@+id/mapview"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="320dp"-->
+    <!--mapbox:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v9" />-->
+
+    <ListView
+        android:id="@+id/timeline_items"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="40dp"
+        android:divider="@color/gray_232"
+        android:dividerHeight="0dp"
+        android:fadingEdgeLength="0dp"
+        android:headerDividersEnabled="false"
+        android:listSelector="@drawable/timeline_selector"
+        android:overScrollMode="never"
+        android:scrollbars="none" />
 
-        <!--<com.mapbox.mapboxsdk.maps.MapView-->
-            <!--android:id="@+id/mapview"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="320dp"-->
-            <!--mapbox:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v9" />-->
+    <include layout="@layout/custom_action_bar" />
 
-        <ListView
-            android:id="@+id/timeline_items"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="40dp"
-            android:divider="@color/gray_232"
-            android:dividerHeight="0dp"
-            android:fadingEdgeLength="0dp"
-            android:headerDividersEnabled="false"
-            android:listSelector="@drawable/timeline_selector"
-            android:overScrollMode="never"
-            android:scrollbars="none" />
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/accessMap"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="top|end"
+        android:clickable="false"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:src="@drawable/ic_map_white_24dp"
+        app:fabSize="normal"
+        app:rippleColor="@color/splash_blue_dark"
+        app:useCompatPadding="true" />
 
-        <include layout="@layout/custom_action_bar" />
+    <fragment
+        android:id="@+id/navigationFragment"
+        android:name="com.viableindustries.waterreporter.NavigationFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom" />
 
-        <fragment
-            android:id="@+id/navigationFragment"
-            android:name="com.viableindustries.waterreporter.NavigationFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom" />
-
-    </FrameLayout>
-
-</LinearLayout>
+</FrameLayout>

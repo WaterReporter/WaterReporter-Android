@@ -1,22 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:mapbox="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:mapbox="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_user_profile"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:minHeight="320dp"
     android:orientation="vertical">
 
     <!--<Space-->
-        <!--android:id="@+id/mapOffsetSpace"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="320dp" />-->
+    <!--android:id="@+id/mapOffsetSpace"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="320dp" />-->
 
-    <com.mapbox.mapboxsdk.maps.MapView
-        android:id="@+id/mapView"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="320dp"
-        mapbox:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v9" />
+        android:minHeight="320dp">
+
+        <com.mapbox.mapboxsdk.maps.MapView
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            mapbox:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v9" />
+
+    </RelativeLayout>
 
     <com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -161,25 +169,25 @@
 
         </LinearLayout>
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            app:layout_flexShrink="0">
+        <!--<RelativeLayout-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"-->
+        <!--app:layout_flexShrink="0">-->
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/accessMap"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_centerInParent="true"
-                android:clickable="false"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:src="@drawable/ic_map_white_24dp"
-                app:fabSize="normal"
-                app:rippleColor="@color/splash_blue_dark"
-                app:useCompatPadding="true" />
+        <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/accessMap"-->
+        <!--android:layout_width="56dp"-->
+        <!--android:layout_height="56dp"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--android:clickable="false"-->
+        <!--android:paddingLeft="16dp"-->
+        <!--android:paddingRight="16dp"-->
+        <!--android:src="@drawable/ic_map_white_24dp"-->
+        <!--app:fabSize="normal"-->
+        <!--app:rippleColor="@color/splash_blue_dark"-->
+        <!--app:useCompatPadding="true" />-->
 
-        </RelativeLayout>
+        <!--</RelativeLayout>-->
 
     </com.google.android.flexbox.FlexboxLayout>
 
