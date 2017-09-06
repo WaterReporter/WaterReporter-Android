@@ -1,22 +1,20 @@
 package com.viableindustries.waterreporter.data;
 
 import com.google.gson.annotations.SerializedName;
-import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  * Created by brendanmcintyre on 7/17/17.
  */
 
-public class HUCFeature implements Serializable {
+public class HucFeature implements Serializable {
 
 //    @SerializedName("geometry")
-//    public HUCGeometry geometry;
+//    public HucGeometry geometry;
 
     @SerializedName("properties")
-    public HUCProperties properties;
+    public HucProperties properties;
 
     @SerializedName("type")
     public String type;

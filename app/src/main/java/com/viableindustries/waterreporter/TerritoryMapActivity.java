@@ -1,58 +1,31 @@
 package com.viableindustries.waterreporter;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.animation.LinearOutSlowInInterpolator;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.animation.AlphaAnimation;
-import android.widget.AbsListView;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
-import com.google.android.flexbox.FlexboxLayout;
 import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerViewManager;
-import com.mapbox.mapboxsdk.annotations.PolygonOptions;
-import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -60,22 +33,12 @@ import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-import com.mapbox.mapboxsdk.style.functions.stops.Stops;
-import com.mapbox.mapboxsdk.style.layers.FillLayer;
-import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
-import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Geometry;
-import com.viableindustries.waterreporter.data.GroupListHolder;
-import com.viableindustries.waterreporter.data.HUCFeature;
-import com.viableindustries.waterreporter.data.HUCGeometryCollection;
-import com.viableindustries.waterreporter.data.HUCGeometryService;
+import com.viableindustries.waterreporter.data.HucFeature;
+import com.viableindustries.waterreporter.data.HucGeometryCollection;
+import com.viableindustries.waterreporter.data.HucGeometryService;
 import com.viableindustries.waterreporter.data.MappedReportsHolder;
-import com.viableindustries.waterreporter.data.Organization;
-import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
-import com.viableindustries.waterreporter.data.OrganizationHolder;
-import com.viableindustries.waterreporter.data.OrganizationMemberList;
-import com.viableindustries.waterreporter.data.OrganizationService;
 import com.viableindustries.waterreporter.data.QueryFilter;
 import com.viableindustries.waterreporter.data.QueryParams;
 import com.viableindustries.waterreporter.data.QuerySort;
@@ -83,23 +46,12 @@ import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.Territory;
-import com.viableindustries.waterreporter.data.TerritoryGroupList;
 import com.viableindustries.waterreporter.data.TerritoryHolder;
-import com.viableindustries.waterreporter.data.User;
-import com.viableindustries.waterreporter.data.UserCollection;
-import com.viableindustries.waterreporter.data.UserOrgPatch;
-import com.viableindustries.waterreporter.data.UserService;
 import com.viableindustries.waterreporter.mbox.CustomMarkerView;
 import com.viableindustries.waterreporter.mbox.CustomMarkerViewOptions;
 
-import org.w3c.dom.Text;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -110,12 +62,10 @@ import retrofit.client.Response;
 
 import static com.mapbox.mapboxsdk.style.functions.Function.property;
 import static com.mapbox.mapboxsdk.style.functions.stops.Stop.stop;
-import static com.mapbox.mapboxsdk.style.functions.stops.Stops.exponential;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillColor;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillOpacity;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillOutlineColor;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineColor;
-import static java.lang.Boolean.TRUE;
 
 public class TerritoryMapActivity extends AppCompatActivity {
 
@@ -153,6 +103,8 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     private Territory territory;
 
+    private Report post;
+
     private SharedPreferences prefs;
 
     private Resources resources;
@@ -186,19 +138,11 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
         mappedReportsHolder = new MappedReportsHolder();
 
+        // Retrieve stored Territory
         territory = TerritoryHolder.getTerritory();
 
-        territoryNameText = territory.properties.huc_8_name;
-
-        actionBarTitle.setText(territoryNameText);
-
-        // Retrieve first batch of posts
-
-        if (reportCollection.isEmpty()) {
-
-            fetchReports(5, 1, buildQuery(true, "report", null), false);
-
-        }
+        // Retrieve stored Report
+        post = ReportHolder.getReport();
 
         // RecyclerView
 
@@ -230,7 +174,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
                     CameraPosition position = new CameraPosition.Builder()
                             .target(new LatLng(postLocation.getLatitude(), postLocation.getLongitude())) // Sets the new camera position
-                            .zoom(12) // Sets the zoom
+                            .zoom(10) // Sets the zoom
                             .build(); // Creates a CameraPosition from the builder
 
                     mMapboxMap.animateCamera(CameraUpdateFactory
@@ -252,13 +196,19 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
                 mMapboxMap = mapboxMap;
 
-                fetchGeometry();
-
                 final MarkerViewManager markerViewManager = mapboxMap.getMarkerViewManager();
 
                 markerViewManager.addMarkerViewAdapter(new MarkerAdapter(mContext, postList, mLayoutManager, mapboxMap, mappedReportsHolder));
 
-                fetchReports(50, 1, buildQuery(true, "report", null), false);
+                try {
+
+                    setWatershedComponents();
+
+                } catch (NullPointerException e) {
+
+                    nullWatershedFallback();
+
+                }
 
             }
         });
@@ -279,21 +229,52 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     }
 
+    protected void setActionBarTitle() {
+
+        territoryNameText = AttributeTransformUtility.parseWatershedName(territory);
+
+        actionBarTitle.setText(territoryNameText);
+
+    }
+
+    protected void nullWatershedFallback() {
+
+        setActionBarTitle();
+
+        try {
+
+            List<Report> posts = new ArrayList<>();
+
+            posts.add(post);
+
+            onFetchSuccess(posts);
+
+        } catch (NullPointerException e) {
+
+            finish();
+
+        }
+
+    }
+
+    protected void setWatershedComponents() {
+
+        // Load GeoJSON data
+        fetchGeometry();
+
+        // Load other posts in the watershed
+        fetchReports(5, 1, buildQuery(true, "report", null), false);
+
+        // Set action bar title
+        setActionBarTitle();
+    }
+
     protected void fetchGeometry() {
 
-        RestAdapter restAdapter = HUCGeometryService.restAdapter;
-
-        HUCGeometryService service = restAdapter.create(HUCGeometryService.class);
-
-        String code = String.format("%s", territory.properties.huc_8_code);
-        if (code.length() == 7) code = String.format("0%s", code);
-
-        service.getGeometry("application/json", code, new Callback<HUCGeometryCollection>() {
+        TerritoryHelpers.fetchTerritoryGeometry(mContext, territory, new TerritoryGeometryCallbacks() {
 
             @Override
-            public void success(HUCGeometryCollection hucGeometryCollection, Response response) {
-
-                HUCFeature hucFeature = hucGeometryCollection.features.get(0);
+            public void onSuccess(@NonNull HucFeature hucFeature) {
 
                 Log.v("huc-feature", hucFeature.toString());
 
@@ -308,9 +289,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-
-                if (error == null) return;
+            public void onError(@NonNull RetrofitError error) {
 
                 Response errorResponse = error.getResponse();
 
@@ -322,12 +301,11 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
                     if (status == 403) {
 
-                        startActivity(new Intent(mContext, SignInActivity.class));
+                        mContext.startActivity(new Intent(mContext, SignInActivity.class));
 
                     }
 
                 }
-
             }
 
         });
@@ -475,8 +453,25 @@ public class TerritoryMapActivity extends AppCompatActivity {
         }
 
         // Move camera to watershed bounds
-        LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(latLngs).build();
-        mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 100, 100, 100, 100), 2000);
+        if (latLngs.size() > 1) {
+
+            LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(latLngs).build();
+
+            mMapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 100, 100, 100, 100), 2000);
+
+        } else {
+
+            LatLng latLng = latLngs.get(0);
+
+            CameraPosition position = new CameraPosition.Builder()
+                    .target(new LatLng(latLng.getLatitude(), latLng.getLongitude())) // Sets the new camera position
+                    .zoom(10) // Sets the zoom
+                    .build(); // Creates a CameraPosition from the builder
+
+            mMapboxMap.animateCamera(CameraUpdateFactory
+                    .newCameraPosition(position), 500);
+
+        }
 
     }
 

@@ -1,27 +1,20 @@
 package com.viableindustries.waterreporter;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.view.GestureDetectorCompat;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,7 +25,6 @@ import android.widget.TextView;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.annotations.MarkerViewManager;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
@@ -43,7 +35,7 @@ import com.mapbox.mapboxsdk.style.layers.FillLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.viableindustries.waterreporter.data.Comment;
 import com.viableindustries.waterreporter.data.CommentCollection;
-import com.viableindustries.waterreporter.data.HUCFeature;
+import com.viableindustries.waterreporter.data.HucFeature;
 import com.viableindustries.waterreporter.data.PostCommentListener;
 import com.viableindustries.waterreporter.data.PostFavoriteCountListener;
 import com.viableindustries.waterreporter.data.QueryParams;
@@ -215,7 +207,7 @@ public class PostDetailActivity extends AppCompatActivity {
                     TerritoryHelpers.fetchTerritoryGeometry(mContext, territory, new TerritoryGeometryCallbacks() {
 
                         @Override
-                        public void onSuccess(@NonNull HUCFeature hucFeature) {
+                        public void onSuccess(@NonNull HucFeature hucFeature) {
 
                             LatLng southWest = new LatLng(hucFeature.properties.bounds.get(1), hucFeature.properties.bounds.get(0));
                             LatLng northEast = new LatLng(hucFeature.properties.bounds.get(3), hucFeature.properties.bounds.get(2));

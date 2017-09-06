@@ -9,12 +9,18 @@ import java.util.List;
  * Created by brendanmcintyre on 7/20/17.
  */
 
-public class HUCState implements Serializable {
+public class HucProperties implements Serializable {
 
     @SerializedName("code")
     public String code;
 
     @SerializedName("name")
     public String name;
+
+    @SerializedName("bounds")
+    public List<Double> bounds;
+
+    @SerializedName("states")
+    public HucStateCollection states;
 
 }

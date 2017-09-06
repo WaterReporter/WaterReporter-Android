@@ -38,9 +38,7 @@ import com.mapbox.mapboxsdk.style.layers.FillLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.GroupListHolder;
-import com.viableindustries.waterreporter.data.HUCFeature;
-import com.viableindustries.waterreporter.data.HUCGeometryCollection;
-import com.viableindustries.waterreporter.data.HUCGeometryService;
+import com.viableindustries.waterreporter.data.HucFeature;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.data.OrganizationService;
@@ -311,7 +309,7 @@ public class TerritoryActivity extends AppCompatActivity {
                 TerritoryHelpers.fetchTerritoryGeometry(mContext, territory, new TerritoryGeometryCallbacks() {
 
                     @Override
-                    public void onSuccess(@NonNull HUCFeature hucFeature) {
+                    public void onSuccess(@NonNull HucFeature hucFeature) {
 
                         LatLng southWest = new LatLng(hucFeature.properties.bounds.get(1), hucFeature.properties.bounds.get(0));
                         LatLng northEast = new LatLng(hucFeature.properties.bounds.get(3), hucFeature.properties.bounds.get(2));

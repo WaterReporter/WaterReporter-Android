@@ -2,7 +2,7 @@ package com.viableindustries.waterreporter;
 
 import android.support.annotation.NonNull;
 
-import com.viableindustries.waterreporter.data.HUCFeature;
+import com.viableindustries.waterreporter.data.HucFeature;
 
 import retrofit.RetrofitError;
 
@@ -12,7 +12,7 @@ import retrofit.RetrofitError;
 
 public interface TerritoryGeometryCallbacks  {
 
-    void onSuccess(@NonNull HUCFeature value);
+    void onSuccess(@NonNull HucFeature value);
 
     void onError(@NonNull RetrofitError error);
 

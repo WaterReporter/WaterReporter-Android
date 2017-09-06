@@ -9,12 +9,12 @@ import java.util.List;
  * Created by brendanmcintyre on 7/20/17.
  */
 
-public class HUCStateCollection implements Serializable {
+public class HucState implements Serializable {
 
-    @SerializedName("concat")
-    public String concat;
+    @SerializedName("code")
+    public String code;
 
-    @SerializedName("features")
-    public List<HUCState> features;
+    @SerializedName("name")
+    public String name;
 
 }

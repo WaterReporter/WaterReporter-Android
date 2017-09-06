@@ -9,10 +9,10 @@ import java.util.List;
  * Created by brendanmcintyre on 7/17/17.
  */
 
-public class HUCGeometryCollection implements Serializable {
+public class HucGeometryCollection implements Serializable {
 
     @SerializedName("features")
-    public List<HUCFeature> features;
+    public List<HucFeature> features;
 
     @SerializedName("type")
     public String type;

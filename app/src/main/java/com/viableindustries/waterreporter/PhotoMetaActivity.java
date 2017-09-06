@@ -48,6 +48,7 @@ import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.AbbreviatedOrganization;
+import com.viableindustries.waterreporter.data.ApiDispatcher;
 import com.viableindustries.waterreporter.data.BooleanQueryFilter;
 import com.viableindustries.waterreporter.data.CacheManager;
 import com.viableindustries.waterreporter.data.CursorPositionTracker;
@@ -1053,6 +1054,58 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
+    protected void onPostSuccess() {
+
+        // Hide ProgressBar
+
+        progressBar.setVisibility(View.INVISIBLE);
+
+        // Show success indicator
+
+        postSuccess.setVisibility(View.VISIBLE);
+
+        // Clear the app data cache
+
+        CacheManager.deleteCache(getBaseContext());
+
+        // Clear any stored group associations
+
+        associatedGroups.edit().clear().apply();
+
+        final Handler handler = new Handler();
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+                int coreId = coreProfile.getInt("id", 0);
+
+                UserProperties userProperties = new UserProperties(coreId, coreProfile.getString("description", ""),
+                        coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
+                        coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
+                        coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null);
+
+                User coreUser = User.createUser(coreId, userProperties);
+
+                UserHolder.setUser(coreUser);
+
+                // Re-direct user to main activity feed, which has the effect of preventing
+                // unwanted access to the history stack
+
+                Intent intent = new Intent(PhotoMetaActivity.this, MainActivity.class);
+
+                startActivity(intent);
+
+                finish();
+
+            }
+
+        }, 2000);
+
+    }
+
     protected void onPostError() {
 
         progressBar.setVisibility(View.INVISIBLE);
@@ -1265,7 +1318,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
-    private ReportPostBody buildPostBody(){
+    private ReportPostBody buildPostBody() {
 
         List<Map<String, Integer>> groups = new ArrayList<Map<String, Integer>>();
 
@@ -1312,69 +1365,17 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     private void sendFullPost(ReportPostBody reportPostBody) {
 
-        reportService.postReport(accessToken, "application/json", reportPostBody,
-                new Callback<Report>() {
-                    @Override
-                    public void success(Report report,
-                                        Response response) {
+        ApiDispatcher.sendFullPost(accessToken, reportPostBody, new SendPostCallbacks() {
+            @Override
+            public void onSuccess(@NonNull Report post) {
+                onPostSuccess();
+            }
 
-                        // Hide ProgressBar
-
-                        progressBar.setVisibility(View.INVISIBLE);
-
-                        // Show success indicator
-
-                        postSuccess.setVisibility(View.VISIBLE);
-
-                        // Clear the app data cache
-
-                        CacheManager.deleteCache(getBaseContext());
-
-                        // Clear any stored group associations
-
-                        associatedGroups.edit().clear().apply();
-
-                        final Handler handler = new Handler();
-
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
-
-                                int coreId = coreProfile.getInt("id", 0);
-
-                                UserProperties userProperties = new UserProperties(coreId, coreProfile.getString("description", ""),
-                                        coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
-                                        coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
-                                        coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null);
-
-                                User coreUser = User.createUser(coreId, userProperties);
-
-                                UserHolder.setUser(coreUser);
-
-                                // Re-direct user to main activity feed, which has the effect of preventing
-                                // unwanted access to the history stack
-
-                                Intent intent = new Intent(PhotoMetaActivity.this, MainActivity.class);
-
-                                startActivity(intent);
-
-                                finish();
-
-                            }
-
-                        }, 2000);
-
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        onPostError();
-                    }
-
-                });
-
+            @Override
+            public void onError(@NonNull RetrofitError error) {
+                onPostError();
+            }
+        });
 
     }
 

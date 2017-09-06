@@ -3,14 +3,9 @@ package com.viableindustries.waterreporter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.geometry.LatLngBounds;
-import com.viableindustries.waterreporter.data.HUCFeature;
-import com.viableindustries.waterreporter.data.HUCGeometryCollection;
-import com.viableindustries.waterreporter.data.HUCGeometryService;
+import com.viableindustries.waterreporter.data.HucGeometryCollection;
+import com.viableindustries.waterreporter.data.HucGeometryService;
 import com.viableindustries.waterreporter.data.Territory;
 
 import retrofit.Callback;
@@ -26,7 +21,7 @@ public class TerritoryHelpers {
 
 //    private Territory mTerritory;
 //
-//    private HUCFeature mHucFeature;
+//    private HucFeature mHucFeature;
 //
 //    private Context mContext;
 //
@@ -37,16 +32,16 @@ public class TerritoryHelpers {
 
     public static void fetchTerritoryGeometry(final Context context, Territory territory, @Nullable final TerritoryGeometryCallbacks callbacks) {
 
-        RestAdapter restAdapter = HUCGeometryService.restAdapter;
+        RestAdapter restAdapter = HucGeometryService.restAdapter;
 
-        HUCGeometryService service = restAdapter.create(HUCGeometryService.class);
+        HucGeometryService service = restAdapter.create(HucGeometryService.class);
 
         String code = AttributeTransformUtility.getTerritoryCode(territory);
 
-        service.getGeometry("application/json", code, new Callback<HUCGeometryCollection>() {
+        service.getGeometry("application/json", code, new Callback<HucGeometryCollection>() {
 
             @Override
-            public void success(HUCGeometryCollection hucGeometryCollection, Response response) {
+            public void success(HucGeometryCollection hucGeometryCollection, Response response) {
 
                 callbacks.onSuccess(hucGeometryCollection.features.get(0));
 
