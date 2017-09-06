@@ -91,13 +91,10 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
     @Bind(R.id.listTabs)
     FrameLayout listTabs;
 
-    @Bind(R.id.promptBlock)
     LinearLayout promptBlock;
 
-    @Bind(R.id.prompt)
     TextView promptMessage;
 
-    @Bind(R.id.startPost)
     Button startPostButton;
 
     protected TimelineAdapter timelineAdapter;
@@ -246,6 +243,10 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
         LayoutInflater inflater = getLayoutInflater();
 
         ViewGroup header = (ViewGroup) inflater.inflate(R.layout.user_profile_header, timeLine, false);
+
+        promptBlock = (LinearLayout) header.findViewById(R.id.promptBlock);
+        promptMessage = (TextView) header.findViewById(R.id.prompt);
+        startPostButton = (Button) header.findViewById(R.id.startPost);
 
         TextView userName = (TextView) header.findViewById(R.id.userName);
 

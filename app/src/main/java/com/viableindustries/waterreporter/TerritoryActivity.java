@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AbsListView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -87,6 +88,12 @@ public class TerritoryActivity extends AppCompatActivity {
     TextView territoryName;
 
     TextView territoryStates;
+
+    LinearLayout promptBlock;
+
+    TextView promptMessage;
+
+    Button startPostButton;
 
     List<LatLng> latLngs = new ArrayList<LatLng>();
 
@@ -393,11 +400,51 @@ public class TerritoryActivity extends AppCompatActivity {
 
     }
 
+    protected void setReportCountState(int count) {
+
+//        reportCounter.setText(String.valueOf(reportCount));
+//        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
+
+        if (count < 1) {
+
+            if (promptBlock != null) {
+
+                promptBlock.setVisibility(View.VISIBLE);
+
+                promptMessage.setText(getString(R.string.prompt_no_posts_watershed));
+
+                accessMap.setVisibility(View.GONE);
+
+            }
+
+        } else {
+
+//            timeLine.setVisibility(View.VISIBLE);
+
+        }
+
+    }
+
     protected void addListViewHeader() {
 
         LayoutInflater inflater = getLayoutInflater();
 
         ViewGroup header = (ViewGroup) inflater.inflate(R.layout.watershed_profile_header, timeLine, false);
+
+        promptBlock = (LinearLayout) header.findViewById(R.id.promptBlock);
+        promptMessage = (TextView) header.findViewById(R.id.prompt);
+        startPostButton = (Button) header.findViewById(R.id.startPost);
+
+        // Add text and click listener to startPostButton
+
+        startPostButton.setText(getString(R.string.share_post_prompt));
+
+        startPostButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startPost();
+            }
+        });
 
         territoryName = (TextView) header.findViewById(R.id.territoryName);
 
@@ -538,6 +585,7 @@ public class TerritoryActivity extends AppCompatActivity {
                     default:
                         reportCount = count;
                         postCountLabel.setText(String.format("%s %s", reportCount, resources.getQuantityString(R.plurals.post_label, reportCount, reportCount)).toLowerCase());
+                        setReportCountState(count);
                         break;
                 }
 
@@ -724,6 +772,10 @@ public class TerritoryActivity extends AppCompatActivity {
 
                     String count = String.format("%s %s", reportCount, resources.getQuantityString(R.plurals.post_label, reportCount, reportCount)).toLowerCase();
                     postCountLabel.setText(count);
+
+                } else {
+
+                    setReportCountState(reportCount);
 
                 }
 

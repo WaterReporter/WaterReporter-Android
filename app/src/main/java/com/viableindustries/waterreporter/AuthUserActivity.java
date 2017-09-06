@@ -37,6 +37,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.AbsListView;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -115,6 +116,12 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
     LinearLayout profileMeta;
 
     LinearLayout profileStats;
+
+    LinearLayout promptBlock;
+
+    TextView promptMessage;
+
+    Button startPostButton;
 
     @Bind(R.id.timeline)
     SwipeRefreshLayout timeLineContainer;
@@ -275,11 +282,62 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
     }
 
+    protected void setReportCountState(int count) {
+
+        reportCounter.setText(String.valueOf(reportCount));
+        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
+
+        if (count < 1) {
+
+            if (promptBlock != null) {
+
+                startPostButton.setVisibility(View.GONE);
+
+                promptBlock.setVisibility(View.VISIBLE);
+
+                promptMessage.setText(getString(R.string.prompt_no_posts_auth_user));
+
+            }
+
+        } else {
+
+            timeLineContainer.setVisibility(View.VISIBLE);
+
+        }
+
+    }
+
+    private void startPost() {
+
+        Intent intent = new Intent(this, PhotoMetaActivity.class);
+
+        startActivity(intent);
+
+        this.overridePendingTransition(R.anim.animation_enter_right,
+                R.anim.animation_exit_left);
+
+    }
+
     protected void addListViewHeader() {
 
         LayoutInflater inflater = getLayoutInflater();
 
         ViewGroup header = (ViewGroup) inflater.inflate(R.layout.user_profile_header, timeLine, false);
+
+        promptBlock = (LinearLayout) header.findViewById(R.id.promptBlock);
+        promptMessage = (TextView) header.findViewById(R.id.prompt);
+        startPostButton = (Button) header.findViewById(R.id.startPost);
+
+        // Add text and click listener to startPostButton
+
+        startPostButton.setText(getString(R.string.share_post_prompt));
+
+        startPostButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startPost();
+            }
+        });
 
         TextView userName = (TextView) header.findViewById(R.id.userName);
 
@@ -481,8 +539,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
                         break;
                     default:
                         reportCount = count;
-                        reportCounter.setText(String.valueOf(reportCount));
-                        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
+                        setReportCountState(reportCount);
                         break;
                 }
 
@@ -662,6 +719,8 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
                 } else {
 
                     reportStat.setVisibility(View.GONE);
+
+                    setReportCountState(reportCount);
 
                 }
 

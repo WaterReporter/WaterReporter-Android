@@ -56,8 +56,6 @@
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
-        <include layout="@layout/prompt_empty_profile" />
-
         <fragment
             android:id="@+id/navigationFragment"
             android:name="com.viableindustries.waterreporter.NavigationFragment"

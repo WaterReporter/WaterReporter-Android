@@ -8,6 +8,7 @@
     android:background="#FFFFFF"
     android:orientation="vertical"
     android:paddingBottom="64dp"
+    android:paddingTop="64dp"
     android:visibility="gone">
 
     <ImageView
@@ -36,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/rounded_blue_button"
         android:paddingBottom="8dp"

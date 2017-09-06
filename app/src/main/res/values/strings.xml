@@ -339,6 +339,7 @@
     <string name="prompt_no_members">This group has no members &#8212; be the first to join!</string>
     <string name="prompt_no_posts_hashtag">Looks like there aren\'t any posts using this hashtag &#8212; share one now and start something big!</string>
     <string name="prompt_no_groups_hashtag">Looks like no groups are using this hashtag. Be the agent of change!</string>
+    <string name="prompt_no_posts_watershed">Looks like there aren\'t any posts in this watershed &#8212; share one now and start something big!</string>
     <string name="share_post_prompt">Start a post</string>
 
     <!-- Useful package names -->

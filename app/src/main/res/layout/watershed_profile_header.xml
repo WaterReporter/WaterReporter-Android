@@ -4,18 +4,18 @@
     android:id="@+id/activity_user_profile"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/white_gradient_bottom_bias"
     android:orientation="vertical">
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="240dp" />
+        android:layout_height="320dp" />
 
     <com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/profileMeta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         app:alignContent="center"
         app:alignItems="flex_start"
         app:flexDirection="row"
@@ -37,7 +37,7 @@
                 android:paddingBottom="0dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="0dp"
-                android:paddingTop="0dp"
+                android:paddingTop="16dp"
                 android:textColor="@color/material_blue_grey950"
                 android:textSize="24sp" />
 
@@ -53,6 +53,11 @@
                 android:paddingTop="4dp"
                 android:textColor="@color/material_blue_grey950"
                 android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/gray_232" />
 
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="match_parent"
@@ -174,5 +179,7 @@
         </RelativeLayout>
 
     </com.google.android.flexbox.FlexboxLayout>
+
+    <include layout="@layout/prompt_empty_profile" />
 
 </LinearLayout>

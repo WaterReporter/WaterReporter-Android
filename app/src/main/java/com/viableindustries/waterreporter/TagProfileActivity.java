@@ -68,9 +68,11 @@ public class TagProfileActivity extends AppCompatActivity {
 
     TextView groupCountLabel;
 
-    LinearLayout sharePrompt;
+    LinearLayout promptBlock;
 
-    FloatingActionButton jumpStart;
+    TextView promptMessage;
+
+    Button startPostButton;
 
     @Bind(R.id.timeline)
     SwipeRefreshLayout timeLineContainer;
@@ -80,15 +82,6 @@ public class TagProfileActivity extends AppCompatActivity {
 
     @Bind(R.id.listTabs)
     FrameLayout listTabs;
-
-    @Bind(R.id.promptBlock)
-    LinearLayout promptBlock;
-
-    @Bind(R.id.prompt)
-    TextView promptMessage;
-
-    @Bind(R.id.startPost)
-    Button startPostButton;
 
     protected TimelineAdapter timelineAdapter;
 
@@ -214,6 +207,18 @@ public class TagProfileActivity extends AppCompatActivity {
             }
         };
 
+    }
+
+    protected void addListViewHeader() {
+
+        LayoutInflater inflater = getLayoutInflater();
+
+        ViewGroup header = (ViewGroup) inflater.inflate(R.layout.tag_profile_header, timeLine, false);
+
+        promptBlock = (LinearLayout) header.findViewById(R.id.promptBlock);
+        promptMessage = (TextView) header.findViewById(R.id.prompt);
+        startPostButton = (Button) header.findViewById(R.id.startPost);
+
         // Add text and click listener to startPostButton
 
         startPostButton.setText(getString(R.string.share_post_prompt));
@@ -224,31 +229,6 @@ public class TagProfileActivity extends AppCompatActivity {
                 startPost();
             }
         });
-
-    }
-
-    protected void addListViewHeader() {
-
-        LayoutInflater inflater = getLayoutInflater();
-
-        ViewGroup header = (ViewGroup) inflater.inflate(R.layout.tag_profile_header, timeLine, false);
-
-//        sharePrompt = (LinearLayout) header.findViewById(R.id.share_cta);
-//
-//        jumpStart = (FloatingActionButton) header.findViewById(R.id.jump_start);
-//
-//        jumpStart.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.green_1)));
-//
-//        // Add click listener to share button
-//
-//        jumpStart.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                startPost();
-//
-//            }
-//        });
 
         tagNameView = (TextView) header.findViewById(R.id.tag_name);
         tagNameView.setText(tagName);
@@ -587,8 +567,6 @@ public class TagProfileActivity extends AppCompatActivity {
 
                 if (reportCount > 0) {
 
-//                    sharePrompt.setVisibility(View.GONE);
-
                     reportStat.setVisibility(View.VISIBLE);
 
                     reportCounter.setText(String.valueOf(reportCount));
@@ -602,8 +580,6 @@ public class TagProfileActivity extends AppCompatActivity {
                         reportStat.setVisibility(View.GONE);
 
                         setReportCountState(reportCount);
-
-//                        sharePrompt.setVisibility(View.VISIBLE);
 
                     } catch (NullPointerException e) {
 

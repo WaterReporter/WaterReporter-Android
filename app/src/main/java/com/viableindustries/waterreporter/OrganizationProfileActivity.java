@@ -94,13 +94,10 @@ public class OrganizationProfileActivity extends AppCompatActivity {
     @Bind(R.id.listTabs)
     FrameLayout listTabs;
 
-    @Bind(R.id.promptBlock)
     LinearLayout promptBlock;
 
-    @Bind(R.id.prompt)
     TextView promptMessage;
 
-    @Bind(R.id.startPost)
     Button startPostButton;
 
     protected TimelineAdapter timelineAdapter;
@@ -231,17 +228,6 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             }
         };
 
-        // Add text and click listener to startPostButton
-
-        startPostButton.setText(getString(R.string.share_post_prompt));
-
-        startPostButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startPost();
-            }
-        });
-
     }
 
     private void startPost(){
@@ -316,6 +302,21 @@ public class OrganizationProfileActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
 
         ViewGroup header = (ViewGroup) inflater.inflate(R.layout.organization_profile_header, timeLine, false);
+
+        promptBlock = (LinearLayout) header.findViewById(R.id.promptBlock);
+        promptMessage = (TextView) header.findViewById(R.id.prompt);
+        startPostButton = (Button) header.findViewById(R.id.startPost);
+
+        // Add text and click listener to startPostButton
+
+        startPostButton.setText(getString(R.string.share_post_prompt));
+
+        startPostButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startPost();
+            }
+        });
 
         organizationName = (TextView) header.findViewById(R.id.organizationName);
 
