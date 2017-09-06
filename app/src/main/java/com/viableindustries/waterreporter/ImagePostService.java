@@ -58,6 +58,8 @@ public class ImagePostService extends IntentService {
 
         ImageProperties imageProperties = imageService.postImage(accessToken, typedPhoto);
 
+        workIntent.putExtra("image_id", imageProperties.id);
+
         // Reports that the feed retrieval is complete.
         mBroadcaster.broadcastIntentWithState(Constants.STATE_ACTION_COMPLETE);
 

@@ -43,6 +43,7 @@ import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.data.QueryParams;
 import com.viableindustries.waterreporter.data.QuerySort;
 import com.viableindustries.waterreporter.data.Report;
+import com.viableindustries.waterreporter.data.ReportPostBody;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.UserService;
 
@@ -53,7 +54,9 @@ import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -542,6 +545,39 @@ public class MainActivity extends AppCompatActivity implements
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mUploadStateReceiver,
                 statusIntentFilter);
+
+    }
+
+    protected void sendFullPost(Intent intent) {
+
+        // Gets data from the incoming Intent
+        Bundle extras = intent.getExtras();
+
+        String storedPostKey = extras.getString("stored_post_key");
+
+        int imageId = extras.getInt("image_id", 0);
+
+        if (imageId > 0) {
+
+            List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
+
+            // Retrieve the image id and create a new report
+
+            final Map<String, Integer> image_id = new HashMap<String, Integer>();
+
+            image_id.put("id", imageId);
+
+            images.add(image_id);
+
+            String storedPostBody = prefs.getString(storedPostKey, "");
+
+            if (!storedPostBody.isEmpty()){
+
+                ReportPostBody reportPostBody = new Gson().fromJson(storedPostBody, ReportPostBody.class);
+
+            }
+
+        }
 
     }
 

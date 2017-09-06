@@ -94,6 +94,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -1194,7 +1195,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         if (imageUri == null) {
 
-            sendFullPost();
+            sendFullPost(buildPostBody());
 
             return;
 
@@ -1208,9 +1209,18 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         if (filePath != null) {
 
+            ReportPostBody reportPostBody = buildPostBody();
+
+            String storedPost = new Gson().toJson(reportPostBody);
+
+            String storedPostKey = String.format("stored_post_%s", UUID.randomUUID().toString().replaceAll("-", ""));
+
+            prefs.edit().putString(storedPostKey, storedPost).apply();
+
             Intent postImageIntent = new Intent(mContext, ImagePostService.class);
             postImageIntent.putExtra("file_path", filePath);
             postImageIntent.putExtra("access_token", accessToken);
+            postImageIntent.putExtra("stored_post_key", storedPostKey);
 
             mContext.startService(postImageIntent);
 
@@ -1255,9 +1265,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
-    // POST report data
-
-    private void sendFullPost() {
+    private ReportPostBody buildPostBody(){
 
         List<Map<String, Integer>> groups = new ArrayList<Map<String, Integer>>();
 
@@ -1295,10 +1303,14 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         }
 
-        ReportPostBody reportPostBody = new ReportPostBody(geometryResponse, groups,
+        return new ReportPostBody(geometryResponse, groups,
                 images, true, dateText, commentsText, reportState, social);
 
-        Log.d("groups", groups.toString());
+    }
+
+    // POST report data
+
+    private void sendFullPost(ReportPostBody reportPostBody) {
 
         reportService.postReport(accessToken, "application/json", reportPostBody,
                 new Callback<Report>() {
