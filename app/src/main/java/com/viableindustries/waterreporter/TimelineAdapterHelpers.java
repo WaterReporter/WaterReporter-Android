@@ -400,9 +400,11 @@ public class TimelineAdapterHelpers {
 
             for (Organization organization : post.properties.groups) {
 
-                ImageView groupView = (ImageView) LayoutInflater.from(context).inflate(R.layout.related_group_item, parent, false);
+                RelativeLayout groupView = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.related_group_item, parent, false);
 
-                Picasso.with(context).load(organization.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(groupView);
+                ImageView iconView = (ImageView) groupView.findViewById(R.id.groupLogo);
+
+                Picasso.with(context).load(organization.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(iconView);
 
                 groupView.setTag(organization);
 
