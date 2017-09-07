@@ -1,11 +1,14 @@
 package com.viableindustries.waterreporter;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Environment;
@@ -111,7 +114,7 @@ public class TimelineAdapterHelpers {
                                    final int currentCount,
                                    final TextView textView,
                                    final ImageView imageView,
-                                   final Context mContext,
+                                   final Context context,
                                    final SharedPreferences mPreferences) {
 
         // Retrieve API token
@@ -135,12 +138,23 @@ public class TimelineAdapterHelpers {
 
                 // Change favorite icon color
 
-                imageView.setColorFilter(ContextCompat.getColor(mContext, R.color.favorite_red), PorterDuff.Mode.SRC_ATOP);
+                if (currentCount == 0) {
+
+                    ObjectAnimator colorAnim = ObjectAnimator.ofInt(textView, "textColor",
+                            Color.WHITE, ContextCompat.getColor(context, R.color.favorite_red));
+                    colorAnim.setEvaluator(new ArgbEvaluator());
+                    colorAnim.start();
+
+                }
+
+                imageView.setColorFilter(ContextCompat.getColor(context, R.color.favorite_red), PorterDuff.Mode.SRC_ATOP);
 
                 // Replace the target post item with the
                 // updated API response object
 
                 post.properties.favorites.add(favorite);
+
+//                setFavoriteState(context, post, textView, imageView);
 
             }
 
@@ -166,7 +180,7 @@ public class TimelineAdapterHelpers {
                                     final int currentCount,
                                     final TextView textView,
                                     final ImageView imageView,
-                                    final Context mContext,
+                                    final Context context,
                                     final SharedPreferences mPreferences) {
 
         // Retrieve API token
@@ -183,14 +197,16 @@ public class TimelineAdapterHelpers {
             public void success(Void v, Response response) {
 
                 if (currentCount == 1) {
+                    
+                    // Reset favorite count label
 
-                    // Clear TextView contents
+                    textView.setTextColor(ContextCompat.getColor(context, R.color.white));
 
-                    textView.setText("");
+                    textView.setText("0");
 
                     // Change favorite icon color
 
-                    imageView.setColorFilter(ContextCompat.getColor(mContext, R.color.icon_gray), PorterDuff.Mode.SRC_ATOP);
+                    imageView.setColorFilter(ContextCompat.getColor(context, R.color.icon_gray), PorterDuff.Mode.SRC_ATOP);
 
                 } else {
 
@@ -208,6 +224,8 @@ public class TimelineAdapterHelpers {
                         iter.remove();
                     }
                 }
+
+                setFavoriteState(context, post, textView, imageView);
 
             }
 
@@ -347,13 +365,17 @@ public class TimelineAdapterHelpers {
 
         // Clear display comment count
 
-        textView.setText("");
+        textView.setTextColor(ContextCompat.getColor(context, R.color.white));
+
+        textView.setText("0");
 
         // Reset icon color
 
         imageView.setColorFilter(ContextCompat.getColor(context, R.color.icon_gray), PorterDuff.Mode.SRC_ATOP);
 
         if (commentCount > 0) {
+
+            textView.setTextColor(ContextCompat.getColor(context, R.color.splash_blue));
 
             textView.setText(String.format("%s", commentCount));
 
@@ -404,7 +426,9 @@ public class TimelineAdapterHelpers {
 
         // Clear display favorite count
 
-        textView.setText("");
+        textView.setTextColor(ContextCompat.getColor(context, R.color.white));
+
+        textView.setText("0");
 
         // Reset icon color
 
@@ -412,7 +436,14 @@ public class TimelineAdapterHelpers {
 
         if (favoriteCount > 0) {
 
+            textView.setTextColor(ContextCompat.getColor(context, R.color.favorite_red));
+
             textView.setText(String.format("%s", favoriteCount));
+
+//            ObjectAnimator colorAnim = ObjectAnimator.ofInt(textView, "textColor",
+//                    Color.WHITE, ContextCompat.getColor(context, R.color.favorite_red));
+//            colorAnim.setEvaluator(new ArgbEvaluator());
+//            colorAnim.start();
 
             imageView.setColorFilter(ContextCompat.getColor(context, R.color.favorite_red), PorterDuff.Mode.SRC_ATOP);
 

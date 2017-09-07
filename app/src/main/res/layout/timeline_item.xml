@@ -219,6 +219,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="56dp"
+        android:animateLayoutChanges="true"
         app:alignContent="flex_start"
         app:alignItems="flex_start"
         app:flexDirection="row"
@@ -267,7 +268,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="4dp"
-                android:textColor="@color/splash_blue"
                 android:textSize="14sp" />
 
         </com.google.android.flexbox.FlexboxLayout>
@@ -296,6 +296,7 @@
             android:id="@+id/favoriteIcon"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
             android:minWidth="48dp"
             app:alignItems="center"
             app:justifyContent="center"
@@ -317,7 +318,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="4dp"
-                android:textColor="@color/favorite_red"
                 android:textSize="14sp" />
 
         </com.google.android.flexbox.FlexboxLayout>

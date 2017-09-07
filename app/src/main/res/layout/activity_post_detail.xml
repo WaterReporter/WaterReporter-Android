@@ -8,8 +8,6 @@
     android:orientation="vertical"
     tools:context="com.viableindustries.waterreporter.PostDetailActivity">
 
-    <!--<include layout="@layout/custom_action_bar" />-->
-
     <RelativeLayout
         android:id="@+id/header_container"
         android:layout_width="match_parent"
@@ -83,33 +81,5 @@
             android:layout_marginTop="240dp" />
 
     </FrameLayout>
-
-    <!--<LinearLayout-->
-    <!--android:id="@+id/listViewGroup"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:clickable="false"-->
-    <!--android:focusable="false"-->
-    <!--android:focusableInTouchMode="false">-->
-
-    <!--<ListView-->
-    <!--android:id="@+id/commentList"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:animateLayoutChanges="false"-->
-    <!--android:divider="@color/gray_232"-->
-    <!--android:dividerHeight="0.5dp"-->
-    <!--android:scrollbars="none" />-->
-
-    <!--</LinearLayout>-->
-
-    <!--<ListView-->
-    <!--android:id="@+id/commentList"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:animateLayoutChanges="false"-->
-    <!--android:divider="@color/gray_232"-->
-    <!--android:dividerHeight="0.5dp"-->
-    <!--android:scrollbars="none" />-->
 
 </LinearLayout>
