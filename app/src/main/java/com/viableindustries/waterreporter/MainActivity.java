@@ -121,6 +121,38 @@ public class MainActivity extends AppCompatActivity implements
     // An instance of the status broadcast receiver
     private UploadStateReceiver mUploadStateReceiver;
 
+    private void registerBroadcastReceiver() {
+
+        /*
+         * Creates an intent filter for DownloadStateReceiver that intercepts broadcast Intents
+         */
+
+        // The filter's action is BROADCAST_ACTION
+        IntentFilter statusIntentFilter = new IntentFilter(
+                Constants.BROADCAST_ACTION);
+
+        // Sets the filter's category to DEFAULT
+        statusIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
+
+        // Instantiates a new DownloadStateReceiver
+        mUploadStateReceiver = new UploadStateReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                String storedPost = intent.getStringExtra("stored_post");
+
+                if (storedPost != null && !storedPost.isEmpty()) sendFullPost(intent);
+
+            }
+        };
+
+        // Registers the DownloadStateReceiver and its intent filters
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                mUploadStateReceiver,
+                statusIntentFilter);
+
+    }
+
     private boolean transmissionActive() {
 
         if (mSharedPreferences == null) {
@@ -510,57 +542,6 @@ public class MainActivity extends AppCompatActivity implements
 
         verifyPermissions();
 
-        /*
-         * Creates an intent filter for DownloadStateReceiver that intercepts broadcast Intents
-         */
-
-        // The filter's action is BROADCAST_ACTION
-        IntentFilter statusIntentFilter = new IntentFilter(
-                Constants.BROADCAST_ACTION);
-
-        // Sets the filter's category to DEFAULT
-        statusIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
-
-        // Instantiates a new DownloadStateReceiver
-        mUploadStateReceiver = new UploadStateReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                switch (intent.getIntExtra(Constants.EXTENDED_DATA_STATUS,
-                        Constants.STATE_ACTION_COMPLETE)) {
-
-                    // Logs "started" state
-                    case Constants.STATE_ACTION_STARTED:
-                        uploadProgress.setVisibility(View.VISIBLE);
-                        break;
-                    // Logs "connecting to network" state
-                    case Constants.STATE_ACTION_CONNECTING:
-                        uploadProgress.setVisibility(View.VISIBLE);
-                        break;
-                    // Logs "parsing the RSS feed" state
-                    case Constants.STATE_ACTION_PARSING:
-                        //
-                        break;
-                    // Logs "Writing the parsed data to the content provider" state
-                    case Constants.STATE_ACTION_WRITING:
-                        //
-                        break;
-                    // Starts displaying data when the RSS download is complete
-                    case Constants.STATE_ACTION_COMPLETE:
-                        // Logs the status
-                        Log.d("UploadService", "State: COMPLETE");
-                        if (transmissionActive()) sendFullPost(intent);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        };
-
-        // Registers the DownloadStateReceiver and its intent filters
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                mUploadStateReceiver,
-                statusIntentFilter);
-
         // Check for active transmissions
 
         if (transmissionActive() && uploadProgress != null) {
@@ -603,10 +584,12 @@ public class MainActivity extends AppCompatActivity implements
                 reportPostBody.images = images;
 
                 ApiDispatcher.sendFullPost(mAccessToken, reportPostBody, new SendPostCallbacks() {
+
                     @Override
                     public void onSuccess(@NonNull Report post) {
-                        uploadProgress.setVisibility(View.GONE);
+//                        mSharedPreferences.edit().putBoolean("IMAGE_ID_RECEIVED", true).apply();
                         ApiDispatcher.setTransmissionActive(mSharedPreferences, false);
+                        uploadProgress.setVisibility(View.GONE);
                         requestData(5, 1, false, true);
                     }
 
@@ -620,6 +603,7 @@ public class MainActivity extends AppCompatActivity implements
 
                         toast.show();
                     }
+
                 });
 
             }
@@ -664,12 +648,20 @@ public class MainActivity extends AppCompatActivity implements
 
         }
 
+        registerBroadcastReceiver();
+
     }
 
     @Override
     protected void onPause() {
 
         super.onPause();
+
+        // If the DownloadStateReceiver still exists, unregister it and set it to null
+        if (mUploadStateReceiver != null) {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(mUploadStateReceiver);
+//            mUploadStateReceiver = null;
+        }
 
     }
 

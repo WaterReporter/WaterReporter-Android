@@ -277,6 +277,13 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         postSuccess.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.blue_green)));
 
+        postReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                stageRequest(view);
+            }
+        });
+
         // Instantiate SharedPreference references
 
         mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
@@ -1240,7 +1247,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         progressBar.setVisibility(View.VISIBLE);
 
-        CharSequence text = "Posting report...";
+        CharSequence text = "Sending post...";
 
         Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
 
@@ -1281,6 +1288,8 @@ public class PhotoMetaActivity extends AppCompatActivity
             postImageIntent.putExtra("stored_post", storedPost);
 
             mContext.startService(postImageIntent);
+
+            mSharedPreferences.edit().putBoolean("IMAGE_ID_RECEIVED", false).apply();
 
             ApiDispatcher.setTransmissionActive(mSharedPreferences, true);
 

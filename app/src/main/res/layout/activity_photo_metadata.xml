@@ -378,7 +378,6 @@
                 android:layout_height="56dp"
                 android:layout_gravity="center"
                 android:clickable="true"
-                android:onClick="stageRequest"
                 android:src="@drawable/ic_send_white_24dp"
                 app:fabSize="normal"
                 app:rippleColor="@color/base_blue"

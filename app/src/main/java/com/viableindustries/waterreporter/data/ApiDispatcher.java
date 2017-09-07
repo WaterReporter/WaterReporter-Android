@@ -28,6 +28,12 @@ public class ApiDispatcher {
 
     }
 
+    public static boolean transmissionActive(SharedPreferences sharedPreferences) {
+
+        return  sharedPreferences.getBoolean("TRANSMISSION_ACTIVE", false);
+
+    }
+
     public static void sendFullPost(String accessToken, ReportPostBody reportPostBody, @Nullable final SendPostCallbacks callbacks) {
 
         ReportService reportService = ReportService.restAdapter.create(ReportService.class);
