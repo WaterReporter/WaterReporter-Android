@@ -423,9 +423,9 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                                 organizationDescription,
                                 "maxLines",
                                 2,
-                                20);
+                                1000);
 
-                        duration = 350;
+                        duration = 400;
 
                     } else {
 
@@ -434,14 +434,14 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                         animation = ObjectAnimator.ofInt(
                                 organizationDescription,
                                 "maxLines",
-                                20,
+                                1000,
                                 2);
 
                         duration = 200;
 
                     }
 
-                    animation.setDuration(100);
+                    animation.setDuration(duration);
                     animation.setInterpolator(new LinearOutSlowInInterpolator());
                     animation.start();
 

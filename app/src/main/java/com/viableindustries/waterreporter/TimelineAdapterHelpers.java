@@ -69,6 +69,16 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class TimelineAdapterHelpers {
 
+    // Check post ownership
+
+    public static boolean ownPost(Context context, Report post) {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getPackageName(), MODE_PRIVATE);
+
+        return sharedPreferences.getInt("user_id", 0) == post.properties.owner_id;
+
+    }
+
     // Download image
 
     public static void saveImage(Context aContext, Report post) {

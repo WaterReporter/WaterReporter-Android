@@ -456,9 +456,9 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
                             userDescription,
                             "maxLines",
                             2,
-                            20);
+                            1000);
 
-                    duration = 350;
+                    duration = 400;
 
                 } else {
 
@@ -467,14 +467,14 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
                     animation = ObjectAnimator.ofInt(
                             userDescription,
                             "maxLines",
-                            20,
+                            1000,
                             2);
 
                     duration = 200;
 
                 }
 
-                animation.setDuration(100);
+                animation.setDuration(duration);
                 animation.setInterpolator(new LinearOutSlowInInterpolator());
                 animation.start();
 
@@ -717,11 +717,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
                 Log.v("list", reports.toString());
 
-                if (reportCount == 99999999) {
-
-                    reportCount = featureCollection.getProperties().num_results;
-
-                }
+                reportCount = featureCollection.getProperties().num_results;
 
                 if (reportCount > 0) {
 
@@ -860,64 +856,11 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
     @Override
     public void onPostDelete(Report post) {
 
-        reportCount -= 1;
-
-        if (reportCount > 0) {
-
-            reportCounter.setText(String.valueOf(reportCount));
-
-        } else {
-
-            reportStat.setVisibility(View.GONE);
-
-        }
-
-        if ("closed".equals(post.properties.state)) {
-
-            actionCount -= 1;
-
-            if (actionCount > 0) {
-
-                actionCounter.setText(String.valueOf(actionCount));
-
-            } else {
-
-                actionStat.setVisibility(View.GONE);
-
-            }
-
-        }
-
         ReportHolder.setReport(null);
 
         resetStats();
 
     }
-
-//    private void editReport() {
-//
-//        Intent intent = new Intent(AuthUserActivity.this, PhotoMetaActivity.class);
-//
-//        intent.putExtra("EDIT_MODE", true);
-//
-//        startActivity(intent);
-//
-//    }
-
-//    @Override
-//    public void onSelectAction(int index) {
-//
-//        if (index == 1) {
-//
-//            deleteReport();
-//
-//        } else {
-//
-//            editReport();
-//
-//        }
-//
-//    }
 
     private void registerBroadcastReceiver() {
 
@@ -988,7 +931,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
                     public void onSuccess(@NonNull Report post) {
                         ApiDispatcher.setTransmissionActive(mSharedPreferences, false);
                         uploadProgress.setVisibility(View.GONE);
-                        resetStats();
+//                        resetStats();
                         fetchReports(5, 1, buildQuery(true, null), true);
                     }
 

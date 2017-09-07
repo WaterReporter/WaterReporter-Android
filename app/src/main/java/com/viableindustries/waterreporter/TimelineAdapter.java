@@ -225,13 +225,19 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
                 }
 
-                TimelineAdapterHelpers.addFavorite(
-                        post,
-                        post.properties.favorites.size(),
-                        viewHolder.abbrFavoriteCount,
-                        viewHolder.favoriteIconView,
-                        context,
-                        sharedPreferences);
+                // Prevent users from liking their own posts
+
+                if (!TimelineAdapterHelpers.ownPost(context, post)) {
+
+                    TimelineAdapterHelpers.addFavorite(
+                            post,
+                            post.properties.favorites.size(),
+                            viewHolder.abbrFavoriteCount,
+                            viewHolder.favoriteIconView,
+                            context,
+                            sharedPreferences);
+
+                }
 
             }
         });

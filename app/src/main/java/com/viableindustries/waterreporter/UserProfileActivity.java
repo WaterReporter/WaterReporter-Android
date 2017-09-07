@@ -340,9 +340,9 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
                             userDescription,
                             "maxLines",
                             2,
-                            20);
+                            1000);
 
-                    duration = 350;
+                    duration = 400;
 
                 } else {
 
@@ -351,14 +351,14 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
                     animation = ObjectAnimator.ofInt(
                             userDescription,
                             "maxLines",
-                            20,
+                            1000,
                             2);
 
                     duration = 200;
 
                 }
 
-                animation.setDuration(100);
+                animation.setDuration(duration);
                 animation.setInterpolator(new LinearOutSlowInInterpolator());
                 animation.start();
 
