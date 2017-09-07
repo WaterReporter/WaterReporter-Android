@@ -22,6 +22,12 @@ import retrofit.client.Response;
 
 public class ApiDispatcher {
 
+    public static void setTransmissionActive(SharedPreferences sharedPreferences, boolean isActive) {
+
+        sharedPreferences.edit().putBoolean("TRANSMISSION_ACTIVE", isActive).apply();
+
+    }
+
     public static void sendFullPost(String accessToken, ReportPostBody reportPostBody, @Nullable final SendPostCallbacks callbacks) {
 
         ReportService reportService = ReportService.restAdapter.create(ReportService.class);

@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
+import com.viableindustries.waterreporter.data.ApiDispatcher;
 import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.OpenGraph;
@@ -87,9 +88,9 @@ public class MainActivity extends AppCompatActivity implements
 
     static final int LOGIN_REQUEST = 2;
 
-    private SharedPreferences prefs;
+    private SharedPreferences mSharedPreferences;
 
-    private SharedPreferences coreProfile;
+    private SharedPreferences mCoreProfile;
 
     protected int user_id;
 
@@ -115,8 +116,22 @@ public class MainActivity extends AppCompatActivity implements
 
     private int socialOptions;
 
+    private String mAccessToken;
+
     // An instance of the status broadcast receiver
-    UploadStateReceiver mUploadStateReceiver;
+    private UploadStateReceiver mUploadStateReceiver;
+
+    private boolean transmissionActive() {
+
+        if (mSharedPreferences == null) {
+
+            mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        }
+
+        return mSharedPreferences.getBoolean("TRANSMISSION_ACTIVE", false);
+
+    }
 
     protected void connectionStatus() {
 
@@ -129,11 +144,11 @@ public class MainActivity extends AppCompatActivity implements
 
         if (ConnectionUtility.connectionActive(this)) {
 
-            boolean cleanSlate = prefs.getBoolean("clean_slate", false);
+            boolean cleanSlate = mSharedPreferences.getBoolean("clean_slate", false);
 
-            String accessToken = prefs.getString("access_token", "");
+            mAccessToken = mSharedPreferences.getString("access_token", "");
 
-            user_id = prefs.getInt("user_id", 0);
+            user_id = mSharedPreferences.getInt("user_id", 0);
 
             // We need to force legacy users to log into a fresh session
             // to ensure that the new version can collect and store the
@@ -141,9 +156,9 @@ public class MainActivity extends AppCompatActivity implements
 
             // If user_id is 0, then the user hasn't registered
 
-            if (user_id == 0 || "".equals(accessToken) || !cleanSlate) {
+            if (user_id == 0 || "".equals(mAccessToken) || !cleanSlate) {
 
-                prefs.edit().clear().apply();
+                mSharedPreferences.edit().clear().apply();
 
                 startActivityForResult(new Intent(this, SignInActivity.class), LOGIN_REQUEST);
 
@@ -173,12 +188,12 @@ public class MainActivity extends AppCompatActivity implements
 
     protected void requestData(int limit, final int page, final boolean transition, final boolean refresh) {
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String mAccessToken = mSharedPreferences.getString("access_token", "");
 
-        Log.d("", accessToken);
+        Log.d("", mAccessToken);
 
         // We shouldn't need to retrieve this value again, but we'll deal with that issue later
-        user_id = prefs.getInt("user_id", 0);
+        user_id = mSharedPreferences.getInt("user_id", 0);
 
         // Create order_by list and add a sort parameter
 
@@ -196,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements
 
         Log.d("URL", query);
 
-        service.getReports(accessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
+        service.getReports(mAccessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
 
             @Override
             public void success(FeatureCollection featureCollection, Response response) {
@@ -283,16 +298,16 @@ public class MainActivity extends AppCompatActivity implements
 
     protected void fetchUserGroups() {
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String mAccessToken = mSharedPreferences.getString("access_token", "");
 
-        Log.d("", accessToken);
+        Log.d("", mAccessToken);
 
         // We shouldn't need to retrieve this value again, but we'll deal with that issue later
-        user_id = prefs.getInt("user_id", 0);
+        user_id = mSharedPreferences.getInt("user_id", 0);
 
         UserService service = UserService.restAdapter.create(UserService.class);
 
-        service.getUserOrganization(accessToken, "application/json", user_id, new Callback<OrganizationFeatureCollection>() {
+        service.getUserOrganization(mAccessToken, "application/json", user_id, new Callback<OrganizationFeatureCollection>() {
 
             @Override
             public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
@@ -313,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 // Reset the user's stored group IDs.
 
-                prefs.edit().putString("user_groups", orgIds).apply();
+                mSharedPreferences.edit().putString("user_groups", orgIds).apply();
 
             }
 
@@ -451,9 +466,9 @@ public class MainActivity extends AppCompatActivity implements
         uploadProgressBar.getIndeterminateDrawable().setColorFilter(
                 ContextCompat.getColor(this, R.color.splash_blue), android.graphics.PorterDuff.Mode.SRC_IN);
 
-        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+        mCoreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
         // Set up EndlessScrollListener
 
@@ -515,11 +530,11 @@ public class MainActivity extends AppCompatActivity implements
 
                     // Logs "started" state
                     case Constants.STATE_ACTION_STARTED:
-                        //
+                        uploadProgress.setVisibility(View.VISIBLE);
                         break;
                     // Logs "connecting to network" state
                     case Constants.STATE_ACTION_CONNECTING:
-                        //
+                        uploadProgress.setVisibility(View.VISIBLE);
                         break;
                     // Logs "parsing the RSS feed" state
                     case Constants.STATE_ACTION_PARSING:
@@ -533,7 +548,7 @@ public class MainActivity extends AppCompatActivity implements
                     case Constants.STATE_ACTION_COMPLETE:
                         // Logs the status
                         Log.d("UploadService", "State: COMPLETE");
-                        uploadProgress.setVisibility(View.GONE);
+                        if (transmissionActive()) sendFullPost(intent);
                         break;
                     default:
                         break;
@@ -546,6 +561,14 @@ public class MainActivity extends AppCompatActivity implements
                 mUploadStateReceiver,
                 statusIntentFilter);
 
+        // Check for active transmissions
+
+        if (transmissionActive() && uploadProgress != null) {
+
+            uploadProgress.setVisibility(View.VISIBLE);
+
+        }
+
     }
 
     protected void sendFullPost(Intent intent) {
@@ -553,9 +576,13 @@ public class MainActivity extends AppCompatActivity implements
         // Gets data from the incoming Intent
         Bundle extras = intent.getExtras();
 
-        String storedPostKey = extras.getString("stored_post_key");
+        String storedPost = extras.getString("stored_post");
+
+        Log.d("Stored post", storedPost);
 
         int imageId = extras.getInt("image_id", 0);
+
+        Log.d("image id", imageId + "");
 
         if (imageId > 0) {
 
@@ -569,13 +596,52 @@ public class MainActivity extends AppCompatActivity implements
 
             images.add(image_id);
 
-            String storedPostBody = prefs.getString(storedPostKey, "");
+            if (!storedPost.isEmpty()) {
 
-            if (!storedPostBody.isEmpty()){
+                ReportPostBody reportPostBody = new Gson().fromJson(storedPost, ReportPostBody.class);
 
-                ReportPostBody reportPostBody = new Gson().fromJson(storedPostBody, ReportPostBody.class);
+                reportPostBody.images = images;
+
+                ApiDispatcher.sendFullPost(mAccessToken, reportPostBody, new SendPostCallbacks() {
+                    @Override
+                    public void onSuccess(@NonNull Report post) {
+                        uploadProgress.setVisibility(View.GONE);
+                        ApiDispatcher.setTransmissionActive(mSharedPreferences, false);
+                        requestData(5, 1, false, true);
+                    }
+
+                    @Override
+                    public void onError(@NonNull RetrofitError error) {
+                        CharSequence text =
+                                "Error saving post. Please try again later.";
+
+                        Toast toast = Toast.makeText(getBaseContext(), text,
+                                Toast.LENGTH_SHORT);
+
+                        toast.show();
+                    }
+                });
 
             }
+
+        }
+
+    }
+
+    @Override
+    protected void onStart() {
+
+        super.onStart();
+
+        // Check for a data connection!
+
+        connectionStatus();
+
+        // Check for active transmissions
+
+        if (transmissionActive() && uploadProgress != null) {
+
+            uploadProgress.setVisibility(View.VISIBLE);
 
         }
 
@@ -589,6 +655,14 @@ public class MainActivity extends AppCompatActivity implements
         // Check for a data connection!
 
         connectionStatus();
+
+        // Check for active transmissions
+
+        if (transmissionActive() && uploadProgress != null) {
+
+            uploadProgress.setVisibility(View.VISIBLE);
+
+        }
 
     }
 

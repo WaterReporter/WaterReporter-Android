@@ -48,7 +48,7 @@ public class BroadcastNotifier {
      *
      * @param status {@link Integer} denoting a work request status
      */
-    public void broadcastIntentWithState(int status) {
+    public void broadcastIntentWithState(int status, int imageId, String storedPost) {
 
         Intent localIntent = new Intent();
 
@@ -58,6 +58,14 @@ public class BroadcastNotifier {
         // Puts the status into the Intent
         localIntent.putExtra(Constants.EXTENDED_DATA_STATUS, status);
         localIntent.addCategory(Intent.CATEGORY_DEFAULT);
+
+        // Puts new image id (if any) into the Intent
+
+        if (imageId > 0) localIntent.putExtra("image_id", imageId);
+
+        // Puts stored post data (if any) into the Intent
+
+        if (storedPost != null) localIntent.putExtra("stored_post", storedPost);
 
         // Broadcasts the Intent
         mBroadcaster.sendBroadcast(localIntent);

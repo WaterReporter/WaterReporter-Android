@@ -80,6 +80,7 @@
     <string name="post_groups_prompt">Share with your groups.</string>
     <string name="saving">Please sit tight while we save your report&#8230;</string>
     <string name="post_received">Great! Your report was successfully broadcast on Water Reporter.</string>
+    <string name="sending_post">Sending post&#8230;</string>
 
     <!-- Post actions -->
     <string name="action_edit_post">Edit post</string>

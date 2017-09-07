@@ -211,7 +211,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     private ImageService imageService;
 
-    private SharedPreferences prefs;
+    private SharedPreferences mSharedPreferences;
 
     private SharedPreferences groupMemberships;
 
@@ -279,7 +279,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         // Instantiate SharedPreference references
 
-        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         groupMemberships = getSharedPreferences(getString(R.string.group_membership_key), 0);
 
@@ -679,7 +679,7 @@ public class PhotoMetaActivity extends AppCompatActivity
                             ogIdx.get("og:description"),
                             ogIdx.get("og:title"),
                             ogIdx.get("og:url"),
-                            prefs.getInt("user_id", 0));
+                            mSharedPreferences.getInt("user_id", 0));
 
                 } catch (NullPointerException e) {
 
@@ -731,7 +731,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     protected void fetchTags(int limit, int page, final String query) {
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         Log.d("", accessToken);
 
@@ -1138,7 +1138,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         }
 
-        accessToken = prefs.getString("access_token", "");
+        accessToken = mSharedPreferences.getString("access_token", "");
 
         dateText = initializeDateField();
 
@@ -1163,6 +1163,8 @@ public class PhotoMetaActivity extends AppCompatActivity
         geometryList.add(geometry);
 
         geometryResponse = new GeometryResponse(geometryList, type);
+
+        // Abort with message if neither comments nor Open Graph data are present
 
         if ((commentsText.isEmpty() && openGraphProperties == null) && !editMode) {
 
@@ -1194,9 +1196,9 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         } else {
 
-            latitude = prefs.getFloat("latitude", 0);
+            latitude = mSharedPreferences.getFloat("latitude", 0);
 
-            longitude = prefs.getFloat("longitude", 0);
+            longitude = mSharedPreferences.getFloat("longitude", 0);
 
             if ((latitude == 0 || longitude == 0) && !editMode) {
 
@@ -1268,51 +1270,21 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             String storedPostKey = String.format("stored_post_%s", UUID.randomUUID().toString().replaceAll("-", ""));
 
-            prefs.edit().putString(storedPostKey, storedPost).apply();
+            mSharedPreferences.edit().putString(storedPostKey, storedPost).apply();
 
             Intent postImageIntent = new Intent(mContext, ImagePostService.class);
             postImageIntent.putExtra("file_path", filePath);
             postImageIntent.putExtra("access_token", accessToken);
-            postImageIntent.putExtra("stored_post_key", storedPostKey);
+
+            // Send the serialized post body with the intent
+
+            postImageIntent.putExtra("stored_post", storedPost);
 
             mContext.startService(postImageIntent);
 
-//            final File photo = new File(filePath);
-//
-//            FileNameMap fileNameMap = URLConnection.getFileNameMap();
-//
-//            String mimeType = fileNameMap.getContentTypeFor(filePath);
-//
-//            TypedFile typedPhoto = new TypedFile(mimeType, photo);
+            ApiDispatcher.setTransmissionActive(mSharedPreferences, true);
 
-//            imageService.postImage(accessToken, typedPhoto,
-//                    new Callback<ImageProperties>() {
-//                        @Override
-//                        public void success(ImageProperties imageProperties,
-//                                            Response response) {
-//
-//                            // Revoke Uri permissions
-//
-//                            getBaseContext().revokeUriPermission(imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//
-//                            // Retrieve the image id and create a new report
-//
-//                            final Map<String, Integer> image_id = new HashMap<String, Integer>();
-//
-//                            image_id.put("id", imageProperties.id);
-//
-//                            images.add(image_id);
-//
-//                            sendFullPost();
-//
-//                        }
-//
-//                        @Override
-//                        public void failure(RetrofitError error) {
-//                            onPostError();
-//                        }
-//
-//                    });
+            onPostSuccess();
 
         }
 
@@ -1760,9 +1732,9 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             } else {
 
-                latitude = prefs.getFloat("latitude", 0);
+                latitude = mSharedPreferences.getFloat("latitude", 0);
 
-                longitude = prefs.getFloat("longitude", 0);
+                longitude = mSharedPreferences.getFloat("longitude", 0);
 
                 if (latitude == 0 || longitude == 0) {
 
