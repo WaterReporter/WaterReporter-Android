@@ -9,6 +9,8 @@ import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -22,9 +24,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.ApiDispatcher;
 import com.viableindustries.waterreporter.data.Favorite;
 import com.viableindustries.waterreporter.data.FavoritePostBody;
 import com.viableindustries.waterreporter.data.FavoriteService;
@@ -41,6 +45,7 @@ import com.viableindustries.waterreporter.data.PostShareListener;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.ReportPhoto;
+import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.TerritoryProfileListener;
 import com.viableindustries.waterreporter.data.UserHolder;
 import com.viableindustries.waterreporter.data.UserProfileListener;
@@ -56,6 +61,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by brendanmcintyre on 8/18/17.
@@ -279,7 +285,7 @@ public class TimelineAdapterHelpers {
 
         textView.setVisibility(View.GONE);
 
-        textView.setPadding(0,0,0,0);
+        textView.setPadding(0, 0, 0, 0);
 
         if (post.properties.description != null && (post.properties.description.length() > 0)) {
 
@@ -482,6 +488,34 @@ public class TimelineAdapterHelpers {
             v.setColorFilter(ContextCompat.getColor(context, R.color.icon_gray), PorterDuff.Mode.SRC_ATOP);
 
         }
+
+    }
+
+    public static void deleteReport(final Context context, Report post, @Nullable final DeletePostCallbacks callbacks) {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getPackageName(), MODE_PRIVATE);
+
+        String accessToken = sharedPreferences.getString("access_token", "");
+
+        ReportService service = ReportService.restAdapter.create(ReportService.class);
+
+        service.deleteSingleReport(accessToken, post.id, new Callback<Response>() {
+
+            @Override
+            public void success(Response response, Response _response) {
+
+                callbacks.onSuccess(_response);
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                callbacks.onError(error);
+
+            }
+
+        });
 
     }
 

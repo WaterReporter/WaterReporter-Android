@@ -75,6 +75,7 @@ import com.viableindustries.waterreporter.data.UserHolder;
 import com.viableindustries.waterreporter.data.UserService;
 import com.viableindustries.waterreporter.dialogs.CommentActionDialogListener;
 import com.viableindustries.waterreporter.dialogs.CommentPhotoDialogListener;
+import com.viableindustries.waterreporter.dialogs.ReportActionDialog;
 import com.viableindustries.waterreporter.dialogs.ReportActionDialogListener;
 import com.viableindustries.waterreporter.dialogs.ShareActionDialogListener;
 
@@ -95,7 +96,7 @@ import retrofit.client.Response;
 import static java.lang.Boolean.TRUE;
 import static java.security.AccessController.getContext;
 
-public class AuthUserActivity extends AppCompatActivity implements ReportActionDialogListener {
+public class AuthUserActivity extends AppCompatActivity implements ReportActionDialog.ReportActionDialogCallback {
 
     TextView userTitle;
 
@@ -856,106 +857,67 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
     }
 
-    private void deleteReport() {
-
-        timeLineContainer.setRefreshing(true);
-
-        ReportService service = ReportService.restAdapter.create(ReportService.class);
-
-        final Report report = ReportHolder.getReport();
-
-        service.deleteSingleReport(mAccessToken, report.id, new Callback<Response>() {
-
-            @Override
-            public void success(Response response, Response response_) {
-
-                reportCount -= 1;
-
-                if (reportCount > 0) {
-
-                    reportCounter.setText(String.valueOf(reportCount));
-
-                } else {
-
-                    reportStat.setVisibility(View.GONE);
-
-                }
-
-                if ("closed".equals(report.properties.state)) {
-
-                    actionCount -= 1;
-
-                    if (actionCount > 0) {
-
-                        actionCounter.setText(String.valueOf(actionCount));
-
-                    } else {
-
-                        actionStat.setVisibility(View.GONE);
-
-                    }
-
-                }
-
-                ReportHolder.setReport(null);
-
-                resetStats();
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-                timeLineContainer.setRefreshing(false);
-
-                if (error == null) return;
-
-                Response errorResponse = error.getResponse();
-
-                // If we have a valid response object, check the status code and redirect to log in view if necessary
-
-                if (errorResponse != null) {
-
-                    int status = errorResponse.getStatus();
-
-                    if (status == 403) {
-
-                        startActivity(new Intent(AuthUserActivity.this, SignInActivity.class));
-
-                    }
-
-                }
-
-            }
-
-        });
-
-    }
-
-    private void editReport() {
-
-        Intent intent = new Intent(AuthUserActivity.this, PhotoMetaActivity.class);
-
-        intent.putExtra("EDIT_MODE", true);
-
-        startActivity(intent);
-
-    }
-
     @Override
-    public void onSelectAction(int index) {
+    public void onPostDelete(Report post) {
 
-        if (index == 1) {
+        reportCount -= 1;
 
-            deleteReport();
+        if (reportCount > 0) {
+
+            reportCounter.setText(String.valueOf(reportCount));
 
         } else {
 
-            editReport();
+            reportStat.setVisibility(View.GONE);
 
         }
 
+        if ("closed".equals(post.properties.state)) {
+
+            actionCount -= 1;
+
+            if (actionCount > 0) {
+
+                actionCounter.setText(String.valueOf(actionCount));
+
+            } else {
+
+                actionStat.setVisibility(View.GONE);
+
+            }
+
+        }
+
+        ReportHolder.setReport(null);
+
+        resetStats();
+
     }
+
+//    private void editReport() {
+//
+//        Intent intent = new Intent(AuthUserActivity.this, PhotoMetaActivity.class);
+//
+//        intent.putExtra("EDIT_MODE", true);
+//
+//        startActivity(intent);
+//
+//    }
+
+//    @Override
+//    public void onSelectAction(int index) {
+//
+//        if (index == 1) {
+//
+//            deleteReport();
+//
+//        } else {
+//
+//            editReport();
+//
+//        }
+//
+//    }
 
     private void registerBroadcastReceiver() {
 
@@ -1026,6 +988,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
                     public void onSuccess(@NonNull Report post) {
                         ApiDispatcher.setTransmissionActive(mSharedPreferences, false);
                         uploadProgress.setVisibility(View.GONE);
+                        resetStats();
                         fetchReports(5, 1, buildQuery(true, null), true);
                     }
 
@@ -1050,7 +1013,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
     @Override
     public void onResume() {
-        
+
         super.onResume();
 
         // Check for active transmissions
@@ -1062,19 +1025,19 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
         }
 
         registerBroadcastReceiver();
-        
+
     }
 
     @Override
     public void onPause() {
-        
+
         super.onPause();
 
         // If the DownloadStateReceiver still exists, unregister it
         if (mUploadStateReceiver != null) {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(mUploadStateReceiver);
         }
-        
+
     }
 
     @Override

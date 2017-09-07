@@ -1,5 +1,6 @@
 package com.viableindustries.waterreporter.dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,8 +21,11 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.viableindustries.waterreporter.AuthUserActivity;
+import com.viableindustries.waterreporter.DeletePostCallbacks;
 import com.viableindustries.waterreporter.PhotoMetaActivity;
 import com.viableindustries.waterreporter.R;
+import com.viableindustries.waterreporter.SignInActivity;
 import com.viableindustries.waterreporter.TimelineAdapterHelpers;
 import com.viableindustries.waterreporter.UserProfileActivity;
 import com.viableindustries.waterreporter.data.Geometry;
@@ -31,6 +35,9 @@ import com.viableindustries.waterreporter.data.ReportHolder;
 
 import java.util.List;
 
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 /**
  * Created by brendanmcintyre on 11/11/16.
  */
@@ -38,6 +45,12 @@ import java.util.List;
 public class ReportActionDialog extends DialogFragment implements View.OnClickListener {
 
     private int layoutType;
+
+    public interface ReportActionDialogCallback {
+
+        void onPostDelete(Report post);
+
+    }
 
     @Override
     @NonNull
@@ -95,9 +108,9 @@ public class ReportActionDialog extends DialogFragment implements View.OnClickLi
     @Override
     public void onClick(View view) {
 
-        Context context = getContext();
+        final Context context = getContext();
 
-        Report post = ReportHolder.getReport();
+        final Report post = ReportHolder.getReport();
 
         Log.d("dialog-view-id", "" + view.getId());
 
@@ -117,7 +130,39 @@ public class ReportActionDialog extends DialogFragment implements View.OnClickLi
 
             case R.id.actionDeletePost:
 
-                // do something
+                TimelineAdapterHelpers.deleteReport(context, post, new DeletePostCallbacks() {
+
+                    @Override
+                    public void onSuccess(@NonNull Response response) {
+//                        ReportHolder.setReport(null);
+//                        Activity activity = getActivity();
+//                        ((AuthUserActivity) activity).fetchReports(5, 1, buildQuery(true, null), true);
+                        ((ReportActionDialogCallback) context).onPostDelete(post);
+                    }
+
+                    @Override
+                    public void onError(@NonNull RetrofitError error) {
+
+                        Response errorResponse = error.getResponse();
+
+                        // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                        if (errorResponse != null) {
+
+                            int status = errorResponse.getStatus();
+
+                            if (status == 403) {
+
+                                context.startActivity(new Intent(context, SignInActivity.class));
+
+                            }
+
+                        }
+                    }
+
+                });
+
+                dismiss();
 
                 break;
 

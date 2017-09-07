@@ -238,8 +238,6 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         // Context-dependent configuration
 
-        int layoutType = 0;
-
         if (!mIsProfile) {
 
             viewHolder.ownerAvatar.setOnClickListener(new UserProfileListener(context, post.properties.owner));
@@ -264,25 +262,27 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
             }
 
-            // Determine whether or not we can expose the "additional actions" ellipsis for access to edit/delete.
-            // This is a slightly different condition from the above because the id comparison must be against
-            // the id of the authenticated user.
-
-            if (sharedPreferences.getInt("user_id", 0) == post.properties.owner_id) {
-
-                layoutType = 1;
-
-            }
-
         }
-
-        final Bundle args = new Bundle();
-
-        args.putInt("layout_type", layoutType);
 
         viewHolder.actionsEllipsis.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                int layoutType = 0;
+
+                // Determine whether or not we can expose the "additional actions" ellipsis for access to edit/delete.
+                // This is a slightly different condition from the above because the id comparison must be against
+                // the id of the authenticated user.
+
+                if (sharedPreferences.getInt("user_id", 0) == post.properties.owner_id) {
+
+                    layoutType = 1;
+
+                }
+
+                final Bundle args = new Bundle();
+
+                args.putInt("layout_type", layoutType);
 
                 ReportHolder.setReport(post);
 
