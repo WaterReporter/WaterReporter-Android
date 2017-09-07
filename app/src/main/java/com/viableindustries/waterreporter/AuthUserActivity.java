@@ -3,6 +3,7 @@ package com.viableindustries.waterreporter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -16,12 +17,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
@@ -43,6 +46,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +54,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import com.viableindustries.waterreporter.data.ApiDispatcher;
 import com.viableindustries.waterreporter.data.Comment;
 import com.viableindustries.waterreporter.data.CommentPost;
 import com.viableindustries.waterreporter.data.CommentService;
@@ -62,6 +67,7 @@ import com.viableindustries.waterreporter.data.QuerySort;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.ReportPhoto;
+import com.viableindustries.waterreporter.data.ReportPostBody;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserGroupList;
@@ -75,7 +81,9 @@ import com.viableindustries.waterreporter.dialogs.ShareActionDialogListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -123,6 +131,12 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
     Button startPostButton;
 
+    @Bind(R.id.uploadProgressBar)
+    ProgressBar uploadProgressBar;
+
+    @Bind(R.id.uploadProgress)
+    LinearLayout uploadProgress;
+
     @Bind(R.id.timeline)
     SwipeRefreshLayout timeLineContainer;
 
@@ -161,7 +175,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
     private boolean hasGroups = false;
 
-    private SharedPreferences prefs;
+    private SharedPreferences mSharedPreferences;
 
     private SharedPreferences coreProfile;
 
@@ -173,6 +187,11 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
     private EndlessScrollListener scrollListener;
 
+    private String mAccessToken;
+
+    // An instance of the status broadcast receiver
+    private UploadStateReceiver mUploadStateReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -182,9 +201,14 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
         ButterKnife.bind(this);
 
-        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        uploadProgressBar.getIndeterminateDrawable().setColorFilter(
+                ContextCompat.getColor(this, R.color.splash_blue), android.graphics.PorterDuff.Mode.SRC_IN);
+
+        mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+        mAccessToken = mSharedPreferences.getString("access_token", "");
 
         Log.d("storedavatar", coreProfile.getString("picture", ""));
 
@@ -206,7 +230,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
         }
 
-        if (prefs.getInt("user_id", 0) == userId) {
+        if (mSharedPreferences.getInt("user_id", 0) == userId) {
 
             logOutButton.setVisibility(View.VISIBLE);
 
@@ -515,13 +539,11 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
     protected void countReports(String query, final String filterName) {
 
-        final String accessToken = prefs.getString("access_token", "");
-
         RestAdapter restAdapter = ReportService.restAdapter;
 
         ReportService service = restAdapter.create(ReportService.class);
 
-        service.getReports(accessToken, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
+        service.getReports(mAccessToken, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
 
             @Override
             public void success(FeatureCollection featureCollection, Response response) {
@@ -574,13 +596,9 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
     protected void fetchUserGroups(int userId) {
 
-        final String accessToken = prefs.getString("access_token", "");
-
-        Log.d("", accessToken);
-
         UserService service = UserService.restAdapter.create(UserService.class);
 
-        service.getUserOrganization(accessToken, "application/json", userId, new Callback<OrganizationFeatureCollection>() {
+        service.getUserOrganization(mAccessToken, "application/json", userId, new Callback<OrganizationFeatureCollection>() {
 
             @Override
             public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
@@ -683,17 +701,13 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
     public void fetchReports(int limit, final int page, String query, final boolean refresh) {
 
-        final String accessToken = prefs.getString("access_token", "");
-
-        Log.d("", accessToken);
-
         Log.d("URL", query);
 
         RestAdapter restAdapter = ReportService.restAdapter;
 
         ReportService service = restAdapter.create(ReportService.class);
 
-        service.getReports(accessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
+        service.getReports(mAccessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
 
             @Override
             public void success(FeatureCollection featureCollection, Response response) {
@@ -846,15 +860,11 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
         timeLineContainer.setRefreshing(true);
 
-        final String accessToken = prefs.getString("access_token", "");
-
-        Log.d("", accessToken);
-
         ReportService service = ReportService.restAdapter.create(ReportService.class);
 
         final Report report = ReportHolder.getReport();
 
-        service.deleteSingleReport(accessToken, report.id, new Callback<Response>() {
+        service.deleteSingleReport(mAccessToken, report.id, new Callback<Response>() {
 
             @Override
             public void success(Response response, Response response_) {
@@ -947,14 +957,124 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
     }
 
+    private void registerBroadcastReceiver() {
+
+        /*
+         * Creates an intent filter for DownloadStateReceiver that intercepts broadcast Intents
+         */
+
+        // The filter's action is BROADCAST_ACTION
+        IntentFilter statusIntentFilter = new IntentFilter(
+                Constants.BROADCAST_ACTION);
+
+        // Sets the filter's category to DEFAULT
+        statusIntentFilter.addCategory(Intent.CATEGORY_DEFAULT);
+
+        // Instantiates a new DownloadStateReceiver
+        mUploadStateReceiver = new UploadStateReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                String storedPost = intent.getStringExtra("stored_post");
+
+                if (storedPost != null && !storedPost.isEmpty()) sendFullPost(intent);
+
+            }
+        };
+
+        // Registers the DownloadStateReceiver and its intent filters
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                mUploadStateReceiver,
+                statusIntentFilter);
+
+    }
+
+    protected void sendFullPost(Intent intent) {
+
+        // Gets data from the incoming Intent
+        Bundle extras = intent.getExtras();
+
+        String storedPost = extras.getString("stored_post");
+
+        Log.d("Stored post", storedPost);
+
+        int imageId = extras.getInt("image_id", 0);
+
+        Log.d("image id", imageId + "");
+
+        if (imageId > 0) {
+
+            List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
+
+            // Retrieve the image id and create a new report
+
+            final Map<String, Integer> image_id = new HashMap<String, Integer>();
+
+            image_id.put("id", imageId);
+
+            images.add(image_id);
+
+            if (!storedPost.isEmpty()) {
+
+                ReportPostBody reportPostBody = new Gson().fromJson(storedPost, ReportPostBody.class);
+
+                reportPostBody.images = images;
+
+                ApiDispatcher.sendFullPost(mAccessToken, reportPostBody, new SendPostCallbacks() {
+
+                    @Override
+                    public void onSuccess(@NonNull Report post) {
+                        ApiDispatcher.setTransmissionActive(mSharedPreferences, false);
+                        uploadProgress.setVisibility(View.GONE);
+                        fetchReports(5, 1, buildQuery(true, null), true);
+                    }
+
+                    @Override
+                    public void onError(@NonNull RetrofitError error) {
+                        CharSequence text =
+                                "Error saving post. Please try again later.";
+
+                        Toast toast = Toast.makeText(getBaseContext(), text,
+                                Toast.LENGTH_SHORT);
+
+                        toast.show();
+                    }
+
+                });
+
+            }
+
+        }
+
+    }
+
     @Override
     public void onResume() {
+        
         super.onResume();
+
+        // Check for active transmissions
+
+        if (ApiDispatcher.transmissionActive(this) && uploadProgress != null) {
+
+            uploadProgress.setVisibility(View.VISIBLE);
+
+        }
+
+        registerBroadcastReceiver();
+        
     }
 
     @Override
     public void onPause() {
+        
         super.onPause();
+
+        // If the DownloadStateReceiver still exists, unregister it
+        if (mUploadStateReceiver != null) {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(mUploadStateReceiver);
+        }
+        
     }
 
     @Override
@@ -965,6 +1085,12 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
         Picasso.with(this).cancelRequest(userAvatar);
 
         ButterKnife.unbind(this);
+
+        // If the DownloadStateReceiver still exists, unregister it and set it to null
+        if (mUploadStateReceiver != null) {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(mUploadStateReceiver);
+            mUploadStateReceiver = null;
+        }
 
     }
 

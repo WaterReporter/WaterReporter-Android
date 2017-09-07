@@ -1,5 +1,6 @@
 package com.viableindustries.waterreporter.data;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
@@ -16,6 +17,8 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by brendanmcintyre on 9/5/17.
  */
@@ -28,7 +31,9 @@ public class ApiDispatcher {
 
     }
 
-    public static boolean transmissionActive(SharedPreferences sharedPreferences) {
+    public static boolean transmissionActive(Context context) {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getPackageName(), MODE_PRIVATE);
 
         return  sharedPreferences.getBoolean("TRANSMISSION_ACTIVE", false);
 

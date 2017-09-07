@@ -33,9 +33,6 @@ public class ImagePostService extends IntentService {
     @Override
     protected void onHandleIntent(Intent workIntent) {
 
-        // Broadcasts an Intent indicating that processing has started.
-        mBroadcaster.broadcastIntentWithState(Constants.STATE_ACTION_STARTED, 0, null);
-
         // Gets data from the incoming Intent
         Bundle extras = workIntent.getExtras();
 
@@ -55,12 +52,9 @@ public class ImagePostService extends IntentService {
 
         TypedFile typedPhoto = new TypedFile(mimeType, photo);
 
-        // Reports that the service is about to connect to the RSS feed
-        mBroadcaster.broadcastIntentWithState(Constants.STATE_ACTION_CONNECTING, 0, null);
-
         ImageProperties imageProperties = imageService.postImage(accessToken, typedPhoto);
 
-        // Reports that the feed retrieval is complete.
+        // Reports that the image upload is complete.
         mBroadcaster.broadcastIntentWithState(Constants.STATE_ACTION_COMPLETE, imageProperties.id, storedPost);
 
     }

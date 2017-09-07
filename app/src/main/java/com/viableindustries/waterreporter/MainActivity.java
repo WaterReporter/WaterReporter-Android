@@ -587,7 +587,6 @@ public class MainActivity extends AppCompatActivity implements
 
                     @Override
                     public void onSuccess(@NonNull Report post) {
-//                        mSharedPreferences.edit().putBoolean("IMAGE_ID_RECEIVED", true).apply();
                         ApiDispatcher.setTransmissionActive(mSharedPreferences, false);
                         uploadProgress.setVisibility(View.GONE);
                         requestData(5, 1, false, true);
@@ -657,10 +656,9 @@ public class MainActivity extends AppCompatActivity implements
 
         super.onPause();
 
-        // If the DownloadStateReceiver still exists, unregister it and set it to null
+        // If the DownloadStateReceiver still exists, unregister it
         if (mUploadStateReceiver != null) {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(mUploadStateReceiver);
-//            mUploadStateReceiver = null;
         }
 
     }

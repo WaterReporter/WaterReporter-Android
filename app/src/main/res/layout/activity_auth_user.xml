@@ -5,6 +5,7 @@
     android:id="@+id/activity_user_profile"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:background="#FBFBFB"
     android:orientation="vertical"
     tools:context="com.viableindustries.waterreporter.AuthUserActivity">
@@ -44,6 +45,8 @@
             android:background="@color/gray_232" />
 
     </RelativeLayout>
+
+    <include layout="@layout/post_upload_progress" />
 
     <FrameLayout
         android:id="@+id/listTabs"
