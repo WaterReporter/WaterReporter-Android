@@ -25,6 +25,14 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class ApiDispatcher {
 
+    public static int getPendingPostId(Context context) {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getPackageName(), MODE_PRIVATE);
+
+        return sharedPreferences.getInt("POST_SAVED_VIA_SERVICE", 0);
+
+    }
+
     public static void setTransmissionActive(SharedPreferences sharedPreferences, boolean isActive) {
 
         sharedPreferences.edit().putBoolean("TRANSMISSION_ACTIVE", isActive).apply();

@@ -937,6 +937,29 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
     }
 
     @Override
+    protected void onStart() {
+
+        super.onStart();
+
+        // Check for active transmissions
+
+        if ((ApiDispatcher.transmissionActive(this) || ApiDispatcher.getPendingPostId(this) > 0) && uploadProgress != null) {
+
+            uploadProgress.setVisibility(View.VISIBLE);
+
+        }
+
+        // Check for completed request not handled in the receiver's onReceive
+
+        if (ApiDispatcher.getPendingPostId(this) > 0) {
+
+            afterPostSend();
+
+        }
+
+    }
+
+    @Override
     public void onResume() {
 
         super.onResume();
@@ -946,6 +969,14 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
         if (ApiDispatcher.transmissionActive(this) && uploadProgress != null) {
 
             uploadProgress.setVisibility(View.VISIBLE);
+
+        }
+
+        // Check for completed request not handled in the receiver's onReceive
+
+        if (ApiDispatcher.getPendingPostId(this) > 0) {
+
+            afterPostSend();
 
         }
 

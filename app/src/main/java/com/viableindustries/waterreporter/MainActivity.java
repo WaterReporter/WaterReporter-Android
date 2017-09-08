@@ -189,42 +189,6 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    private boolean transmissionActive() {
-
-        if (mSharedPreferences == null) {
-
-            mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
-
-        }
-
-        return mSharedPreferences.getBoolean("TRANSMISSION_ACTIVE", false);
-
-    }
-
-    private int getPendingImageId() {
-
-        if (mSharedPreferences == null) {
-
-            mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
-
-        }
-
-        return mSharedPreferences.getInt("PENDING_IMAGE_ID", 0);
-
-    }
-
-    private int getPendingPostId() {
-
-        if (mSharedPreferences == null) {
-
-            mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
-
-        }
-
-        return mSharedPreferences.getInt("POST_SAVED_VIA_SERVICE", 0);
-
-    }
-
     protected void connectionStatus() {
 
         final Context context = getApplicationContext();
@@ -617,19 +581,17 @@ public class MainActivity extends AppCompatActivity implements
 
         // Check for active transmissions
 
-        if (uploadProgress != null) {
+        if ((ApiDispatcher.transmissionActive(this) || ApiDispatcher.getPendingPostId(this) > 0) && uploadProgress != null) {
 
-            if (transmissionActive() && getPendingPostId() > 0) {
+            uploadProgress.setVisibility(View.VISIBLE);
 
-                uploadProgress.setVisibility(View.VISIBLE);
+        }
 
-                afterPostSend();
+        // Check for completed request not handled in the receiver's onReceive
 
-            } else if (transmissionActive()) {
+        if (ApiDispatcher.getPendingPostId(this) > 0) {
 
-                uploadProgress.setVisibility(View.VISIBLE);
-
-            }
+            afterPostSend();
 
         }
 
@@ -646,19 +608,17 @@ public class MainActivity extends AppCompatActivity implements
 
         // Check for active transmissions
 
-        if (uploadProgress != null) {
+        if ((ApiDispatcher.transmissionActive(this) || ApiDispatcher.getPendingPostId(this) > 0) && uploadProgress != null) {
 
-            if (transmissionActive() && getPendingPostId() > 0) {
+            uploadProgress.setVisibility(View.VISIBLE);
 
-                uploadProgress.setVisibility(View.VISIBLE);
+        }
 
-                afterPostSend();
+        // Check for completed request not handled in the receiver's onReceive
 
-            } else if (transmissionActive()) {
+        if (ApiDispatcher.getPendingPostId(this) > 0) {
 
-                uploadProgress.setVisibility(View.VISIBLE);
-
-            }
+            afterPostSend();
 
         }
 
