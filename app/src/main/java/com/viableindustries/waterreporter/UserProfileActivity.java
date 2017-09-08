@@ -650,6 +650,8 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                     reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
 
+                    setReportCountState(reportCount);
+
                 } else {
 
                     reportStat.setVisibility(View.GONE);

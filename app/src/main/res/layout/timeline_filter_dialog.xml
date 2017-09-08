@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/timelineFilterDialog"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/filterAll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="4dp"
+            android:contentDescription="Location icon"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_timeline_black_24dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:padding="16dp"
+            android:text="@string/filter_all"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gray_232" />
+
+    <LinearLayout
+        android:id="@+id/filterActions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="4dp"
+            android:contentDescription="Location icon"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_verified_user_black_24dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:padding="16dp"
+            android:text="@string/filter_actions"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gray_232" />
+
+    <LinearLayout
+        android:id="@+id/filterLikes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="4dp"
+            android:contentDescription="Location icon"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_favorite_black_24dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:padding="16dp"
+            android:text="@string/filter_likes"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gray_232" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gray_232" />
+
+    <LinearLayout
+        android:id="@+id/filterComments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="4dp"
+            android:contentDescription="Location icon"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_mode_comment_black_24dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:padding="16dp"
+            android:text="@string/filter_comments"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gray_232" />
+
+    <LinearLayout
+        android:id="@+id/filterStories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="4dp"
+            android:contentDescription="Location icon"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_bookmark_black_24dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:padding="16dp"
+            android:text="@string/filter_stories"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -14,7 +14,6 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.Space;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,6 +53,7 @@ import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.Territory;
 import com.viableindustries.waterreporter.data.TerritoryHolder;
+import com.viableindustries.waterreporter.dialogs.TimelineFilterDialog;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -71,7 +71,7 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillColor;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillOpacity;
 import static java.lang.Boolean.TRUE;
 
-public class TerritoryActivity extends AppCompatActivity {
+public class TerritoryActivity extends AppCompatActivity implements TimelineFilterDialog.TimelineFilterDialogCallback {
 
     FlexboxLayout profileMeta;
 
@@ -98,6 +98,10 @@ public class TerritoryActivity extends AppCompatActivity {
     TextView promptMessage;
 
     Button startPostButton;
+
+    FlexboxLayout fblFilterGroup;
+
+    TextView tvFilterCategory;
 
     @Bind(R.id.customActionBar)
     LinearLayout customActionBar;
@@ -130,9 +134,23 @@ public class TerritoryActivity extends AppCompatActivity {
 
     private int territoryId;
 
-    private String complexQuery;
+    private String mActionQuery;
+
+    private String mLikeQuery;
+
+    private String mCommentQuery;
+
+    private String mStoryQuery;
+
+    private String mMasterQuery;
 
     private int actionCount = 0;
+
+    private int mStoryCount = 0;
+
+    private int mLikeCount = 0;
+
+    private int mCommentCount = 0;
 
     private int reportCount = 99999999;
 
@@ -239,13 +257,11 @@ public class TerritoryActivity extends AppCompatActivity {
 
         renderMap(mapView);
 
-        // Count reports with actions
+        // Generate all required query strings
 
-        complexQuery = buildQuery(true, "report", new String[][]{
-                {"state", "eq", "closed"}
-        });
+        generateQueries();
 
-        countReports(complexQuery, "state");
+//        countReports(mActionQuery, "state");
 
         // Count related groups
 
@@ -257,7 +273,9 @@ public class TerritoryActivity extends AppCompatActivity {
 
 //            timeLineContainer.setRefreshing(true);
 
-            fetchReports(5, 1, buildQuery(true, "report", null), false);
+            mMasterQuery = buildQuery(true, "report", null);
+
+            fetchPosts(5, 1, mMasterQuery, true);
 
         }
 
@@ -267,15 +285,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
                 // Triggered only when new data needs to be appended to the list
 
-                if (actionFocus) {
-
-                    fetchReports(5, page, complexQuery, false);
-
-                } else {
-
-                    fetchReports(5, page, buildQuery(true, "report", null), false);
-
-                }
+                fetchPosts(5, page, mMasterQuery, false);
 
                 return true; // ONLY if more data is actually being loaded; false otherwise.
 
@@ -343,13 +353,39 @@ public class TerritoryActivity extends AppCompatActivity {
 
         };
 
-        backArrow.setOnClickListener(new View.OnClickListener()
-
-        {
+        backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
+        });
+
+    }
+
+    protected void generateQueries() {
+
+        // Count reports with actions
+
+        mActionQuery = buildQuery(true, "report", new Object[][]{
+                {"state", "eq", "closed"}
+        });
+
+        // Count reports with stories
+
+        mStoryQuery = buildQuery(true, "report", new Object[][]{
+                {"social", "any", new QueryFilter("report_id", "is_not_null", null)}
+        });
+
+        // Count reports with likes
+
+        mLikeQuery = buildQuery(true, "report", new Object[][]{
+                {"likes", "any", new QueryFilter("report_id", "is_not_null", null)}
+        });
+
+        // Count reports with comments
+
+        mCommentQuery = buildQuery(true, "report", new Object[][]{
+                {"comments", "any", new QueryFilter("report_id", "is_not_null", null)}
         });
 
     }
@@ -513,7 +549,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
         fblPostCount = (FlexboxLayout) header.findViewById(R.id.postCount);
 
-        fblActionCount = (FlexboxLayout) header.findViewById(R.id.actionCount);
+//        fblActionCount = (FlexboxLayout) header.findViewById(R.id.actionCount);
 
         fblGroupCount = (FlexboxLayout) header.findViewById(R.id.groupCount);
 
@@ -526,6 +562,21 @@ public class TerritoryActivity extends AppCompatActivity {
         profileMeta = (FlexboxLayout) header.findViewById(R.id.profileMeta);
 
         profileStats = (LinearLayout) header.findViewById(R.id.profileStats);
+
+        fblFilterGroup = (FlexboxLayout) header.findViewById(R.id.filterGroup);
+
+        tvFilterCategory = (TextView) header.findViewById(R.id.filterCategory);
+
+        fblFilterGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                TimelineFilterDialog timelineFilterDialog = new TimelineFilterDialog();
+
+                timelineFilterDialog.show(getSupportFragmentManager(), "timeline-filter-dialog");
+
+            }
+        });
 
         try {
 
@@ -546,36 +597,6 @@ public class TerritoryActivity extends AppCompatActivity {
 
         // Attach click listeners to stat elements
 
-        fblPostCount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                resetStats();
-
-            }
-        });
-
-        fblActionCount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                actionFocus = true;
-
-                actionCountLabel.setTextColor(ContextCompat.getColor(mContext, R.color.splash_blue));
-
-                postCountLabel.setTextColor(ContextCompat.getColor(mContext, R.color.material_blue_grey950));
-
-                if (timeLine != null) {
-
-                    timeLine.setSelection(0);
-
-                }
-
-                fetchReports(5, 1, complexQuery, true);
-
-            }
-        });
-
         fblGroupCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -595,19 +616,19 @@ public class TerritoryActivity extends AppCompatActivity {
 
     }
 
-    private void resetStats() {
-
-        postCountLabel.setTextColor(ContextCompat.getColor(TerritoryActivity.this, R.color.base_blue));
-
-        actionCountLabel.setTextColor(ContextCompat.getColor(TerritoryActivity.this, R.color.material_blue_grey950));
-
-        actionFocus = false;
-
-//        timeLineContainer.setRefreshing(true);
-
-        fetchReports(5, 1, buildQuery(true, "report", null), true);
-
-    }
+//    private void resetStats() {
+//
+//        postCountLabel.setTextColor(ContextCompat.getColor(TerritoryActivity.this, R.color.base_blue));
+//
+//        actionCountLabel.setTextColor(ContextCompat.getColor(TerritoryActivity.this, R.color.material_blue_grey950));
+//
+//        actionFocus = false;
+//
+////        timeLineContainer.setRefreshing(true);
+//
+//        fetchPosts(5, 1, buildQuery(true, "report", null), true);
+//
+//    }
 
     protected void countReports(String query, final String filterName) {
 
@@ -627,7 +648,7 @@ public class TerritoryActivity extends AppCompatActivity {
                 switch (filterName) {
                     case "state":
                         if (count > 0) {
-                            fblActionCount.setVisibility(View.VISIBLE);
+//                            fblActionCount.setVisibility(View.VISIBLE);
                             actionCount = count;
                             actionCountLabel.setText(String.format("%s %s", actionCount, resources.getQuantityString(R.plurals.action_label, actionCount, actionCount)).toLowerCase());
                         }
@@ -731,7 +752,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
     }
 
-    private String buildQuery(boolean order, String collection, String[][] optionalFilters) {
+    private String buildQuery(boolean order, String collection, Object[][] optionalFilters) {
 
         List<QuerySort> queryOrder = null;
 
@@ -751,7 +772,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
         if (collection.equals("group")) {
 
-            QueryFilter territoryFilter = new QueryFilter("huc_8_name", "eq", territory.properties.huc_8_name);
+            QueryFilter territoryFilter = new QueryFilter("huc_8_code", "eq", territory.properties.huc_8_code);
 
             QueryFilter complexVal = new QueryFilter("territory", "has", territoryFilter);
 
@@ -761,7 +782,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
         } else {
 
-            QueryFilter complexVal = new QueryFilter("huc_8_name", "eq", territory.properties.huc_8_name);
+            QueryFilter complexVal = new QueryFilter("huc_8_code", "eq", territory.properties.huc_8_code);
 
             QueryFilter territoryFilter = new QueryFilter("territory", "has", complexVal);
 
@@ -769,9 +790,9 @@ public class TerritoryActivity extends AppCompatActivity {
 
             if (optionalFilters != null) {
 
-                for (String[] filterComponents : optionalFilters) {
+                for (Object[] filterComponents : optionalFilters) {
 
-                    QueryFilter optionalFilter = new QueryFilter(filterComponents[0], filterComponents[1], filterComponents[2]);
+                    QueryFilter optionalFilter = new QueryFilter(((String) filterComponents[0]), ((String) filterComponents[1]), filterComponents[2]);
 
                     queryFilters.add(optionalFilter);
 
@@ -789,7 +810,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
     }
 
-    private void fetchReports(int limit, final int page, String query, final boolean refresh) {
+    private void fetchPosts(int limit, final int page, String query, final boolean refresh) {
 
         final String accessToken = prefs.getString("access_token", "");
 
@@ -810,11 +831,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
                 Log.v("list", reports.toString());
 
-                if (reportCount == 99999999) {
-
-                    reportCount = featureCollection.getProperties().num_results;
-
-                }
+                if (refresh) reportCount = featureCollection.getProperties().num_results;
 
                 if (reportCount > 0) {
 
@@ -829,7 +846,7 @@ public class TerritoryActivity extends AppCompatActivity {
 
                 }
 
-                if (refresh || reportCollection.isEmpty()) {
+                if (refresh) {
 
                     reportCollection.clear();
 
@@ -840,6 +857,8 @@ public class TerritoryActivity extends AppCompatActivity {
                     try {
 
                         timelineAdapter.notifyDataSetChanged();
+
+                        timeLine.smoothScrollToPosition(0);
 
                     } catch (NullPointerException e) {
 
@@ -942,6 +961,91 @@ public class TerritoryActivity extends AppCompatActivity {
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
+    }
+
+    @Override
+    public void filterAll() {
+
+        if (timeLine != null) {
+
+            timeLine.setSelection(0);
+
+        }
+
+        tvFilterCategory.setText("");
+
+        mMasterQuery = buildQuery(true, "report", null);
+
+        fetchPosts(5, 1, mMasterQuery, true);
+
+    }
+
+    @Override
+    public void filterOnActions() {
+
+        if (timeLine != null) {
+
+            timeLine.setSelection(0);
+
+        }
+
+        tvFilterCategory.setText(resources.getString(R.string.filter_category_actions));
+
+        mMasterQuery = mActionQuery;
+
+        fetchPosts(5, 1, mActionQuery, true);
+
+    }
+
+    @Override
+    public void filterOnLikes() {
+
+        if (timeLine != null) {
+
+            timeLine.setSelection(0);
+
+        }
+
+        tvFilterCategory.setText(resources.getString(R.string.filter_category_likes));
+
+        mMasterQuery = mLikeQuery;
+
+        fetchPosts(5, 1, mLikeQuery, true);
+
+    }
+
+    @Override
+    public void filterOnComments() {
+
+        if (timeLine != null) {
+
+            timeLine.setSelection(0);
+
+        }
+
+        tvFilterCategory.setText(resources.getString(R.string.filter_category_comments));
+
+        mMasterQuery = mCommentQuery;
+
+        fetchPosts(5, 1, mCommentQuery, true);
+
+    }
+
+    @Override
+    public void filterOnStories() {
+
+        if (timeLine != null) {
+
+            timeLine.setSelection(0);
+
+        }
+
+        tvFilterCategory.setText(resources.getString(R.string.filter_category_stories));
+
+        mMasterQuery = mStoryQuery;
+
+        fetchPosts(5, 1, mStoryQuery, true);
+
     }
 
     @Override

@@ -63,6 +63,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import retrofit.Callback;
@@ -77,52 +78,6 @@ import static android.content.Context.MODE_PRIVATE;
  */
 
 public class TimelineAdapterHelpers {
-
-    // Build post query
-
-    public String buildPostQuery(boolean order, String relation, String[][] optionalFilters) {
-
-        List<QuerySort> queryOrder = null;
-
-        List<Object> queryFilters = new ArrayList<>();
-
-        // Create order_by list and add a sort parameter
-
-        if (order) {
-
-            queryOrder = new ArrayList<QuerySort>();
-
-            QuerySort querySort = new QuerySort("created", "desc");
-
-            queryOrder.add(querySort);
-
-        }
-
-        QueryFilter complexVal = new QueryFilter("huc_8_name", "eq", territory.properties.huc_8_name);
-
-        QueryFilter territoryFilter = new QueryFilter("territory", "has", complexVal);
-
-        queryFilters.add(territoryFilter);
-
-        if (optionalFilters != null) {
-
-            for (String[] filterComponents : optionalFilters) {
-
-                QueryFilter optionalFilter = new QueryFilter(filterComponents[0], filterComponents[1], filterComponents[2]);
-
-                queryFilters.add(optionalFilter);
-
-            }
-
-        }
-
-        // Create query string from new QueryParams
-
-        QueryParams queryParams = new QueryParams(queryFilters, queryOrder);
-
-        return new Gson().toJson(queryParams);
-
-    }
 
     // Check post ownership
 

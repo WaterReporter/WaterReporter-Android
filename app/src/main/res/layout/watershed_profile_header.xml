@@ -5,6 +5,7 @@
     android:id="@+id/activity_user_profile"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:minHeight="320dp"
     android:orientation="vertical">
 
@@ -108,34 +109,34 @@
 
                 </com.google.android.flexbox.FlexboxLayout>
 
-                <com.google.android.flexbox.FlexboxLayout
-                    android:id="@+id/actionCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/watershed_gradient_overlay"
-                    android:visibility="gone"
-                    app:alignItems="center"
-                    app:justifyContent="center"
-                    app:layout_flexGrow="0"
-                    app:layout_flexShrink="0">
+                <!--<com.google.android.flexbox.FlexboxLayout-->
+                <!--android:id="@+id/actionCount"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="@drawable/watershed_gradient_overlay"-->
+                <!--android:visibility="gone"-->
+                <!--app:alignItems="center"-->
+                <!--app:justifyContent="center"-->
+                <!--app:layout_flexGrow="0"-->
+                <!--app:layout_flexShrink="0">-->
 
-                    <ImageView
-                        android:id="@+id/actionIconView"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/ic_verified_user_black_24dp" />
+                <!--<ImageView-->
+                <!--android:id="@+id/actionIconView"-->
+                <!--android:layout_width="24dp"-->
+                <!--android:layout_height="24dp"-->
+                <!--android:scaleType="fitXY"-->
+                <!--android:src="@drawable/ic_verified_user_black_24dp" />-->
 
-                    <TextView
-                        android:id="@+id/actionCountLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="start|center_vertical"
-                        android:padding="8dp"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
+                <!--<TextView-->
+                <!--android:id="@+id/actionCountLabel"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:gravity="start|center_vertical"-->
+                <!--android:padding="8dp"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:textSize="16sp" />-->
 
-                </com.google.android.flexbox.FlexboxLayout>
+                <!--</com.google.android.flexbox.FlexboxLayout>-->
 
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/groupCount"
@@ -188,6 +189,50 @@
         <!--app:useCompatPadding="true" />-->
 
         <!--</RelativeLayout>-->
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/filterGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:background="@color/gray_250.50.52"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        app:alignContent="center"
+        app:alignItems="center"
+        app:flexDirection="row"
+        app:flexWrap="nowrap"
+        app:justifyContent="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0.6"
+            android:text="Filters"
+            android:textAllCaps="true"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/filterCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:textColor="@color/splash_blue"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/filterIconView"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:alpha="0.4"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_filter_list_black_24dp" />
 
     </com.google.android.flexbox.FlexboxLayout>
 
