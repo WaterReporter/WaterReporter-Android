@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 
-import com.viableindustries.waterreporter.MapDetailActivity;
 import com.viableindustries.waterreporter.TerritoryMapActivity;
-import com.viableindustries.waterreporter.UserProfileActivity;
 
 /**
  * Created by brendanmcintyre on 8/1/17.

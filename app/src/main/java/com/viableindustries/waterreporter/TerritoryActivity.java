@@ -50,6 +50,7 @@ import com.viableindustries.waterreporter.data.QueryFilter;
 import com.viableindustries.waterreporter.data.QueryParams;
 import com.viableindustries.waterreporter.data.QuerySort;
 import com.viableindustries.waterreporter.data.Report;
+import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.Territory;
 import com.viableindustries.waterreporter.data.TerritoryHolder;
@@ -192,6 +193,7 @@ public class TerritoryActivity extends AppCompatActivity {
         accessMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ReportHolder.setReport(null);
                 startActivity(new Intent(TerritoryActivity.this, TerritoryMapActivity.class));
             }
         });

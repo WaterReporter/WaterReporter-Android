@@ -5,10 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
-import android.util.Log;
 import android.view.View;
-
-import com.viableindustries.waterreporter.MapDetailActivity;
 
 import java.util.List;
 

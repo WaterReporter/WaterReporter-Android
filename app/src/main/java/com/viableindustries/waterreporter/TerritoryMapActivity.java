@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +20,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -89,6 +92,9 @@ public class TerritoryMapActivity extends AppCompatActivity {
     @Bind(R.id.postList)
     RecyclerView postList;
 
+    @Bind(R.id.locationIconView)
+    ImageView locationIcon;
+
     private MapboxMap mMapboxMap;
 
     private MappedReportsHolder mappedReportsHolder;
@@ -101,9 +107,9 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     private Context mContext;
 
-    private Territory territory;
+    private Territory mTerritory;
 
-    private Report post;
+    private Report mPost;
 
     private SharedPreferences prefs;
 
@@ -139,10 +145,10 @@ public class TerritoryMapActivity extends AppCompatActivity {
         mappedReportsHolder = new MappedReportsHolder();
 
         // Retrieve stored Territory
-        territory = TerritoryHolder.getTerritory();
+        mTerritory = TerritoryHolder.getTerritory();
 
         // Retrieve stored Report
-        post = ReportHolder.getReport();
+        mPost = ReportHolder.getReport();
 
         // RecyclerView
 
@@ -231,7 +237,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     protected void setActionBarTitle() {
 
-        territoryNameText = AttributeTransformUtility.parseWatershedName(territory, false);
+        territoryNameText = AttributeTransformUtility.parseWatershedName(mTerritory, false);
 
         actionBarTitle.setText(territoryNameText);
 
@@ -245,7 +251,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
             List<Report> posts = new ArrayList<>();
 
-            posts.add(post);
+            posts.add(mPost);
 
             onFetchSuccess(posts);
 
@@ -263,26 +269,27 @@ public class TerritoryMapActivity extends AppCompatActivity {
         fetchGeometry();
 
         // Load other posts in the watershed
-        fetchReports(5, 1, buildQuery(true, "report", null), false);
+        fetchPosts(50, 1, buildQuery(true, "report", null), false);
 
         // Set action bar title
         setActionBarTitle();
+
     }
 
     protected void fetchGeometry() {
 
-        TerritoryHelpers.fetchTerritoryGeometry(mContext, territory, new TerritoryGeometryCallbacks() {
+        TerritoryHelpers.fetchTerritoryGeometry(mContext, mTerritory, new TerritoryGeometryCallbacks() {
 
             @Override
             public void onSuccess(@NonNull HucFeature hucFeature) {
 
                 Log.v("huc-feature", hucFeature.toString());
 
-                LatLng southWest = new LatLng(hucFeature.properties.bounds.get(1), hucFeature.properties.bounds.get(0));
-                LatLng northEast = new LatLng(hucFeature.properties.bounds.get(3), hucFeature.properties.bounds.get(2));
-
-                latLngs.add(southWest);
-                latLngs.add(northEast);
+//                LatLng southWest = new LatLng(hucFeature.properties.bounds.get(1), hucFeature.properties.bounds.get(0));
+//                LatLng northEast = new LatLng(hucFeature.properties.bounds.get(3), hucFeature.properties.bounds.get(2));
+//
+//                latLngs.add(southWest);
+//                latLngs.add(northEast);
 
                 actionBarSubtitle.setText(hucFeature.properties.states.concat);
 
@@ -330,7 +337,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
         }
 
-        QueryFilter complexVal = new QueryFilter("huc_8_name", "eq", territory.properties.huc_8_name);
+        QueryFilter complexVal = new QueryFilter("huc_8_name", "eq", mTerritory.properties.huc_8_name);
 
         QueryFilter territoryFilter = new QueryFilter("territory", "has", complexVal);
 
@@ -356,7 +363,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     }
 
-    private void fetchReports(int limit, final int page, String query, final boolean refresh) {
+    private void fetchPosts(int limit, final int page, String query, final boolean refresh) {
 
         final String accessToken = prefs.getString("access_token", "");
 
@@ -408,10 +415,21 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     }
 
-    private void onFetchSuccess(List<Report> reports) {
+    private int getIndexById(List<Report> posts, int postId) {
+
+        for (Report _post : posts) {
+
+            if (_post.id == postId) return posts.indexOf(_post);
+        }
+
+        return -1;
+
+    }
+
+    private void onFetchSuccess(List<Report> posts) {
 
         // specify an adapter (see also next example)
-        mAdapter = new MarkerCardAdapter(this, reports);
+        mAdapter = new MarkerCardAdapter(this, posts);
 
         try {
 
@@ -427,7 +445,15 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
         int idx = 0;
 
-        for (Report report : reports) {
+        if (posts.size() > 1) {
+
+            locationIcon.setVisibility(View.VISIBLE);
+
+            locationIcon.setColorFilter(ContextCompat.getColor(mContext, R.color.orange_red_bias_orange), PorterDuff.Mode.SRC_ATOP);
+
+        }
+
+        for (Report report : posts) {
 
             Geometry geometry = report.geometry.geometries.get(0);
 
@@ -453,7 +479,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
         }
 
         // Move camera to watershed bounds
-        if (latLngs.size() > 1) {
+        if (latLngs.size() > 1 && mPost == null) {
 
             LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(latLngs).build();
 
@@ -470,6 +496,14 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
             mMapboxMap.animateCamera(CameraUpdateFactory
                     .newCameraPosition(position), 500);
+
+        }
+
+        if (mPost != null) {
+
+            int targetPosition = getIndexById(posts, mPost.id);
+
+            mLayoutManager.scrollToPositionWithOffset(targetPosition, 0);
 
         }
 

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.view.View;
 
 import com.viableindustries.waterreporter.CommentActivity;
-import com.viableindustries.waterreporter.MapDetailActivity;
 
 /**
  * Created by brendanmcintyre on 8/1/17.

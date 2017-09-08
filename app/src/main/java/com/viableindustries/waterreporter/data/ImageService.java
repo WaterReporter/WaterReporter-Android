@@ -28,6 +28,12 @@ public interface ImageService {
             (@Header("Authorization") String authorization,
              @Part("image") TypedFile photo);
 
+    @Multipart
+    @POST("/media/image")
+    void postImageAsync
+            (@Header("Authorization") String authorization,
+             @Part("image") TypedFile photo,
+             Callback<ImageProperties> imagePropertiesCallback);
 //    @Multipart
 //    @POST("/media/image")
 //    ReportPhoto postImage

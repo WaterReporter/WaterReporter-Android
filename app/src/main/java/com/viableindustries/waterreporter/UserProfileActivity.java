@@ -211,7 +211,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
             timeLineContainer.setRefreshing(true);
 
-            fetchReports(5, 1, buildQuery(true, null), false);
+            fetchPosts(5, 1, buildQuery(true, null), false);
 
         }
 
@@ -223,11 +223,11 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                 if (actionFocus) {
 
-                    fetchReports(5, page, complexQuery, false);
+                    fetchPosts(5, page, complexQuery, false);
 
                 } else {
 
-                    fetchReports(5, page, buildQuery(true, null), false);
+                    fetchPosts(5, page, buildQuery(true, null), false);
 
                 }
 
@@ -396,7 +396,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                 timeLineContainer.setRefreshing(true);
 
-                fetchReports(5, 1, complexQuery, true);
+                fetchPosts(5, 1, complexQuery, true);
 
             }
         });
@@ -615,7 +615,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     }
 
-    public void fetchReports(int limit, final int page, String query, final boolean refresh) {
+    public void fetchPosts(int limit, final int page, String query, final boolean refresh) {
 
         final String accessToken = prefs.getString("access_token", "");
 
@@ -749,7 +749,13 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
             timeLine.setAdapter(timelineAdapter);
 
-            attachScrollListener();
+            /* IMPORTANT
+            Don't set a scroll listener unless necessary,
+            otherwise it may trigger infinite API requests
+            when empty collection messages overflow the screen.
+            */
+
+            if (list.size() > 1) attachScrollListener();
 
         }
 
@@ -773,7 +779,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         timeLineContainer.setRefreshing(true);
 
-        fetchReports(5, 1, buildQuery(true, null), true);
+        fetchPosts(5, 1, buildQuery(true, null), true);
 
     }
 

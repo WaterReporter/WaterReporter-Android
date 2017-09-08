@@ -20,6 +20,29 @@
             android:layout_height="match_parent"
             mapbox:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v9" />
 
+        <ImageView
+            android:id="@+id/locationIconView"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="18dp"
+            android:contentDescription="Location icon"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_location_on_white_24dp"
+            android:visibility="gone" />
+
+        <!--<View-->
+            <!--android:id="@+id/currentPositionIndicator"-->
+            <!--android:layout_width="8dp"-->
+            <!--android:layout_height="8dp"-->
+            <!--android:layout_gravity="bottom|start"-->
+            <!--android:layout_marginBottom="176dp"-->
+            <!--android:layout_marginEnd="0dp"-->
+            <!--android:layout_marginLeft="64dp"-->
+            <!--android:layout_marginRight="0dp"-->
+            <!--android:layout_marginStart="64dp"-->
+            <!--android:background="@drawable/current_post_position_indicator" />-->
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/postList"
             android:layout_width="match_parent"
@@ -28,8 +51,10 @@
             android:layout_marginBottom="48dp"
             android:background="@android:color/transparent"
             android:orientation="horizontal"
+            android:paddingEnd="0dp"
             android:paddingLeft="8dp"
-            android:paddingRight="0dp" />
+            android:paddingRight="0dp"
+            android:paddingStart="8dp" />
 
         <fragment
             android:id="@+id/navigationFragment"
