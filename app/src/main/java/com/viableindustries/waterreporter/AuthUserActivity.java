@@ -193,6 +193,8 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
     // An instance of the status broadcast receiver
     private UploadStateReceiver mUploadStateReceiver;
 
+    private String CLASS_TAG = "MainActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -880,9 +882,40 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
             @Override
             public void onReceive(Context context, Intent intent) {
 
-                String storedPost = intent.getStringExtra("stored_post");
+//                String storedPost = intent.getStringExtra("stored_post");
+//
+//                if (storedPost != null && !storedPost.isEmpty()) afterPostSend();
 
-                if (storedPost != null && !storedPost.isEmpty()) sendFullPost(intent);
+             /*
+             * Gets the status from the Intent's extended data, and chooses the appropriate action
+             */
+                switch (intent.getIntExtra(Constants.EXTENDED_DATA_STATUS,
+                        Constants.STATE_ACTION_COMPLETE)) {
+                    // Logs "started" state
+                    case Constants.STATE_ACTION_STARTED:
+                        //
+                        break;
+                    // Logs "connecting to network" state
+                    case Constants.STATE_ACTION_CONNECTING:
+                        //
+                        break;
+                    // Logs "parsing the RSS feed" state
+                    case Constants.STATE_ACTION_PARSING:
+                        //
+                        break;
+                    // Logs "Writing the parsed data to the content provider" state
+                    case Constants.STATE_ACTION_WRITING:
+                        //
+                        break;
+                    // Starts displaying data when the RSS download is complete
+                    case Constants.STATE_ACTION_COMPLETE:
+                        // Logs the status
+                        Log.d(CLASS_TAG, "State: COMPLETE");
+                        afterPostSend();
+                        break;
+                    default:
+                        break;
+                }
 
             }
         };
@@ -894,63 +927,12 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
     }
 
-    protected void sendFullPost(Intent intent) {
+    private void afterPostSend() {
 
-        // Gets data from the incoming Intent
-        Bundle extras = intent.getExtras();
-
-        String storedPost = extras.getString("stored_post");
-
-        Log.d("Stored post", storedPost);
-
-        int imageId = extras.getInt("image_id", 0);
-
-        Log.d("image id", imageId + "");
-
-        if (imageId > 0) {
-
-            List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
-
-            // Retrieve the image id and create a new report
-
-            final Map<String, Integer> image_id = new HashMap<String, Integer>();
-
-            image_id.put("id", imageId);
-
-            images.add(image_id);
-
-            if (!storedPost.isEmpty()) {
-
-                ReportPostBody reportPostBody = new Gson().fromJson(storedPost, ReportPostBody.class);
-
-                reportPostBody.images = images;
-
-                ApiDispatcher.sendFullPost(mAccessToken, reportPostBody, new SendPostCallbacks() {
-
-                    @Override
-                    public void onSuccess(@NonNull Report post) {
-                        ApiDispatcher.setTransmissionActive(mSharedPreferences, false);
-                        uploadProgress.setVisibility(View.GONE);
-//                        resetStats();
-                        fetchReports(5, 1, buildQuery(true, null), true);
-                    }
-
-                    @Override
-                    public void onError(@NonNull RetrofitError error) {
-                        CharSequence text =
-                                "Error saving post. Please try again later.";
-
-                        Toast toast = Toast.makeText(getBaseContext(), text,
-                                Toast.LENGTH_SHORT);
-
-                        toast.show();
-                    }
-
-                });
-
-            }
-
-        }
+        ApiDispatcher.setTransmissionActive(mSharedPreferences, false);
+        mSharedPreferences.edit().putInt("PENDING_IMAGE_ID", 0).apply();
+        uploadProgress.setVisibility(View.GONE);
+        fetchReports(5, 1, buildQuery(true, null), true);
 
     }
 

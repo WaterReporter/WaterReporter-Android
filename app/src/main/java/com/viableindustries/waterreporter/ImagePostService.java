@@ -1,11 +1,21 @@
 package com.viableindustries.waterreporter;
 
 import android.app.IntentService;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v7.app.NotificationCompat;
 
+import com.google.gson.Gson;
 import com.viableindustries.waterreporter.data.ImageProperties;
 import com.viableindustries.waterreporter.data.ImageService;
+import com.viableindustries.waterreporter.data.Report;
+import com.viableindustries.waterreporter.data.ReportPostBody;
+import com.viableindustries.waterreporter.data.ReportService;
 
 import java.io.File;
 import java.net.FileNameMap;
@@ -18,6 +28,8 @@ import retrofit.mime.TypedFile;
  */
 
 public class ImagePostService extends IntentService {
+
+    public static final int NOTIFICATION_ID = 1;
 
     // Defines and instantiates an object for handling status updates.
     private BroadcastNotifier mBroadcaster = new BroadcastNotifier(this);
@@ -54,8 +66,58 @@ public class ImagePostService extends IntentService {
 
         ImageProperties imageProperties = imageService.postImage(accessToken, typedPhoto);
 
+//        SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences(getPackageName(), MODE_PRIVATE);
+//        sharedPreferences.edit().putInt("PENDING_IMAGE_ID", imageProperties.id).apply();
+
+        ReportPostBody reportPostBody = new Gson().fromJson(storedPost, ReportPostBody.class);
+
+        reportPostBody.images = AttributeTransformUtility.buildImageRelation(imageProperties.id);
+
+        Report post = ReportService.restAdapter.create(ReportService.class).postReportSync(accessToken, "application/json", reportPostBody);
+
+        SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        sharedPreferences.edit().putInt("POST_SAVED_VIA_SERVICE", post.id).apply();
+
+        sendNotification(post);
+
         // Reports that the image upload is complete.
-        mBroadcaster.broadcastIntentWithState(Constants.STATE_ACTION_COMPLETE, imageProperties.id, storedPost);
+        mBroadcaster.broadcastIntentWithState(Constants.STATE_ACTION_COMPLETE);
+
+    }
+
+    private void sendNotification(Report post) {
+
+        String msg;
+
+        String watershedName = AttributeTransformUtility.parseWatershedName(post.properties.territory, false);
+
+        if (watershedName.startsWith("Watershed")) {
+
+            msg = "Finished syncing your post in an unknown watershed.";
+
+        } else {
+
+            msg = String.format("Finished syncing your post in the %s watershed.", watershedName);
+
+        }
+
+        NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
+
+        NotificationCompat.Builder b = new NotificationCompat.Builder(this);
+
+        b.setAutoCancel(true)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setContentTitle("Water Reporter")
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
+                .setContentText(msg)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_sync_white_24dp))
+                .setSmallIcon(R.drawable.ic_sync_white_24dp);
+
+        b.setContentIntent(contentIntent);
+
+        mNotificationManager.notify(NOTIFICATION_ID, b.build());
 
     }
 

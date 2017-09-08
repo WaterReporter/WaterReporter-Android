@@ -2,6 +2,7 @@ package com.viableindustries.waterreporter;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.format.DateUtils;
 import android.view.Window;
@@ -13,15 +14,32 @@ import com.viableindustries.waterreporter.data.Territory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by brendanmcintyre on 8/8/16.
  */
 
 public class AttributeTransformUtility {
+
+    public static List<Map<String, Integer>> buildImageRelation(int imageId) {
+
+        List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
+
+        final Map<String, Integer> imageObject = new HashMap<>();
+
+        imageObject.put("id", imageId);
+
+        images.add(imageObject);
+
+        return images;
+
+    }
 
     public static int getStatusBarHeight(Resources resources) {
         int result = 0;

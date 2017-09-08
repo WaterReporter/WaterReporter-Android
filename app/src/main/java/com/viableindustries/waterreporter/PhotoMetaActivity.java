@@ -1279,6 +1279,8 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             mSharedPreferences.edit().putString(storedPostKey, storedPost).apply();
 
+            mSharedPreferences.edit().putString("PENDING_POST_BODY", storedPost).apply();
+
             Intent postImageIntent = new Intent(mContext, ImagePostService.class);
             postImageIntent.putExtra("file_path", filePath);
             postImageIntent.putExtra("access_token", accessToken);
@@ -1289,7 +1291,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             mContext.startService(postImageIntent);
 
-            mSharedPreferences.edit().putBoolean("IMAGE_ID_RECEIVED", false).apply();
+//            mSharedPreferences.edit().putInt("PENDING_IMAGE_ID", 0).apply();
 
             ApiDispatcher.setTransmissionActive(mSharedPreferences, true);
 

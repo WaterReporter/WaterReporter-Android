@@ -29,75 +29,81 @@ import retrofit.http.Query;
  */
 public interface ReportService {
 
-    final String ENDPOINT = "https://api.waterreporter.org/v2";
+    String ENDPOINT = "https://api.waterreporter.org/v2";
 
-    public static RestAdapter restAdapter = new RestAdapter.Builder()
+    RestAdapter restAdapter = new RestAdapter.Builder()
             .setLogLevel(RestAdapter.LogLevel.BASIC)
             .setEndpoint(ENDPOINT)
             .build();
 
     @GET("/data/report")
-    public void getReports(@Header("Authorization") String authorization,
+    void getReports(@Header("Authorization") String authorization,
+                    @Header("Content-Type") String contentType,
+                    @Query("page") int page,
+                    @Query("results_per_page") int numResults,
+                    @Query("q") String q,
+                    Callback<FeatureCollection> featureCollectionCallback);
+
+    @GET("/data/report/{report}")
+    void getSingleReport(@Header("Authorization") String authorization,
+                         @Header("Content-Type") String contentType,
+                         @Path("report") int reportId,
+                         Callback<Report> report);
+
+    @PATCH("/data/report/{report}")
+    void setReportState(@Header("Authorization") String authorization,
+                        @Header("Content-Type") String contentType,
+                        @Path("report") int reportId,
+                        @Body ReportStateBody reportStateBody,
+                        Callback<Report> report);
+
+    @PATCH("/data/report/{report}")
+    void updateReport(@Header("Authorization") String authorization,
+                      @Header("Content-Type") String contentType,
+                      @Path("report") int reportId,
+                      @Body ReportPatchBody reportPatchBody,
+                      Callback<Report> report);
+
+    @GET("/data/report/{report}/groups")
+    void getReportGroups(@Header("Authorization") String authorization,
+                         @Header("Content-Type") String contentType,
+                         @Path("report") int reportId,
+                         Callback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
+
+    @GET("/data/report/{report}/comments")
+    void getReportComments(@Header("Authorization") String authorization,
                            @Header("Content-Type") String contentType,
+                           @Path("report") int reportId,
                            @Query("page") int page,
                            @Query("results_per_page") int numResults,
                            @Query("q") String q,
-                           Callback<FeatureCollection> featureCollectionCallback);
-
-    @GET("/data/report/{report}")
-    public void getSingleReport(@Header("Authorization") String authorization,
-                                @Header("Content-Type") String contentType,
-                                @Path("report") int reportId,
-                                Callback<Report> report);
-
-    @PATCH("/data/report/{report}")
-    public void setReportState(@Header("Authorization") String authorization,
-                               @Header("Content-Type") String contentType,
-                               @Path("report") int reportId,
-                               @Body ReportStateBody reportStateBody,
-                               Callback<Report> report);
-
-    @PATCH("/data/report/{report}")
-    public void updateReport(@Header("Authorization") String authorization,
-                               @Header("Content-Type") String contentType,
-                               @Path("report") int reportId,
-                               @Body ReportPatchBody reportPatchBody,
-                               Callback<Report> report);
-
-    @GET("/data/report/{report}/groups")
-    public void getReportGroups(@Header("Authorization") String authorization,
-                                @Header("Content-Type") String contentType,
-                                @Path("report") int reportId,
-                                Callback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
-
-    @GET("/data/report/{report}/comments")
-    public void getReportComments(@Header("Authorization") String authorization,
-                                  @Header("Content-Type") String contentType,
-                                  @Path("report") int reportId,
-                                  @Query("page") int page,
-                                  @Query("results_per_page") int numResults,
-                                  @Query("q") String q,
-                                  Callback<CommentCollection> commentCollectionCallback);
+                           Callback<CommentCollection> commentCollectionCallback);
 
     @GET("/data/report/{report}/likes")
-    public void getPostLikes(@Header("Authorization") String authorization,
-                                  @Header("Content-Type") String contentType,
-                                  @Path("report") int reportId,
-                                  @Query("page") int page,
-                                  @Query("results_per_page") int numResults,
-                                  @Query("q") String q,
-                                  Callback<FavoriteCollection> favoriteCollectionCallback);
+    void getPostLikes(@Header("Authorization") String authorization,
+                      @Header("Content-Type") String contentType,
+                      @Path("report") int reportId,
+                      @Query("page") int page,
+                      @Query("results_per_page") int numResults,
+                      @Query("q") String q,
+                      Callback<FavoriteCollection> favoriteCollectionCallback);
 
     @POST("/data/report")
-    public void postReport
+    void postReport
             (@Header("Authorization") String authorization,
              @Header("Content-Type") String contentType,
              @Body ReportPostBody reportPostBody,
              Callback<Report> cb);
 
+    @POST("/data/report")
+    Report postReportSync
+            (@Header("Authorization") String authorization,
+             @Header("Content-Type") String contentType,
+             @Body ReportPostBody reportPostBody);
+
     @DELETE("/data/report/{report}")
-    public void deleteSingleReport(@Header("Authorization") String authorization,
-                                   @Path("report") int reportId,
-                                   Callback<Response> responseCallback);
+    void deleteSingleReport(@Header("Authorization") String authorization,
+                            @Path("report") int reportId,
+                            Callback<Response> responseCallback);
 
 }

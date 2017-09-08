@@ -87,7 +87,7 @@ public class NavigationFragment extends Fragment {
 
                     timeline.setRefreshing(true);
 
-                    ((MainActivity) activity).requestData(5, 1, false, true);
+                    ((MainActivity) activity).fetchPosts(5, 1, false, true);
 
                 } else {
 
