@@ -106,11 +106,6 @@
         android:layout_height="0.5dp"
         android:background="@color/gray_232" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/gray_232" />
-
     <LinearLayout
         android:id="@+id/filterComments"
         android:layout_width="match_parent"

@@ -261,7 +261,7 @@ public class PostDetailActivity extends AppCompatActivity {
                         FillLayer layer = new FillLayer("geojson", "geojson");
 
                         layer.withProperties(
-                                fillColor("#4355b8"),
+                                fillColor("#9843c4"),
                                 fillOpacity(0.4f)
                         );
 

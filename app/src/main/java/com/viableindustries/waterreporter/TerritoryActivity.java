@@ -123,7 +123,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
     @Bind(R.id.timeline_items)
     ListView timeLine;
 
-    @Bind(R.id.accessMap)
+//    @Bind(R.id.accessMap)
     FloatingActionButton accessMap;
 
     protected TimelineAdapter timelineAdapter;
@@ -189,7 +189,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 //        mapButtonTopOffset = 320 - 28;
 
         float scale = getResources().getDisplayMetrics().density;
-        int mapButtonTopOffsetPixels = (int) (296 * scale);
+        mapButtonTopOffset = (int) (296 * scale);
 
         if (Build.VERSION.SDK_INT >= 19) {
 
@@ -197,24 +197,24 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
             int statusBarHeight = AttributeTransformUtility.getStatusBarHeight(resources);
 
-            mapButtonTopOffsetPixels -= statusBarHeight;
+            mapButtonTopOffset -= statusBarHeight;
 
         }
 
 //        float scale = getResources().getDisplayMetrics().density;
 //        final int mapButtonTopOffsetPixels = (int) (mapButtonTopOffset * scale);
 
-        accessMap.animate().y(mapButtonTopOffsetPixels).setDuration(250).start();
-
-        accessMap.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.splash_blue)));
-
-        accessMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ReportHolder.setReport(null);
-                startActivity(new Intent(TerritoryActivity.this, TerritoryMapActivity.class));
-            }
-        });
+//        accessMap.animate().y(mapButtonTopOffsetPixels).setDuration(250).start();
+//
+//        accessMap.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.splash_blue)));
+//
+//        accessMap.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                ReportHolder.setReport(null);
+//                startActivity(new Intent(TerritoryActivity.this, TerritoryMapActivity.class));
+//            }
+//        });
 
         territory = TerritoryHolder.getTerritory();
 
@@ -471,7 +471,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
                             FillLayer layer = new FillLayer("geojson", "geojson");
 
                             layer.withProperties(
-                                    fillColor("#4355b8"),
+                                    fillColor("#9843c4"),
                                     fillOpacity(0.4f)
                             );
 
@@ -524,6 +524,20 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
         ViewGroup header = (ViewGroup) inflater.inflate(R.layout.watershed_profile_header, timeLine, false);
 
         mapView = (MapView) header.findViewById(R.id.mapView);
+
+        accessMap = (FloatingActionButton) header.findViewById(R.id.accessMap);
+
+        accessMap.animate().y(mapButtonTopOffset).setDuration(1600).start();
+
+        accessMap.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.splash_blue)));
+
+        accessMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ReportHolder.setReport(null);
+                startActivity(new Intent(TerritoryActivity.this, TerritoryMapActivity.class));
+            }
+        });
 
         promptBlock = (LinearLayout) header.findViewById(R.id.promptBlock);
         promptMessage = (TextView) header.findViewById(R.id.prompt);
