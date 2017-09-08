@@ -497,24 +497,21 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
     protected void setReportCountState(int count) {
 
-//        reportCounter.setText(String.valueOf(reportCount));
-//        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
+        if (promptBlock != null) {
 
-        if (count < 1) {
-
-            if (promptBlock != null) {
+            if (count < 1) {
 
                 promptBlock.setVisibility(View.VISIBLE);
 
                 promptMessage.setText(getString(R.string.prompt_no_posts_watershed));
 
-                accessMap.setVisibility(View.GONE);
+            } else {
+
+                promptBlock.setVisibility(View.GONE);
+
+                promptMessage.setText("");
 
             }
-
-        } else {
-
-//            timeLine.setVisibility(View.VISIBLE);
 
         }
 
@@ -615,20 +612,6 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
         timeLine.addHeaderView(header, null, false);
 
     }
-
-//    private void resetStats() {
-//
-//        postCountLabel.setTextColor(ContextCompat.getColor(TerritoryActivity.this, R.color.base_blue));
-//
-//        actionCountLabel.setTextColor(ContextCompat.getColor(TerritoryActivity.this, R.color.material_blue_grey950));
-//
-//        actionFocus = false;
-//
-////        timeLineContainer.setRefreshing(true);
-//
-//        fetchPosts(5, 1, buildQuery(true, "report", null), true);
-//
-//    }
 
     protected void countReports(String query, final String filterName) {
 
@@ -833,18 +816,23 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
                 if (refresh) reportCount = featureCollection.getProperties().num_results;
 
+                setReportCountState(reportCount);
+
+                String countLabel;
+
                 if (reportCount > 0) {
 
                     fblPostCount.setVisibility(View.VISIBLE);
 
-                    String count = String.format("%s %s", reportCount, resources.getQuantityString(R.plurals.post_label, reportCount, reportCount)).toLowerCase();
-                    postCountLabel.setText(count);
+                    countLabel = String.format("%s %s", reportCount, resources.getQuantityString(R.plurals.post_label, reportCount, reportCount)).toLowerCase();
 
                 } else {
 
-                    setReportCountState(reportCount);
+                    countLabel = resources.getString(R.string.zero_posts);
 
                 }
+
+                postCountLabel.setText(countLabel);
 
                 if (refresh) {
 
