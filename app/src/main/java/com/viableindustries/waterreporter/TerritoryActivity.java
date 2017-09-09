@@ -43,6 +43,7 @@ import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.GroupListHolder;
 import com.viableindustries.waterreporter.data.HucFeature;
+import com.viableindustries.waterreporter.data.HucStates;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.data.OrganizationService;
@@ -426,8 +427,8 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
                                 latLngs.add(southWest);
                                 latLngs.add(northEast);
 
-                                territoryStates.setText(hucFeature.properties.states.concat);
-                                actionBarSubtitle.setText(hucFeature.properties.states.concat);
+//                                territoryStates.setText(hucFeature.properties.states.concat);
+//                                actionBarSubtitle.setText(hucFeature.properties.states.concat);
 
                                 // Move camera to watershed bounds
                                 LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(latLngs).build();
@@ -606,6 +607,9 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
         territoryName.setText(territoryNameText);
         actionBarTitle.setText(territoryNameText);
 
+        territoryStates.setText(HucStates.STATES.get(territory.properties.huc_8_code));
+        actionBarSubtitle.setText(HucStates.STATES.get(territory.properties.huc_8_code));
+
         // Attach click listeners to stat elements
 
         fblGroupCount.setOnClickListener(new View.OnClickListener() {
@@ -771,6 +775,8 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
                 if (refresh) reportCount = featureCollection.getProperties().num_results;
 
+                setReportCountState(reportCount);
+
                 String countLabel;
 
                 if (reportCount > 0) {
@@ -786,8 +792,6 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
                 }
 
                 postCountLabel.setText(countLabel);
-
-                setReportCountState(reportCount);
 
                 if (refresh) {
 

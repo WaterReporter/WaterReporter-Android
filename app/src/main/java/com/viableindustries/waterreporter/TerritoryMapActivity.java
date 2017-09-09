@@ -40,6 +40,7 @@ import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.HucFeature;
+import com.viableindustries.waterreporter.data.HucStates;
 import com.viableindustries.waterreporter.data.MappedReportsHolder;
 import com.viableindustries.waterreporter.data.QueryFilter;
 import com.viableindustries.waterreporter.data.QueryParams;
@@ -232,6 +233,8 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
         actionBarTitle.setText(territoryNameText);
 
+        actionBarSubtitle.setText(HucStates.STATES.get(mTerritory.properties.huc_8_code));
+
     }
 
     protected void nullWatershedFallback() {
@@ -256,57 +259,11 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     protected void setWatershedComponents() {
 
-        // Load GeoJSON data
-        fetchGeometry();
-
         // Load other posts in the watershed
         fetchPosts(50, 1, buildQuery(true, "report", null), false);
 
         // Set action bar title
         setActionBarTitle();
-
-    }
-
-    protected void fetchGeometry() {
-
-        TerritoryHelpers.fetchTerritoryGeometry(mContext, mTerritory, new TerritoryGeometryCallbacks() {
-
-            @Override
-            public void onSuccess(@NonNull HucFeature hucFeature) {
-
-                Log.v("huc-feature", hucFeature.toString());
-
-//                LatLng southWest = new LatLng(hucFeature.properties.bounds.get(1), hucFeature.properties.bounds.get(0));
-//                LatLng northEast = new LatLng(hucFeature.properties.bounds.get(3), hucFeature.properties.bounds.get(2));
-//
-//                latLngs.add(southWest);
-//                latLngs.add(northEast);
-
-                actionBarSubtitle.setText(hucFeature.properties.states.concat);
-
-            }
-
-            @Override
-            public void onError(@NonNull RetrofitError error) {
-
-                Response errorResponse = error.getResponse();
-
-                // If we have a valid response object, check the status code and redirect to log in view if necessary
-
-                if (errorResponse != null) {
-
-                    int status = errorResponse.getStatus();
-
-                    if (status == 403) {
-
-                        mContext.startActivity(new Intent(mContext, SignInActivity.class));
-
-                    }
-
-                }
-            }
-
-        });
 
     }
 
