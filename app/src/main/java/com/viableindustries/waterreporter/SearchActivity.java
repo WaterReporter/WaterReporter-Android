@@ -739,7 +739,10 @@ public class SearchActivity extends FragmentActivity {
 
         // Set ProgressBar appearance
 
-        progressBar.setIndeterminateDrawable(ContextCompat.getDrawable(this, R.drawable.blue_progress_compat));
+//        progressBar.setIndeterminateDrawable(ContextCompat.getDrawable(this, R.drawable.blue_progress_compat));
+
+        progressBar.getIndeterminateDrawable().setColorFilter(
+                ContextCompat.getColor(this, R.color.splash_blue), android.graphics.PorterDuff.Mode.SRC_IN);
 
         // Initialize empty list to hold organizations
 

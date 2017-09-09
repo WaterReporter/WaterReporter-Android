@@ -805,7 +805,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
                         timelineAdapter.notifyDataSetChanged();
 
-                        timeLine.smoothScrollToPosition(0);
+//                        timeLine.smoothScrollToPosition(0);
 
                     } catch (NullPointerException e) {
 
