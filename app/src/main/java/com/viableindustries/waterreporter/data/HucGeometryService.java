@@ -22,6 +22,6 @@ public interface HucGeometryService {
     @GET("/{code}")
     void getGeometry(@Header("Content-Type") String contentType,
                             @Path("code") String code,
-                            Callback<HucGeometryCollection> hucGeometryCollectionCallback);
+                            CancelableCallback<HucGeometryCollection> hucGeometryCollectionCallback);
 
 }

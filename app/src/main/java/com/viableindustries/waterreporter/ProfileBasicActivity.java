@@ -43,6 +43,7 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.AuthResponse;
 import com.viableindustries.waterreporter.data.CacheManager;
+import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.ImageProperties;
 import com.viableindustries.waterreporter.data.ImageService;
 import com.viableindustries.waterreporter.data.LogInBody;
@@ -284,9 +285,9 @@ public class ProfileBasicActivity extends AppCompatActivity implements
                 TypedFile typedPhoto = new TypedFile(mimeType, photo);
 
                 imageService.postImageAsync(accessToken, typedPhoto,
-                        new Callback<ImageProperties>() {
+                        new CancelableCallback<ImageProperties>() {
                             @Override
-                            public void success(ImageProperties imageProperties,
+                            public void onSuccess(ImageProperties imageProperties,
                                                 Response response) {
 
                                 // Retrieve the image id and add relation to PATCH request body
@@ -321,9 +322,9 @@ public class ProfileBasicActivity extends AppCompatActivity implements
                                         "application/json",
                                         userId,
                                         userPatch,
-                                        new Callback<User>() {
+                                        new CancelableCallback<User>() {
                                             @Override
-                                            public void success(User user,
+                                            public void onSuccess(User user,
                                                                 Response response) {
 
                                                 // Clear the app data cache
@@ -368,7 +369,7 @@ public class ProfileBasicActivity extends AppCompatActivity implements
                                             }
 
                                             @Override
-                                            public void failure(RetrofitError error) {
+                                            public void onFailure(RetrofitError error) {
                                                 savingMessage.setVisibility(View.GONE);
                                                 savingMessage.setText(getResources().getString(R.string.save));
                                             }
@@ -378,7 +379,7 @@ public class ProfileBasicActivity extends AppCompatActivity implements
                             }
 
                             @Override
-                            public void failure(RetrofitError error) {
+                            public void onFailure(RetrofitError error) {
                                 savingMessage.setVisibility(View.GONE);
                                 savingMessage.setText(getResources().getString(R.string.save));
                             }
@@ -747,6 +748,10 @@ public class ProfileBasicActivity extends AppCompatActivity implements
         super.onDestroy();
 
         ButterKnife.unbind(this);
+
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
 
     }
 

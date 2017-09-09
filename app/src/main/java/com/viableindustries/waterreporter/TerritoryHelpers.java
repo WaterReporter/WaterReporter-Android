@@ -38,17 +38,17 @@ public class TerritoryHelpers {
 
         String code = AttributeTransformUtility.getTerritoryCode(territory);
 
-        service.getGeometry("application/json", code, new Callback<HucGeometryCollection>() {
+        service.getGeometry("application/json", code, new CancelableCallback<HucGeometryCollection>() {
 
             @Override
-            public void success(HucGeometryCollection hucGeometryCollection, Response response) {
+            public void onSuccess(HucGeometryCollection hucGeometryCollection, Response response) {
 
                 callbacks.onSuccess(hucGeometryCollection.features.get(0));
 
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 if (error == null) return;
 

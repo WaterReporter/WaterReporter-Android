@@ -106,10 +106,10 @@
 //
 //        Log.d("URL", query);
 //
-//        service.getReports(accessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
+//        service.getReports(accessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
 //
 //            @Override
-//            public void success(FeatureCollection featureCollection, Response response) {
+//            public void onSuccess(FeatureCollection featureCollection, Response response) {
 //
 //                List<Report> reports = featureCollection.getFeatures();
 //
@@ -152,7 +152,7 @@
 //            }
 //
 //            @Override
-//            public void failure(RetrofitError error) {
+//            public void onFailure(RetrofitError error) {
 //
 //                swipeRefreshLayout.setRefreshing(false);
 //

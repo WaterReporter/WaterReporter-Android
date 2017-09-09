@@ -179,10 +179,10 @@
 //
 //        FavoriteService service = FavoriteService.restAdapter.create(FavoriteService.class);
 //
-//        service.addFavorite(accessToken, "application/json", favoritePostBody, new Callback<Favorite>() {
+//        service.addFavorite(accessToken, "application/json", favoritePostBody, new CancelableCallback<Favorite>() {
 //
 //            @Override
-//            public void success(Favorite favorite, Response response) {
+//            public void onSuccess(Favorite favorite, Response response) {
 //
 //                int newCount = currentCount + 1;
 //
@@ -204,7 +204,7 @@
 //            }
 //
 //            @Override
-//            public void failure(RetrofitError error) {
+//            public void onFailure(RetrofitError error) {
 //
 //                Response response = error.getResponse();
 //
@@ -237,10 +237,10 @@
 //
 //        FavoriteService service = FavoriteService.restAdapter.create(FavoriteService.class);
 //
-//        service.undoFavorite(accessToken, "application/json", favoriteId, new Callback<Void>() {
+//        service.undoFavorite(accessToken, "application/json", favoriteId, new CancelableCallback<Void>() {
 //
 //            @Override
-//            public void success(Void v, Response response) {
+//            public void onSuccess(Void v, Response response) {
 //
 //                if (currentCount == 1) {
 //
@@ -280,7 +280,7 @@
 //            }
 //
 //            @Override
-//            public void failure(RetrofitError error) {
+//            public void onFailure(RetrofitError error) {
 //
 //                Response response = error.getResponse();
 //

@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
+import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.Favorite;
 import com.viableindustries.waterreporter.data.FavoriteCollection;
 import com.viableindustries.waterreporter.data.Organization;
@@ -155,10 +156,10 @@ public class PostFavoriteListActivity extends AppCompatActivity {
 
         ReportService service = ReportService.restAdapter.create(ReportService.class);
 
-        service.getPostLikes(accessToken, "application/json", postId, page, limit, null, new Callback<FavoriteCollection>() {
+        service.getPostLikes(accessToken, "application/json", postId, page, limit, null, new CancelableCallback<FavoriteCollection>() {
 
             @Override
-            public void success(FavoriteCollection favoriteCollection, Response response) {
+            public void onSuccess(FavoriteCollection favoriteCollection, Response response) {
 
                 ArrayList<Favorite> favorites = favoriteCollection.getFeatures();
 
@@ -195,7 +196,7 @@ public class PostFavoriteListActivity extends AppCompatActivity {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 memberListContainer.setRefreshing(false);
 
@@ -239,6 +240,10 @@ public class PostFavoriteListActivity extends AppCompatActivity {
         super.onDestroy();
 
         ButterKnife.unbind(this);
+
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
 
     }
 

@@ -42,33 +42,33 @@ public interface ReportService {
                     @Query("page") int page,
                     @Query("results_per_page") int numResults,
                     @Query("q") String q,
-                    Callback<FeatureCollection> featureCollectionCallback);
+                    CancelableCallback<FeatureCollection> featureCollectionCallback);
 
     @GET("/data/report/{report}")
     void getSingleReport(@Header("Authorization") String authorization,
                          @Header("Content-Type") String contentType,
                          @Path("report") int reportId,
-                         Callback<Report> report);
+                         CancelableCallback<Report> report);
 
     @PATCH("/data/report/{report}")
     void setReportState(@Header("Authorization") String authorization,
                         @Header("Content-Type") String contentType,
                         @Path("report") int reportId,
                         @Body ReportStateBody reportStateBody,
-                        Callback<Report> report);
+                        CancelableCallback<Report> report);
 
     @PATCH("/data/report/{report}")
     void updateReport(@Header("Authorization") String authorization,
                       @Header("Content-Type") String contentType,
                       @Path("report") int reportId,
                       @Body ReportPatchBody reportPatchBody,
-                      Callback<Report> report);
+                      CancelableCallback<Report> report);
 
     @GET("/data/report/{report}/groups")
     void getReportGroups(@Header("Authorization") String authorization,
                          @Header("Content-Type") String contentType,
                          @Path("report") int reportId,
-                         Callback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
+                         CancelableCallback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
 
     @GET("/data/report/{report}/comments")
     void getReportComments(@Header("Authorization") String authorization,
@@ -77,7 +77,7 @@ public interface ReportService {
                            @Query("page") int page,
                            @Query("results_per_page") int numResults,
                            @Query("q") String q,
-                           Callback<CommentCollection> commentCollectionCallback);
+                           CancelableCallback<CommentCollection> commentCollectionCallback);
 
     @GET("/data/report/{report}/likes")
     void getPostLikes(@Header("Authorization") String authorization,
@@ -86,14 +86,14 @@ public interface ReportService {
                       @Query("page") int page,
                       @Query("results_per_page") int numResults,
                       @Query("q") String q,
-                      Callback<FavoriteCollection> favoriteCollectionCallback);
+                      CancelableCallback<FavoriteCollection> favoriteCollectionCallback);
 
     @POST("/data/report")
     void postReport
             (@Header("Authorization") String authorization,
              @Header("Content-Type") String contentType,
              @Body ReportPostBody reportPostBody,
-             Callback<Report> cb);
+             CancelableCallback<Report> cb);
 
     @POST("/data/report")
     Report postReportSync
@@ -104,6 +104,6 @@ public interface ReportService {
     @DELETE("/data/report/{report}")
     void deleteSingleReport(@Header("Authorization") String authorization,
                             @Path("report") int reportId,
-                            Callback<Response> responseCallback);
+                            CancelableCallback<Response> responseCallback);
 
 }

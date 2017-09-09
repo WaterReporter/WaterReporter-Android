@@ -39,6 +39,7 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.style.layers.FillLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.GroupListHolder;
 import com.viableindustries.waterreporter.data.HucFeature;
@@ -635,10 +636,10 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
         ReportService service = restAdapter.create(ReportService.class);
 
-        service.getReports(accessToken, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
+        service.getReports(accessToken, "application/json", 1, 1, query, new CancelableCallback<FeatureCollection>() {
 
             @Override
-            public void success(FeatureCollection featureCollection, Response response) {
+            public void onSuccess(FeatureCollection featureCollection, Response response) {
 
                 int count = featureCollection.getProperties().num_results;
 
@@ -660,7 +661,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 if (error == null) return;
 
@@ -696,10 +697,10 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
         OrganizationService service = restAdapter.create(OrganizationService.class);
 
-        service.getOrganizations(accessToken, "application/json", page, limit, query, new Callback<OrganizationFeatureCollection>() {
+        service.getOrganizations(accessToken, "application/json", page, limit, query, new CancelableCallback<OrganizationFeatureCollection>() {
 
             @Override
-            public void success(OrganizationFeatureCollection organizationFeatureCollection, Response response) {
+            public void onSuccess(OrganizationFeatureCollection organizationFeatureCollection, Response response) {
 
                 ArrayList<Organization> organizations = organizationFeatureCollection.getFeatures();
 
@@ -717,7 +718,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 if (error == null) return;
 
@@ -819,10 +820,10 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
         ReportService service = restAdapter.create(ReportService.class);
 
-        service.getReports(accessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
+        service.getReports(accessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
 
             @Override
-            public void success(FeatureCollection featureCollection, Response response) {
+            public void onSuccess(FeatureCollection featureCollection, Response response) {
 
                 List<Report> reports = featureCollection.getFeatures();
 
@@ -893,7 +894,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 try {
 
@@ -1091,6 +1092,11 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
         super.onDestroy();
         mapView.onDestroy();
         ButterKnife.unbind(this);
+
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
+
     }
 
 }

@@ -26,7 +26,7 @@ public interface UserService {
     @GET("/data/me")
     public void getActiveUser(@Header("Authorization") String authorization,
                         @Header("Content-Type") String contentType,
-                        Callback<UserBasicResponse> userResponseCallback);
+                        CancelableCallback<UserBasicResponse> userResponseCallback);
 
     @GET("/data/user")
     public void getMany(@Header("Authorization") String authorization,
@@ -34,7 +34,7 @@ public interface UserService {
                          @Query("page") int page,
                          @Query("results_per_page") int numResults,
                          @Query("q") String q,
-                         Callback<UserCollection> userCollectionCallback);
+                         CancelableCallback<UserCollection> userCollectionCallback);
 
     @GET("/data/user")
     public void getUsers(@Header("Authorization") String authorization,
@@ -42,33 +42,33 @@ public interface UserService {
                            @Query("page") int page,
                            @Query("results_per_page") int numResults,
                            @Query("q") String q,
-                           Callback<UserCollection> userCollectionCallback);
+                           CancelableCallback<UserCollection> userCollectionCallback);
 
     @GET("/data/user/{user}")
     public void getUser(@Header("Authorization") String authorization,
                            @Header("Content-Type") String contentType,
                            @Path("user") int user_id,
-                           Callback<User> userResponseCallback);
+                           CancelableCallback<User> userResponseCallback);
 
     @PATCH("/data/user/{user}")
     public void updateUser(@Header("Authorization") String authorization,
                            @Header("Content-Type") String contentType,
                            @Path("user") int user_id,
                            @Body Map<String, ?> userPatch,
-                           Callback<User> userResponseCallback);
+                           CancelableCallback<User> userResponseCallback);
 
     @PATCH("/data/user/{user}")
     public void updateUserOrganization(@Header("Authorization") String authorization,
                                        @Header("Content-Type") String contentType,
                                        @Path("user") int user_id,
                                        @Body Map<String, Map> userPatch,
-                                       Callback<User> userResponseCallback);
+                                       CancelableCallback<User> userResponseCallback);
 
     @GET("/data/user/{user}/organization")
     public void getUserOrganization(@Header("Authorization") String authorization,
                                     @Header("Content-Type") String contentType,
                                     @Path("user") int user_id,
-                                    Callback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
+                                    CancelableCallback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
 
 }
 

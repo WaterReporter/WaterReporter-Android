@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.viableindustries.waterreporter.data.AuthResponse;
+import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.LogInBody;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.SecurityService;
@@ -136,9 +137,9 @@ public class SignInActivity extends AppCompatActivity {
                     getString(R.string.scope), getString(R.string.state));
 
             securityService.save(logInBody,
-                    new Callback<AuthResponse>() {
+                    new CancelableCallback<AuthResponse>() {
                         @Override
-                        public void success(AuthResponse authResponse,
+                        public void onSuccess(AuthResponse authResponse,
                                             Response response) {
 
                             final String accessToken = "Bearer " + authResponse.getAccessToken();
@@ -157,9 +158,9 @@ public class SignInActivity extends AppCompatActivity {
                                 final UserService userService = restAdapter.create(UserService.class);
 
                                 userService.getActiveUser(accessToken, "application/json",
-                                        new Callback<UserBasicResponse>() {
+                                        new CancelableCallback<UserBasicResponse>() {
                                             @Override
-                                            public void success(UserBasicResponse userBasicResponse,
+                                            public void onSuccess(UserBasicResponse userBasicResponse,
                                                                 Response response) {
 
                                                 prefs.edit().putInt("user_id", userBasicResponse.getUserId()).apply();
@@ -167,9 +168,9 @@ public class SignInActivity extends AppCompatActivity {
                                                 userService.getUser(accessToken,
                                                         "application/json",
                                                         userBasicResponse.getUserId(),
-                                                        new Callback<User>() {
+                                                        new CancelableCallback<User>() {
                                                             @Override
-                                                            public void success(User user,
+                                                            public void onSuccess(User user,
                                                                                 Response response) {
 
                                                                 // Set flag confirming successful sign-in
@@ -221,7 +222,7 @@ public class SignInActivity extends AppCompatActivity {
                                                             }
 
                                                             @Override
-                                                            public void failure(RetrofitError error) {
+                                                            public void onFailure(RetrofitError error) {
                                                                 //
                                                                 onRequestError(error);
 
@@ -231,7 +232,7 @@ public class SignInActivity extends AppCompatActivity {
                                             }
 
                                             @Override
-                                            public void failure(RetrofitError error) {
+                                            public void onFailure(RetrofitError error) {
                                                 //
                                                 onRequestError(error);
 
@@ -247,7 +248,7 @@ public class SignInActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void failure(RetrofitError error) {
+                        public void onFailure(RetrofitError error) {
 
                             onRequestError(error);
 
@@ -284,10 +285,16 @@ public class SignInActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
+
         Intent a = new Intent(Intent.ACTION_MAIN);
         a.addCategory(Intent.CATEGORY_HOME);
         a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(a);
+
     }
 
     @Override
@@ -301,6 +308,19 @@ public class SignInActivity extends AppCompatActivity {
             startActivity(new Intent(this, MainActivity.class));
 
         }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+
+        ButterKnife.unbind(this);
+
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
 
     }
 

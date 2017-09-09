@@ -26,13 +26,13 @@ public interface TagService {
                         @Query("page") int page,
                         @Query("results_per_page") int numResults,
                         @Query("q") String q,
-                        Callback<HashtagCollection> hashtagCollectionCallback);
+                        CancelableCallback<HashtagCollection> hashtagCollectionCallback);
 
     @GET("/data/hashtag/{tag}")
     public void getOrganization(@Header("Authorization") String authorization,
                                 @Header("Content-Type") String contentType,
                                 @Path("tag") int tagId,
                                 @Query("q") String q,
-                                Callback<HashTag> hashTagCallback);
+                                CancelableCallback<HashTag> hashTagCallback);
 
 }

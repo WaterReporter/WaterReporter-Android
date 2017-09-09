@@ -149,10 +149,10 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
         UserService service = UserService.restAdapter.create(UserService.class);
 
-        service.updateUserOrganization(accessToken, "application/json", id, userPatch, new Callback<User>() {
+        service.updateUserOrganization(accessToken, "application/json", id, userPatch, new CancelableCallback<User>() {
 
             @Override
-            public void success(User user, Response response) {
+            public void onSuccess(User user, Response response) {
 
                 String action;
 
@@ -191,7 +191,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 Response response = error.getResponse();
 

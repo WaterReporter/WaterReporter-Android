@@ -24,6 +24,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.data.OrganizationService;
@@ -180,10 +181,10 @@ public class GroupActionListActivity extends AppCompatActivity {
 
         Log.d("URL", query);
 
-        service.getOrganizations(accessToken, "application/json", page, limit, query, new Callback<OrganizationFeatureCollection>() {
+        service.getOrganizations(accessToken, "application/json", page, limit, query, new CancelableCallback<OrganizationFeatureCollection>() {
 
             @Override
-            public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
+            public void onSuccess(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
 
                 ArrayList<Organization> features = organizationCollectionResponse.getFeatures();
 
@@ -224,7 +225,7 @@ public class GroupActionListActivity extends AppCompatActivity {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 try {
 
@@ -331,6 +332,10 @@ public class GroupActionListActivity extends AppCompatActivity {
         super.onDestroy();
 
         ButterKnife.unbind(this);
+
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
 
     }
 

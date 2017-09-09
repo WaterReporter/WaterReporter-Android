@@ -52,17 +52,17 @@ public class ApiDispatcher {
         ReportService reportService = ReportService.restAdapter.create(ReportService.class);
 
         reportService.postReport(accessToken, "application/json", reportPostBody,
-                new Callback<Report>() {
+                new CancelableCallback<Report>() {
 
                     @Override
-                    public void success(Report post, Response response) {
+                    public void onSuccess(Report post, Response response) {
 
                         callbacks.onSuccess(post);
 
                     }
 
                     @Override
-                    public void failure(RetrofitError error) {
+                    public void onFailure(RetrofitError error) {
 
                         callbacks.onError(error);
 

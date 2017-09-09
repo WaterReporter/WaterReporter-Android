@@ -1,7 +1,5 @@
 package com.viableindustries.waterreporter;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.RegistrationResponse;
 import com.viableindustries.waterreporter.data.SecurityService;
 
@@ -20,7 +19,6 @@ import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -94,9 +92,9 @@ public class PasswordResetActivity extends Activity {
             resetBody.put("email", email);
 
             securityService.reset(resetBody,
-                    new Callback<RegistrationResponse>() {
+                    new CancelableCallback<RegistrationResponse>() {
                         @Override
-                        public void success(RegistrationResponse registrationResponse,
+                        public void onSuccess(RegistrationResponse registrationResponse,
                                             Response response) {
 
                             int statusCode = registrationResponse.getCode();
@@ -116,7 +114,7 @@ public class PasswordResetActivity extends Activity {
                         }
 
                         @Override
-                        public void failure(RetrofitError error) {
+                        public void onFailure(RetrofitError error) {
 
                             error.printStackTrace();
 
@@ -136,6 +134,19 @@ public class PasswordResetActivity extends Activity {
     public void toLogIn(View v) {
 
         startActivity(new Intent(this, SignInActivity.class));
+
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+
+        ButterKnife.unbind(this);
+
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
 
     }
 

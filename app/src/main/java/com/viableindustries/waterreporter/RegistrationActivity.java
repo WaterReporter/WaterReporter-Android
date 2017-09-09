@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.viableindustries.waterreporter.data.AuthResponse;
+import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.LogInBody;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.RegistrationBody;
@@ -123,9 +124,9 @@ public class RegistrationActivity extends AppCompatActivity {
             RegistrationBody registrationBody = new RegistrationBody(email, password);
 
             securityService.register(registrationBody,
-                    new Callback<RegistrationResponse>() {
+                    new CancelableCallback<RegistrationResponse>() {
                         @Override
-                        public void success(RegistrationResponse registrationResponse,
+                        public void onSuccess(RegistrationResponse registrationResponse,
                                             Response response) {
 
                             int responseCode = registrationResponse.getCode();
@@ -172,9 +173,9 @@ public class RegistrationActivity extends AppCompatActivity {
                                         getString(R.string.scope), getString(R.string.state));
 
                                 securityService.save(logInBody,
-                                        new Callback<AuthResponse>() {
+                                        new CancelableCallback<AuthResponse>() {
                                             @Override
-                                            public void success(AuthResponse authResponse,
+                                            public void onSuccess(AuthResponse authResponse,
                                                                 Response response) {
 
                                                 progressBar.setVisibility(View.GONE);
@@ -196,7 +197,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                             }
 
                                             @Override
-                                            public void failure(RetrofitError error) {
+                                            public void onFailure(RetrofitError error) {
 
                                                 progressBar.setVisibility(View.GONE);
 
@@ -211,7 +212,7 @@ public class RegistrationActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void failure(RetrofitError error) {
+                        public void onFailure(RetrofitError error) {
 
                             progressBar.setVisibility(View.GONE);
 
@@ -242,10 +243,16 @@ public class RegistrationActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
+
         Intent a = new Intent(Intent.ACTION_MAIN);
         a.addCategory(Intent.CATEGORY_HOME);
         a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(a);
+
     }
 
     @Override
@@ -259,6 +266,19 @@ public class RegistrationActivity extends AppCompatActivity {
             startActivity(new Intent(this, MainActivity.class));
 
         }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+
+        ButterKnife.unbind(this);
+
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
 
     }
 

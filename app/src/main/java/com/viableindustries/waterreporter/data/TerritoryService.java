@@ -30,7 +30,7 @@ public interface TerritoryService {
                         @Query("page") int page,
                         @Query("results_per_page") int numResults,
                         @Query("q") String q,
-                        Callback<TerritoryCollection> territoryCollectionCallback);
+                        CancelableCallback<TerritoryCollection> territoryCollectionCallback);
 
     @GET("/data/territory")
     public void getMany(@Header("Authorization") String authorization,
@@ -38,12 +38,12 @@ public interface TerritoryService {
                         @Query("page") int page,
                         @Query("results_per_page") int numResults,
                         @Query("q") String q,
-                        Callback<TerritoryCollection> territoryCollectionCallback);
+                        CancelableCallback<TerritoryCollection> territoryCollectionCallback);
 
     @GET("/data/territory/{territory}")
     public void getSingle(@Header("Authorization") String authorization,
                         @Header("Content-Type") String contentType,
                         @Path("territory") int territoryId,
-                        Callback<Territory> territoryCallback);
+                        CancelableCallback<Territory> territoryCallback);
 
 }

@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationHolder;
@@ -261,10 +262,10 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         UserService service = UserService.restAdapter.create(UserService.class);
 
-        service.updateUserOrganization(accessToken, "application/json", id, userPatch, new Callback<User>() {
+        service.updateUserOrganization(accessToken, "application/json", id, userPatch, new CancelableCallback<User>() {
 
             @Override
-            public void success(User user, Response response) {
+            public void onSuccess(User user, Response response) {
 
                 String action;
 
@@ -283,7 +284,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 Response response = error.getResponse();
 
@@ -562,10 +563,10 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         ReportService service = restAdapter.create(ReportService.class);
 
-        service.getReports(accessToken, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
+        service.getReports(accessToken, "application/json", 1, 1, query, new CancelableCallback<FeatureCollection>() {
 
             @Override
-            public void success(FeatureCollection featureCollection, Response response) {
+            public void onSuccess(FeatureCollection featureCollection, Response response) {
 
                 int count = featureCollection.getProperties().num_results;
 
@@ -588,7 +589,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 if (error == null) return;
 
@@ -622,10 +623,10 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         OrganizationService service = OrganizationService.restAdapter.create(OrganizationService.class);
 
-        service.getOrganizationMembers(accessToken, "application/json", organizationId, page, limit, null, new Callback<UserCollection>() {
+        service.getOrganizationMembers(accessToken, "application/json", organizationId, page, limit, null, new CancelableCallback<UserCollection>() {
 
             @Override
-            public void success(UserCollection userCollection, Response response) {
+            public void onSuccess(UserCollection userCollection, Response response) {
 
                 ArrayList<User> members = userCollection.getFeatures();
 
@@ -647,7 +648,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 if (error == null) return;
 
@@ -735,10 +736,10 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         ReportService service = restAdapter.create(ReportService.class);
 
-        service.getReports(accessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
+        service.getReports(accessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
 
             @Override
-            public void success(FeatureCollection featureCollection, Response response) {
+            public void onSuccess(FeatureCollection featureCollection, Response response) {
 
                 List<Report> reports = featureCollection.getFeatures();
 
@@ -803,7 +804,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 timeLineContainer.setRefreshing(false);
 
@@ -860,6 +861,10 @@ public class OrganizationProfileActivity extends AppCompatActivity {
         Picasso.with(this).cancelRequest(organizationLogo);
 
         ButterKnife.unbind(this);
+
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
 
     }
 

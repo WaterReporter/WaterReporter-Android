@@ -30,27 +30,27 @@ public interface TrendingService {
                                 @Header("Content-Type") String contentType,
                                 @Query("page") int page,
                                 @Query("results_per_page") int numResults,
-                                Callback<TrendingTags> trendingTagsCallback);
+                                CancelableCallback<TrendingTags> trendingTagsCallback);
 
     @GET("/data/trending/group")
     void getTrendingGroups(@Header("Authorization") String authorization,
                                   @Header("Content-Type") String contentType,
                                   @Query("page") int page,
                                   @Query("results_per_page") int numResults,
-                                  Callback<TrendingGroups> trendingGroupsCallback);
+                                  CancelableCallback<TrendingGroups> trendingGroupsCallback);
 
     @GET("/data/trending/people")
     void getTrendingPeople(@Header("Authorization") String authorization,
                                   @Header("Content-Type") String contentType,
                                   @Query("page") int page,
                                   @Query("results_per_page") int numResults,
-                                  Callback<TrendingPeople> trendingPeopleCallback);
+                                  CancelableCallback<TrendingPeople> trendingPeopleCallback);
 
     @GET("/data/trending/territory")
     void getTrendingTerritories(@Header("Authorization") String authorization,
                                        @Header("Content-Type") String contentType,
                                        @Query("page") int page,
                                        @Query("results_per_page") int numResults,
-                                       Callback<TrendingTerritories> trendingTerritoriesCallback);
+                                       CancelableCallback<TrendingTerritories> trendingTerritoriesCallback);
 
 }

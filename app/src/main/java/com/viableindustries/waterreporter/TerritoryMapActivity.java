@@ -36,6 +36,7 @@ import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.HucFeature;
@@ -375,10 +376,10 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
         ReportService service = restAdapter.create(ReportService.class);
 
-        service.getReports(accessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
+        service.getReports(accessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
 
             @Override
-            public void success(FeatureCollection featureCollection, Response response) {
+            public void onSuccess(FeatureCollection featureCollection, Response response) {
 
                 List<Report> reports = featureCollection.getFeatures();
 
@@ -389,7 +390,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 if (error == null) return;
 
@@ -636,6 +637,11 @@ public class TerritoryMapActivity extends AppCompatActivity {
         super.onDestroy();
         mapView.onDestroy();
         ButterKnife.unbind(this);
+
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
+
     }
 
 }

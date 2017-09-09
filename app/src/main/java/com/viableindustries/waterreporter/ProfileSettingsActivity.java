@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.AuthResponse;
+import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.LogInBody;
 import com.viableindustries.waterreporter.data.NotificationSetting;
 import com.viableindustries.waterreporter.data.Organization;
@@ -123,9 +124,9 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         userService.getUser(accessToken,
                 "application/json",
                 userId,
-                new Callback<User>() {
+                new CancelableCallback<User>() {
                     @Override
-                    public void success(User user,
+                    public void onSuccess(User user,
                                         Response response) {
 
                         // Set flag confirming successful sign-in
@@ -177,7 +178,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void failure(RetrofitError error) {
+                    public void onFailure(RetrofitError error) {
 
                         onRequestError(error);
 
@@ -298,6 +299,10 @@ public class ProfileSettingsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
+
         startActivity(new Intent(this, AuthUserActivity.class));
 
     }
@@ -318,6 +323,10 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         super.onDestroy();
 
         ButterKnife.unbind(this);
+
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
 
     }
 

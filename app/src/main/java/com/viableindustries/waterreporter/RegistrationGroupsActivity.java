@@ -114,10 +114,10 @@
 //
 //        OrganizationService service = OrganizationService.restAdapter.create(OrganizationService.class);
 //
-//        service.getOrganizations(accessToken, "application/json", 100, null, new Callback<OrganizationFeatureCollection>() {
+//        service.getOrganizations(accessToken, "application/json", 100, null, new CancelableCallback<OrganizationFeatureCollection>() {
 //
 //            @Override
-//            public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
+//            public void onSuccess(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
 //
 //                ArrayList<Organization> features = organizationCollectionResponse.getFeatures();
 //
@@ -138,7 +138,7 @@
 //            }
 //
 //            @Override
-//            public void failure(RetrofitError error) {
+//            public void onFailure(RetrofitError error) {
 //
 //                Response response = error.getResponse();
 //

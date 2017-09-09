@@ -55,6 +55,7 @@ import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.viableindustries.waterreporter.data.ApiDispatcher;
+import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.Comment;
 import com.viableindustries.waterreporter.data.CommentPost;
 import com.viableindustries.waterreporter.data.CommentService;
@@ -546,10 +547,10 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
         ReportService service = restAdapter.create(ReportService.class);
 
-        service.getReports(mAccessToken, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
+        service.getReports(mAccessToken, "application/json", 1, 1, query, new CancelableCallback<FeatureCollection>() {
 
             @Override
-            public void success(FeatureCollection featureCollection, Response response) {
+            public void onSuccess(FeatureCollection featureCollection, Response response) {
 
                 int count = featureCollection.getProperties().num_results;
 
@@ -571,7 +572,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 if (error == null) return;
 
@@ -601,10 +602,10 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
         UserService service = UserService.restAdapter.create(UserService.class);
 
-        service.getUserOrganization(mAccessToken, "application/json", userId, new Callback<OrganizationFeatureCollection>() {
+        service.getUserOrganization(mAccessToken, "application/json", userId, new CancelableCallback<OrganizationFeatureCollection>() {
 
             @Override
-            public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
+            public void onSuccess(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
 
                 ArrayList<Organization> organizations = organizationCollectionResponse.getFeatures();
 
@@ -626,7 +627,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 if (error == null) return;
 
@@ -710,10 +711,10 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
         ReportService service = restAdapter.create(ReportService.class);
 
-        service.getReports(mAccessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
+        service.getReports(mAccessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
 
             @Override
-            public void success(FeatureCollection featureCollection, Response response) {
+            public void onSuccess(FeatureCollection featureCollection, Response response) {
 
                 List<Report> reports = featureCollection.getFeatures();
 
@@ -782,7 +783,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 try {
 
@@ -989,6 +990,12 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
         super.onPause();
 
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
+
+        Picasso.with(this).cancelRequest(userAvatar);
+
         // If the DownloadStateReceiver still exists, unregister it
         if (mUploadStateReceiver != null) {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(mUploadStateReceiver);
@@ -997,9 +1004,26 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
     }
 
     @Override
+    protected void onStop() {
+
+        super.onStop();
+
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
+
+        Picasso.with(this).cancelRequest(userAvatar);
+
+    }
+
+    @Override
     protected void onDestroy() {
 
         super.onDestroy();
+
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
 
         Picasso.with(this).cancelRequest(userAvatar);
 

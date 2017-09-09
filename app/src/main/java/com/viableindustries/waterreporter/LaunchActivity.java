@@ -136,10 +136,10 @@
 //
 //        Log.d("URL", query);
 //
-//        service.getReports(accessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
+//        service.getReports(accessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
 //
 //            @Override
-//            public void success(FeatureCollection featureCollection, Response response) {
+//            public void onSuccess(FeatureCollection featureCollection, Response response) {
 //
 //                List<Report> reports = featureCollection.getFeatures();
 //
@@ -182,7 +182,7 @@
 //            }
 //
 //            @Override
-//            public void failure(RetrofitError error) {
+//            public void onFailure(RetrofitError error) {
 //
 //                timeline.setRefreshing(false);
 //
@@ -232,10 +232,10 @@
 //
 //        UserService service = UserService.restAdapter.create(UserService.class);
 //
-//        service.getUserOrganization(accessToken, "application/json", user_id, new Callback<OrganizationFeatureCollection>() {
+//        service.getUserOrganization(accessToken, "application/json", user_id, new CancelableCallback<OrganizationFeatureCollection>() {
 //
 //            @Override
-//            public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
+//            public void onSuccess(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
 //
 //                List<Organization> organizations = organizationCollectionResponse.getFeatures();
 //
@@ -258,7 +258,7 @@
 //            }
 //
 //            @Override
-//            public void failure(RetrofitError error) {
+//            public void onFailure(RetrofitError error) {
 //
 //                if (error == null) return;
 //

@@ -118,10 +118,10 @@ public class UserSearchFragment extends Fragment {
 
         Log.d("", accessToken);
 
-        service.getUsers(accessToken, "application/json", page, limit, query, new Callback<UserCollection>() {
+        service.getUsers(accessToken, "application/json", page, limit, query, new CancelableCallback<UserCollection>() {
 
             @Override
-            public void success(UserCollection userCollection, Response response) {
+            public void onSuccess(UserCollection userCollection, Response response) {
 
                 ArrayList<User> users = userCollection.getFeatures();
 
@@ -140,7 +140,7 @@ public class UserSearchFragment extends Fragment {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 if (error == null) return;
 

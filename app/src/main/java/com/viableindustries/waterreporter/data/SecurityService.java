@@ -23,18 +23,18 @@ public interface SecurityService {
     @Headers({"Content-Type: application/json"})
     @POST("/auth/remote")
     public void save(@Body LogInBody logInBody,
-                           Callback<AuthResponse> authResponseCallback);
+                           CancelableCallback<AuthResponse> authResponseCallback);
 
     @Headers({"Content-Type: application/json"})
     @POST("/user/register")
     public void register(@Body RegistrationBody registrationBody,
-                         Callback<RegistrationResponse> registrationResponseCallback);
+                         CancelableCallback<RegistrationResponse> registrationResponseCallback);
 
     @Headers({"Content-Type: application/json"})
     @POST("/reset")
     public void reset
             (@Body Map<String, String> resetBody,
-             Callback<RegistrationResponse> cb);
+             CancelableCallback<RegistrationResponse> cb);
 
 }
 

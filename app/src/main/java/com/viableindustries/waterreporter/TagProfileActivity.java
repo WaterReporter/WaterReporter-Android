@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.GroupListHolder;
 import com.viableindustries.waterreporter.data.Organization;
@@ -355,10 +356,10 @@ public class TagProfileActivity extends AppCompatActivity {
 
         ReportService service = restAdapter.create(ReportService.class);
 
-        service.getReports(accessToken, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
+        service.getReports(accessToken, "application/json", 1, 1, query, new CancelableCallback<FeatureCollection>() {
 
             @Override
-            public void success(FeatureCollection featureCollection, Response response) {
+            public void onSuccess(FeatureCollection featureCollection, Response response) {
 
                 int count = featureCollection.getProperties().num_results;
 
@@ -381,7 +382,7 @@ public class TagProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 if (error == null) return;
 
@@ -487,10 +488,10 @@ public class TagProfileActivity extends AppCompatActivity {
 
         OrganizationService service = restAdapter.create(OrganizationService.class);
 
-        service.getOrganizations(accessToken, "application/json", page, limit, query, new Callback<OrganizationFeatureCollection>() {
+        service.getOrganizations(accessToken, "application/json", page, limit, query, new CancelableCallback<OrganizationFeatureCollection>() {
 
             @Override
-            public void success(OrganizationFeatureCollection organizationFeatureCollection, Response response) {
+            public void onSuccess(OrganizationFeatureCollection organizationFeatureCollection, Response response) {
 
                 ArrayList<Organization> organizations = organizationFeatureCollection.getFeatures();
 
@@ -512,7 +513,7 @@ public class TagProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 if (error == null) return;
 
@@ -550,10 +551,10 @@ public class TagProfileActivity extends AppCompatActivity {
 
         ReportService service = restAdapter.create(ReportService.class);
 
-        service.getReports(accessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
+        service.getReports(accessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
 
             @Override
-            public void success(FeatureCollection featureCollection, Response response) {
+            public void onSuccess(FeatureCollection featureCollection, Response response) {
 
                 List<Report> reports = featureCollection.getFeatures();
 
@@ -634,7 +635,7 @@ public class TagProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 try {
 
@@ -710,7 +711,13 @@ public class TagProfileActivity extends AppCompatActivity {
 
     @Override
     public void onStop() {
+
         super.onStop();
+
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
+
     }
 
     @Override
@@ -719,6 +726,10 @@ public class TagProfileActivity extends AppCompatActivity {
         super.onDestroy();
 
         ButterKnife.unbind(this);
+
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
 
     }
 

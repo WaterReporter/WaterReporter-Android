@@ -59,6 +59,7 @@ import com.google.gson.Gson;
 import com.google.gson.internal.Streams;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.CacheManager;
+import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.Comment;
 import com.viableindustries.waterreporter.data.CommentCollection;
 import com.viableindustries.waterreporter.data.CommentPost;
@@ -358,17 +359,17 @@ public class CommentActivity extends AppCompatActivity implements
 
         TagService service = restAdapter.create(TagService.class);
 
-        service.getMany(accessToken, "application/json", page, limit, query, new Callback<HashtagCollection>() {
+        service.getMany(accessToken, "application/json", page, limit, query, new CancelableCallback<HashtagCollection>() {
 
             @Override
-            public void success(HashtagCollection hashtagCollection, Response response) {
+            public void onSuccess(HashtagCollection hashtagCollection, Response response) {
 
                 onTagSuccess(hashtagCollection.getFeatures());
 
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 onRequestError(error);
 
@@ -642,10 +643,10 @@ public class CommentActivity extends AppCompatActivity implements
 
         commentListContainer.setRefreshing(true);
 
-        service.getReportComments(accessToken, "application/json", report.id, page, limit, query, new Callback<CommentCollection>() {
+        service.getReportComments(accessToken, "application/json", report.id, page, limit, query, new CancelableCallback<CommentCollection>() {
 
             @Override
-            public void success(CommentCollection commentCollection, Response response) {
+            public void onSuccess(CommentCollection commentCollection, Response response) {
 
                 List<Comment> comments = commentCollection.getFeatures();
 
@@ -660,7 +661,7 @@ public class CommentActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 commentListContainer.setRefreshing(false);
 
@@ -785,9 +786,9 @@ public class CommentActivity extends AppCompatActivity implements
         TypedFile typedPhoto = new TypedFile(mimeType, photo);
 
         imageService.postImageAsync(accessToken, typedPhoto,
-                new Callback<ImageProperties>() {
+                new CancelableCallback<ImageProperties>() {
                     @Override
-                    public void success(ImageProperties imageProperties,
+                    public void onSuccess(ImageProperties imageProperties,
                                         Response response) {
 
                         // Immediately delete the cached image file now that we no longer need it
@@ -821,7 +822,7 @@ public class CommentActivity extends AppCompatActivity implements
                     }
 
                     @Override
-                    public void failure(RetrofitError error) {
+                    public void onFailure(RetrofitError error) {
                         onPostError(error);
                     }
 
@@ -843,10 +844,10 @@ public class CommentActivity extends AppCompatActivity implements
 
         CommentService service = CommentService.restAdapter.create(CommentService.class);
 
-        service.postComment(accessToken, "application/json", commentPost, new Callback<Comment>() {
+        service.postComment(accessToken, "application/json", commentPost, new CancelableCallback<Comment>() {
 
             @Override
-            public void success(Comment comment, Response response) {
+            public void onSuccess(Comment comment, Response response) {
 
                 // Lift UI lock
 
@@ -879,7 +880,7 @@ public class CommentActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 onPostError(error);
 
@@ -899,10 +900,10 @@ public class CommentActivity extends AppCompatActivity implements
 
         ReportStateBody reportStateBody = new ReportStateBody(reportId, state);
 
-        service.setReportState(accessToken, "application/json", reportId, reportStateBody, new Callback<Report>() {
+        service.setReportState(accessToken, "application/json", reportId, reportStateBody, new CancelableCallback<Report>() {
 
             @Override
-            public void success(Report report, Response response) {
+            public void onSuccess(Report report, Response response) {
 
                 // Update current bookmarked report
 
@@ -911,7 +912,7 @@ public class CommentActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 onPostError(error);
 
@@ -1299,6 +1300,10 @@ public class CommentActivity extends AppCompatActivity implements
 
         super.onPause();
 
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
+
     }
 
     @Override
@@ -1307,6 +1312,10 @@ public class CommentActivity extends AppCompatActivity implements
         super.onDestroy();
 
         ButterKnife.unbind(this);
+
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
 
     }
 

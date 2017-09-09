@@ -134,10 +134,10 @@ public class TimelineAdapterHelpers {
 
         FavoriteService service = FavoriteService.restAdapter.create(FavoriteService.class);
 
-        service.addFavorite(accessToken, "application/json", favoritePostBody, new Callback<Favorite>() {
+        service.addFavorite(accessToken, "application/json", favoritePostBody, new CancelableCallback<Favorite>() {
 
             @Override
-            public void success(Favorite favorite, Response response) {
+            public void onSuccess(Favorite favorite, Response response) {
 
                 int newCount = currentCount + 1;
 
@@ -166,7 +166,7 @@ public class TimelineAdapterHelpers {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 Response response = error.getResponse();
 
@@ -198,10 +198,10 @@ public class TimelineAdapterHelpers {
 
         FavoriteService service = FavoriteService.restAdapter.create(FavoriteService.class);
 
-        service.undoFavorite(accessToken, "application/json", favoriteId, new Callback<Void>() {
+        service.undoFavorite(accessToken, "application/json", favoriteId, new CancelableCallback<Void>() {
 
             @Override
-            public void success(Void v, Response response) {
+            public void onSuccess(Void v, Response response) {
 
                 if (currentCount == 1) {
 
@@ -237,7 +237,7 @@ public class TimelineAdapterHelpers {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 Response response = error.getResponse();
 
@@ -549,17 +549,17 @@ public class TimelineAdapterHelpers {
 
         ReportService service = ReportService.restAdapter.create(ReportService.class);
 
-        service.deleteSingleReport(accessToken, post.id, new Callback<Response>() {
+        service.deleteSingleReport(accessToken, post.id, new CancelableCallback<Response>() {
 
             @Override
-            public void success(Response response, Response _response) {
+            public void onSuccess(Response response, Response _response) {
 
                 callbacks.onSuccess(_response);
 
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 callbacks.onError(error);
 

@@ -34,6 +34,7 @@ import com.google.gson.Gson;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.viableindustries.waterreporter.data.ApiDispatcher;
+import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.OpenGraph;
@@ -267,10 +268,10 @@ public class MainActivity extends AppCompatActivity implements
 
         Log.d("URL", query);
 
-        service.getReports(mAccessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
+        service.getReports(mAccessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
 
             @Override
-            public void success(FeatureCollection featureCollection, Response response) {
+            public void onSuccess(FeatureCollection featureCollection, Response response) {
 
                 List<Report> reports = featureCollection.getFeatures();
 
@@ -313,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 timeline.setRefreshing(false);
 
@@ -363,10 +364,10 @@ public class MainActivity extends AppCompatActivity implements
 
         UserService service = UserService.restAdapter.create(UserService.class);
 
-        service.getUserOrganization(mAccessToken, "application/json", user_id, new Callback<OrganizationFeatureCollection>() {
+        service.getUserOrganization(mAccessToken, "application/json", user_id, new CancelableCallback<OrganizationFeatureCollection>() {
 
             @Override
-            public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
+            public void onSuccess(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
 
                 List<Organization> organizations = organizationCollectionResponse.getFeatures();
 
@@ -389,7 +390,7 @@ public class MainActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 if (error == null) return;
 
@@ -645,6 +646,10 @@ public class MainActivity extends AppCompatActivity implements
 
         ButterKnife.unbind(this);
 
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
+
         // If the DownloadStateReceiver still exists, unregister it and set it to null
         if (mUploadStateReceiver != null) {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(mUploadStateReceiver);
@@ -702,6 +707,10 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
+
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
 
         Intent a = new Intent(Intent.ACTION_MAIN);
         a.addCategory(Intent.CATEGORY_HOME);

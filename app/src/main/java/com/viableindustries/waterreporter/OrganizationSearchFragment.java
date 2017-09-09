@@ -115,10 +115,10 @@ public class OrganizationSearchFragment extends Fragment {
 
         Log.d("", accessToken);
 
-        service.getOrganizations(accessToken, "application/json", page, limit, query, new Callback<OrganizationFeatureCollection>() {
+        service.getOrganizations(accessToken, "application/json", page, limit, query, new CancelableCallback<OrganizationFeatureCollection>() {
 
             @Override
-            public void success(OrganizationFeatureCollection organizationFeatureCollection, Response response) {
+            public void onSuccess(OrganizationFeatureCollection organizationFeatureCollection, Response response) {
 
                 ArrayList<Organization> organizations = organizationFeatureCollection.getFeatures();
 
@@ -137,7 +137,7 @@ public class OrganizationSearchFragment extends Fragment {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 if (error == null) return;
 

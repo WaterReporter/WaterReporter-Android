@@ -60,10 +60,10 @@ public class UserGroupsFragment extends android.support.v4.app.Fragment {
 
         UserService service = UserService.restAdapter.create(UserService.class);
 
-        service.getUserOrganization(accessToken, "application/json", userId, new Callback<OrganizationFeatureCollection>() {
+        service.getUserOrganization(accessToken, "application/json", userId, new CancelableCallback<OrganizationFeatureCollection>() {
 
             @Override
-            public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
+            public void onSuccess(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
 
                 ArrayList<Organization> organizations = organizationCollectionResponse.getFeatures();
 
@@ -97,7 +97,7 @@ public class UserGroupsFragment extends android.support.v4.app.Fragment {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 if (error == null) return;
 

@@ -29,12 +29,12 @@ public interface FavoriteService {
     public void addFavorite(@Header("Authorization") String authorization,
                                 @Header("Content-Type") String contentType,
                                 @Body FavoritePostBody favoritePostBody,
-                                Callback<Favorite> favoriteCallback);
+                                CancelableCallback<Favorite> favoriteCallback);
 
     @DELETE("/data/like/{id}")
     public void undoFavorite(@Header("Authorization") String authorization,
                             @Header("Content-Type") String contentType,
                             @Path("id") int featureId,
-                            Callback<Void> callback);
+                            CancelableCallback<Void> callback);
 
 }

@@ -482,10 +482,10 @@
 //
 //        ReportService service = ReportService.restAdapter.create(ReportService.class);
 //
-//        service.getReports(accessToken, "application/json", 1, 25, query, new Callback<FeatureCollection>() {
+//        service.getReports(accessToken, "application/json", 1, 25, query, new CancelableCallback<FeatureCollection>() {
 //
 //            @Override
-//            public void success(FeatureCollection featureCollection, Response response) {
+//            public void onSuccess(FeatureCollection featureCollection, Response response) {
 //
 //                List<Report> reports = featureCollection.getFeatures();
 //
@@ -500,7 +500,7 @@
 //            }
 //
 //            @Override
-//            public void failure(RetrofitError error) {
+//            public void onFailure(RetrofitError error) {
 //
 //                Response response = error.getResponse();
 //

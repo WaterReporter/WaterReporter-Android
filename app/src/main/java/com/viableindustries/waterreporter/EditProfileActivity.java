@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.CacheManager;
+import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.DisplayDecimal;
 import com.viableindustries.waterreporter.data.ImageProperties;
 import com.viableindustries.waterreporter.data.ImageService;
@@ -315,9 +316,9 @@ public class EditProfileActivity extends AppCompatActivity implements
             TypedFile typedPhoto = new TypedFile(mimeType, photo);
 
             imageService.postImageAsync(accessToken, typedPhoto,
-                    new Callback<ImageProperties>() {
+                    new CancelableCallback<ImageProperties>() {
                         @Override
-                        public void success(ImageProperties imageProperties,
+                        public void onSuccess(ImageProperties imageProperties,
                                             Response response) {
 
                             // Revoke Uri permissions
@@ -355,7 +356,7 @@ public class EditProfileActivity extends AppCompatActivity implements
                         }
 
                         @Override
-                        public void failure(RetrofitError error) {
+                        public void onFailure(RetrofitError error) {
                             savingMessage.setVisibility(View.GONE);
                             savingMessage.setText(getResources().getString(R.string.save));
                         }
@@ -426,9 +427,9 @@ public class EditProfileActivity extends AppCompatActivity implements
                 "application/json",
                 coreUser.id,
                 userPatch,
-                new Callback<User>() {
+                new CancelableCallback<User>() {
                     @Override
-                    public void success(User user,
+                    public void onSuccess(User user,
                                         Response response) {
 
                         final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
@@ -471,7 +472,7 @@ public class EditProfileActivity extends AppCompatActivity implements
                     }
 
                     @Override
-                    public void failure(RetrofitError error) {
+                    public void onFailure(RetrofitError error) {
                         savingMessage.setVisibility(View.GONE);
                         savingMessage.setText(getResources().getString(R.string.save));
                     }
@@ -841,6 +842,10 @@ public class EditProfileActivity extends AppCompatActivity implements
         super.onDestroy();
 
         ButterKnife.unbind(this);
+
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
 
     }
 

@@ -33,6 +33,7 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.style.layers.FillLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.Comment;
 import com.viableindustries.waterreporter.data.CommentCollection;
 import com.viableindustries.waterreporter.data.HucFeature;
@@ -475,10 +476,10 @@ public class PostDetailActivity extends AppCompatActivity {
 
         ReportService service = restAdapter.create(ReportService.class);
 
-        service.getSingleReport("", "application/json", postId, new Callback<Report>() {
+        service.getSingleReport("", "application/json", postId, new CancelableCallback<Report>() {
 
             @Override
-            public void success(Report report, Response response) {
+            public void onSuccess(Report report, Response response) {
 
                 mPost = report;
 
@@ -491,7 +492,7 @@ public class PostDetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 if (error == null) return;
 
@@ -537,10 +538,10 @@ public class PostDetailActivity extends AppCompatActivity {
 
 //        commentListContainer.setRefreshing(true);
 
-        service.getReportComments(accessToken, "application/json", mPost.id, page, limit, query, new Callback<CommentCollection>() {
+        service.getReportComments(accessToken, "application/json", mPost.id, page, limit, query, new CancelableCallback<CommentCollection>() {
 
             @Override
-            public void success(CommentCollection commentCollection, Response response) {
+            public void onSuccess(CommentCollection commentCollection, Response response) {
 
                 List<Comment> comments = commentCollection.getFeatures();
 
@@ -555,7 +556,7 @@ public class PostDetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
 //                commentListContainer.setRefreshing(false);
 
@@ -628,6 +629,11 @@ public class PostDetailActivity extends AppCompatActivity {
         super.onStop();
         mapView.onStop();
         sharedPreferences.edit().putBoolean("markerDetailOpen", false).apply();
+
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
+
     }
 
     @Override
@@ -636,6 +642,11 @@ public class PostDetailActivity extends AppCompatActivity {
         mapView.onDestroy();
         ButterKnife.unbind(this);
         sharedPreferences.edit().putBoolean("markerDetailOpen", false).apply();
+
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
+
     }
 
     @Override

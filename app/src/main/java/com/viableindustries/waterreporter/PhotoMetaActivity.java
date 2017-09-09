@@ -51,6 +51,7 @@ import com.viableindustries.waterreporter.data.AbbreviatedOrganization;
 import com.viableindustries.waterreporter.data.ApiDispatcher;
 import com.viableindustries.waterreporter.data.BooleanQueryFilter;
 import com.viableindustries.waterreporter.data.CacheManager;
+import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.CursorPositionTracker;
 import com.viableindustries.waterreporter.data.DisplayDecimal;
 import com.viableindustries.waterreporter.data.Geometry;
@@ -746,17 +747,17 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         TagService service = restAdapter.create(TagService.class);
 
-        service.getMany(accessToken, "application/json", page, limit, query, new Callback<HashtagCollection>() {
+        service.getMany(accessToken, "application/json", page, limit, query, new CancelableCallback<HashtagCollection>() {
 
             @Override
-            public void success(HashtagCollection hashtagCollection, Response response) {
+            public void onSuccess(HashtagCollection hashtagCollection, Response response) {
 
                 onTagSuccess(hashtagCollection.getFeatures());
 
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 onRequestError(error);
 
@@ -1411,9 +1412,9 @@ public class PhotoMetaActivity extends AppCompatActivity
         Log.d("groups", groups.toString());
 
         reportService.updateReport(accessToken, "application/json", report.id, reportPatchBody,
-                new Callback<Report>() {
+                new CancelableCallback<Report>() {
                     @Override
-                    public void success(Report report, Response response) {
+                    public void onSuccess(Report report, Response response) {
 
                         // Hide ProgressBar
 
@@ -1462,7 +1463,7 @@ public class PhotoMetaActivity extends AppCompatActivity
                     }
 
                     @Override
-                    public void failure(RetrofitError error) {
+                    public void onFailure(RetrofitError error) {
                         onPostError();
                     }
 
@@ -1808,10 +1809,18 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         ButterKnife.unbind(this);
 
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
+
     }
 
     @Override
     public void onBackPressed() {
+
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
 
         finish();
 

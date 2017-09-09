@@ -25,7 +25,7 @@ public interface OrganizationService {
                                  @Query("page") int page,
                                  @Query("results_per_page") int numResults,
                                  @Query("q") String q,
-                                 Callback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
+                                 CancelableCallback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
 
     @GET("/data/organization")
     public void getOrganizations(@Header("Authorization") String authorization,
@@ -33,14 +33,14 @@ public interface OrganizationService {
                                  @Query("page") int page,
                                  @Query("results_per_page") int numResults,
                                  @Query("q") String q,
-                                 Callback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
+                                 CancelableCallback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
 
     @GET("/data/organization/{organization}")
     public void getOrganization(@Header("Authorization") String authorization,
                                 @Header("Content-Type") String contentType,
                                 @Path("organization") int organizationId,
                                 @Query("q") String q,
-                                Callback<Organization> organizationCallback);
+                                CancelableCallback<Organization> organizationCallback);
 
     @GET("/data/organization/{organization}/reports")
     public void getOrganizationReports(@Header("Authorization") String authorization,
@@ -49,7 +49,7 @@ public interface OrganizationService {
                                        @Query("page") int page,
                                        @Query("results_per_page") int numResults,
                                        @Query("q") String q,
-                                       Callback<FeatureCollection> featureCollectionCallback);
+                                       CancelableCallback<FeatureCollection> featureCollectionCallback);
 
     @GET("/data/organization/{organization}/users")
     public void getOrganizationMembers(@Header("Authorization") String authorization,
@@ -58,6 +58,6 @@ public interface OrganizationService {
                                        @Query("page") int page,
                                        @Query("results_per_page") int numResults,
                                        @Query("q") String q,
-                                       Callback<UserCollection> userCollectionCallback);
+                                       CancelableCallback<UserCollection> userCollectionCallback);
 
 }

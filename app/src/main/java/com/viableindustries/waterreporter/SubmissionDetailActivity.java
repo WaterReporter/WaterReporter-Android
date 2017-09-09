@@ -150,10 +150,10 @@
 //
 //        ReportService service = restAdapter.create(ReportService.class);
 //
-//        service.getSingleReport(accessToken, "application/json", id, new Callback<Report>() {
+//        service.getSingleReport(accessToken, "application/json", id, new CancelableCallback<Report>() {
 //
 //            @Override
-//            public void success(Report report, Response response) {
+//            public void onSuccess(Report report, Response response) {
 //
 //                progressBar.setVisibility(View.GONE);
 //
@@ -191,7 +191,7 @@
 //            }
 //
 //            @Override
-//            public void failure(RetrofitError error) {
+//            public void onFailure(RetrofitError error) {
 //
 //                progressBar.setVisibility(View.GONE);
 //
@@ -256,10 +256,10 @@
 //
 //        ReportService service = restAdapter.create(ReportService.class);
 //
-//        service.deleteSingleReport(access_token, id, new Callback<Response>() {
+//        service.deleteSingleReport(access_token, id, new CancelableCallback<Response>() {
 //
 //            @Override
-//            public void success(Response response, Response responseCallBack) {
+//            public void onSuccess(Response response, Response responseCallBack) {
 //
 //                if (response != null) {
 //
@@ -278,7 +278,7 @@
 //            }
 //
 //            @Override
-//            public void failure(RetrofitError error) {
+//            public void onFailure(RetrofitError error) {
 //
 //                Response response = error.getResponse();
 //

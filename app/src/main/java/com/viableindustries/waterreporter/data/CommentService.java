@@ -28,6 +28,6 @@ public interface CommentService {
             (@Header("Authorization") String authorization,
              @Header("Content-Type") String contentType,
              @Body CommentPost commentPost,
-             Callback<Comment> commentCallback);
+             CancelableCallback<Comment> commentCallback);
 
 }

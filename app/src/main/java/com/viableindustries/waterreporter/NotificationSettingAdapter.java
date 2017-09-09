@@ -122,10 +122,10 @@ public class NotificationSettingAdapter extends ArrayAdapter {
 
                 UserService service = UserService.restAdapter.create(UserService.class);
 
-                service.updateUser(accessToken, "application/json", id, notificationPatchBody.settings, new Callback<User>() {
+                service.updateUser(accessToken, "application/json", id, notificationPatchBody.settings, new CancelableCallback<User>() {
 
                     @Override
-                    public void success(User user, Response response) {
+                    public void onSuccess(User user, Response response) {
 
                         // Update stored values of user's notification settings
 
@@ -148,7 +148,7 @@ public class NotificationSettingAdapter extends ArrayAdapter {
                     }
 
                     @Override
-                    public void failure(RetrofitError error) {
+                    public void onFailure(RetrofitError error) {
 
                         if (error == null) return;
 

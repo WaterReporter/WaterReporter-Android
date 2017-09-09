@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.internal.ObjectConstructor;
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.data.OrganizationHolder;
@@ -191,10 +192,10 @@ public class OrganizationMembersActivity extends AppCompatActivity {
 
         OrganizationService service = OrganizationService.restAdapter.create(OrganizationService.class);
 
-        service.getOrganizationMembers(accessToken, "application/json", organizationId, page, limit, query, new Callback<UserCollection>() {
+        service.getOrganizationMembers(accessToken, "application/json", organizationId, page, limit, query, new CancelableCallback<UserCollection>() {
 
             @Override
-            public void success(UserCollection userCollection, Response response) {
+            public void onSuccess(UserCollection userCollection, Response response) {
 
                 ArrayList<User> members = userCollection.getFeatures();
 
@@ -235,7 +236,7 @@ public class OrganizationMembersActivity extends AppCompatActivity {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(RetrofitError error) {
 
                 memberListContainer.setRefreshing(false);
 
@@ -279,6 +280,10 @@ public class OrganizationMembersActivity extends AppCompatActivity {
         super.onDestroy();
 
         ButterKnife.unbind(this);
+
+        // Cancel all pending network requests
+
+        CancelableCallback.cancelAll();
 
     }
 
