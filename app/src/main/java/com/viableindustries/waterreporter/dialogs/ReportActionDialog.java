@@ -1,35 +1,26 @@
 package com.viableindustries.waterreporter.dialogs;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
-import com.viableindustries.waterreporter.AuthUserActivity;
 import com.viableindustries.waterreporter.DeletePostCallbacks;
 import com.viableindustries.waterreporter.PhotoMetaActivity;
 import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.SignInActivity;
 import com.viableindustries.waterreporter.TimelineAdapterHelpers;
-import com.viableindustries.waterreporter.UserProfileActivity;
 import com.viableindustries.waterreporter.data.Geometry;
-import com.viableindustries.waterreporter.data.HtmlCompat;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportHolder;
 

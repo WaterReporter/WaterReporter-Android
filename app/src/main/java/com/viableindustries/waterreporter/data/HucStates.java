@@ -8,12 +8,12 @@ import java.util.Map;
  * Created by brendanmcintyre on 9/9/17.
  */
 
-public class HucStates {
+public final class HucStates {
 
-    private static final Map<Integer, String> STATES;
+    public static final Map<Integer, String> STATES;
 
     static {
-        
+
         Map<Integer, String> stateMap = new HashMap<>();
 
         stateMap.put(22030000, "American Samoa");
@@ -2317,6 +2317,7 @@ public class HucStates {
         stateMap.put(1010002, "Maine");
 
         STATES = Collections.unmodifiableMap(stateMap);
+
     }
 
 }

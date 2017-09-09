@@ -63,7 +63,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -628,65 +627,6 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
     }
 
-    protected void countReports(String query, final String filterName) {
-
-        final String accessToken = prefs.getString("access_token", "");
-
-        RestAdapter restAdapter = ReportService.restAdapter;
-
-        ReportService service = restAdapter.create(ReportService.class);
-
-        service.getReports(accessToken, "application/json", 1, 1, query, new CancelableCallback<FeatureCollection>() {
-
-            @Override
-            public void onSuccess(FeatureCollection featureCollection, Response response) {
-
-                int count = featureCollection.getProperties().num_results;
-
-                switch (filterName) {
-                    case "state":
-                        if (count > 0) {
-//                            fblActionCount.setVisibility(View.VISIBLE);
-                            actionCount = count;
-                            actionCountLabel.setText(String.format("%s %s", actionCount, resources.getQuantityString(R.plurals.action_label, actionCount, actionCount)).toLowerCase());
-                        }
-                        break;
-                    default:
-                        reportCount = count;
-                        postCountLabel.setText(String.format("%s %s", reportCount, resources.getQuantityString(R.plurals.post_label, reportCount, reportCount)).toLowerCase());
-                        setReportCountState(count);
-                        break;
-                }
-
-            }
-
-            @Override
-            public void onFailure(RetrofitError error) {
-
-                if (error == null) return;
-
-                Response errorResponse = error.getResponse();
-
-                // If we have a valid response object, check the status code and redirect to log in view if necessary
-
-                if (errorResponse != null) {
-
-                    int status = errorResponse.getStatus();
-
-                    if (status == 403) {
-
-                        startActivity(new Intent(mContext, SignInActivity.class));
-
-                    }
-
-                }
-
-            }
-
-        });
-
-    }
-
     protected void fetchOrganizations(int limit, int page, final String query) {
 
         final String accessToken = prefs.getString("access_token", "");
@@ -831,8 +771,6 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
                 if (refresh) reportCount = featureCollection.getProperties().num_results;
 
-                setReportCountState(reportCount);
-
                 String countLabel;
 
                 if (reportCount > 0) {
@@ -848,6 +786,8 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
                 }
 
                 postCountLabel.setText(countLabel);
+
+                setReportCountState(reportCount);
 
                 if (refresh) {
 

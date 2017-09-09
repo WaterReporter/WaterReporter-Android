@@ -1,23 +1,15 @@
 package com.viableindustries.waterreporter;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.GroupNameComparator;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
@@ -25,9 +17,7 @@ import com.viableindustries.waterreporter.data.UserService;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
-import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 

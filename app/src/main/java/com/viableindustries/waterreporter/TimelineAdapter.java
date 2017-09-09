@@ -2,14 +2,10 @@ package com.viableindustries.waterreporter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,11 +19,8 @@ import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.viableindustries.waterreporter.data.Favorite;
-import com.viableindustries.waterreporter.data.HtmlCompat;
 import com.viableindustries.waterreporter.data.PostCommentListener;
 import com.viableindustries.waterreporter.data.PostDetailListener;
-import com.viableindustries.waterreporter.data.PostDirectionsListener;
-import com.viableindustries.waterreporter.data.PostFavoriteCountListener;
 import com.viableindustries.waterreporter.data.PostMapListener;
 import com.viableindustries.waterreporter.data.PostShareListener;
 import com.viableindustries.waterreporter.data.Report;
@@ -35,7 +28,6 @@ import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.UserHolder;
 import com.viableindustries.waterreporter.data.UserProfileListener;
 import com.viableindustries.waterreporter.dialogs.ReportActionDialog;
-import com.viableindustries.waterreporter.dialogs.ReportActionDialogListener;
 
 import java.util.List;
 

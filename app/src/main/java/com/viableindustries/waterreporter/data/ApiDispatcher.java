@@ -1,19 +1,11 @@
 package com.viableindustries.waterreporter.data;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.view.View;
 
-import com.viableindustries.waterreporter.MainActivity;
-import com.viableindustries.waterreporter.PhotoMetaActivity;
-import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.SendPostCallbacks;
-import com.viableindustries.waterreporter.SignInActivity;
 
-import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 

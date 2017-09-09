@@ -40,8 +40,6 @@ import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Geometry;
 import com.viableindustries.waterreporter.data.HucFeature;
-import com.viableindustries.waterreporter.data.HucGeometryCollection;
-import com.viableindustries.waterreporter.data.HucGeometryService;
 import com.viableindustries.waterreporter.data.MappedReportsHolder;
 import com.viableindustries.waterreporter.data.QueryFilter;
 import com.viableindustries.waterreporter.data.QueryParams;
@@ -59,17 +57,9 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import static com.mapbox.mapboxsdk.style.functions.Function.property;
-import static com.mapbox.mapboxsdk.style.functions.stops.Stop.stop;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillColor;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillOpacity;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillOutlineColor;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineColor;
 
 public class TerritoryMapActivity extends AppCompatActivity {
 

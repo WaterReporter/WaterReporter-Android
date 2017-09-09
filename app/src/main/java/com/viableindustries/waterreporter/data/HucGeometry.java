@@ -1,10 +1,8 @@
 package com.viableindustries.waterreporter.data;
 
 import com.google.gson.annotations.SerializedName;
-import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

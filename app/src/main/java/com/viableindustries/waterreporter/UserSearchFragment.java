@@ -12,8 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
-import com.viableindustries.waterreporter.data.OrganizationMemberList;
-import com.viableindustries.waterreporter.data.OrganizationService;
+import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.QueryFilter;
 import com.viableindustries.waterreporter.data.QueryParams;
 import com.viableindustries.waterreporter.data.QuerySort;
@@ -21,16 +20,9 @@ import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserCollection;
 import com.viableindustries.waterreporter.data.UserService;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
-import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;

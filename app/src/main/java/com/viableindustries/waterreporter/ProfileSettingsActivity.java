@@ -1,39 +1,27 @@
 package com.viableindustries.waterreporter;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-import com.viableindustries.waterreporter.data.AuthResponse;
 import com.viableindustries.waterreporter.data.CancelableCallback;
-import com.viableindustries.waterreporter.data.LogInBody;
 import com.viableindustries.waterreporter.data.NotificationSetting;
 import com.viableindustries.waterreporter.data.Organization;
-import com.viableindustries.waterreporter.data.SecurityService;
 import com.viableindustries.waterreporter.data.User;
-import com.viableindustries.waterreporter.data.UserBasicResponse;
 import com.viableindustries.waterreporter.data.UserHolder;
-import com.viableindustries.waterreporter.data.UserProperties;
 import com.viableindustries.waterreporter.data.UserService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit.Callback;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 

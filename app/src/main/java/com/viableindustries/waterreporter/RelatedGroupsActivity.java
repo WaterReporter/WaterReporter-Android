@@ -1,7 +1,6 @@
 package com.viableindustries.waterreporter;
 
 import android.os.Bundle;
-import android.app.Activity;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -16,7 +15,6 @@ import android.widget.ListView;
 
 import com.viableindustries.waterreporter.data.GroupListHolder;
 import com.viableindustries.waterreporter.data.Organization;
-import com.viableindustries.waterreporter.data.UserGroupList;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -23,8 +23,6 @@ import java.util.Comparator;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-import static java.lang.Boolean.TRUE;
-
 /**
  * Created by brendanmcintyre on 11/15/16.
  */

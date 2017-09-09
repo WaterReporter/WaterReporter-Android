@@ -1,60 +1,36 @@
 package com.viableindustries.waterreporter;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.app.Activity;
 import android.support.v4.app.NavUtils;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.internal.ObjectConstructor;
-import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.Organization;
-import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.data.OrganizationHolder;
 import com.viableindustries.waterreporter.data.OrganizationMemberList;
 import com.viableindustries.waterreporter.data.OrganizationService;
 import com.viableindustries.waterreporter.data.QueryFilter;
 import com.viableindustries.waterreporter.data.QueryParams;
 import com.viableindustries.waterreporter.data.QuerySort;
-import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.User;
 import com.viableindustries.waterreporter.data.UserCollection;
-import com.viableindustries.waterreporter.data.UserFeatureCollection;
-import com.viableindustries.waterreporter.data.UserGroupList;
-import com.viableindustries.waterreporter.data.UserService;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
 
 public class OrganizationMembersActivity extends AppCompatActivity {
 

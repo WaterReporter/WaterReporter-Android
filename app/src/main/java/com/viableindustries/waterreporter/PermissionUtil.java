@@ -16,11 +16,11 @@ package com.viableindustries.waterreporter;
 * limitations under the License.
 */
 
-        import android.app.Activity;
-        import android.content.pm.PackageManager;
-        import android.os.Build;
-        import android.support.v4.app.ActivityCompat;
-        import android.support.v4.content.ContextCompat;
+import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 
 /**
  * Utility class that wraps access to the runtime permissions API in M and provides basic helper

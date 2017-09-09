@@ -4,11 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
+import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.HucGeometryCollection;
 import com.viableindustries.waterreporter.data.HucGeometryService;
 import com.viableindustries.waterreporter.data.Territory;
 
-import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;

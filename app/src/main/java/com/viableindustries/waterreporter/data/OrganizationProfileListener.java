@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.view.View;
 
 import com.viableindustries.waterreporter.OrganizationProfileActivity;
-import com.viableindustries.waterreporter.UserProfileActivity;
 
 /**
  * Created by brendanmcintyre on 8/30/16.

@@ -3,9 +3,6 @@ package com.viableindustries.waterreporter.data;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by brendanmcintyre on 8/26/15.

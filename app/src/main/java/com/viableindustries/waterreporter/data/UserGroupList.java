@@ -1,7 +1,6 @@
 package com.viableindustries.waterreporter.data;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by brendanmcintyre on 8/22/16.

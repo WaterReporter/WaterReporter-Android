@@ -3,9 +3,6 @@ package com.viableindustries.waterreporter.data;
 import android.content.Context;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 /**
  * Created by brendanmcintyre on 12/5/16.

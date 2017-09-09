@@ -3,29 +3,23 @@ package com.viableindustries.waterreporter;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.location.Location;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -34,23 +28,33 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.MarkerViewManager;
-//import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
-//import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.services.android.ui.geocoder.GeocoderAutoCompleteView;
+import com.mapbox.services.api.geocoding.v5.GeocodingCriteria;
+import com.mapbox.services.api.geocoding.v5.models.CarmenFeature;
+import com.viableindustries.waterreporter.data.CancelableCallback;
+
+import java.text.DateFormat;
+import java.util.Date;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
+//import com.mapbox.mapboxsdk.api.ILatLng;
+//import com.mapbox.mapboxsdk.geometry.BoundingBox;
 //import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
 //import com.mapbox.mapboxsdk.overlay.Icon;
 //import com.mapbox.mapboxsdk.overlay.Marker;
@@ -58,28 +62,6 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 //import com.mapbox.mapboxsdk.views.InfoWindow;
 //import com.mapbox.mapboxsdk.views.MapView;
 //import com.mapbox.mapboxsdk.views.MapViewListener;
-import com.mapbox.services.android.ui.geocoder.GeocoderAutoCompleteView;
-import com.mapbox.services.api.geocoding.v5.GeocodingCriteria;
-import com.mapbox.services.api.geocoding.v5.models.CarmenFeature;
-import com.mapbox.services.commons.models.Position;
-import com.viableindustries.waterreporter.data.CancelableCallback;
-import com.viableindustries.waterreporter.data.FeatureCollection;
-import com.viableindustries.waterreporter.data.Geometry;
-import com.viableindustries.waterreporter.data.GeometryResponse;
-import com.viableindustries.waterreporter.data.Report;
-import com.viableindustries.waterreporter.data.ReportService;
-
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * Created by Ryan Hamley on 10/14/14.

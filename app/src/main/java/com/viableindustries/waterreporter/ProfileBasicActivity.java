@@ -1,11 +1,6 @@
 package com.viableindustries.waterreporter;
 
 import android.Manifest;
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
@@ -15,10 +10,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
@@ -26,35 +19,24 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-import com.viableindustries.waterreporter.data.AuthResponse;
 import com.viableindustries.waterreporter.data.CacheManager;
 import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.ImageProperties;
 import com.viableindustries.waterreporter.data.ImageService;
-import com.viableindustries.waterreporter.data.LogInBody;
-import com.viableindustries.waterreporter.data.RegistrationBody;
-import com.viableindustries.waterreporter.data.RegistrationResponse;
-import com.viableindustries.waterreporter.data.SecurityService;
 import com.viableindustries.waterreporter.data.User;
-import com.viableindustries.waterreporter.data.UserBasicResponse;
 import com.viableindustries.waterreporter.data.UserService;
-import com.viableindustries.waterreporter.dialogs.CommentActionDialogListener;
-import com.viableindustries.waterreporter.dialogs.CommentPhotoDialogListener;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -64,29 +46,21 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
-import retrofit.Callback;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedFile;
-
-import static java.security.AccessController.getContext;
 
 // Activity shown as dialog to handle final step in first-time user registration.
 

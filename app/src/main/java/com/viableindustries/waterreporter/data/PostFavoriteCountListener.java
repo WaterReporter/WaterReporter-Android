@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 
-import com.viableindustries.waterreporter.CommentActivity;
 import com.viableindustries.waterreporter.PostFavoriteListActivity;
 
 /**

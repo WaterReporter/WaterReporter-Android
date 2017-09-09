@@ -2,9 +2,6 @@ package com.viableindustries.waterreporter.mbox;
 
 import com.mapbox.mapboxsdk.annotations.BaseMarkerViewOptions;
 import com.mapbox.mapboxsdk.annotations.MarkerView;
-import com.viableindustries.waterreporter.data.Report;
-
-import java.util.List;
 
 /**
  * Created by brendanmcintyre on 8/3/16.

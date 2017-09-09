@@ -1,6 +1,5 @@
 package com.viableindustries.waterreporter.data;
 
-import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.http.GET;
 import retrofit.http.Header;

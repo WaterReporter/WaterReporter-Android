@@ -2,8 +2,6 @@ package com.viableindustries.waterreporter.data;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
-
 /**
  * Created by brendanmcintyre on 11/15/16.
  */

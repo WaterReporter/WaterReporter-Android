@@ -1,7 +1,5 @@
 package com.viableindustries.waterreporter.data;
 
-import java.util.ArrayList;
-
 /**
  * Created by brendanmcintyre on 8/30/16.
  */

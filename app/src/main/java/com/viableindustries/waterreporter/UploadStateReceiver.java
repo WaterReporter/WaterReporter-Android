@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.LinearLayout;
 
 /**
  * Created by brendanmcintyre on 9/5/17.

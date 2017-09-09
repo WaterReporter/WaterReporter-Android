@@ -3,19 +3,15 @@ package com.viableindustries.waterreporter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-import com.viableindustries.waterreporter.data.Organization;
-import com.viableindustries.waterreporter.data.OrganizationHolder;
+import com.viableindustries.waterreporter.data.HucStates;
 import com.viableindustries.waterreporter.data.Territory;
 import com.viableindustries.waterreporter.data.TerritoryHolder;
 
@@ -48,14 +44,9 @@ public class TerritoryListAdapter extends ArrayAdapter<Territory> {
     private static class ViewHolder {
         ImageView territoryIcon;
         TextView territoryName;
+        TextView territoryStates;
         LinearLayout territoryItem;
     }
-
-//    public int getCount() {
-//
-//        return filteredList.size();
-//
-//    }
 
     public Territory getItem(int position) {
 
@@ -63,35 +54,21 @@ public class TerritoryListAdapter extends ArrayAdapter<Territory> {
 
     }
 
-//    @NonNull
-//    public Filter getFilter() {
-//
-//        // TODO Auto-generated method stub
-//
-//        if (mFilter == null) {
-//
-//            mFilter = new OrganizationListAdapter.OrganizationFilter();
-//
-//        }
-//
-//        return mFilter;
-//
-//    }
-
     @Override
     @NonNull
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
         TerritoryListAdapter.ViewHolder viewHolder;
 
         if (convertView == null) {
 
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.territory_list_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.view_territory_list_item, parent, false);
 
             viewHolder = new TerritoryListAdapter.ViewHolder();
 
             viewHolder.territoryIcon = (ImageView) convertView.findViewById(R.id.territoryIcon);
             viewHolder.territoryName = (TextView) convertView.findViewById(R.id.territoryName);
+            viewHolder.territoryStates = (TextView) convertView.findViewById(R.id.territoryStates);
             viewHolder.territoryItem = (LinearLayout) convertView.findViewById(R.id.territoryItem);
 
             convertView.setTag(viewHolder);
@@ -108,7 +85,7 @@ public class TerritoryListAdapter extends ArrayAdapter<Territory> {
 
         viewHolder.territoryName.setText(territory.properties.huc_8_name);
 
-//        Picasso.with(context).load(territory.properties.picture).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(viewHolder.organizationLogo);
+        viewHolder.territoryStates.setText(HucStates.STATES.get(territory.properties.huc_8_code));
 
         // Add click listeners to layout elements
 
@@ -126,61 +103,5 @@ public class TerritoryListAdapter extends ArrayAdapter<Territory> {
         return convertView;
 
     }
-
-//    private class OrganizationFilter extends Filter {
-//
-//        @Override
-//        protected FilterResults performFiltering(CharSequence constraint) {
-//
-//            FilterResults results = new FilterResults();
-//
-//            // Perform filtering operation
-//            // May need to implement partial/fuzzy matching as the number of organizations grows
-//
-//            ArrayList<Organization> nOrgList = new ArrayList<>();
-//
-//            for (Organization org : sourceList) {
-//
-//                if (org.properties.name.toUpperCase().startsWith(constraint.toString().toUpperCase())) {
-//
-//                    Log.d("name", org.properties.name);
-//
-//                    nOrgList.add(org);
-//
-//                }
-//
-//            }
-//
-//            results.values = nOrgList;
-//
-//            results.count = nOrgList.size();
-//
-//            return results;
-//
-//        }
-//
-//        // Probably not the best idea, need to find a better solution
-//        @SuppressWarnings("unchecked")
-//        @Override
-//        protected void publishResults(CharSequence constraint,
-//                                      FilterResults results) {
-//
-//            // Inform the adapter about the new filtered list
-//
-//            if (results.count == 0) {
-//
-//                notifyDataSetInvalidated();
-//
-//            } else {
-//
-//                filteredList = (ArrayList<Organization>) results.values;
-//
-//                notifyDataSetChanged();
-//
-//            }
-//
-//        }
-//
-//    }
 
 }

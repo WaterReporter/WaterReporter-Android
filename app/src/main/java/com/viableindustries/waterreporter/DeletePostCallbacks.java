@@ -2,8 +2,6 @@ package com.viableindustries.waterreporter;
 
 import android.support.annotation.NonNull;
 
-import com.viableindustries.waterreporter.data.Report;
-
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 

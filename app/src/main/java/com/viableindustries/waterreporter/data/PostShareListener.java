@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.view.View;
 
-import com.viableindustries.waterreporter.CommentActivity;
 import com.viableindustries.waterreporter.R;
 
 /**

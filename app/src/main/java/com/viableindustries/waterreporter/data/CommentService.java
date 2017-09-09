@@ -1,15 +1,9 @@
 package com.viableindustries.waterreporter.data;
 
-import retrofit.Callback;
-import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.http.Body;
 import retrofit.http.Header;
-import retrofit.http.Headers;
-import retrofit.http.Multipart;
 import retrofit.http.POST;
-import retrofit.http.Part;
-import retrofit.mime.TypedFile;
 
 /**
  * Created by brendanmcintyre on 8/27/15.

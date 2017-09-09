@@ -1,7 +1,5 @@
 package com.viableindustries.waterreporter.data;
 
-import android.widget.ListView;
-
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;

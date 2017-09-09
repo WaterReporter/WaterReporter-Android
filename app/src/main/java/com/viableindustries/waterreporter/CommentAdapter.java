@@ -1,40 +1,23 @@
 package com.viableindustries.waterreporter;
 
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.viableindustries.waterreporter.data.Comment;
-import com.viableindustries.waterreporter.data.Geometry;
-import com.viableindustries.waterreporter.data.Organization;
-import com.viableindustries.waterreporter.data.OrganizationProfileListener;
-import com.viableindustries.waterreporter.data.Report;
-import com.viableindustries.waterreporter.data.ReportHolder;
-import com.viableindustries.waterreporter.data.ReportPhoto;
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.data.Comment;
+import com.viableindustries.waterreporter.data.ReportPhoto;
 import com.viableindustries.waterreporter.data.UserProfileListener;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class CommentAdapter extends ArrayAdapter<Comment> {

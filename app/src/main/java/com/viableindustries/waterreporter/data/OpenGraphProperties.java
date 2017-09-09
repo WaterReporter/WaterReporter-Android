@@ -3,11 +3,6 @@ package com.viableindustries.waterreporter.data;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * Created by brendanmcintyre on 7/26/17.

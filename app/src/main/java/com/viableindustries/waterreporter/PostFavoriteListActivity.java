@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.app.Activity;
 import android.support.v4.app.NavUtils;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -14,31 +13,19 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-import com.google.gson.Gson;
 import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.Favorite;
 import com.viableindustries.waterreporter.data.FavoriteCollection;
-import com.viableindustries.waterreporter.data.Organization;
-import com.viableindustries.waterreporter.data.OrganizationHolder;
-import com.viableindustries.waterreporter.data.OrganizationMemberList;
-import com.viableindustries.waterreporter.data.OrganizationService;
-import com.viableindustries.waterreporter.data.QueryFilter;
-import com.viableindustries.waterreporter.data.QueryParams;
-import com.viableindustries.waterreporter.data.QuerySort;
 import com.viableindustries.waterreporter.data.Report;
 import com.viableindustries.waterreporter.data.ReportHolder;
 import com.viableindustries.waterreporter.data.ReportService;
 import com.viableindustries.waterreporter.data.User;
-import com.viableindustries.waterreporter.data.UserCollection;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 

@@ -1,14 +1,9 @@
 package com.viableindustries.waterreporter;
 
-import android.content.Context;
 import android.content.res.Resources;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.text.format.DateUtils;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.viableindustries.waterreporter.data.Comment;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.Territory;
 

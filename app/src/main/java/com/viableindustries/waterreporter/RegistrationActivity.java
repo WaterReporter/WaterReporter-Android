@@ -1,8 +1,5 @@
 package com.viableindustries.waterreporter;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,20 +14,15 @@ import android.widget.Toast;
 import com.viableindustries.waterreporter.data.AuthResponse;
 import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.LogInBody;
-import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.RegistrationBody;
 import com.viableindustries.waterreporter.data.RegistrationResponse;
 import com.viableindustries.waterreporter.data.SecurityService;
-import com.viableindustries.waterreporter.data.UserBasicResponse;
-import com.viableindustries.waterreporter.data.UserService;
 
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;

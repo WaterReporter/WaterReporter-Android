@@ -1,11 +1,7 @@
 package com.viableindustries.waterreporter;
 
-import android.content.SharedPreferences;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.AbsListView;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public abstract class EndlessScrollListener implements AbsListView.OnScrollListener {
 

@@ -1,13 +1,8 @@
 package com.viableindustries.waterreporter.data;
 
-import java.util.Map;
-
-import retrofit.Callback;
 import retrofit.RestAdapter;
-import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.Header;
-import retrofit.http.PATCH;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
