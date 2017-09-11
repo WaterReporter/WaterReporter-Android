@@ -24,7 +24,7 @@ public class AttributeTransformUtility {
 
     public static List<Map<String, Integer>> buildImageRelation(int imageId) {
 
-        List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
+        List<Map<String, Integer>> images = new ArrayList<>();
 
         final Map<String, Integer> imageObject = new HashMap<>();
 
@@ -45,13 +45,9 @@ public class AttributeTransformUtility {
         return result;
     }
 
-    public static void setStatusBarTranslucent(Window window, boolean makeTranslucent) {
+    public static void setStatusBarTranslucent(Window window) {
 
-        if (makeTranslucent) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        } else {
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
+        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
     }
 
     public static String getTerritoryCode(Territory territory) {

@@ -322,13 +322,13 @@ public class EditProfileActivity extends AppCompatActivity implements
 
                             // Retrieve the image id and add relation to PATCH request body
 
-                            Map<String, Object> userPatch = new HashMap<String, Object>();
+                            Map<String, Object> userPatch = new HashMap<>();
 
-                            final Map<String, Integer> image_id = new HashMap<String, Integer>();
+                            final Map<String, Integer> image_id = new HashMap<>();
 
                             image_id.put("id", imageProperties.id);
 
-                            List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
+                            List<Map<String, Integer>> images = new ArrayList<>();
 
                             images.add(image_id);
 
@@ -402,7 +402,7 @@ public class EditProfileActivity extends AppCompatActivity implements
 
             List<Map<String, String>> telephones = new ArrayList<>();
 
-            Map<String, String> phoneNumber = new HashMap<String, String>();
+            Map<String, String> phoneNumber = new HashMap<>();
 
             phoneNumber.put("number", telephone);
 

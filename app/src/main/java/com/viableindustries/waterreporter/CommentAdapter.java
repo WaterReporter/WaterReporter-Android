@@ -80,13 +80,13 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
         }
 
         // Get the data item for this position
-        final Comment feature = (Comment) getItem(position);
+        final Comment feature = getItem(position);
 
         try {
 
-            ReportPhoto image = (ReportPhoto) feature.properties.images.get(0);
+            ReportPhoto image = feature != null ? feature.properties.images.get(0) : null;
 
-            imagePath = (String) image.properties.square_retina;
+            imagePath = image.properties.square_retina;
 
             viewHolder.postThumb.setVisibility(View.VISIBLE);
 
@@ -100,7 +100,7 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
 
         creationDate = (String) AttributeTransformUtility.relativeTime(feature.properties.created);
 
-        featureId = (Integer) feature.id;
+        featureId = feature.id;
 
         viewHolder.tracker.setText(String.valueOf(featureId));
 

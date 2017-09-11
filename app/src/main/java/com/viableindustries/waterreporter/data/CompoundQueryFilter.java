@@ -13,7 +13,7 @@ public class CompoundQueryFilter {
     @SerializedName("and")
     private List<QueryFilter> conditions;
 
-    public CompoundQueryFilter(List aConditions) {
+    public CompoundQueryFilter(List<QueryFilter> aConditions) {
 
         this.conditions = aConditions;
     }

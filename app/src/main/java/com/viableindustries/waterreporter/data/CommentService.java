@@ -10,15 +10,15 @@ import retrofit.http.POST;
  */
 public interface CommentService {
 
-    final String ENDPOINT = "https://api.waterreporter.org/v2";
+    String ENDPOINT = "https://api.waterreporter.org/v2";
 
-    public static RestAdapter restAdapter = new RestAdapter.Builder()
+    RestAdapter restAdapter = new RestAdapter.Builder()
             .setLogLevel(RestAdapter.LogLevel.HEADERS_AND_ARGS)
             .setEndpoint(ENDPOINT)
             .build();
 
     @POST("/data/comment")
-    public void postComment
+    void postComment
             (@Header("Authorization") String authorization,
              @Header("Content-Type") String contentType,
              @Body CommentPost commentPost,

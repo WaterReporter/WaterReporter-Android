@@ -133,7 +133,7 @@ public class SearchActivity extends FragmentActivity {
 
         // Create order_by list and add a sort parameter
 
-        List<QuerySort> queryOrder = new ArrayList<QuerySort>();
+        List<QuerySort> queryOrder = new ArrayList<>();
 
         QuerySort querySort = new QuerySort(sortField, sortDirection);
 
@@ -746,19 +746,19 @@ public class SearchActivity extends FragmentActivity {
 
         // Initialize empty list to hold organizations
 
-        baseOrganizationList = new ArrayList<Organization>();
+        baseOrganizationList = new ArrayList<>();
 
         // Initialize empty list to hold users
 
-        baseUserList = new ArrayList<User>();
+        baseUserList = new ArrayList<>();
 
         // Initialize empty list to hold territories
 
-        baseTerritoryList = new ArrayList<Territory>();
+        baseTerritoryList = new ArrayList<>();
 
         // Initialize empty list to hold hashtags
 
-        baseTagList = new ArrayList<HashTag>();
+        baseTagList = new ArrayList<>();
 
         // Set initial category highlight
 

@@ -62,7 +62,7 @@ public class TagSuggestionAdapter extends ArrayAdapter<HashTag> {
 
     @Override
     @NonNull
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
         final TagSuggestionAdapter.ViewHolder viewHolder;
 

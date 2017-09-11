@@ -22,7 +22,7 @@ public class QueryBuilder {
 
         if (order) {
 
-            queryOrder = new ArrayList<QuerySort>();
+            queryOrder = new ArrayList<>();
 
             QuerySort querySort = new QuerySort("created", "desc");
 

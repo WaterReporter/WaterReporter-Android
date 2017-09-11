@@ -266,13 +266,13 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
                                 // Retrieve the image id and add relation to PATCH request body
 
-                                Map<String, Object> userPatch = new HashMap<String, Object>();
+                                Map<String, Object> userPatch = new HashMap<>();
 
-                                final Map<String, Integer> image_id = new HashMap<String, Integer>();
+                                final Map<String, Integer> image_id = new HashMap<>();
 
                                 image_id.put("id", imageProperties.id);
 
-                                List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
+                                List<Map<String, Integer>> images = new ArrayList<>();
 
                                 images.add(image_id);
 

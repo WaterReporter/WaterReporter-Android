@@ -143,7 +143,7 @@ public class CommentActivity extends AppCompatActivity implements
 
     protected CommentAdapter commentAdapter;
 
-    protected List<Comment> commentCollectionList = new ArrayList<Comment>();
+    protected List<Comment> commentCollectionList = new ArrayList<>();
 
     private boolean working;
 
@@ -210,7 +210,7 @@ public class CommentActivity extends AppCompatActivity implements
 
         // Initialize empty list to hold hashtags
 
-        baseTagList = new ArrayList<HashTag>();
+        baseTagList = new ArrayList<>();
 
         // Add text change listener to comment input.
         // Observe changes and respond accordingly.
@@ -286,7 +286,7 @@ public class CommentActivity extends AppCompatActivity implements
 
         // Create order_by list and add a sort parameter
 
-        List<QuerySort> queryOrder = new ArrayList<QuerySort>();
+        List<QuerySort> queryOrder = new ArrayList<>();
 
         QuerySort querySort = new QuerySort(sortField, sortDirection);
 
@@ -590,7 +590,7 @@ public class CommentActivity extends AppCompatActivity implements
 
         // Create order_by list and add a sort parameter
 
-        List<QuerySort> queryOrder = new ArrayList<QuerySort>();
+        List<QuerySort> queryOrder = new ArrayList<>();
 
         QuerySort querySort = new QuerySort("created", "desc");
 
@@ -772,11 +772,11 @@ public class CommentActivity extends AppCompatActivity implements
 
                         // Retrieve the image id and create a new report
 
-                        final Map<String, Integer> image_id = new HashMap<String, Integer>();
+                        final Map<String, Integer> image_id = new HashMap<>();
 
                         image_id.put("id", imageProperties.id);
 
-                        List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
+                        List<Map<String, Integer>> images = new ArrayList<>();
 
                         images.add(image_id);
 

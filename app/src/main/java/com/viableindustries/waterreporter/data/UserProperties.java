@@ -100,7 +100,7 @@ public class UserProperties implements Serializable {
 
     public Map<String, String> getStringProperties() {
 
-        Map<String, String> stringProperties = new HashMap<String, String>();
+        Map<String, String> stringProperties = new HashMap<>();
 
         stringProperties.put("description", this.description);
         stringProperties.put("first_name", this.first_name);

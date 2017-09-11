@@ -157,7 +157,7 @@
                 android:value="com.viableindustries.waterreporter.SignInActivity" />
         </activity>
         <activity
-            android:name=".MapDetailActivity"
+            android:name=".ManageGroupsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_map_detail"
             android:parentActivityName=".MainActivity"
@@ -171,7 +171,6 @@
             android:name=".PostDetailActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
-            android:parentActivityName=".MapDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter android:autoVerify="true">
@@ -240,10 +239,6 @@
                     android:pathPrefix="/community/reports"
                     android:scheme="https" />
             </intent-filter>
-
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.viableindustries.waterreporter.MapDetailActivity" />
         </activity>
         <activity
             android:name=".UserProfileActivity"

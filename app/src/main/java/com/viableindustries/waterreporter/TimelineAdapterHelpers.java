@@ -60,7 +60,7 @@ public class TimelineAdapterHelpers {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(context.getPackageName(), MODE_PRIVATE);
 
-        return sharedPreferences.getInt("user_id", 0) == post.properties.owner_id;
+        return sharedPreferences.getInt("user_id", 0) != post.properties.owner_id;
 
     }
 
@@ -234,9 +234,9 @@ public class TimelineAdapterHelpers {
 
         if (post.properties.images.size() > 0) {
 
-            ReportPhoto image = (ReportPhoto) post.properties.images.get(0);
+            ReportPhoto image = post.properties.images.get(0);
 
-            String imagePath = (String) image.properties.square_retina;
+            String imagePath = image.properties.square_retina;
 
             imageView.setVisibility(View.VISIBLE);
 
@@ -529,6 +529,7 @@ public class TimelineAdapterHelpers {
             @Override
             public void onSuccess(Response response, Response _response) {
 
+                assert callbacks != null;
                 callbacks.onSuccess(_response);
 
             }
@@ -536,6 +537,7 @@ public class TimelineAdapterHelpers {
             @Override
             public void onFailure(RetrofitError error) {
 
+                assert callbacks != null;
                 callbacks.onError(error);
 
             }

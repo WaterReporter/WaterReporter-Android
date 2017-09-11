@@ -80,7 +80,7 @@ public class UserListAdapter extends ArrayAdapter<User> implements Filterable {
 
     @Override
     @NonNull
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
         ViewHolder viewHolder;
 

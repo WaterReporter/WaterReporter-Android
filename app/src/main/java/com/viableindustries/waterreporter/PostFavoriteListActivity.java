@@ -44,7 +44,7 @@ public class PostFavoriteListActivity extends AppCompatActivity {
 
     private Report post;
 
-    protected List<User> memberCollection = new ArrayList<User>();
+    protected List<User> memberCollection = new ArrayList<>();
 
     protected UserListAdapter userListAdapter;
 
@@ -154,7 +154,7 @@ public class PostFavoriteListActivity extends AppCompatActivity {
 
                     if (refresh) {
 
-                        memberCollection = new ArrayList<User>();
+                        memberCollection = new ArrayList<>();
 
                         for (Favorite favorite : favorites) {
 

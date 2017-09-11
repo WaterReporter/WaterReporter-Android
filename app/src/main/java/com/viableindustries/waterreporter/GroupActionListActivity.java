@@ -74,7 +74,7 @@ public class GroupActionListActivity extends AppCompatActivity {
 
         // Initialize empty list to hold organizations
 
-        organizations = new ArrayList<Organization>();
+        organizations = new ArrayList<>();
 
         organizationListContainer.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
@@ -159,7 +159,7 @@ public class GroupActionListActivity extends AppCompatActivity {
 
         // Create order_by list and add a sort parameter
 
-        List<QuerySort> queryOrder = new ArrayList<QuerySort>();
+        List<QuerySort> queryOrder = new ArrayList<>();
 
         QuerySort querySort = new QuerySort("name", "asc");
 

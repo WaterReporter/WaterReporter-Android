@@ -113,7 +113,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
     protected TimelineAdapter timelineAdapter;
 
-    protected List<Report> reportCollection = new ArrayList<Report>();
+    protected List<Report> reportCollection = new ArrayList<>();
 
     private String userDescriptionText;
 
@@ -627,7 +627,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
         if (order) {
 
-            queryOrder = new ArrayList<QuerySort>();
+            queryOrder = new ArrayList<>();
 
             QuerySort querySort = new QuerySort("created", "desc");
 

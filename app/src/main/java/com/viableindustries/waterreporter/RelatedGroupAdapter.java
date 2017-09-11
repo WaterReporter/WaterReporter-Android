@@ -28,7 +28,7 @@ public class RelatedGroupAdapter extends ArrayAdapter {
 
     @Override
     @NonNull
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
         ViewHolder viewHolder;
 
@@ -57,7 +57,7 @@ public class RelatedGroupAdapter extends ArrayAdapter {
 
         try {
 
-            Picasso.with(mContext).load(organization.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(viewHolder.groupView);
+            Picasso.with(mContext).load(organization != null ? organization.properties.picture : null).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(viewHolder.groupView);
 
 //            viewHolder.groupView.setText(organization.properties.name);
 

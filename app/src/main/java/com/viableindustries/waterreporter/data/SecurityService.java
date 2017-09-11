@@ -12,26 +12,26 @@ import retrofit.http.POST;
  */
 public interface SecurityService {
 
-    final String ENDPOINT = "https://api.waterreporter.org/v2";
+    String ENDPOINT = "https://api.waterreporter.org/v2";
 
-    public static RestAdapter restAdapter = new RestAdapter.Builder()
+    RestAdapter restAdapter = new RestAdapter.Builder()
             .setLogLevel(RestAdapter.LogLevel.FULL)
             .setEndpoint(ENDPOINT)
             .build();
 
     @Headers({"Content-Type: application/json"})
     @POST("/auth/remote")
-    public void save(@Body LogInBody logInBody,
-                           CancelableCallback<AuthResponse> authResponseCallback);
+    void save(@Body LogInBody logInBody,
+              CancelableCallback<AuthResponse> authResponseCallback);
 
     @Headers({"Content-Type: application/json"})
     @POST("/user/register")
-    public void register(@Body RegistrationBody registrationBody,
-                         CancelableCallback<RegistrationResponse> registrationResponseCallback);
+    void register(@Body RegistrationBody registrationBody,
+                  CancelableCallback<RegistrationResponse> registrationResponseCallback);
 
     @Headers({"Content-Type: application/json"})
     @POST("/reset")
-    public void reset
+    void reset
             (@Body Map<String, String> resetBody,
              CancelableCallback<RegistrationResponse> cb);
 

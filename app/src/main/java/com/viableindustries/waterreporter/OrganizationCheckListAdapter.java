@@ -2,6 +2,7 @@ package com.viableindustries.waterreporter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -81,8 +82,9 @@ public class OrganizationCheckListAdapter extends ArrayAdapter<AbbreviatedOrgani
 
     }
 
+    @NonNull
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
 
         final AbbreviatedOrganization feature = sourceList.get(position);
 

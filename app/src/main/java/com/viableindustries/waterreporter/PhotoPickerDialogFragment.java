@@ -16,8 +16,8 @@ public class PhotoPickerDialogFragment extends DialogFragment {
     //This interface must be implemented by any Activity which launches this dialog.
     //The two methods allow the fragment to pass data directly on to the activity.
     public interface PhotoPickerDialogListener {
-        public void onDialogPositiveClick(DialogFragment dialog);
-        public void onDialogNegativeClick(DialogFragment dialog);
+        void onDialogPositiveClick(DialogFragment dialog);
+        void onDialogNegativeClick(DialogFragment dialog);
     }
 
     //Create a listener that attaches to the calling activity

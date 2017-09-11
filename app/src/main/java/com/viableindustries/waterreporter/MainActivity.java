@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements
 
     protected TimelineAdapter timelineAdapter;
 
-    protected List<Report> reportCollection = new ArrayList<Report>();
+    protected List<Report> reportCollection = new ArrayList<>();
 
     protected boolean connectionActive = false;
 
@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements
 
         // Create order_by list and add a sort parameter
 
-        List<QuerySort> queryOrder = new ArrayList<QuerySort>();
+        List<QuerySort> queryOrder = new ArrayList<>();
 
         QuerySort querySort = new QuerySort("created", "desc");
 

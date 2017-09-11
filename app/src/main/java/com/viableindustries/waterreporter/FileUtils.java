@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 //import org.apache.commons.io.IOUtils;
 
@@ -36,7 +37,7 @@ public class FileUtils {
 
     public static File createImageFile(Context aContext) throws IOException {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
         String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
         File albumF = getAlbumDir(aContext);
         return File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, albumF);
@@ -101,11 +102,9 @@ public class FileUtils {
     private static File createDir(File dir, String folder) {
         File storageDir = new File(dir, folder);
 
-        if (storageDir != null) {
-            if (!storageDir.isDirectory() && !storageDir.mkdirs()) {
-                Log.e(TAG, "Failed to create directory.");
-                return null;
-            }
+        if (!storageDir.isDirectory() && !storageDir.mkdirs()) {
+            Log.e(TAG, "Failed to create directory.");
+            return null;
         }
         return storageDir;
     }

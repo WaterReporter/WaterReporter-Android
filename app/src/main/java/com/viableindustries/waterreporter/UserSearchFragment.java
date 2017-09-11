@@ -41,7 +41,7 @@ public class UserSearchFragment extends Fragment {
 
     UserService service;
 
-    protected List<User> memberCollection = new ArrayList<User>();
+    protected List<User> memberCollection = new ArrayList<>();
 
     protected UserListAdapter listAdapter;
 
@@ -77,7 +77,7 @@ public class UserSearchFragment extends Fragment {
 
         // Create order_by list and add a sort parameter
 
-        List<QuerySort> queryOrder = new ArrayList<QuerySort>();
+        List<QuerySort> queryOrder = new ArrayList<>();
 
         QuerySort querySort = new QuerySort("last_name", "asc");
 

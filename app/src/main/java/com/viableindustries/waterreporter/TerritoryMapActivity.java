@@ -39,7 +39,6 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.FeatureCollection;
 import com.viableindustries.waterreporter.data.Geometry;
-import com.viableindustries.waterreporter.data.HucFeature;
 import com.viableindustries.waterreporter.data.HucStates;
 import com.viableindustries.waterreporter.data.MappedReportsHolder;
 import com.viableindustries.waterreporter.data.QueryFilter;
@@ -64,7 +63,7 @@ import retrofit.client.Response;
 
 public class TerritoryMapActivity extends AppCompatActivity {
 
-    List<LatLng> latLngs = new ArrayList<LatLng>();
+    List<LatLng> latLngs = new ArrayList<>();
 
     @Bind(R.id.customActionBar)
     LinearLayout customActionBar;
@@ -93,7 +92,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     protected TimelineAdapter timelineAdapter;
 
-    protected List<Report> reportCollection = new ArrayList<Report>();
+    protected List<Report> reportCollection = new ArrayList<>();
 
     private String territoryNameText;
 
@@ -124,7 +123,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
         if (Build.VERSION.SDK_INT >= 19) {
 
-            AttributeTransformUtility.setStatusBarTranslucent(getWindow(), true);
+            AttributeTransformUtility.setStatusBarTranslucent(getWindow());
 
         }
 
@@ -277,7 +276,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
         if (order) {
 
-            queryOrder = new ArrayList<QuerySort>();
+            queryOrder = new ArrayList<>();
 
             QuerySort querySort = new QuerySort("created", "desc");
 

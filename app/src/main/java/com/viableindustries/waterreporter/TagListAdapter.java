@@ -57,7 +57,7 @@ public class TagListAdapter extends ArrayAdapter<HashTag> {
 
     @Override
     @NonNull
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
         final TagListAdapter.ViewHolder viewHolder;
 

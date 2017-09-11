@@ -16,7 +16,7 @@ public class UserProfileHeader {
 
     private String organization;
 
-    public UserProfileHeader(){};
+    public UserProfileHeader(){}
 
     public String getDescription(){
         return description;

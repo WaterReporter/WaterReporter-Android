@@ -13,7 +13,7 @@ public class BooleanQueryFilter {
     @SerializedName("or")
     private List<QueryFilter> conditions;
 
-    public BooleanQueryFilter(List aConditions) {
+    public BooleanQueryFilter(List<QueryFilter> aConditions) {
 
         this.conditions = aConditions;
     }

@@ -248,7 +248,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     private OpenGraphProperties openGraphProperties;
 
-    List<Map<String, Integer>> images = new ArrayList<Map<String, Integer>>();
+    List<Map<String, Integer>> images = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -466,7 +466,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         // Initialize empty list to hold hashtags
 
-        baseTagList = new ArrayList<HashTag>();
+        baseTagList = new ArrayList<>();
 
         // Add text change listener to comment input.
         // Observe changes and respond accordingly.
@@ -702,7 +702,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         // Create order_by list and add a sort parameter
 
-        List<QuerySort> queryOrder = new ArrayList<QuerySort>();
+        List<QuerySort> queryOrder = new ArrayList<>();
 
         QuerySort querySort = new QuerySort(sortField, sortDirection);
 
@@ -1147,19 +1147,19 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         Log.d("comments", commentsText);
 
-        ArrayList<Double> coordinates = new ArrayList<Double>(2);
+        ArrayList<Double> coordinates = new ArrayList<>(2);
 
         String point = "Point";
 
         String type = "GeometryCollection";
 
-        List<Geometry> geometryList = new ArrayList<Geometry>(1);
+        List<Geometry> geometryList = new ArrayList<>(1);
 
         coordinates.clear();
         geometryList.clear();
 
-        coordinates.add((double) longitude);
-        coordinates.add((double) latitude);
+        coordinates.add(longitude);
+        coordinates.add(latitude);
         Geometry geometry = new Geometry(coordinates, point);
         geometryList.add(geometry);
 
@@ -1285,8 +1285,6 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             mContext.startService(postImageIntent);
 
-//            mSharedPreferences.edit().putInt("PENDING_IMAGE_ID", 0).apply();
-
             ApiDispatcher.setTransmissionActive(mSharedPreferences, true);
 
             onPostSuccess();
@@ -1297,7 +1295,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     private ReportPostBody buildPostBody() {
 
-        List<Map<String, Integer>> groups = new ArrayList<Map<String, Integer>>();
+        List<Map<String, Integer>> groups = new ArrayList<>();
 
         try {
 
@@ -1309,7 +1307,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                 if (value > 0) {
 
-                    Map<String, Integer> groupId = new HashMap<String, Integer>();
+                    Map<String, Integer> groupId = new HashMap<>();
 
                     groupId.put("id", value);
 
@@ -1325,7 +1323,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         }
 
-        List<OpenGraphProperties> social = new ArrayList<OpenGraphProperties>();
+        List<OpenGraphProperties> social = new ArrayList<>();
 
         if (openGraphProperties != null) {
 
@@ -1368,7 +1366,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         toast.show();
 
-        List<Map<String, Integer>> groups = new ArrayList<Map<String, Integer>>();
+        List<Map<String, Integer>> groups = new ArrayList<>();
 
         try {
 
@@ -1384,7 +1382,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                 if (value > 0) {
 
-                    Map<String, Integer> groupId = new HashMap<String, Integer>();
+                    Map<String, Integer> groupId = new HashMap<>();
 
                     groupId.put("id", value);
 

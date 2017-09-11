@@ -56,8 +56,7 @@ public class MarkerCardAdapter extends RecyclerView.Adapter<MarkerCardAdapter.Vi
                 .inflate(R.layout.marker_card_view, parent, false);
         // set the view's size, margins, paddings and layout parameters
 //        ...
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
+        return new ViewHolder(v);
     }
 
     // Replace the contents of a view (invoked by the layout manager)

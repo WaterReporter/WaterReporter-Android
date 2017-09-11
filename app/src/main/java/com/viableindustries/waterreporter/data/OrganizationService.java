@@ -11,52 +11,52 @@ import retrofit.http.Query;
  */
 public interface OrganizationService {
 
-    final String ENDPOINT = "https://api.waterreporter.org/v2";
+    String ENDPOINT = "https://api.waterreporter.org/v2";
 
-    public static RestAdapter restAdapter = new RestAdapter.Builder()
+    RestAdapter restAdapter = new RestAdapter.Builder()
             .setLogLevel(RestAdapter.LogLevel.BASIC)
             .setEndpoint(ENDPOINT)
             .build();
 
     @GET("/data/organization")
-    public void getMany(@Header("Authorization") String authorization,
-                                 @Header("Content-Type") String contentType,
-                                 @Query("page") int page,
-                                 @Query("results_per_page") int numResults,
-                                 @Query("q") String q,
-                                 CancelableCallback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
+    void getMany(@Header("Authorization") String authorization,
+                 @Header("Content-Type") String contentType,
+                 @Query("page") int page,
+                 @Query("results_per_page") int numResults,
+                 @Query("q") String q,
+                 CancelableCallback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
 
     @GET("/data/organization")
-    public void getOrganizations(@Header("Authorization") String authorization,
-                                 @Header("Content-Type") String contentType,
-                                 @Query("page") int page,
-                                 @Query("results_per_page") int numResults,
-                                 @Query("q") String q,
-                                 CancelableCallback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
+    void getOrganizations(@Header("Authorization") String authorization,
+                          @Header("Content-Type") String contentType,
+                          @Query("page") int page,
+                          @Query("results_per_page") int numResults,
+                          @Query("q") String q,
+                          CancelableCallback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
 
     @GET("/data/organization/{organization}")
-    public void getOrganization(@Header("Authorization") String authorization,
-                                @Header("Content-Type") String contentType,
-                                @Path("organization") int organizationId,
-                                @Query("q") String q,
-                                CancelableCallback<Organization> organizationCallback);
+    void getOrganization(@Header("Authorization") String authorization,
+                         @Header("Content-Type") String contentType,
+                         @Path("organization") int organizationId,
+                         @Query("q") String q,
+                         CancelableCallback<Organization> organizationCallback);
 
     @GET("/data/organization/{organization}/reports")
-    public void getOrganizationReports(@Header("Authorization") String authorization,
-                                       @Header("Content-Type") String contentType,
-                                       @Path("organization") int organizationId,
-                                       @Query("page") int page,
-                                       @Query("results_per_page") int numResults,
-                                       @Query("q") String q,
-                                       CancelableCallback<FeatureCollection> featureCollectionCallback);
+    void getOrganizationReports(@Header("Authorization") String authorization,
+                                @Header("Content-Type") String contentType,
+                                @Path("organization") int organizationId,
+                                @Query("page") int page,
+                                @Query("results_per_page") int numResults,
+                                @Query("q") String q,
+                                CancelableCallback<FeatureCollection> featureCollectionCallback);
 
     @GET("/data/organization/{organization}/users")
-    public void getOrganizationMembers(@Header("Authorization") String authorization,
-                                       @Header("Content-Type") String contentType,
-                                       @Path("organization") int organizationId,
-                                       @Query("page") int page,
-                                       @Query("results_per_page") int numResults,
-                                       @Query("q") String q,
-                                       CancelableCallback<UserCollection> userCollectionCallback);
+    void getOrganizationMembers(@Header("Authorization") String authorization,
+                                @Header("Content-Type") String contentType,
+                                @Path("organization") int organizationId,
+                                @Query("page") int page,
+                                @Query("results_per_page") int numResults,
+                                @Query("q") String q,
+                                CancelableCallback<UserCollection> userCollectionCallback);
 
 }

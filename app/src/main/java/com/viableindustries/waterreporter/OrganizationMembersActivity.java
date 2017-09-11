@@ -42,7 +42,7 @@ public class OrganizationMembersActivity extends AppCompatActivity {
 
     private Organization organization;
 
-    protected List<User> memberCollection = new ArrayList<User>();
+    protected List<User> memberCollection = new ArrayList<>();
 
     protected UserListAdapter userListAdapter;
 
@@ -133,7 +133,7 @@ public class OrganizationMembersActivity extends AppCompatActivity {
 
         // Create order_by list and add a sort parameter
 
-        List<QuerySort> queryOrder = new ArrayList<QuerySort>();
+        List<QuerySort> queryOrder = new ArrayList<>();
 
         QuerySort querySort = new QuerySort("last_name", "asc");
 

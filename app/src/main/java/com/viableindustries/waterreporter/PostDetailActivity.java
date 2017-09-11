@@ -112,7 +112,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
     protected CommentAdapter commentAdapter;
 
-    protected List<Comment> commentCollectionList = new ArrayList<Comment>();
+    protected List<Comment> commentCollectionList = new ArrayList<>();
 
     protected Report mPost;
 
@@ -212,7 +212,7 @@ public class PostDetailActivity extends AppCompatActivity {
                             LatLng southWest = new LatLng(hucFeature.properties.bounds.get(1), hucFeature.properties.bounds.get(0));
                             LatLng northEast = new LatLng(hucFeature.properties.bounds.get(3), hucFeature.properties.bounds.get(2));
 
-                            List<LatLng> latLngs = new ArrayList<LatLng>();
+                            List<LatLng> latLngs = new ArrayList<>();
 
                             latLngs.add(southWest);
                             latLngs.add(northEast);
@@ -519,7 +519,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         // Create order_by list and add a sort parameter
 
-        List<QuerySort> queryOrder = new ArrayList<QuerySort>();
+        List<QuerySort> queryOrder = new ArrayList<>();
 
         QuerySort querySort = new QuerySort("created", "desc");
 

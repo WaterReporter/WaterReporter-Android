@@ -56,7 +56,7 @@ public class ImagePostService extends IntentService {
 
         ImageService imageService = ImageService.restAdapter.create(ImageService.class);
 
-        final File photo = new File(filePath);
+        final File photo = new File(filePath != null ? filePath : null);
 
         FileNameMap fileNameMap = URLConnection.getFileNameMap();
 

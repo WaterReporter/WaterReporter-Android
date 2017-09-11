@@ -219,7 +219,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
                 // Prevent users from liking their own posts
 
-                if (!TimelineAdapterHelpers.ownPost(context, post)) {
+                if (TimelineAdapterHelpers.ownPost(context, post)) {
 
                     TimelineAdapterHelpers.addFavorite(
                             post,
@@ -356,7 +356,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         // Get the data item for this position
 
-        final Report feature = (Report) getItem(position);
+        final Report feature = getItem(position);
 
         bindData(feature,
                 mContext,

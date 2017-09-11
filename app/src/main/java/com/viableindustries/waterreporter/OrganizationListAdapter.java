@@ -82,7 +82,7 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
     @Override
     @NonNull
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
         ViewHolder viewHolder;
 

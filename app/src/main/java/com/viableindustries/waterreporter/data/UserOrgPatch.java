@@ -17,11 +17,11 @@ public final class UserOrgPatch {
 
         //String op = selected ? "remove" : "add";
 
-        Map<String, List<Map>> opListWrapper = new HashMap<String, List<Map>>();
+        Map<String, List<Map>> opListWrapper = new HashMap<>();
 
         List<Map> opList = new ArrayList<>();
 
-        Map<String, Integer> opObj = new HashMap<String, Integer>();
+        Map<String, Integer> opObj = new HashMap<>();
 
         opObj.put("id", orgId);
 
@@ -29,7 +29,7 @@ public final class UserOrgPatch {
 
         opListWrapper.put(action, opList);
 
-        Map<String, Map> map = new HashMap<String, Map>();
+        Map<String, Map> map = new HashMap<>();
 
         map.put("organization", opListWrapper);
 

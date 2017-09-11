@@ -74,7 +74,7 @@ public class NotificationSettingAdapter extends ArrayAdapter {
         // Get the data item for this position
         final NotificationSetting setting = (NotificationSetting) getItem(position);
 
-        viewHolder.settingDescription.setText(setting.description);
+        viewHolder.settingDescription.setText(setting != null ? setting.description : null);
 
         viewHolder.tracker.setText(setting.name);
 
@@ -105,7 +105,7 @@ public class NotificationSettingAdapter extends ArrayAdapter {
 
                 // Prepare request object
 
-                Map<String, Boolean> settingPatch = new HashMap<String, Boolean>();
+                Map<String, Boolean> settingPatch = new HashMap<>();
 
                 settingPatch.put(viewHolder.tracker.getText().toString(), viewHolder.settingControl.isChecked());
 

@@ -74,7 +74,7 @@ public class OrganizationSearchFragment extends Fragment {
 
         // Create order_by list and add a sort parameter
 
-        List<QuerySort> queryOrder = new ArrayList<QuerySort>();
+        List<QuerySort> queryOrder = new ArrayList<>();
 
         QuerySort querySort = new QuerySort("name", "asc");
 

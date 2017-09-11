@@ -1,4 +1,4 @@
-package com.viableindustries.waterreporter.data;
+package com.viableindustries.waterreporter;
 
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -15,6 +15,8 @@ import android.widget.ListView;
 
 import com.viableindustries.waterreporter.OrganizationListAdapter;
 import com.viableindustries.waterreporter.R;
+import com.viableindustries.waterreporter.data.Organization;
+import com.viableindustries.waterreporter.data.UserGroupList;
 
 import java.util.ArrayList;
 import java.util.Collections;

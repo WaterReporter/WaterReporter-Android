@@ -204,7 +204,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
     @Override
     @NonNull
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
         GroupActionListAdapter.ViewHolder viewHolder;
 

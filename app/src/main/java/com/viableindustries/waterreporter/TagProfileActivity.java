@@ -83,7 +83,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
     protected TimelineAdapter timelineAdapter;
 
-    protected List<Report> reportCollection = new ArrayList<Report>();
+    protected List<Report> reportCollection = new ArrayList<>();
 
     private String complexQuery;
 
@@ -421,7 +421,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
         if (order) {
 
-            queryOrder = new ArrayList<QuerySort>();
+            queryOrder = new ArrayList<>();
 
             QuerySort querySort = new QuerySort("created", "desc");
 

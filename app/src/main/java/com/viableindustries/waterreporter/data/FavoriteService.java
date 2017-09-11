@@ -13,23 +13,23 @@ import retrofit.http.Path;
 
 public interface FavoriteService {
 
-    final String ENDPOINT = "https://api.waterreporter.org/v2";
+    String ENDPOINT = "https://api.waterreporter.org/v2";
 
-    public static RestAdapter restAdapter = new RestAdapter.Builder()
+    RestAdapter restAdapter = new RestAdapter.Builder()
             .setLogLevel(RestAdapter.LogLevel.FULL)
             .setEndpoint(ENDPOINT)
             .build();
 
     @POST("/data/like")
-    public void addFavorite(@Header("Authorization") String authorization,
-                                @Header("Content-Type") String contentType,
-                                @Body FavoritePostBody favoritePostBody,
-                                CancelableCallback<Favorite> favoriteCallback);
+    void addFavorite(@Header("Authorization") String authorization,
+                     @Header("Content-Type") String contentType,
+                     @Body FavoritePostBody favoritePostBody,
+                     CancelableCallback<Favorite> favoriteCallback);
 
     @DELETE("/data/like/{id}")
-    public void undoFavorite(@Header("Authorization") String authorization,
-                            @Header("Content-Type") String contentType,
-                            @Path("id") int featureId,
-                            CancelableCallback<Void> callback);
+    void undoFavorite(@Header("Authorization") String authorization,
+                      @Header("Content-Type") String contentType,
+                      @Path("id") int featureId,
+                      CancelableCallback<Void> callback);
 
 }

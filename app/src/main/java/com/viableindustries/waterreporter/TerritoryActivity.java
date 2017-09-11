@@ -129,7 +129,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
     protected TimelineAdapter timelineAdapter;
 
-    protected List<Report> reportCollection = new ArrayList<Report>();
+    protected List<Report> reportCollection = new ArrayList<>();
 
     private String territoryNameText;
 
@@ -419,7 +419,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
                             @Override
                             public void onSuccess(@NonNull HucFeature hucFeature) {
 
-                                List<LatLng> latLngs = new ArrayList<LatLng>();
+                                List<LatLng> latLngs = new ArrayList<>();
 
                                 LatLng southWest = new LatLng(hucFeature.properties.bounds.get(1), hucFeature.properties.bounds.get(0));
                                 LatLng northEast = new LatLng(hucFeature.properties.bounds.get(3), hucFeature.properties.bounds.get(2));
@@ -704,7 +704,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
         if (order) {
 
-            queryOrder = new ArrayList<QuerySort>();
+            queryOrder = new ArrayList<>();
 
             QuerySort querySort = new QuerySort("created", "desc");
 
