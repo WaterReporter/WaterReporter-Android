@@ -11,19 +11,19 @@ import java.io.Serializable;
 public class FavoriteProperties implements Serializable {
 
     @SerializedName("created")
-    public String created;
+    private final String created;
 
     @SerializedName("id")
-    public int id;
+    public final int id;
 
     @SerializedName("owner")
     public User owner;
 
     @SerializedName("owner_id")
-    public int owner_id;
+    public final int owner_id;
 
     @SerializedName("report_id")
-    public int report_id;
+    private final int report_id;
 
     public FavoriteProperties(String aCreated, int aId, int aOwnerId, int aReportId) {
         this.created = aCreated;

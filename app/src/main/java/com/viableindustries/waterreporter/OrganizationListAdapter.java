@@ -21,7 +21,7 @@ import com.viableindustries.waterreporter.data.OrganizationHolder;
 import java.util.ArrayList;
 
 
-public class OrganizationListAdapter extends ArrayAdapter<Organization> implements Filterable {
+class OrganizationListAdapter extends ArrayAdapter<Organization> implements Filterable {
 
     private final Context mContext;
 
@@ -29,7 +29,7 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
     protected int id;
 
-    private ArrayList<Organization> sourceList;
+    private final ArrayList<Organization> sourceList;
 
     private ArrayList<Organization> filteredList;
 

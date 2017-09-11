@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class FavoritePostBody implements Serializable {
 
     @SerializedName("report_id")
-    private int reportId;
+    private final int reportId;
 
     public FavoritePostBody(int reportId) {
         this.reportId = reportId;

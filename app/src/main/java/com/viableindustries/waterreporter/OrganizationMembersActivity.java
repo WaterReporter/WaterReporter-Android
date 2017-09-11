@@ -35,16 +35,18 @@ import retrofit.client.Response;
 public class OrganizationMembersActivity extends AppCompatActivity {
 
     @Bind(R.id.memberListContainer)
+    private final
     SwipeRefreshLayout memberListContainer;
 
     @Bind(R.id.memberList)
+    private final
     ListView memberList;
 
     private Organization organization;
 
-    protected List<User> memberCollection = new ArrayList<>();
+    private List<User> memberCollection = new ArrayList<>();
 
-    protected UserListAdapter userListAdapter;
+    private UserListAdapter userListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,7 +159,7 @@ public class OrganizationMembersActivity extends AppCompatActivity {
 
     }
 
-    protected void fetchOrganizationMembers(int limit, int page, int organizationId, final String query, final boolean refresh) {
+    private void fetchOrganizationMembers(int limit, int page, int organizationId, final String query, final boolean refresh) {
 
         final SharedPreferences prefs =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);

@@ -13,12 +13,12 @@ public class Comment implements Serializable {
     public GeometryResponse geometry;
 
     @SerializedName("id")
-    public int id;
+    public final int id;
 
     @SerializedName("type")
     public String type;
 
     @SerializedName("properties")
-    public CommentProperties properties;
+    public final CommentProperties properties;
 
 }

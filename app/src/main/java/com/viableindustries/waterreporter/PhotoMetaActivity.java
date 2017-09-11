@@ -101,79 +101,75 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-/**
- * Created by Ryan Hamley on 10/28/14.
- * This activity handles all of the report functionality.
- */
 public class PhotoMetaActivity extends AppCompatActivity
         implements PhotoPickerDialogFragment.PhotoPickerDialogListener,
         EasyPermissions.PermissionCallbacks {
 
     @Bind(R.id.scrollView)
-    ScrollView parentLayout;
+    private ScrollView parentLayout;
 
     @Bind(R.id.comment_input)
-    EditText commentsField;
+    private EditText commentsField;
 
     @Bind(R.id.tag_component)
-    HorizontalScrollView tagComponent;
+    private HorizontalScrollView tagComponent;
 
     @Bind(R.id.tag_results)
-    LinearLayout tagResults;
+    private LinearLayout tagResults;
 
     @Bind(R.id.post_image_preview)
-    ImageView mImageView;
+    private ImageView mImageView;
 
     @Bind(R.id.groups)
-    LinearLayout groupList;
+    private LinearLayout groupList;
 
     @Bind(R.id.comment_component)
     LinearLayout commentComponent;
 
     @Bind(R.id.camera_button_container)
-    RelativeLayout cameraButtonContainer;
+    private RelativeLayout cameraButtonContainer;
 
     @Bind(R.id.add_post_image)
-    ImageView addImageIcon;
+    private ImageView addImageIcon;
 
     @Bind(R.id.location_component)
     LinearLayout locationComponent;
 
     @Bind(R.id.location_button_container)
-    RelativeLayout locationButtonContainer;
+    private RelativeLayout locationButtonContainer;
 
     @Bind(R.id.add_location)
-    ImageView addLocationIcon;
+    private ImageView addLocationIcon;
 
     @Bind(R.id.edit_location)
-    ImageView editLocationIcon;
+    private ImageView editLocationIcon;
 
     @Bind(R.id.location_output)
-    TextView locationOutput;
+    private TextView locationOutput;
 
     @Bind(R.id.post_report)
-    FloatingActionButton postReport;
+    private FloatingActionButton postReport;
 
     @Bind(R.id.post_success)
-    FloatingActionButton postSuccess;
+    private FloatingActionButton postSuccess;
 
     @Bind(R.id.progress_bar)
-    ProgressBar progressBar;
+    private ProgressBar progressBar;
 
     @Bind(R.id.ogData)
-    CardView ogData;
+    private CardView ogData;
 
     @Bind(R.id.ogImage)
-    ImageView ogImage;
+    private ImageView ogImage;
 
     @Bind(R.id.ogTitle)
-    TextView ogTitle;
+    private TextView ogTitle;
 
     @Bind(R.id.ogDescription)
-    TextView ogDescription;
+    private TextView ogDescription;
 
     @Bind(R.id.ogUrl)
-    TextView ogUrl;
+    private TextView ogUrl;
 
     private static final int ACTION_SET_LOCATION = 0;
 
@@ -191,9 +187,9 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     private String commentsText;
 
-    protected double latitude;
+    private double latitude;
 
-    protected double longitude;
+    private double longitude;
 
     private boolean editMode;
 
@@ -209,7 +205,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     private SharedPreferences groupMemberships;
 
-    protected SharedPreferences associatedGroups;
+    private SharedPreferences associatedGroups;
 
     private String accessToken;
 
@@ -222,7 +218,7 @@ public class PhotoMetaActivity extends AppCompatActivity
     private static final int ACTION_TAKE_PHOTO = 1;
     private static final int ACTION_SELECT_PHOTO = 2;
 
-    protected boolean photoCaptured = false;
+    private boolean photoCaptured = false;
 
     final private String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
 
@@ -234,13 +230,13 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     private static final String TAG = "PhotoMetaActivity";
 
-    ArrayList<HashTag> baseTagList;
+    private ArrayList<HashTag> baseTagList;
 
-    Handler handler;
+    private Handler handler;
 
-    Runnable tagSearchRunnable;
+    private Runnable tagSearchRunnable;
 
-    protected TagSuggestionAdapter tagSuggestionAdapter;
+    private TagSuggestionAdapter tagSuggestionAdapter;
 
     private String query;
 
@@ -248,7 +244,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     private OpenGraphProperties openGraphProperties;
 
-    List<Map<String, Integer>> images = new ArrayList<>();
+    private final List<Map<String, Integer>> images = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -730,7 +726,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
-    protected void fetchTags(int limit, int page, final String query) {
+    private void fetchTags(int limit, int page, final String query) {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
@@ -760,7 +756,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
-    protected void onTagSuccess(ArrayList<HashTag> hashTags) {
+    private void onTagSuccess(ArrayList<HashTag> hashTags) {
 
         baseTagList.clear();
 
@@ -792,7 +788,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
-    protected void onRequestError(RetrofitError error) {
+    private void onRequestError(RetrofitError error) {
 
         if (error == null) return;
 
@@ -814,7 +810,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
-    protected void showPhotoPickerDialog() {
+    private void showPhotoPickerDialog() {
 
         DialogFragment newFragment = new PhotoPickerDialogFragment();
 
@@ -824,7 +820,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
-    protected String initializeDateField() {
+    private String initializeDateField() {
 
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
@@ -1043,19 +1039,19 @@ public class PhotoMetaActivity extends AppCompatActivity
     /**
      * onClick event to launch a map from Report view
      **/
-    public void updateLocation(View v) {
+    private void updateLocation(View v) {
 
         startActivityForResult(new Intent(this, LocationActivity.class), ACTION_SET_LOCATION);
 
     }
 
-    public void addImage(View v) {
+    private void addImage(View v) {
 
         showPhotoPickerDialog();
 
     }
 
-    protected void onPostSuccess() {
+    private void onPostSuccess() {
 
         // Hide ProgressBar
 
@@ -1107,7 +1103,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
-    protected void onPostError() {
+    private void onPostError() {
 
         progressBar.setVisibility(View.INVISIBLE);
 
@@ -1123,7 +1119,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     // Extract input values and prepare request (POST or PATCH)
 
-    public void stageRequest(View view) {
+    private void stageRequest(View view) {
 
         if (!ConnectionUtility.connectionActive(this)) {
 
@@ -1462,7 +1458,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
-    protected void fetchUserGroups() {
+    private void fetchUserGroups() {
 
         ArrayList<AbbreviatedOrganization> abbreviatedOrganizations = new ArrayList<>();
 
@@ -1602,7 +1598,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
-    protected boolean verifyPermissions() {
+    private boolean verifyPermissions() {
 
         String[] permissions = {
                 Manifest.permission.ACCESS_FINE_LOCATION,

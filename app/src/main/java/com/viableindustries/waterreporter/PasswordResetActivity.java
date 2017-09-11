@@ -26,12 +26,15 @@ import retrofit.client.Response;
 public class PasswordResetActivity extends Activity {
 
     @Bind(R.id.email)
+    private final
     EditText email_text;
 
     @Bind(R.id.reset_success)
+    private final
     TextView reset_success;
 
     @Bind(R.id.reset_error)
+    private final
     TextView reset_error;
 
     private static final String EMAIL_PATTERN =

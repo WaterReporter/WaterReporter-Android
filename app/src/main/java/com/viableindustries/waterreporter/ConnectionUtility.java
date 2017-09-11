@@ -8,7 +8,7 @@ import android.net.NetworkInfo;
  * Created by brendanmcintyre on 10/31/16.
  */
 
-public class ConnectionUtility {
+class ConnectionUtility {
 
     public static boolean connectionActive(Context aContext) {
 

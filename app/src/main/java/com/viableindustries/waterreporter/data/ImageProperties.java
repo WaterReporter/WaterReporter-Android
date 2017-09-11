@@ -31,13 +31,13 @@ public class ImageProperties implements Serializable {
     public String icon;
 
     @SerializedName("icon_retina")
-    public String icon_retina;
+    public final String icon_retina;
 
     @SerializedName("id")
-    public int id;
+    public final int id;
 
     @SerializedName("original")
-    public String original;
+    public final String original;
 
     @SerializedName("owner_id")
     public int owner_id;
@@ -46,13 +46,13 @@ public class ImageProperties implements Serializable {
     public String square;
 
     @SerializedName("square_retina")
-    public String square_retina;
+    public final String square_retina;
 
     @SerializedName("thumbnail")
     public String thumbnail;
 
     @SerializedName("thumbnail_retina")
-    public String thumbnail_retina;
+    public final String thumbnail_retina;
 
     @SerializedName("updated")
     public String updated;

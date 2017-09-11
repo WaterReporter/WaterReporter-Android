@@ -36,21 +36,26 @@ import retrofit.client.Response;
 public class SignInActivity extends AppCompatActivity {
 
     @Bind(R.id.password)
+    private final
     EditText password_text;
 
     @Bind(R.id.email)
+    private final
     EditText email_text;
 
     @Bind(R.id.error_message)
+    private final
     LinearLayout error_message;
 
     @Bind(R.id.log_in)
+    private final
     Button logInButton;
 
     @Bind(R.id.spinner)
+    private final
     ProgressBar progressBar;
 
-    static final int REGISTRATION_REQUEST = 1;
+    private static final int REGISTRATION_REQUEST = 1;
 
     static final int LOGIN_REQUEST = 2;
 
@@ -81,7 +86,7 @@ public class SignInActivity extends AppCompatActivity {
 
     }
 
-    protected void onRequestError(RetrofitError error) {
+    private void onRequestError(RetrofitError error) {
 
         logInButton.setVisibility(View.VISIBLE);
 

@@ -18,7 +18,7 @@ public class HucProperties implements Serializable {
     public String name;
 
     @SerializedName("bounds")
-    public List<Double> bounds;
+    public final List<Double> bounds;
 
     @SerializedName("states")
     public HucStateCollection states;

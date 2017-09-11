@@ -63,27 +63,34 @@ import retrofit.client.Response;
 
 public class TerritoryMapActivity extends AppCompatActivity {
 
-    List<LatLng> latLngs = new ArrayList<>();
+    private final List<LatLng> latLngs = new ArrayList<>();
 
     @Bind(R.id.customActionBar)
+    private final
     LinearLayout customActionBar;
 
     @Bind(R.id.actionBarTitle)
+    private final
     TextView actionBarTitle;
 
     @Bind(R.id.actionBarSubtitle)
+    private final
     TextView actionBarSubtitle;
 
     @Bind(R.id.backArrow)
+    private final
     RelativeLayout backArrow;
 
     @Bind(R.id.mapview)
+    private final
     MapView mapView;
 
     @Bind(R.id.postList)
+    private final
     RecyclerView postList;
 
     @Bind(R.id.locationIconView)
+    private final
     ImageView locationIcon;
 
     private MapboxMap mMapboxMap;
@@ -226,7 +233,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     }
 
-    protected void setActionBarTitle() {
+    private void setActionBarTitle() {
 
         territoryNameText = AttributeTransformUtility.parseWatershedName(mTerritory, false);
 
@@ -236,7 +243,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     }
 
-    protected void nullWatershedFallback() {
+    private void nullWatershedFallback() {
 
         setActionBarTitle();
 
@@ -256,7 +263,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     }
 
-    protected void setWatershedComponents() {
+    private void setWatershedComponents() {
 
         // Load other posts in the watershed
         fetchPosts(50, 1, buildQuery(true, "report", null), false);
@@ -460,12 +467,12 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     private static class MarkerAdapter extends MapboxMap.MarkerViewAdapter<CustomMarkerView> {
 
-        private LayoutInflater inflater;
-        private MapboxMap mapboxMap;
-        private MappedReportsHolder mappedReportsHolder;
-        private Context ctxt;
-        private RecyclerView recyclerView;
-        private LinearLayoutManager layoutManager;
+        private final LayoutInflater inflater;
+        private final MapboxMap mapboxMap;
+        private final MappedReportsHolder mappedReportsHolder;
+        private final Context ctxt;
+        private final RecyclerView recyclerView;
+        private final LinearLayoutManager layoutManager;
 
         public MarkerAdapter(@NonNull Context aContext, @NonNull RecyclerView recyclerView, @NonNull LinearLayoutManager layoutManager, @NonNull MapboxMap mapboxMap, @NonNull MappedReportsHolder mappedReportsHolder) {
             super(aContext);

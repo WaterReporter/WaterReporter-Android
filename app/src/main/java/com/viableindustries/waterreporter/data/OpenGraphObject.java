@@ -11,6 +11,6 @@ import java.io.Serializable;
 public class OpenGraphObject implements Serializable {
 
     @SerializedName("properties")
-    public OpenGraphProperties properties;
+    public final OpenGraphProperties properties;
 
 }

@@ -14,7 +14,7 @@ import retrofit.client.Response;
 
 public abstract class CancelableCallback<T> implements Callback<T> {
 
-    private static List<CancelableCallback> mList = new ArrayList<>();
+    private static final List<CancelableCallback> mList = new ArrayList<>();
 
     private boolean isCanceled = false;
     private Object mTag = null;

@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class CollectionProperties implements Serializable {
 
     @SerializedName("num_results")
-    public int num_results;
+    public final int num_results;
 
     @SerializedName("total_pages")
     public int total_pages;

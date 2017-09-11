@@ -53,52 +53,54 @@ import static java.lang.Boolean.TRUE;
 
 public class UserProfileActivity extends AppCompatActivity implements ReportActionDialogListener {
 
-    TextView userTitle;
+    private TextView userTitle;
 
-    TextView userDescription;
+    private TextView userDescription;
 
-    ImageView userAvatar;
+    private ImageView userAvatar;
 
-    TextView reportCounter;
+    private TextView reportCounter;
 
-    TextView actionCounter;
+    private TextView actionCounter;
 
-    TextView groupCounter;
+    private TextView groupCounter;
 
-    TextView reportCountLabel;
+    private TextView reportCountLabel;
 
-    TextView actionCountLabel;
+    private TextView actionCountLabel;
 
-    TextView groupCountLabel;
+    private TextView groupCountLabel;
 
-    LinearLayout reportStat;
+    private LinearLayout reportStat;
 
-    LinearLayout actionStat;
+    private LinearLayout actionStat;
 
-    LinearLayout groupStat;
+    private LinearLayout groupStat;
 
-    LinearLayout profileMeta;
+    private LinearLayout profileMeta;
 
-    LinearLayout profileStats;
+    private LinearLayout profileStats;
 
     @Bind(R.id.timeline)
+    private final
     SwipeRefreshLayout timeLineContainer;
 
     @Bind(R.id.timeline_items)
+    private final
     ListView timeLine;
 
     @Bind(R.id.listTabs)
     FrameLayout listTabs;
 
-    LinearLayout promptBlock;
+    private LinearLayout promptBlock;
 
-    TextView promptMessage;
+    private TextView promptMessage;
 
-    Button startPostButton;
+    private Button startPostButton;
 
-    protected TimelineAdapter timelineAdapter;
+    private TimelineAdapter timelineAdapter;
 
-    protected List<Report> reportCollection = new ArrayList<>();
+    private final List<Report> reportCollection = new ArrayList<>();
 
     private String userDescriptionText;
 
@@ -237,7 +239,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     }
 
-    protected void addListViewHeader() {
+    private void addListViewHeader() {
 
         LayoutInflater inflater = getLayoutInflater();
 
@@ -421,7 +423,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     }
 
-    protected void setReportCountState(int count) {
+    private void setReportCountState(int count) {
 
         reportCounter.setText(String.valueOf(reportCount));
         reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
@@ -446,7 +448,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     }
 
-    protected void countReports(String query, final String filterName) {
+    private void countReports(String query, final String filterName) {
 
         final String accessToken = prefs.getString("access_token", "");
 
@@ -505,7 +507,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     }
 
-    protected void fetchUserGroups(int userId) {
+    private void fetchUserGroups(int userId) {
 
         final String accessToken = prefs.getString("access_token", "");
 
@@ -614,7 +616,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     }
 
-    public void fetchPosts(int limit, final int page, String query, final boolean refresh) {
+    private void fetchPosts(int limit, final int page, String query, final boolean refresh) {
 
         final String accessToken = prefs.getString("access_token", "");
 

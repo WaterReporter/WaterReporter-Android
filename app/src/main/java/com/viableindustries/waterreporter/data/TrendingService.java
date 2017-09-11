@@ -11,35 +11,35 @@ import retrofit.http.Query;
 
 public interface TrendingService {
 
-    String ENDPOINT = "https://api.waterreporter.org/v2";
+    String ENDPOINT = "https://api.waterreporter.org/v2/data";
 
     RestAdapter restAdapter = new RestAdapter.Builder()
             .setLogLevel(RestAdapter.LogLevel.FULL)
             .setEndpoint(ENDPOINT)
             .build();
 
-    @GET("/data/trending/hashtag")
+    @GET("/trending/hashtag")
     void getTrendingTags(@Header("Authorization") String authorization,
                                 @Header("Content-Type") String contentType,
                                 @Query("page") int page,
                                 @Query("results_per_page") int numResults,
                                 CancelableCallback<TrendingTags> trendingTagsCallback);
 
-    @GET("/data/trending/group")
+    @GET("/trending/group")
     void getTrendingGroups(@Header("Authorization") String authorization,
                                   @Header("Content-Type") String contentType,
                                   @Query("page") int page,
                                   @Query("results_per_page") int numResults,
                                   CancelableCallback<TrendingGroups> trendingGroupsCallback);
 
-    @GET("/data/trending/people")
+    @GET("/trending/people")
     void getTrendingPeople(@Header("Authorization") String authorization,
                                   @Header("Content-Type") String contentType,
                                   @Query("page") int page,
                                   @Query("results_per_page") int numResults,
                                   CancelableCallback<TrendingPeople> trendingPeopleCallback);
 
-    @GET("/data/trending/territory")
+    @GET("/trending/territory")
     void getTrendingTerritories(@Header("Authorization") String authorization,
                                        @Header("Content-Type") String contentType,
                                        @Query("page") int page,

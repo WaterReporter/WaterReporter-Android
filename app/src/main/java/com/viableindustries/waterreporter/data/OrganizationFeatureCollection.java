@@ -10,10 +10,10 @@ import java.util.ArrayList;
 public class OrganizationFeatureCollection {
 
     @SerializedName("features")
-    private ArrayList<Organization> features;
+    private final ArrayList<Organization> features;
 
     @SerializedName("properties")
-    private CollectionProperties properties;
+    private final CollectionProperties properties;
 
     @SerializedName("type")
     private String type;

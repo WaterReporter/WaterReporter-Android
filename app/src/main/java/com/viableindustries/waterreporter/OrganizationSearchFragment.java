@@ -34,15 +34,15 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class OrganizationSearchFragment extends Fragment {
 
-    Context context;
+    private Context context;
 
-    RestAdapter restAdapter;
+    private RestAdapter restAdapter;
 
-    OrganizationService service;
+    private OrganizationService service;
 
-    protected OrganizationListAdapter listAdapter;
+    private OrganizationListAdapter listAdapter;
 
-    ListView resultList;
+    private ListView resultList;
 
     // newInstance constructor for creating fragment with arguments
     public static OrganizationSearchFragment newInstance() {
@@ -98,7 +98,7 @@ public class OrganizationSearchFragment extends Fragment {
 
     }
 
-    protected void fetchOrganizations(int limit, int page, final String query) {
+    private void fetchOrganizations(int limit, int page, final String query) {
 
         final SharedPreferences prefs =
                 context.getSharedPreferences(context.getPackageName(), MODE_PRIVATE);

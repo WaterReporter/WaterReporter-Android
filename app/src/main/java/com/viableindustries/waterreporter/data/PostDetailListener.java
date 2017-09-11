@@ -12,9 +12,9 @@ import com.viableindustries.waterreporter.PostDetailActivity;
 
 public class PostDetailListener implements View.OnClickListener {
 
-    private Context mContext;
+    private final Context mContext;
 
-    private Report post;
+    private final Report post;
 
     public PostDetailListener(Context aContext, Report post) {
         this.mContext = aContext;

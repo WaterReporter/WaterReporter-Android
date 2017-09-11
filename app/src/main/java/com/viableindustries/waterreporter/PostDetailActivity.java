@@ -67,21 +67,26 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillOpacity;
 public class PostDetailActivity extends AppCompatActivity {
 
     @Bind(R.id.commentList)
+    private final
     ListView commentList;
 
     @Bind(R.id.mapGroup)
     FrameLayout mapGroup;
 
     @Bind(R.id.mapview)
+    private final
     MapView mapView;
 
     @Bind(R.id.mapMask)
+    private final
     View mapMask;
 
     @Bind(R.id.listViewLock)
+    private final
     View listViewLock;
 
     @Bind(R.id.listViewGroup)
+    private final
     LinearLayout listViewGroup;
 
 //    @Nullable
@@ -96,13 +101,13 @@ public class PostDetailActivity extends AppCompatActivity {
 //    @Bind(R.id.actionBarSubtitle)
 //    TextView actionBarSubtitle;
 
-    RelativeLayout mCommentCount;
+    private RelativeLayout mCommentCount;
 
-    TextView mFullCommentCount;
+    private TextView mFullCommentCount;
 
-    RelativeLayout mFavoriteCount;
+    private RelativeLayout mFavoriteCount;
 
-    TextView mFullFavoriteCount;
+    private TextView mFullFavoriteCount;
 
     protected List<String> groups;
 
@@ -110,13 +115,13 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
 
-    protected CommentAdapter commentAdapter;
+    private CommentAdapter commentAdapter;
 
-    protected List<Comment> commentCollectionList = new ArrayList<>();
+    private List<Comment> commentCollectionList = new ArrayList<>();
 
-    protected Report mPost;
+    private Report mPost;
 
-    protected ViewGroup mListViewHeader;
+    private ViewGroup mListViewHeader;
 
     private MapboxMap mMapboxMap;
 
@@ -285,7 +290,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
     }
 
-    protected void setHeaderMargin(final LinearLayout linearLayout) {
+    private void setHeaderMargin(final LinearLayout linearLayout) {
 
         if (!mDisplayMap) {
 
@@ -343,7 +348,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
     }
 
-    protected void addListViewHeader(Report post) {
+    private void addListViewHeader(Report post) {
 
         LayoutInflater inflater = getLayoutInflater();
 

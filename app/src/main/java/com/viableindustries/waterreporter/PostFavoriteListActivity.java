@@ -32,21 +32,24 @@ import retrofit.client.Response;
 public class PostFavoriteListActivity extends AppCompatActivity {
 
     @Bind(R.id.memberListContainer)
+    private final
     SwipeRefreshLayout memberListContainer;
 
     @Bind(R.id.memberList)
+    private final
     ListView memberList;
 
     @Bind(R.id.backArrow)
+    private final
     RelativeLayout backButton;
 
     private Context mContext;
 
     private Report post;
 
-    protected List<User> memberCollection = new ArrayList<>();
+    private List<User> memberCollection = new ArrayList<>();
 
-    protected UserListAdapter userListAdapter;
+    private UserListAdapter userListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +135,7 @@ public class PostFavoriteListActivity extends AppCompatActivity {
 
     }
 
-    protected void fetchFavorites(int limit, int page, int postId, final boolean refresh) {
+    private void fetchFavorites(int limit, int page, int postId, final boolean refresh) {
 
         final SharedPreferences prefs =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);

@@ -14,7 +14,7 @@ public class HucFeature implements Serializable {
 //    public HucGeometry geometry;
 
     @SerializedName("properties")
-    public HucProperties properties;
+    public final HucProperties properties;
 
     @SerializedName("type")
     public String type;

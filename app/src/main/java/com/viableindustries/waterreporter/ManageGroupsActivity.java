@@ -13,8 +13,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.viableindustries.waterreporter.OrganizationListAdapter;
-import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.data.Organization;
 import com.viableindustries.waterreporter.data.UserGroupList;
 
@@ -32,9 +30,11 @@ import butterknife.ButterKnife;
 public class ManageGroupsActivity extends AppCompatActivity {
 
     @Bind(R.id.search_box)
+    private final
     EditText listFilter;
 
     @Bind(R.id.list)
+    private final
     ListView listView;
 
     private boolean generic;

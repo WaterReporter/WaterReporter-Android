@@ -9,7 +9,7 @@ import com.mapbox.mapboxsdk.annotations.Marker;
 
 public class CustomMarker extends Marker {
 
-    private String imageUrl;
+    private final String imageUrl;
 
     public CustomMarker(BaseMarkerOptions baseMarkerOptions, String imageRef) {
         super(baseMarkerOptions);

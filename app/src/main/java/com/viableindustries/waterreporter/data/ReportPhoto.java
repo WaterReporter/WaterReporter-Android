@@ -17,7 +17,7 @@ public class ReportPhoto implements Serializable {
     public int id;
 
     @SerializedName("properties")
-    public ImageProperties properties;
+    public final ImageProperties properties;
 
     @SerializedName("type")
     public String type;

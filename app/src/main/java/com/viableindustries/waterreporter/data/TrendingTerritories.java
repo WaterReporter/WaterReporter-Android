@@ -14,7 +14,7 @@ public class TrendingTerritories {
     private int num_results;
 
     @SerializedName("objects")
-    private ArrayList<Territory> objects;
+    private final ArrayList<Territory> objects;
 
     @SerializedName("page")
     private int page;

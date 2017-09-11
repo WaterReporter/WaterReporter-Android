@@ -59,61 +59,61 @@ import static java.lang.Boolean.TRUE;
 
 public class AuthUserActivity extends AppCompatActivity implements ReportActionDialog.ReportActionDialogCallback {
 
-    TextView userTitle;
+    private TextView userTitle;
 
-    TextView userDescription;
+    private TextView userDescription;
 
-    ImageView userAvatar;
+    private ImageView userAvatar;
 
-    TextView reportCounter;
+    private TextView reportCounter;
 
-    TextView actionCounter;
+    private TextView actionCounter;
 
-    TextView groupCounter;
+    private TextView groupCounter;
 
-    TextView reportCountLabel;
+    private TextView reportCountLabel;
 
-    TextView actionCountLabel;
+    private TextView actionCountLabel;
 
-    TextView groupCountLabel;
+    private TextView groupCountLabel;
 
-    LinearLayout reportStat;
+    private LinearLayout reportStat;
 
-    LinearLayout actionStat;
+    private LinearLayout actionStat;
 
-    LinearLayout groupStat;
+    private LinearLayout groupStat;
 
-    LinearLayout profileMeta;
+    private LinearLayout profileMeta;
 
-    LinearLayout profileStats;
+    private LinearLayout profileStats;
 
-    LinearLayout promptBlock;
+    private LinearLayout promptBlock;
 
-    TextView promptMessage;
+    private TextView promptMessage;
 
-    Button startPostButton;
+    private Button startPostButton;
 
     @Bind(R.id.uploadProgressBar)
-    ProgressBar uploadProgressBar;
+    private ProgressBar uploadProgressBar;
 
     @Bind(R.id.uploadProgress)
-    LinearLayout uploadProgress;
+    private LinearLayout uploadProgress;
 
     @Bind(R.id.timeline)
-    SwipeRefreshLayout timeLineContainer;
+    private SwipeRefreshLayout timeLineContainer;
 
     @Bind(R.id.timeline_items)
-    ListView timeLine;
+    private ListView timeLine;
 
     @Bind(R.id.listTabs)
     FrameLayout listTabs;
 
     @Bind(R.id.log_out)
-    ImageButton logOutButton;
+    private ImageButton logOutButton;
 
-    protected TimelineAdapter timelineAdapter;
+    private TimelineAdapter timelineAdapter;
 
-    protected List<Report> reportCollection = new ArrayList<>();
+    private final List<Report> reportCollection = new ArrayList<>();
 
     private String userDescriptionText;
 
@@ -154,7 +154,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
     // An instance of the status broadcast receiver
     private UploadStateReceiver mUploadStateReceiver;
 
-    private String CLASS_TAG = "MainActivity";
+    private final String CLASS_TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -270,7 +270,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
     }
 
-    protected void setReportCountState(int count) {
+    private void setReportCountState(int count) {
 
         reportCounter.setText(String.valueOf(reportCount));
         reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
@@ -306,7 +306,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
     }
 
-    protected void addListViewHeader() {
+    private void addListViewHeader() {
 
         LayoutInflater inflater = getLayoutInflater();
 
@@ -501,7 +501,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
     }
 
-    protected void countReports(String query, final String filterName) {
+    private void countReports(String query, final String filterName) {
 
         RestAdapter restAdapter = ReportService.restAdapter;
 
@@ -558,7 +558,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
     }
 
-    protected void fetchUserGroups(int userId) {
+    private void fetchUserGroups(int userId) {
 
         UserService service = UserService.restAdapter.create(UserService.class);
 

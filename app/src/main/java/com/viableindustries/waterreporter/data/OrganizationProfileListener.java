@@ -12,9 +12,9 @@ import com.viableindustries.waterreporter.OrganizationProfileActivity;
 
 public class OrganizationProfileListener implements View.OnClickListener {
 
-    private Context mContext;
+    private final Context mContext;
 
-    private Organization organization;
+    private final Organization organization;
 
     public OrganizationProfileListener(Context aContext, Organization organization) {
         this.mContext = aContext;

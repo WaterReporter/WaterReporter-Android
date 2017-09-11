@@ -2,7 +2,7 @@ package com.viableindustries.waterreporter.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 
 import com.viableindustries.waterreporter.SendPostCallbacks;
 
@@ -39,7 +39,7 @@ public class ApiDispatcher {
 
     }
 
-    public static void sendFullPost(String accessToken, ReportPostBody reportPostBody, @Nullable final SendPostCallbacks callbacks) {
+    public static void sendFullPost(String accessToken, ReportPostBody reportPostBody, @NonNull final SendPostCallbacks callbacks) {
 
         ReportService reportService = ReportService.restAdapter.create(ReportService.class);
 

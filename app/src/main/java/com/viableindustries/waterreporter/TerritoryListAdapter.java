@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * Created by brendanmcintyre on 2/21/17.
  */
 
-public class TerritoryListAdapter extends ArrayAdapter<Territory> {
+class TerritoryListAdapter extends ArrayAdapter<Territory> {
 
     private final Context mContext;
 
@@ -29,7 +29,7 @@ public class TerritoryListAdapter extends ArrayAdapter<Territory> {
 
     protected int id;
 
-    private ArrayList<Territory> sourceList;
+    private final ArrayList<Territory> sourceList;
 
     public TerritoryListAdapter(Context aContext, ArrayList<Territory> features, boolean aShowLeaveButton) {
 

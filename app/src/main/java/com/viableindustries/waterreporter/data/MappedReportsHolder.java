@@ -11,7 +11,7 @@ public class MappedReportsHolder {
 
     //private static List<Report> reports;
 
-    private static Map<String, Report> reports = new HashMap<>();
+    private static final Map<String, Report> reports = new HashMap<>();
 
     public Report getReport(String key) {
 

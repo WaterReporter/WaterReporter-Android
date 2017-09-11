@@ -13,7 +13,7 @@ import com.viableindustries.waterreporter.data.Organization;
 
 import java.util.List;
 
-public class RelatedGroupAdapter extends ArrayAdapter {
+class RelatedGroupAdapter extends ArrayAdapter {
 
     private final Context mContext;
 

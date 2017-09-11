@@ -12,7 +12,7 @@ import retrofit.mime.TypedFile;
  */
 public interface ImageService {
 
-    String ENDPOINT = "https://api.waterreporter.org/v2";
+    String ENDPOINT = "https://api.waterreporter.org/v2/data";
 
     RestAdapter restAdapter = new RestAdapter.Builder()
             .setLogLevel(RestAdapter.LogLevel.HEADERS_AND_ARGS)

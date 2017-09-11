@@ -40,15 +40,16 @@ public class ProfileSettingsActivity extends AppCompatActivity {
     TextView logOut;
 
     @Bind(R.id.notification_settings)
+    private final
     LinearLayout notificationSettingsContainer;
 
     private SharedPreferences prefs;
 
     private SharedPreferences coreProfile;
 
-    protected SharedPreferences groupPrefs;
+    private SharedPreferences groupPrefs;
 
-    protected SharedPreferences associatedGroups;
+    private SharedPreferences associatedGroups;
 
     private User user;
 
@@ -85,7 +86,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
     }
 
-    protected void onRequestError(RetrofitError error) {
+    private void onRequestError(RetrofitError error) {
 
         Response response = error.getResponse();
 

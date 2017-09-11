@@ -11,10 +11,10 @@ import java.util.List;
 public class FeatureCollection implements Serializable {
 
     @SerializedName("features")
-    private List<Report> features;
+    private final List<Report> features;
 
     @SerializedName("properties")
-    private CollectionProperties properties;
+    private final CollectionProperties properties;
 
     @SerializedName("type")
     private String type;

@@ -11,19 +11,19 @@ import java.util.Map;
 public class CommentPost {
 
     @SerializedName("body")
-    public String body;
+    private final String body;
 
     @SerializedName("images")
-    public List<Map<String, Integer>> images;
+    private final List<Map<String, Integer>> images;
 
     @SerializedName("report_id")
-    public int reportId;
+    private final int reportId;
 
     @SerializedName("report_state")
-    public String reportState;
+    private final String reportState;
 
     @SerializedName("status")
-    public String status;
+    private final String status;
 
     public CommentPost (String aBody, List<Map<String, Integer>> aImages, int aReportId, String aReportState, String aStatus) {
 

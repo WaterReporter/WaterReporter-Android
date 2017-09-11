@@ -18,7 +18,7 @@ import java.util.List;
  * Created by brendanmcintyre on 4/21/17.
  */
 
-public class TagListAdapter extends ArrayAdapter<HashTag> {
+class TagListAdapter extends ArrayAdapter<HashTag> {
 
     private final Context mContext;
 
@@ -26,7 +26,7 @@ public class TagListAdapter extends ArrayAdapter<HashTag> {
 
     protected int id;
 
-    private List<HashTag> sourceList;
+    private final List<HashTag> sourceList;
 
     public TagListAdapter(Context aContext, List<HashTag> features, boolean aShowLeaveButton) {
 

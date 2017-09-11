@@ -17,17 +17,17 @@ import com.squareup.picasso.Picasso;
  * Created by brendanmcintyre on 8/4/17.
  */
 
-public class UserHeaderHolder extends RecyclerView.ViewHolder {
+class UserHeaderHolder extends RecyclerView.ViewHolder {
 
-    private LinearLayout mProfile;
+    private final LinearLayout mProfile;
 
-    private TextView mName;
+    private final TextView mName;
 
-    private TextView mTitle;
+    private final TextView mTitle;
 
-    private TextView mDescription;
+    private final TextView mDescription;
 
-    private ImageView mAvatar;
+    private final ImageView mAvatar;
 
     public UserHeaderHolder(LinearLayout v) {
 

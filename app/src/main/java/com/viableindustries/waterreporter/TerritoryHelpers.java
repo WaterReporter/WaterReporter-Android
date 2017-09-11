@@ -2,7 +2,7 @@ package com.viableindustries.waterreporter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 
 import com.viableindustries.waterreporter.data.CancelableCallback;
 import com.viableindustries.waterreporter.data.HucGeometryCollection;
@@ -17,20 +17,9 @@ import retrofit.client.Response;
  * Created by brendanmcintyre on 8/24/17.
  */
 
-public class TerritoryHelpers {
+final class TerritoryHelpers {
 
-//    private Territory mTerritory;
-//
-//    private HucFeature mHucFeature;
-//
-//    private Context mContext;
-//
-//    public TerritoryHelpers(Context aContext, Territory territory){
-//        this.mContext= context;
-//        this.mTerritory = territory;
-//    };
-
-    public static void fetchTerritoryGeometry(final Context context, Territory territory, @Nullable final TerritoryGeometryCallbacks callbacks) {
+    public static void fetchTerritoryGeometry(final Context context, Territory territory, @NonNull final TerritoryGeometryCallbacks callbacks) {
 
         RestAdapter restAdapter = HucGeometryService.restAdapter;
 

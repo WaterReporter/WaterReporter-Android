@@ -15,19 +15,19 @@ import retrofit.http.Query;
  */
 public interface UserService {
 
-    String ENDPOINT = "https://api.waterreporter.org/v2";
+    String ENDPOINT = "https://api.waterreporter.org/v2/data";
 
     RestAdapter restAdapter = new RestAdapter.Builder()
             .setLogLevel(RestAdapter.LogLevel.HEADERS_AND_ARGS)
             .setEndpoint(ENDPOINT)
             .build();
 
-    @GET("/data/me")
+    @GET("/me")
     void getActiveUser(@Header("Authorization") String authorization,
                        @Header("Content-Type") String contentType,
                        CancelableCallback<UserBasicResponse> userResponseCallback);
 
-    @GET("/data/user")
+    @GET("/user")
     void getMany(@Header("Authorization") String authorization,
                  @Header("Content-Type") String contentType,
                  @Query("page") int page,
@@ -35,7 +35,7 @@ public interface UserService {
                  @Query("q") String q,
                  CancelableCallback<UserCollection> userCollectionCallback);
 
-    @GET("/data/user")
+    @GET("/user")
     void getUsers(@Header("Authorization") String authorization,
                   @Header("Content-Type") String contentType,
                   @Query("page") int page,
@@ -43,27 +43,27 @@ public interface UserService {
                   @Query("q") String q,
                   CancelableCallback<UserCollection> userCollectionCallback);
 
-    @GET("/data/user/{user}")
+    @GET("/user/{user}")
     void getUser(@Header("Authorization") String authorization,
                  @Header("Content-Type") String contentType,
                  @Path("user") int user_id,
                  CancelableCallback<User> userResponseCallback);
 
-    @PATCH("/data/user/{user}")
+    @PATCH("/user/{user}")
     void updateUser(@Header("Authorization") String authorization,
                     @Header("Content-Type") String contentType,
                     @Path("user") int user_id,
                     @Body Map<String, ?> userPatch,
                     CancelableCallback<User> userResponseCallback);
 
-    @PATCH("/data/user/{user}")
+    @PATCH("/user/{user}")
     void updateUserOrganization(@Header("Authorization") String authorization,
                                 @Header("Content-Type") String contentType,
                                 @Path("user") int user_id,
                                 @Body Map<String, Map> userPatch,
                                 CancelableCallback<User> userResponseCallback);
 
-    @GET("/data/user/{user}/organization")
+    @GET("/user/{user}/organization")
     void getUserOrganization(@Header("Authorization") String authorization,
                              @Header("Content-Type") String contentType,
                              @Path("user") int user_id,

@@ -20,7 +20,7 @@ import com.viableindustries.waterreporter.data.UserProfileListener;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class CommentAdapter extends ArrayAdapter<Comment> {
+class CommentAdapter extends ArrayAdapter<Comment> {
 
     private final Context mContext;
 
@@ -37,7 +37,7 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
         this.mContext = aContext;
     }
 
-    protected static class ViewHolder {
+    static class ViewHolder {
         TextView reportDate;
         TextView reportOwner;
         TextView reportCaption;
@@ -86,7 +86,7 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
 
             ReportPhoto image = feature != null ? feature.properties.images.get(0) : null;
 
-            imagePath = image.properties.square_retina;
+            imagePath = image != null ? image.properties.square_retina : null;
 
             viewHolder.postThumb.setVisibility(View.VISIBLE);
 
@@ -98,7 +98,7 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
 
         }
 
-        creationDate = (String) AttributeTransformUtility.relativeTime(feature.properties.created);
+        creationDate = (String) AttributeTransformUtility.relativeTime(feature != null ? feature.properties.created : null);
 
         featureId = feature.id;
 

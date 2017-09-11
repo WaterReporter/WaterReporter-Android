@@ -8,25 +8,25 @@ import com.google.gson.annotations.SerializedName;
 public class LogInBody {
 
     @SerializedName("email")
-    private String email;
+    private final String email;
 
     @SerializedName("password")
-    private String password;
+    private final String password;
 
     @SerializedName("response_type")
-    public String response_type;
+    private final String response_type;
 
     @SerializedName("client_id")
-    public String client_id;
+    private final String client_id;
 
     @SerializedName("redirect_uri")
-    public String redirect_uri;
+    private final String redirect_uri;
 
     @SerializedName("scope")
-    public String scope;
+    private final String scope;
 
     @SerializedName("state")
-    public String state;
+    private final String state;
 
     public LogInBody (String aEmail, String aPassword, String aResponseType, String aClientId,
                            String aRedirectUri, String aScope, String aState) {

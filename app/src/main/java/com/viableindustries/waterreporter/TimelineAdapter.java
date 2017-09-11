@@ -39,7 +39,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
     private final boolean mSelfContain;
 
-    protected SharedPreferences mSharedPreferences;
+    private final SharedPreferences mSharedPreferences;
 
     final private FragmentManager mFragmentManager;
 

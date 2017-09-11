@@ -12,13 +12,13 @@ import java.io.Serializable;
 public class Report implements Serializable {
 
     @SerializedName("geometry")
-    public GeometryResponse geometry;
+    public final GeometryResponse geometry;
 
     @SerializedName("id")
-    public int id;
+    public final int id;
 
     @SerializedName("properties")
-    public ReportProperties properties;
+    public final ReportProperties properties;
 
     @SerializedName("type")
     public String type;

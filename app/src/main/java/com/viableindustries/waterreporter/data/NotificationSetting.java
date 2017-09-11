@@ -9,13 +9,13 @@ import com.google.gson.annotations.SerializedName;
 public class NotificationSetting {
 
     @SerializedName("name")
-    public String name;
+    public final String name;
 
     @SerializedName("description")
-    public String description;
+    public final String description;
 
     @SerializedName("value")
-    public boolean value;
+    public final boolean value;
 
     public NotificationSetting(String aName, String aDescription, boolean aValue) {
 

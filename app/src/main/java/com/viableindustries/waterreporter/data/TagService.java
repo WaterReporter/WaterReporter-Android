@@ -12,14 +12,14 @@ import retrofit.http.Query;
 
 public interface TagService {
 
-    String ENDPOINT = "https://api.waterreporter.org/v2";
+    String ENDPOINT = "https://api.waterreporter.org/v2/data";
 
     RestAdapter restAdapter = new RestAdapter.Builder()
             .setLogLevel(RestAdapter.LogLevel.BASIC)
             .setEndpoint(ENDPOINT)
             .build();
 
-    @GET("/data/hashtag")
+    @GET("/hashtag")
     void getMany(@Header("Authorization") String authorization,
                  @Header("Content-Type") String contentType,
                  @Query("page") int page,
@@ -27,7 +27,7 @@ public interface TagService {
                  @Query("q") String q,
                  CancelableCallback<HashtagCollection> hashtagCollectionCallback);
 
-    @GET("/data/hashtag/{tag}")
+    @GET("/hashtag/{tag}")
     void getOrganization(@Header("Authorization") String authorization,
                          @Header("Content-Type") String contentType,
                          @Path("tag") int tagId,

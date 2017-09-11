@@ -8,13 +8,13 @@ import com.google.gson.annotations.SerializedName;
 public class QueryFilter {
 
     @SerializedName("name")
-    private String name;
+    private final String name;
 
     @SerializedName("op")
-    private String op;
+    private final String op;
 
     @SerializedName("val")
-    private Object val;
+    private final Object val;
 
     public QueryFilter (String aName, String aOp, Object aVal) {
 

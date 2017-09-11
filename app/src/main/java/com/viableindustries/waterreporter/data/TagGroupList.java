@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Created by brendanmcintyre on 4/13/17.
  */
 
-public class TagGroupList {
+class TagGroupList {
 
     private static ArrayList<Organization> groupList;
 

@@ -9,10 +9,10 @@ import com.google.gson.annotations.SerializedName;
 public class ReportStateBody {
 
     @SerializedName("id")
-    public int id;
+    private final int id;
 
     @SerializedName("state")
-    public String state;
+    private final String state;
 
     public ReportStateBody (int aId, String aState) {
 

@@ -9,7 +9,7 @@ import android.util.TypedValue;
  * Created by brendanmcintyre on 4/14/17.
  */
 
-public class DeviceDimensionsHelper {
+class DeviceDimensionsHelper {
 
     // DeviceDimensionsHelper.getDisplayWidth(context) => (display width in pixels)
     public static int getDisplayWidth(Context aContext) {

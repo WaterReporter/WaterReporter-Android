@@ -47,37 +47,37 @@ public class UserProperties implements Serializable {
     // Descriptive attributes, identifiers and related content
 
     @SerializedName("description")
-    public String description;
+    public final String description;
 
     @SerializedName("first_name")
-    public String first_name;
+    public final String first_name;
 
     @SerializedName("id")
-    public int id;
+    public final int id;
 
     @SerializedName("images")
-    public ArrayList<ReportPhoto> images;
+    public final ArrayList<ReportPhoto> images;
 
     @SerializedName("last_name")
-    public String last_name;
+    public final String last_name;
 
     @SerializedName("organization")
-    public ArrayList<Organization> organizations;
+    public final ArrayList<Organization> organizations;
 
     @SerializedName("organization_name")
-    public String organization_name;
+    public final String organization_name;
 
     @SerializedName("picture")
     public String picture;
 
     @SerializedName("public_email")
-    public String public_email;
+    public final String public_email;
 
     @SerializedName("roles")
-    public ArrayList<Role> roles;
+    public final ArrayList<Role> roles;
 
     @SerializedName("title")
-    public String title;
+    public final String title;
 
     public UserProperties(int aId, String aDescription, String aFirstName,
                           String aLastName, String aOrganizationName, String aPicture,

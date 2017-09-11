@@ -22,19 +22,19 @@ public class ReportProperties implements Serializable {
     public String closed_on;
 
     @SerializedName("comments")
-    public List<Comment> comments;
+    public final List<Comment> comments;
 
     @SerializedName("created")
-    public String created;
+    public final String created;
 
     @SerializedName("groups")
-    public ArrayList<Organization> groups;
+    public final ArrayList<Organization> groups;
 
     @SerializedName("id")
     public int id;
 
     @SerializedName("images")
-    public List<ReportPhoto> images;
+    public final List<ReportPhoto> images;
 
     @SerializedName("is_featured")
     public boolean is_featured;
@@ -43,31 +43,31 @@ public class ReportProperties implements Serializable {
     public boolean is_public;
 
     @SerializedName("likes")
-    public List<Favorite> favorites;
+    public final List<Favorite> favorites;
 
     @SerializedName("owner")
-    public User owner;
+    public final User owner;
 
     @SerializedName("owner_id")
-    public int owner_id;
+    public final int owner_id;
 
     @SerializedName("report_date")
-    public String report_date;
+    private String report_date;
 
     @SerializedName("report_description")
-    public String description;
+    public final String description;
 
     @SerializedName("social")
-    public List<OpenGraphObject> open_graph;
+    public final List<OpenGraphObject> open_graph;
 
     @SerializedName("state")
-    public String state;
+    public final String state;
 
     @SerializedName("tags")
     public List<HashTag> tags;
 
     @SerializedName("territory")
-    public Territory territory;
+    public final Territory territory;
 
     @SerializedName("territory_id")
     public int territory_id;

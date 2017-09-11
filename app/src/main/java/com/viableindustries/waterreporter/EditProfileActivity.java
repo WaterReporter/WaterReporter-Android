@@ -68,42 +68,54 @@ public class EditProfileActivity extends AppCompatActivity implements
         EasyPermissions.PermissionCallbacks {
 
     @Bind(R.id.new_user_profile)
+    private final
     LinearLayout parentLayout;
 
     @Bind(R.id.first_name)
+    private final
     EditText firstNameInput;
 
     @Bind(R.id.last_name)
+    private final
     EditText lastNameInput;
 
     @Bind(R.id.user_title)
+    private final
     EditText userTitleInput;
 
     @Bind(R.id.user_organization_name)
+    private final
     EditText userOrganizationNameInput;
 
     @Bind(R.id.user_public_email)
+    private final
     EditText userPublicEmailInput;
 
     @Bind(R.id.user_telephone)
+    private final
     EditText userTelephoneInput;
 
     @Bind(R.id.user_bio)
+    private final
     EditText userBioInput;
 
     @Bind(R.id.current_user_avatar)
+    private final
     ImageView userAvatar;
 
     @Bind(R.id.current_user_avatar_preview)
+    private final
     ImageView avatarPreview;
 
     @Bind(R.id.change_image)
+    private final
     ImageButton editPhoto;
 
     @Bind(R.id.save_profile)
     ImageButton saveProfileButton;
 
     @Bind(R.id.saving_message)
+    private final
     TextView savingMessage;
 
     private File image;
@@ -120,7 +132,7 @@ public class EditProfileActivity extends AppCompatActivity implements
 
     private static final int ACTION_SELECT_PHOTO = 2;
 
-    protected boolean photoCaptured = false;
+    private boolean photoCaptured = false;
 
     final private String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
 
@@ -358,7 +370,7 @@ public class EditProfileActivity extends AppCompatActivity implements
 
     }
 
-    public void updateProfile(Map<String, Object> userPatch) {
+    private void updateProfile(Map<String, Object> userPatch) {
 
         savingMessage.setVisibility(View.VISIBLE);
 
@@ -737,7 +749,7 @@ public class EditProfileActivity extends AppCompatActivity implements
 
     }
 
-    protected void showPhotoPickerDialog() {
+    private void showPhotoPickerDialog() {
 
         android.app.DialogFragment newFragment = new PhotoPickerDialogFragment();
 
@@ -747,7 +759,7 @@ public class EditProfileActivity extends AppCompatActivity implements
 
     }
 
-    protected void verifyPermissions() {
+    private void verifyPermissions() {
 
         String[] permissions = {
                 Manifest.permission.CAMERA,

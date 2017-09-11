@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Created by brendanmcintyre on 7/20/17.
  */
 
-public class HucState implements Serializable {
+class HucState implements Serializable {
 
     @SerializedName("code")
     public String code;

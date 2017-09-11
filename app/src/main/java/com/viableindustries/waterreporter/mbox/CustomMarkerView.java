@@ -11,19 +11,19 @@ public class CustomMarkerView extends MarkerView {
 
 //    private Report report;
 
-    private int reportId;
-    private String reportDescription;
-    private String thumbNail;
-    private String fullImage;
-    private String creationDate;
-    private String watershedName;
-    private String groupList;
-    private String commentCount;
-    private String userName;
-    private String userAvatar;
-    private String status;
-    private int inFocus;
-    private int index;
+    private final int reportId;
+    private final String reportDescription;
+    private final String thumbNail;
+    private final String fullImage;
+    private final String creationDate;
+    private final String watershedName;
+    private final String groupList;
+    private final String commentCount;
+    private final String userName;
+    private final String userAvatar;
+    private final String status;
+    private final int inFocus;
+    private final int index;
 
     public CustomMarkerView(BaseMarkerViewOptions baseMarkerViewOptions,
                             int reportId, String reportDescription, String thumbNail, String fullImage,

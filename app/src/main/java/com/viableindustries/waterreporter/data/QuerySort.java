@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName;
 public class QuerySort {
 
     @SerializedName("field")
-    private String field;
+    private final String field;
 
     @SerializedName("direction")
-    private String direction;
+    private final String direction;
 
     public QuerySort (String aField, String aDirection) {
 

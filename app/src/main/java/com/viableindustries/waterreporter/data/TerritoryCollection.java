@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class TerritoryCollection {
 
     @SerializedName("objects")
-    private ArrayList<Territory> features;
+    private final ArrayList<Territory> features;
 
     @SerializedName("properties")
     private CollectionProperties properties;

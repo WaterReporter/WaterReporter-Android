@@ -24,9 +24,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
-public class BroadcastNotifier {
+class BroadcastNotifier {
 
-    private LocalBroadcastManager mBroadcaster;
+    private final LocalBroadcastManager mBroadcaster;
 
     /**
      * Creates a BroadcastNotifier containing an instance of LocalBroadcastManager.

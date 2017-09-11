@@ -12,19 +12,19 @@ import java.util.Map;
 public class ReportPatchBody {
 
     @SerializedName("geometry")
-    public GeometryResponse geometry;
+    private final GeometryResponse geometry;
 
     @SerializedName("groups")
-    public List<Map<String, Integer>> groups;
+    private final List<Map<String, Integer>> groups;
 
     @SerializedName("report_date")
-    public String report_date;
+    private final String report_date;
 
     @SerializedName("report_description")
-    public String description;
+    private final String description;
 
     @SerializedName("state")
-    public String state;
+    private final String state;
 
     public ReportPatchBody (GeometryResponse aGeometry, List<Map<String, Integer>> aGroups, String aReportDate,
                            String aDescription, String aState) {

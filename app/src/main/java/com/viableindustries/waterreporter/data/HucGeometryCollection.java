@@ -12,7 +12,7 @@ import java.util.List;
 public class HucGeometryCollection implements Serializable {
 
     @SerializedName("features")
-    public List<HucFeature> features;
+    public final List<HucFeature> features;
 
     @SerializedName("type")
     public String type;

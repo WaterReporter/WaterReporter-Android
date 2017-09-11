@@ -29,10 +29,10 @@ import retrofit.mime.TypedFile;
 
 public class ImagePostService extends IntentService {
 
-    public static final int NOTIFICATION_ID = 1;
+    private static final int NOTIFICATION_ID = 1;
 
     // Defines and instantiates an object for handling status updates.
-    private BroadcastNotifier mBroadcaster = new BroadcastNotifier(this);
+    private final BroadcastNotifier mBroadcaster = new BroadcastNotifier(this);
 
     /**
      * A constructor is required, and must call the super IntentService(String)

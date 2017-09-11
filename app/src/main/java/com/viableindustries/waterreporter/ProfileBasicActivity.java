@@ -69,27 +69,34 @@ public class ProfileBasicActivity extends AppCompatActivity implements
         EasyPermissions.PermissionCallbacks{
 
     @Bind(R.id.new_user_profile)
+    private final
     LinearLayout parentLayout;
 
     @Bind(R.id.first_name)
+    private final
     EditText firstNameInput;
 
     @Bind(R.id.last_name)
+    private final
     EditText lastNameInput;
 
     @Bind(R.id.user_bio)
+    private final
     EditText userBioInput;
 
     @Bind(R.id.new_user_avatar)
+    private final
     ImageView userAvatar;
 
     @Bind(R.id.new_user_avatar_preview)
+    private final
     ImageView avatarPreview;
 
     @Bind(R.id.save_profile)
     ImageButton saveProfileButton;
 
     @Bind(R.id.saving_message)
+    private final
     TextView savingMessage;
 
     private File image;
@@ -100,7 +107,7 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
     private static final int ACTION_SELECT_PHOTO = 2;
 
-    protected boolean photoCaptured = false;
+    private boolean photoCaptured = false;
 
     final private String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
 
@@ -130,7 +137,7 @@ public class ProfileBasicActivity extends AppCompatActivity implements
     }
 
     @AfterPermissionGranted(RC_ALL_PERMISSIONS)
-    protected void loadRandomAvatar() {
+    private void loadRandomAvatar() {
 
         String[] array = getResources().getStringArray(R.array.default_avatars);
 
@@ -202,7 +209,7 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
     }
 
-    public void addProfilePic(View v) {
+    private void addProfilePic(View v) {
 
         showPhotoPickerDialog();
 
@@ -606,7 +613,7 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
     }
 
-    protected void showPhotoPickerDialog() {
+    private void showPhotoPickerDialog() {
 
         android.app.DialogFragment newFragment = new PhotoPickerDialogFragment();
 
@@ -616,7 +623,7 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
     }
 
-    protected void verifyPermissions() {
+    private void verifyPermissions() {
 
         String[] permissions = {
                 Manifest.permission.ACCESS_FINE_LOCATION,

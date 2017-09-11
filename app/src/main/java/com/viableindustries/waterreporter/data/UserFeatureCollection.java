@@ -8,10 +8,10 @@ import java.util.ArrayList;
  * Created by brendanmcintyre on 8/30/16.
  */
 
-public class UserFeatureCollection {
+class UserFeatureCollection {
 
     @SerializedName("features")
-    private ArrayList<User> features;
+    private final ArrayList<User> features;
 
     @SerializedName("properties")
     private CollectionProperties properties;

@@ -13,11 +13,11 @@ import java.util.List;
  * Created by brendanmcintyre on 8/1/17.
  */
 
-public class PostDirectionsListener implements View.OnClickListener {
+class PostDirectionsListener implements View.OnClickListener {
 
-    private Context mContext;
+    private final Context mContext;
 
-    private Report post;
+    private final Report post;
 
     public PostDirectionsListener(Context aContext, Report post) {
         this.mContext = aContext;

@@ -3,7 +3,7 @@ package com.viableindustries.waterreporter.data;
 /**
  * Created by ryanhamley on 12/8/14.
  */
-public class Relationship {
+class Relationship {
     public String created;
     public GeometryResponse geometry;
     public int id;

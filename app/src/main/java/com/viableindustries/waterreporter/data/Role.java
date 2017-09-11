@@ -18,6 +18,6 @@ public class Role {
     public String type;
 
     @SerializedName("properties")
-    public RoleProperties properties;
+    public final RoleProperties properties;
 
 }

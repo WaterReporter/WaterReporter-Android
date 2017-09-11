@@ -12,10 +12,10 @@ import java.util.List;
 public class GeometryResponse implements Serializable {
 
     @SerializedName("geometries")
-    public List<Geometry> geometries;
+    public final List<Geometry> geometries;
 
     @SerializedName("type")
-    public String type;
+    private final String type;
 
     public GeometryResponse(List<Geometry> geometriesList, String aType){
 

@@ -42,16 +42,16 @@ import java.util.regex.Pattern;
 
 public class PatternEditableBuilder {
     // Records the pattern spans to apply to a TextView
-    ArrayList<SpannablePatternItem> patterns;
+    private final ArrayList<SpannablePatternItem> patterns;
 
     /* This stores a particular pattern item
        complete with pattern, span styles, and click listener */
     public class SpannablePatternItem {
 
-        public Context mContext;
-        public Pattern pattern;
-        public int textColor;
-        public SpannableClickedListener listener;
+        public final Context mContext;
+        public final Pattern pattern;
+        public final int textColor;
+        public final SpannableClickedListener listener;
 
         public SpannablePatternItem(Context aContext, Pattern pattern, int textColor, SpannableClickedListener listener) {
             this.mContext = aContext;
@@ -89,7 +89,7 @@ public class PatternEditableBuilder {
      */
     public class StyledClickableSpan extends ClickableSpan {
 
-        SpannablePatternItem item;
+        final SpannablePatternItem item;
 
         public StyledClickableSpan(SpannablePatternItem item) {
             this.item = item;
@@ -175,7 +175,7 @@ public class PatternEditableBuilder {
 
     // This builds the pattern span into a `SpannableStringBuilder`
     // Requires a CharSequence to be passed in to be applied to
-    public SpannableStringBuilder build(CharSequence editable) {
+    private SpannableStringBuilder build(CharSequence editable) {
         SpannableStringBuilder ssb = new SpannableStringBuilder(editable);
         for (SpannablePatternItem item : patterns) {
             Matcher matcher = item.pattern.matcher(ssb);

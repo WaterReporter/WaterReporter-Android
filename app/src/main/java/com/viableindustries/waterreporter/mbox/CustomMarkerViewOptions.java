@@ -34,7 +34,7 @@ public class CustomMarkerViewOptions extends BaseMarkerViewOptions<CustomMarkerV
     public CustomMarkerViewOptions() {
     }
 
-    protected CustomMarkerViewOptions(Parcel in) {
+    private CustomMarkerViewOptions(Parcel in) {
         position((LatLng) in.readParcelable(LatLng.class.getClassLoader()));
         snippet(in.readString());
         title(in.readString());
@@ -117,7 +117,7 @@ public class CustomMarkerViewOptions extends BaseMarkerViewOptions<CustomMarkerV
         return getThis();
     }
 
-    public CustomMarkerViewOptions reportDescription(String reportDescription) {
+    private CustomMarkerViewOptions reportDescription(String reportDescription) {
         this.reportDescription = reportDescription;
         return getThis();
     }
@@ -132,32 +132,32 @@ public class CustomMarkerViewOptions extends BaseMarkerViewOptions<CustomMarkerV
         return getThis();
     }
 
-    public CustomMarkerViewOptions creationDate(String creationDate) {
+    private CustomMarkerViewOptions creationDate(String creationDate) {
         this.creationDate = creationDate;
         return getThis();
     }
 
-    public CustomMarkerViewOptions watershedName(String watershedName) {
+    private CustomMarkerViewOptions watershedName(String watershedName) {
         this.watershedName = watershedName;
         return getThis();
     }
 
-    public CustomMarkerViewOptions groupList(String groupList) {
+    private CustomMarkerViewOptions groupList(String groupList) {
         this.groupList = groupList;
         return getThis();
     }
 
-    public CustomMarkerViewOptions commentCount(String commentCount) {
+    private CustomMarkerViewOptions commentCount(String commentCount) {
         this.commentCount = commentCount;
         return getThis();
     }
 
-    public CustomMarkerViewOptions userName(String userName) {
+    private CustomMarkerViewOptions userName(String userName) {
         this.userName = userName;
         return getThis();
     }
 
-    public CustomMarkerViewOptions userAvatar(String userAvatar) {
+    private CustomMarkerViewOptions userAvatar(String userAvatar) {
         this.userAvatar = userAvatar;
         return getThis();
     }

@@ -19,14 +19,14 @@ import retrofit.http.Query;
  */
 public interface ReportService {
 
-    String ENDPOINT = "https://api.waterreporter.org/v2";
+    String ENDPOINT = "https://api.waterreporter.org/v2/data";
 
     RestAdapter restAdapter = new RestAdapter.Builder()
             .setLogLevel(RestAdapter.LogLevel.BASIC)
             .setEndpoint(ENDPOINT)
             .build();
 
-    @GET("/data/report")
+    @GET("/report")
     void getReports(@Header("Authorization") String authorization,
                     @Header("Content-Type") String contentType,
                     @Query("page") int page,
@@ -34,33 +34,33 @@ public interface ReportService {
                     @Query("q") String q,
                     CancelableCallback<FeatureCollection> featureCollectionCallback);
 
-    @GET("/data/report/{report}")
+    @GET("/report/{report}")
     void getSingleReport(@Header("Authorization") String authorization,
                          @Header("Content-Type") String contentType,
                          @Path("report") int reportId,
                          CancelableCallback<Report> report);
 
-    @PATCH("/data/report/{report}")
+    @PATCH("/report/{report}")
     void setReportState(@Header("Authorization") String authorization,
                         @Header("Content-Type") String contentType,
                         @Path("report") int reportId,
                         @Body ReportStateBody reportStateBody,
                         CancelableCallback<Report> report);
 
-    @PATCH("/data/report/{report}")
+    @PATCH("/report/{report}")
     void updateReport(@Header("Authorization") String authorization,
                       @Header("Content-Type") String contentType,
                       @Path("report") int reportId,
                       @Body ReportPatchBody reportPatchBody,
                       CancelableCallback<Report> report);
 
-    @GET("/data/report/{report}/groups")
+    @GET("/report/{report}/groups")
     void getReportGroups(@Header("Authorization") String authorization,
                          @Header("Content-Type") String contentType,
                          @Path("report") int reportId,
                          CancelableCallback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
 
-    @GET("/data/report/{report}/comments")
+    @GET("/report/{report}/comments")
     void getReportComments(@Header("Authorization") String authorization,
                            @Header("Content-Type") String contentType,
                            @Path("report") int reportId,
@@ -69,7 +69,7 @@ public interface ReportService {
                            @Query("q") String q,
                            CancelableCallback<CommentCollection> commentCollectionCallback);
 
-    @GET("/data/report/{report}/likes")
+    @GET("/report/{report}/likes")
     void getPostLikes(@Header("Authorization") String authorization,
                       @Header("Content-Type") String contentType,
                       @Path("report") int reportId,
@@ -78,20 +78,20 @@ public interface ReportService {
                       @Query("q") String q,
                       CancelableCallback<FavoriteCollection> favoriteCollectionCallback);
 
-    @POST("/data/report")
+    @POST("/report")
     void postReport
             (@Header("Authorization") String authorization,
              @Header("Content-Type") String contentType,
              @Body ReportPostBody reportPostBody,
              CancelableCallback<Report> cb);
 
-    @POST("/data/report")
+    @POST("/report")
     Report postReportSync
             (@Header("Authorization") String authorization,
              @Header("Content-Type") String contentType,
              @Body ReportPostBody reportPostBody);
 
-    @DELETE("/data/report/{report}")
+    @DELETE("/report/{report}")
     void deleteSingleReport(@Header("Authorization") String authorization,
                             @Path("report") int reportId,
                             CancelableCallback<Response> responseCallback);

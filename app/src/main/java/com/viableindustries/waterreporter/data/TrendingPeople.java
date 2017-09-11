@@ -14,7 +14,7 @@ public class TrendingPeople {
     private int num_results;
 
     @SerializedName("objects")
-    private ArrayList<User> objects;
+    private final ArrayList<User> objects;
 
     @SerializedName("page")
     private int page;

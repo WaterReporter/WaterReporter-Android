@@ -19,7 +19,7 @@ import com.viableindustries.waterreporter.data.UserHolder;
 import java.util.List;
 
 
-public class UserListAdapter extends ArrayAdapter<User> implements Filterable {
+class UserListAdapter extends ArrayAdapter<User> implements Filterable {
 
     private final Context mContext;
 
@@ -27,9 +27,9 @@ public class UserListAdapter extends ArrayAdapter<User> implements Filterable {
 
     protected int id;
 
-    private List<User> sourceList;
+    private final List<User> sourceList;
 
-    private List<User> filteredList;
+    private final List<User> filteredList;
 
 //    private UserFilter mFilter;
 

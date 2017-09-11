@@ -12,9 +12,9 @@ import com.viableindustries.waterreporter.UserProfileActivity;
 
 public class UserProfileListener implements View.OnClickListener {
 
-    private Context mContext;
+    private final Context mContext;
 
-    private User user;
+    private final User user;
 
     public UserProfileListener(Context aContext, User user) {
         this.mContext = aContext;

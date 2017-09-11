@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class CommentCollection {
 
     @SerializedName("features")
-    private ArrayList<Comment> features;
+    private final ArrayList<Comment> features;
 
     @SerializedName("properties")
     private CollectionProperties properties;

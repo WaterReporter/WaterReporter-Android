@@ -28,10 +28,10 @@ public class TerritoryProperties implements Serializable {
     public String huc_6_name;
 
     @SerializedName("huc_8_code")
-    public int huc_8_code;
+    public final int huc_8_code;
 
     @SerializedName("huc_8_name")
-    public String huc_8_name;
+    public final String huc_8_name;
 
     @SerializedName("id")
     public int id;

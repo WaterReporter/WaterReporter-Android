@@ -29,7 +29,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class UserGroupsFragment extends android.support.v4.app.Fragment {
 
-    ListView groupList;
+    private ListView groupList;
 
     private void populateOrganizations(ArrayList<Organization> orgs) {
 
@@ -39,7 +39,7 @@ public class UserGroupsFragment extends android.support.v4.app.Fragment {
 
     }
 
-    protected void fetchUserGroups(int userId) {
+    private void fetchUserGroups(int userId) {
 
         final SharedPreferences prefs =
                 getActivity().getSharedPreferences(getActivity().getPackageName(), MODE_PRIVATE);

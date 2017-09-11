@@ -32,7 +32,7 @@ import static android.content.Context.MODE_PRIVATE;
  * Created by brendanmcintyre on 11/15/16.
  */
 
-public class NotificationSettingAdapter extends ArrayAdapter {
+class NotificationSettingAdapter extends ArrayAdapter {
 
     private final Context mContext;
 
@@ -41,7 +41,7 @@ public class NotificationSettingAdapter extends ArrayAdapter {
         this.mContext = aContext;
     }
 
-    protected static class ViewHolder {
+    static class ViewHolder {
         TextView settingDescription;
         SwitchCompat settingControl;
         TextView tracker;
@@ -76,7 +76,7 @@ public class NotificationSettingAdapter extends ArrayAdapter {
 
         viewHolder.settingDescription.setText(setting != null ? setting.description : null);
 
-        viewHolder.tracker.setText(setting.name);
+        viewHolder.tracker.setText(setting != null ? setting.name : null);
 
         viewHolder.settingControl.setChecked(setting.value);
 
@@ -129,8 +129,6 @@ public class NotificationSettingAdapter extends ArrayAdapter {
                             coreProfile.edit().putBoolean(entry.getKey(), entry.getValue()).apply();
 
                         }
-
-//                        viewHolder.settingControl.setChecked(!viewHolder.settingControl.isChecked());
 
                         CharSequence text = "Notification setting successfully changed.";
                         int duration = Toast.LENGTH_SHORT;

@@ -12,9 +12,9 @@ import com.viableindustries.waterreporter.CommentActivity;
 
 public class PostCommentListener implements View.OnClickListener {
 
-    private Context mContext;
+    private final Context mContext;
 
-    private Report post;
+    private final Report post;
 
     public PostCommentListener(Context aContext, Report post) {
         this.mContext = aContext;

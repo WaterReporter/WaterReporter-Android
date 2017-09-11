@@ -17,7 +17,7 @@ public class UserBasicResponse {
     private String first_name;
 
     @SerializedName("id")
-    private int id;
+    private final int id;
 
     @SerializedName("last_name")
     private String last_name;

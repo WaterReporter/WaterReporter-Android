@@ -12,6 +12,6 @@ public class RoleProperties {
     public String description;
 
     @SerializedName("name")
-    public String name;
+    public final String name;
 
 }

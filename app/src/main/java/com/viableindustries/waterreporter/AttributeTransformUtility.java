@@ -20,7 +20,7 @@ import java.util.Map;
  * Created by brendanmcintyre on 8/8/16.
  */
 
-public class AttributeTransformUtility {
+class AttributeTransformUtility {
 
     public static List<Map<String, Integer>> buildImageRelation(int imageId) {
 

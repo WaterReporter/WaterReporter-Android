@@ -12,14 +12,14 @@ import retrofit.http.Query;
 
 public interface TerritoryService {
 
-    String ENDPOINT = "https://api.waterreporter.org/v2";
+    String ENDPOINT = "https://api.waterreporter.org/v2/data";
 
     RestAdapter restAdapter = new RestAdapter.Builder()
             .setLogLevel(RestAdapter.LogLevel.HEADERS_AND_ARGS)
             .setEndpoint(ENDPOINT)
             .build();
 
-    @GET("/data/huc-8")
+    @GET("/huc-8")
     void search(@Header("Authorization") String authorization,
                 @Header("Content-Type") String contentType,
                 @Query("page") int page,
@@ -27,7 +27,7 @@ public interface TerritoryService {
                 @Query("q") String q,
                 CancelableCallback<TerritoryCollection> territoryCollectionCallback);
 
-    @GET("/data/territory")
+    @GET("/territory")
     void getMany(@Header("Authorization") String authorization,
                  @Header("Content-Type") String contentType,
                  @Query("page") int page,
@@ -35,7 +35,7 @@ public interface TerritoryService {
                  @Query("q") String q,
                  CancelableCallback<TerritoryCollection> territoryCollectionCallback);
 
-    @GET("/data/territory/{territory}")
+    @GET("/territory/{territory}")
     void getSingle(@Header("Authorization") String authorization,
                    @Header("Content-Type") String contentType,
                    @Path("territory") int territoryId,

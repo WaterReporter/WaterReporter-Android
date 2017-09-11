@@ -8,10 +8,10 @@ import com.google.gson.annotations.SerializedName;
 public class RegistrationBody {
 
     @SerializedName("email")
-    private String email;
+    private final String email;
 
     @SerializedName("password")
-    private String password;
+    private final String password;
 
     public RegistrationBody (String aEmail, String aPassword) {
 

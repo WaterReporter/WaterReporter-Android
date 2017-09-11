@@ -22,21 +22,21 @@ import java.util.ArrayList;
 /**
  * Created by brendanmcintyre on 2/8/16.
  */
-public class OrganizationCheckListAdapter extends ArrayAdapter<AbbreviatedOrganization> {
+class OrganizationCheckListAdapter extends ArrayAdapter<AbbreviatedOrganization> {
 
     private final Context mContext;
 
-    protected String name;
+    private String name;
 
-    protected int id;
+    private int id;
 
-    private ArrayList<AbbreviatedOrganization> sourceList;
+    private final ArrayList<AbbreviatedOrganization> sourceList;
 
-    protected SwitchCompat associateGroup;
+    private SwitchCompat associateGroup;
 
-    protected SharedPreferences prefs;
+    private final SharedPreferences prefs;
 
-    protected SharedPreferences associatedGroups;
+    private final SharedPreferences associatedGroups;
 
     public OrganizationCheckListAdapter(Context aContext, ArrayList<AbbreviatedOrganization> features) {
 

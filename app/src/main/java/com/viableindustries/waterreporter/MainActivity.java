@@ -55,38 +55,38 @@ public class MainActivity extends AppCompatActivity implements
         ReportActionDialog.ReportActionDialogCallback {
 
     @Bind(R.id.uploadProgressBar)
-    ProgressBar uploadProgressBar;
+    private ProgressBar uploadProgressBar;
 
     @Bind(R.id.uploadProgress)
-    LinearLayout uploadProgress;
+    private LinearLayout uploadProgress;
 
     @Bind(R.id.timeline)
-    SwipeRefreshLayout timeline;
+    private SwipeRefreshLayout timeline;
 
     @Bind(R.id.timeline_items)
-    ListView listView;
+    private ListView listView;
 
     static final int REGISTRATION_REQUEST = 1;
 
-    static final int LOGIN_REQUEST = 2;
+    private static final int LOGIN_REQUEST = 2;
 
     private SharedPreferences mSharedPreferences;
 
     private SharedPreferences mCoreProfile;
 
-    protected int user_id;
+    private int user_id;
 
-    protected RestAdapter restAdapter = ReportService.restAdapter;
+    private final RestAdapter restAdapter = ReportService.restAdapter;
 
-    protected ReportService service = restAdapter.create(ReportService.class);
+    private final ReportService service = restAdapter.create(ReportService.class);
 
-    protected TimelineAdapter timelineAdapter;
+    private TimelineAdapter timelineAdapter;
 
-    protected List<Report> reportCollection = new ArrayList<>();
+    private final List<Report> reportCollection = new ArrayList<>();
 
-    protected boolean connectionActive = false;
+    private final boolean connectionActive = false;
 
-    protected Response errorResponse;
+    private Response errorResponse;
 
     private static final int RC_ALL_PERMISSIONS = 100;
 
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements
     // An instance of the status broadcast receiver
     private UploadStateReceiver mUploadStateReceiver;
 
-    private String CLASS_TAG = "AuthUserActivity";
+    private final String CLASS_TAG = "AuthUserActivity";
 
     private void registerBroadcastReceiver() {
 
@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    protected void connectionStatus() {
+    private void connectionStatus() {
 
         final Context context = getApplicationContext();
 
@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    protected void fetchPosts(int limit, final int page, final boolean transition, final boolean refresh) {
+    void fetchPosts(int limit, final int page, final boolean transition, final boolean refresh) {
 
         final String mAccessToken = mSharedPreferences.getString("access_token", "");
 
@@ -331,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    protected void fetchUserGroups() {
+    private void fetchUserGroups() {
 
         final String mAccessToken = mSharedPreferences.getString("access_token", "");
 
@@ -400,7 +400,7 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    protected void verifyPermissions() {
+    private void verifyPermissions() {
 
         String[] permissions = {
                 Manifest.permission.ACCESS_FINE_LOCATION,
@@ -633,28 +633,6 @@ public class MainActivity extends AppCompatActivity implements
             LocalBroadcastManager.getInstance(this).unregisterReceiver(mUploadStateReceiver);
             mUploadStateReceiver = null;
         }
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        MenuInflater menuInflater = getMenuInflater();
-
-        menuInflater.inflate(R.menu.main, menu);
-
-        return super.onCreateOptionsMenu(menu);
-
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if (!connectionActive) return false;
-
-        int id = item.getItemId();
-
-        return true;
 
     }
 

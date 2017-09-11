@@ -11,16 +11,16 @@ import java.io.Serializable;
 public class Favorite implements Serializable {
 
     @SerializedName("geometry")
-    public GeometryResponse geometry;
+    private final GeometryResponse geometry;
 
     @SerializedName("id")
-    public int id;
+    private final int id;
 
     @SerializedName("type")
-    public String type;
+    private final String type;
 
     @SerializedName("properties")
-    public FavoriteProperties properties;
+    public final FavoriteProperties properties;
 
     public Favorite(GeometryResponse aGeometry, int aID, String aType, FavoriteProperties aProperties) {
         this.geometry = aGeometry;

@@ -11,7 +11,7 @@ import java.util.Map;
 public class NotificationPatchBody {
 
     @SerializedName("settings")
-    public Map<String, Boolean> settings;
+    public final Map<String, Boolean> settings;
 
     public NotificationPatchBody (Map<String, Boolean> notificationSettings) {
 

@@ -13,10 +13,10 @@ public class Organization implements Serializable {
     public GeometryResponse geometry;
 
     @SerializedName("id")
-    public int id;
+    public final int id;
 
     @SerializedName("properties")
-    public OrganizationProperties properties;
+    public final OrganizationProperties properties;
 
     @SerializedName("type")
     public String type;

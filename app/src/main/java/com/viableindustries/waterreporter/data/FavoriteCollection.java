@@ -11,10 +11,10 @@ import java.util.ArrayList;
 public class FavoriteCollection {
 
     @SerializedName("features")
-    private ArrayList<Favorite> features;
+    private final ArrayList<Favorite> features;
 
     @SerializedName("properties")
-    private CollectionProperties properties;
+    private final CollectionProperties properties;
 
     @SerializedName("type")
     private String type;

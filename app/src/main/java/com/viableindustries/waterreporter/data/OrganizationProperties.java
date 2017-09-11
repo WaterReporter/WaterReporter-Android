@@ -13,19 +13,19 @@ public class OrganizationProperties implements Serializable {
     public String created;
 
     @SerializedName("description")
-    public String description;
+    public final String description;
 
     @SerializedName("email")
     public String email;
 
     @SerializedName("id")
-    public int id;
+    public final int id;
 
     @SerializedName("name")
-    public String name;
+    public final String name;
 
     @SerializedName("picture")
-    public String picture;
+    public final String picture;
 
     @SerializedName("status")
     public String status;

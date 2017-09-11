@@ -26,9 +26,9 @@ import java.util.Locale;
 
 //import org.apache.commons.io.IOUtils;
 
-public class FileUtils {
+class FileUtils {
 
-    private static String TAG = FileUtils.class.getName();
+    private static final String TAG = FileUtils.class.getName();
 
     private static final String JPEG_FILE_PREFIX = "IMG_";
     private static final String JPEG_FILE_SUFFIX = ".jpg";

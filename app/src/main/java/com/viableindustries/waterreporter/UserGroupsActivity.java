@@ -28,9 +28,11 @@ import static java.lang.Boolean.TRUE;
 public class UserGroupsActivity extends AppCompatActivity {
 
     @Bind(R.id.search_box)
+    private final
     EditText listFilter;
 
     @Bind(R.id.list)
+    private final
     ListView listView;
 
     private boolean generic;

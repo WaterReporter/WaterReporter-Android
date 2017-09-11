@@ -13,10 +13,10 @@ public class Territory implements Serializable {
     public GeometryResponse geometry;
 
     @SerializedName("id")
-    public int id;
+    public final int id;
 
     @SerializedName("properties")
-    public TerritoryProperties properties;
+    public final TerritoryProperties properties;
 
     @SerializedName("type")
     public String type;

@@ -35,17 +35,17 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class UserSearchFragment extends Fragment {
 
-    Context context;
+    private Context context;
 
-    RestAdapter restAdapter;
+    private RestAdapter restAdapter;
 
-    UserService service;
+    private UserService service;
 
-    protected List<User> memberCollection = new ArrayList<>();
+    private final List<User> memberCollection = new ArrayList<>();
 
-    protected UserListAdapter listAdapter;
+    private UserListAdapter listAdapter;
 
-    ListView resultList;
+    private ListView resultList;
 
     // newInstance constructor for creating fragment with arguments
     public static UserSearchFragment newInstance() {
@@ -101,7 +101,7 @@ public class UserSearchFragment extends Fragment {
 
     }
 
-    protected void fetchUsers(int limit, int page, final String query) {
+    private void fetchUsers(int limit, int page, final String query) {
 
         final SharedPreferences prefs =
                 context.getSharedPreferences(context.getPackageName(), MODE_PRIVATE);

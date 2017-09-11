@@ -11,10 +11,10 @@ import java.util.ArrayList;
 public class HashtagCollection {
 
     @SerializedName("features")
-    private ArrayList<HashTag> features;
+    private final ArrayList<HashTag> features;
 
     @SerializedName("properties")
-    private CollectionProperties properties;
+    private final CollectionProperties properties;
 
     @SerializedName("type")
     private String type;

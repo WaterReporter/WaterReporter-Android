@@ -13,10 +13,10 @@ import java.util.ArrayList;
 public class Geometry implements Serializable {
 
     @SerializedName("coordinates")
-    public ArrayList<Double> coordinates;
+    public final ArrayList<Double> coordinates;
 
     @SerializedName("type")
-    public String type;
+    private final String type;
 
     public Geometry(ArrayList<Double> aList, String aType){
 

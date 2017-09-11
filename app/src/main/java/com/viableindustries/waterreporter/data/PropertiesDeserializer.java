@@ -11,7 +11,7 @@ import java.lang.reflect.Type;
 /**
  * Created by brendanmcintyre on 8/26/15.
  */
-public class PropertiesDeserializer<T> implements JsonDeserializer<T> {
+class PropertiesDeserializer<T> implements JsonDeserializer<T> {
 
         @Override
         public T deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)

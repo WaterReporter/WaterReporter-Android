@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class OpenGraphTask extends AsyncTask<String, Void, Document> {
 
-    public OpenGraphResponse delegate = null;
+    private OpenGraphResponse delegate = null;
 
     public OpenGraphTask(OpenGraphResponse openGraphResponse) {
         delegate = openGraphResponse;

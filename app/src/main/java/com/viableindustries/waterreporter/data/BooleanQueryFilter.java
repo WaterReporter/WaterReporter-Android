@@ -11,10 +11,11 @@ import java.util.List;
 public class BooleanQueryFilter {
 
     @SerializedName("or")
-    private List<QueryFilter> conditions;
+    private final List<Object> conditions;
 
-    public BooleanQueryFilter(List<QueryFilter> aConditions) {
+    public BooleanQueryFilter(List<Object> aConditions) {
 
         this.conditions = aConditions;
     }
+
 }

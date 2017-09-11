@@ -12,7 +12,7 @@ import java.util.List;
  * Created by brendanmcintyre on 4/25/17.
  */
 
-public class QueryBuilder {
+class QueryBuilder {
 
     public static String userQuery(boolean order, int userId, String[][] optionalFilters) {
 

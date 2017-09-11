@@ -9,7 +9,7 @@ import java.util.List;
  * Created by brendanmcintyre on 7/17/17.
  */
 
-public class HucGeometry implements Serializable {
+class HucGeometry implements Serializable {
 
     @SerializedName("coordinates")
     public List<List<List<Double>>> coordinates;

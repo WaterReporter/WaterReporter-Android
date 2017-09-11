@@ -6,7 +6,7 @@ import java.util.Calendar;
  * Created by Ryan Hamley on 10/28/14.
  * Some useful utility methods to use throughout the application
  */
-public class UtilityMethods {
+class UtilityMethods {
 
     private final Calendar c = Calendar.getInstance();
 

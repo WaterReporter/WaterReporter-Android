@@ -12,28 +12,28 @@ import java.util.Map;
 public class ReportPostBody implements Serializable {
 
     @SerializedName("geometry")
-    public GeometryResponse geometry;
+    private final GeometryResponse geometry;
 
     @SerializedName("groups")
-    public List<Map<String, Integer>> groups;
+    private final List<Map<String, Integer>> groups;
 
     @SerializedName("images")
     public List<Map<String, Integer>> images;
 
     @SerializedName("is_public")
-    public boolean is_public;
+    private final boolean is_public;
 
     @SerializedName("report_date")
-    public String report_date;
+    private final String report_date;
 
     @SerializedName("report_description")
-    public String description;
+    private final String description;
 
     @SerializedName("social")
-    public List<OpenGraphProperties> social;
+    private final List<OpenGraphProperties> social;
 
     @SerializedName("state")
-    public String state;
+    private final String state;
 
     public ReportPostBody (GeometryResponse aGeometry, List<Map<String, Integer>> aGroups, List<Map<String, Integer>> aImages, boolean aIsPublic, String aReportDate,
                            String aDescription, String aState, List<OpenGraphProperties> aOpenGraph) {

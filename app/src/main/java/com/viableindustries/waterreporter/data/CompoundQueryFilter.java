@@ -8,10 +8,10 @@ import java.util.List;
  * Created by brendanmcintyre on 4/10/17.
  */
 
-public class CompoundQueryFilter {
+class CompoundQueryFilter {
 
     @SerializedName("and")
-    private List<QueryFilter> conditions;
+    private final List<QueryFilter> conditions;
 
     public CompoundQueryFilter(List<QueryFilter> aConditions) {
 

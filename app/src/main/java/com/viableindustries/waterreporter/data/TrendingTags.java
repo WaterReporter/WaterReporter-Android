@@ -14,7 +14,7 @@ public class TrendingTags {
     private int num_results;
 
     @SerializedName("objects")
-    private ArrayList<HashTag> objects;
+    private final ArrayList<HashTag> objects;
 
     @SerializedName("page")
     private int page;

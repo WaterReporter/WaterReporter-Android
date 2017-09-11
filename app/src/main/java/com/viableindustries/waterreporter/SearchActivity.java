@@ -56,74 +56,74 @@ import retrofit.client.Response;
 public class SearchActivity extends FragmentActivity {
 
     @Bind(R.id.spinner)
-    ProgressBar progressBar;
+    private ProgressBar progressBar;
 
     @Bind(R.id.search_message_separator)
-    View searchMessageSeparator;
+    private View searchMessageSeparator;
 
     @Bind(R.id.search_message)
-    TextView searchMessage;
+    private TextView searchMessage;
 
     @Bind(R.id.search_box)
-    EditText searchBox;
+    private EditText searchBox;
 
     @Bind(R.id.clear_search)
-    ImageButton clearSearch;
+    private ImageButton clearSearch;
 
     @Bind(R.id.search_people)
-    RelativeLayout searchPeople;
+    private RelativeLayout searchPeople;
 
     @Bind(R.id.search_organizations)
-    RelativeLayout searchOrgs;
+    private RelativeLayout searchOrgs;
 
     @Bind(R.id.search_watersheds)
-    RelativeLayout searchWatersheds;
+    private RelativeLayout searchWatersheds;
 
     @Bind(R.id.search_tags)
-    RelativeLayout searchTags;
+    private RelativeLayout searchTags;
 
     @Bind(R.id.search_results)
-    ListView searchResults;
+    private ListView searchResults;
 
-    SharedPreferences prefs;
+    private SharedPreferences prefs;
 
     Intent intent;
 
-    Context context;
+    private Context context;
 
     RestAdapter restAdapter;
 
     OrganizationService service;
 
-    protected TerritoryListAdapter territoryListAdapter;
+    private TerritoryListAdapter territoryListAdapter;
 
-    protected OrganizationListAdapter orgListAdapter;
+    private OrganizationListAdapter orgListAdapter;
 
-    protected UserListAdapter userListAdapter;
+    private UserListAdapter userListAdapter;
 
-    protected TagListAdapter tagListAdapter;
+    private TagListAdapter tagListAdapter;
 
-    ArrayList<Organization> baseOrganizationList;
+    private ArrayList<Organization> baseOrganizationList;
 
-    ArrayList<Territory> baseTerritoryList;
+    private ArrayList<Territory> baseTerritoryList;
 
-    ArrayList<User> baseUserList;
+    private ArrayList<User> baseUserList;
 
-    ArrayList<HashTag> baseTagList;
+    private ArrayList<HashTag> baseTagList;
 
     private int activeTab = 0;
 
     private String query;
 
-    Handler handler;
+    private Handler handler;
 
-    Runnable userSearchRunnable;
+    private Runnable userSearchRunnable;
 
-    Runnable orgSearchRunnable;
+    private Runnable orgSearchRunnable;
 
-    Runnable territorySearchRunnable;
+    private Runnable territorySearchRunnable;
 
-    Runnable tagSearchRunnable;
+    private Runnable tagSearchRunnable;
 
     private Resources resources;
 
@@ -233,7 +233,7 @@ public class SearchActivity extends FragmentActivity {
 
     }
 
-    protected void displaySeparator(boolean show) {
+    private void displaySeparator(boolean show) {
 
         if (show) {
 
@@ -247,7 +247,7 @@ public class SearchActivity extends FragmentActivity {
 
     }
 
-    protected void displayMatchCount(int matchCount) {
+    private void displayMatchCount(int matchCount) {
 
         if (matchCount > 0) {
 
@@ -263,7 +263,7 @@ public class SearchActivity extends FragmentActivity {
 
     }
 
-    protected void displayProgressMessage(String category) {
+    private void displayProgressMessage(String category) {
 
         messageText = resources.getString(R.string.search_in_progress, category);
 
@@ -271,7 +271,7 @@ public class SearchActivity extends FragmentActivity {
 
     }
 
-    protected void fetchOrganizations(int limit, int page, final String query, final boolean filterResults, final boolean switchCollection) {
+    private void fetchOrganizations(int limit, int page, final String query, final boolean filterResults, final boolean switchCollection) {
 
         final String accessToken = prefs.getString("access_token", "");
 
@@ -301,7 +301,7 @@ public class SearchActivity extends FragmentActivity {
 
     }
 
-    protected void fetchTrendingGroups(int limit, int page, final boolean filterResults, final boolean switchCollection) {
+    private void fetchTrendingGroups(int limit, int page, final boolean filterResults, final boolean switchCollection) {
 
         progressBar.setVisibility(View.VISIBLE);
 
@@ -333,7 +333,7 @@ public class SearchActivity extends FragmentActivity {
 
     }
 
-    protected void fetchUsers(int limit, int page, final String query, final boolean filterResults, final boolean switchCollection) {
+    private void fetchUsers(int limit, int page, final String query, final boolean filterResults, final boolean switchCollection) {
 
         final String accessToken = prefs.getString("access_token", "");
 
@@ -363,7 +363,7 @@ public class SearchActivity extends FragmentActivity {
 
     }
 
-    protected void fetchTrendingPeople(int limit, int page, final boolean filterResults, final boolean switchCollection) {
+    private void fetchTrendingPeople(int limit, int page, final boolean filterResults, final boolean switchCollection) {
 
         progressBar.setVisibility(View.VISIBLE);
 
@@ -395,7 +395,7 @@ public class SearchActivity extends FragmentActivity {
 
     }
 
-    protected void fetchTerritories(int limit, int page, final String query, final boolean filterResults, final boolean switchCollection) {
+    private void fetchTerritories(int limit, int page, final String query, final boolean filterResults, final boolean switchCollection) {
 
         final String accessToken = prefs.getString("access_token", "");
 
@@ -425,7 +425,7 @@ public class SearchActivity extends FragmentActivity {
 
     }
 
-    protected void fetchTrendingTerritories(int limit, int page, final boolean filterResults, final boolean switchCollection) {
+    private void fetchTrendingTerritories(int limit, int page, final boolean filterResults, final boolean switchCollection) {
 
         progressBar.setVisibility(View.VISIBLE);
 
@@ -457,7 +457,7 @@ public class SearchActivity extends FragmentActivity {
 
     }
 
-    protected void fetchTags(int limit, int page, final String query, final boolean filterResults, final boolean switchCollection) {
+    private void fetchTags(int limit, int page, final String query, final boolean filterResults, final boolean switchCollection) {
 
         final String accessToken = prefs.getString("access_token", "");
 
@@ -487,7 +487,7 @@ public class SearchActivity extends FragmentActivity {
 
     }
 
-    protected void fetchTrendingTags(int limit, int page, final boolean filterResults, final boolean switchCollection) {
+    private void fetchTrendingTags(int limit, int page, final boolean filterResults, final boolean switchCollection) {
 
         progressBar.setVisibility(View.VISIBLE);
 
@@ -519,7 +519,7 @@ public class SearchActivity extends FragmentActivity {
 
     }
 
-    protected void onPeopleSuccess(ArrayList<User> users, boolean filterResults, boolean switchCollection) {
+    private void onPeopleSuccess(ArrayList<User> users, boolean filterResults, boolean switchCollection) {
 
         progressBar.setVisibility(View.GONE);
 
@@ -545,10 +545,7 @@ public class SearchActivity extends FragmentActivity {
 
             if (switchCollection || activeTab == 0) {
 
-                if (searchResults != null) {
-
-                    searchResults.setAdapter(userListAdapter);
-                }
+                searchResults.setAdapter(userListAdapter);
 
             }
 
@@ -560,7 +557,7 @@ public class SearchActivity extends FragmentActivity {
 
     }
 
-    protected void onGroupSuccess(ArrayList<Organization> organizations, boolean filterResults, boolean switchCollection) {
+    private void onGroupSuccess(ArrayList<Organization> organizations, boolean filterResults, boolean switchCollection) {
 
         progressBar.setVisibility(View.GONE);
 
@@ -586,10 +583,7 @@ public class SearchActivity extends FragmentActivity {
 
             if (switchCollection || activeTab == 1) {
 
-                if (searchResults != null) {
-
-                    searchResults.setAdapter(orgListAdapter);
-                }
+                searchResults.setAdapter(orgListAdapter);
 
             }
 
@@ -601,7 +595,7 @@ public class SearchActivity extends FragmentActivity {
 
     }
 
-    protected void onTagSuccess(ArrayList<HashTag> hashTags, boolean filterResults, boolean switchCollection) {
+    private void onTagSuccess(ArrayList<HashTag> hashTags, boolean filterResults, boolean switchCollection) {
 
         progressBar.setVisibility(View.GONE);
 
@@ -627,10 +621,7 @@ public class SearchActivity extends FragmentActivity {
 
             if (switchCollection || activeTab == 2) {
 
-                if (searchResults != null) {
-
-                    searchResults.setAdapter(tagListAdapter);
-                }
+                searchResults.setAdapter(tagListAdapter);
 
             }
 
@@ -642,7 +633,7 @@ public class SearchActivity extends FragmentActivity {
 
     }
 
-    protected void onTerritorySuccess(ArrayList<Territory> territories, boolean filterResults, boolean switchCollection) {
+    private void onTerritorySuccess(ArrayList<Territory> territories, boolean filterResults, boolean switchCollection) {
 
         progressBar.setVisibility(View.GONE);
 
@@ -668,11 +659,7 @@ public class SearchActivity extends FragmentActivity {
 
             if (switchCollection || activeTab == 3) {
 
-                if (searchResults != null) {
-
-                    searchResults.setAdapter(territoryListAdapter);
-
-                }
+                searchResults.setAdapter(territoryListAdapter);
 
             }
 
@@ -684,7 +671,7 @@ public class SearchActivity extends FragmentActivity {
 
     }
 
-    protected void onRequestError(RetrofitError error) {
+    private void onRequestError(RetrofitError error) {
 
         progressBar.setVisibility(View.GONE);
 

@@ -34,7 +34,7 @@ import retrofit.client.Response;
  * Created by brendanmcintyre on 10/5/16.
  */
 
-public class GroupActionListAdapter extends ArrayAdapter<Organization> implements Filterable {
+class GroupActionListAdapter extends ArrayAdapter<Organization> implements Filterable {
 
     private final Context mContext;
 
@@ -42,19 +42,19 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
     protected int id;
 
-    private ArrayList<Organization> sourceList;
+    private final ArrayList<Organization> sourceList;
 
     private ArrayList<Organization> filteredList;
 
     private GroupActionListAdapter.OrganizationFilter mFilter;
 
-    protected SharedPreferences prefs;
+    private final SharedPreferences prefs;
 
-    protected SharedPreferences groupPrefs;
+    private final SharedPreferences groupPrefs;
 
     private String[] userGroups;
 
-    private boolean showLeaveButton;
+    private final boolean showLeaveButton;
 
     public GroupActionListAdapter(Context aContext, ArrayList<Organization> features, boolean aShowLeaveButton) {
 

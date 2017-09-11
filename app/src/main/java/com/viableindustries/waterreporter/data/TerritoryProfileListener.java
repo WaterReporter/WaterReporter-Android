@@ -13,9 +13,9 @@ import com.viableindustries.waterreporter.TerritoryActivity;
 
 public class TerritoryProfileListener implements View.OnClickListener {
 
-    private Context mContext;
+    private final Context mContext;
 
-    private Territory territory;
+    private final Territory territory;
 
     public TerritoryProfileListener(Context aContext, @Nullable Territory territory) {
         this.mContext = aContext;

@@ -74,62 +74,67 @@ import static java.lang.Boolean.TRUE;
 
 public class TerritoryActivity extends AppCompatActivity implements TimelineFilterDialog.TimelineFilterDialogCallback {
 
-    FlexboxLayout profileMeta;
+    private FlexboxLayout profileMeta;
 
-    LinearLayout profileStats;
+    private LinearLayout profileStats;
 
-    FlexboxLayout fblPostCount;
+    private FlexboxLayout fblPostCount;
 
-    TextView postCountLabel;
+    private TextView postCountLabel;
 
     FlexboxLayout fblActionCount;
 
-    TextView actionCountLabel;
+    private TextView actionCountLabel;
 
-    FlexboxLayout fblGroupCount;
+    private FlexboxLayout fblGroupCount;
 
-    TextView groupCountLabel;
+    private TextView groupCountLabel;
 
-    TextView territoryName;
+    private TextView territoryName;
 
-    TextView territoryStates;
+    private TextView territoryStates;
 
-    LinearLayout promptBlock;
+    private LinearLayout promptBlock;
 
-    TextView promptMessage;
+    private TextView promptMessage;
 
-    Button startPostButton;
+    private Button startPostButton;
 
-    FlexboxLayout fblFilterGroup;
+    private FlexboxLayout fblFilterGroup;
 
-    TextView tvFilterCategory;
+    private TextView tvFilterCategory;
 
     @Bind(R.id.customActionBar)
+    private final
     LinearLayout customActionBar;
 
     @Bind(R.id.actionBarTitle)
+    private final
     TextView actionBarTitle;
 
     @Bind(R.id.actionBarSubtitle)
+    private final
     TextView actionBarSubtitle;
 
     @Bind(R.id.backArrow)
+    private final
     RelativeLayout backArrow;
 
     //    @Bind(R.id.mapview)
-    MapView mapView;
+    private MapView mapView;
 
     private MapboxMap mMapboxMap;
 
     @Bind(R.id.timeline_items)
+    private final
     ListView timeLine;
 
 //    @Bind(R.id.accessMap)
-    FloatingActionButton accessMap;
+private FloatingActionButton accessMap;
 
-    protected TimelineAdapter timelineAdapter;
+    private TimelineAdapter timelineAdapter;
 
-    protected List<Report> reportCollection = new ArrayList<>();
+    private final List<Report> reportCollection = new ArrayList<>();
 
     private String territoryNameText;
 
@@ -363,7 +368,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
     }
 
-    protected void generateQueries() {
+    private void generateQueries() {
 
         // Count reports with actions
 
@@ -391,7 +396,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
     }
 
-    protected void renderMap(final MapView mapView) {
+    private void renderMap(final MapView mapView) {
 
         Runnable r = new Runnable() {
             @Override
@@ -496,7 +501,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
     }
 
-    protected void setReportCountState(int count) {
+    private void setReportCountState(int count) {
 
         if (promptBlock != null) {
 
@@ -518,7 +523,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
     }
 
-    protected void addListViewHeader() {
+    private void addListViewHeader() {
 
         LayoutInflater inflater = getLayoutInflater();
 
@@ -631,7 +636,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
     }
 
-    protected void fetchOrganizations(int limit, int page, final String query) {
+    private void fetchOrganizations(int limit, int page, final String query) {
 
         final String accessToken = prefs.getString("access_token", "");
 
@@ -902,7 +907,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
     }
 
-    protected void setStatusBarTranslucent(boolean makeTranslucent) {
+    private void setStatusBarTranslucent(boolean makeTranslucent) {
         if (makeTranslucent) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         } else {

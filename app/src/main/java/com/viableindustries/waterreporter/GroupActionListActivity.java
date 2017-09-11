@@ -36,20 +36,24 @@ import retrofit.client.Response;
 public class GroupActionListActivity extends AppCompatActivity {
 
     @Bind(R.id.organizationListContainer)
+    private final
     SwipeRefreshLayout organizationListContainer;
 
     @Bind(R.id.skipAhead)
+    private final
     ImageButton skipAhead;
 
     @Bind(R.id.search_box)
+    private final
     EditText listFilter;
 
     @Bind(R.id.organizationList)
+    private final
     ListView listView;
 
-    ArrayList<Organization> organizations;
+    private ArrayList<Organization> organizations;
 
-    GroupActionListAdapter adapter;
+    private GroupActionListAdapter adapter;
 
     private boolean isRegistrationFlow;
 

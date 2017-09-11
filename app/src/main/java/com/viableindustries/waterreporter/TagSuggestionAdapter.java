@@ -22,7 +22,7 @@ import java.util.List;
  * Created by brendanmcintyre on 4/24/17.
  */
 
-public class TagSuggestionAdapter extends ArrayAdapter<HashTag> {
+class TagSuggestionAdapter extends ArrayAdapter<HashTag> {
 
     private final Context mContext;
 
@@ -30,7 +30,7 @@ public class TagSuggestionAdapter extends ArrayAdapter<HashTag> {
 
     protected int id;
 
-    private List<HashTag> sourceList;
+    private final List<HashTag> sourceList;
 
     public TagSuggestionAdapter(Context aContext, List<HashTag> features) {
 

@@ -11,10 +11,10 @@ import java.util.ArrayList;
 public class UserCollection {
 
     @SerializedName("features")
-    private ArrayList<User> features;
+    private final ArrayList<User> features;
 
     @SerializedName("properties")
-    private CollectionProperties properties;
+    private final CollectionProperties properties;
 
     @SerializedName("type")
     private String type;

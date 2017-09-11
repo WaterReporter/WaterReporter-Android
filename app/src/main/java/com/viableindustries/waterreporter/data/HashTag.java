@@ -19,6 +19,6 @@ public class HashTag implements Serializable {
     public String type;
 
     @SerializedName("properties")
-    public HashTagProperties properties;
+    public final HashTagProperties properties;
 
 }

@@ -99,51 +99,61 @@ public class CommentActivity extends AppCompatActivity implements
         EasyPermissions.PermissionCallbacks {
 
     @Bind(R.id.commentListContainer)
+    private final
     SwipeRefreshLayout commentListContainer;
 
     @Bind(R.id.commentList)
+    private final
     ListView commentList;
 
     @Bind(R.id.comment_component)
     LinearLayout commentComponent;
 
     @Bind(R.id.camera_button_container)
+    private final
     RelativeLayout cameraButtonContainer;
 
     @Bind(R.id.send_button_container)
     RelativeLayout sendButtonContainer;
 
     @Bind(R.id.add_comment_image)
+    private final
     ImageView addImageIcon;
 
     @Bind(R.id.send)
+    private final
     ImageView sendComment;
 
     @Bind(R.id.comment_box)
     RelativeLayout commentBox;
 
     @Bind(R.id.comment_input)
+    private final
     EditText commentInput;
 
     @Bind(R.id.comment_image_preview)
+    private final
     ImageView mImageView;
 
     @Bind(R.id.suggestion_separator)
+    private final
     View suggestionSeparator;
 
     @Bind(R.id.tag_component)
+    private final
     HorizontalScrollView tagComponent;
 
     @Bind(R.id.tag_results)
+    private final
     LinearLayout tagResults;
 
     private Report report;
 
     private String body;
 
-    protected CommentAdapter commentAdapter;
+    private CommentAdapter commentAdapter;
 
-    protected List<Comment> commentCollectionList = new ArrayList<>();
+    private List<Comment> commentCollectionList = new ArrayList<>();
 
     private boolean working;
 
@@ -155,7 +165,7 @@ public class CommentActivity extends AppCompatActivity implements
 
     private static final int ACTION_SELECT_PHOTO = 2;
 
-    protected boolean photoCaptured = false;
+    private boolean photoCaptured = false;
 
     final private String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
 
@@ -171,13 +181,13 @@ public class CommentActivity extends AppCompatActivity implements
 
     private Context mContext;
 
-    ArrayList<HashTag> baseTagList;
+    private ArrayList<HashTag> baseTagList;
 
-    Handler handler;
+    private Handler handler;
 
-    Runnable tagSearchRunnable;
+    private Runnable tagSearchRunnable;
 
-    protected TagSuggestionAdapter tagSuggestionAdapter;
+    private TagSuggestionAdapter tagSuggestionAdapter;
 
     private String query;
 
@@ -314,7 +324,7 @@ public class CommentActivity extends AppCompatActivity implements
 
     }
 
-    protected void fetchTags(int limit, int page, final String query) {
+    private void fetchTags(int limit, int page, final String query) {
 
         final String accessToken = prefs.getString("access_token", "");
 
@@ -344,7 +354,7 @@ public class CommentActivity extends AppCompatActivity implements
 
     }
 
-    protected void onTagSuccess(ArrayList<HashTag> hashTags) {
+    private void onTagSuccess(ArrayList<HashTag> hashTags) {
 
         baseTagList.clear();
 
@@ -380,7 +390,7 @@ public class CommentActivity extends AppCompatActivity implements
 
     }
 
-    protected void onRequestError(RetrofitError error) {
+    private void onRequestError(RetrofitError error) {
 
         if (error == null) return;
 
@@ -495,7 +505,7 @@ public class CommentActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    protected void addListViewHeader(Report report) {
+    private void addListViewHeader(Report report) {
 
         Log.d("report", report.toString());
 
@@ -662,7 +672,7 @@ public class CommentActivity extends AppCompatActivity implements
 
     }
 
-    public void addPhoto() {
+    private void addPhoto() {
 
         showPhotoPickerDialog();
 
@@ -694,7 +704,7 @@ public class CommentActivity extends AppCompatActivity implements
 
     }
 
-    protected void onPostError(RetrofitError error) {
+    private void onPostError(RetrofitError error) {
 
         commentListContainer.setRefreshing(false);
 
@@ -887,7 +897,7 @@ public class CommentActivity extends AppCompatActivity implements
 
     }
 
-    public void presentPhotoActions() {
+    private void presentPhotoActions() {
 
         DialogFragment photoActions = new CommentPhotoDialog();
 
@@ -1178,7 +1188,7 @@ public class CommentActivity extends AppCompatActivity implements
 
     }
 
-    protected void showPhotoPickerDialog() {
+    private void showPhotoPickerDialog() {
 
         android.app.DialogFragment newFragment = new PhotoPickerDialogFragment();
 
@@ -1188,7 +1198,7 @@ public class CommentActivity extends AppCompatActivity implements
 
     }
 
-    protected void verifyPermissions() {
+    private void verifyPermissions() {
 
         String[] permissions = {
                 Manifest.permission.CAMERA,

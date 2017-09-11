@@ -32,23 +32,28 @@ import retrofit.client.Response;
 public class RegistrationActivity extends AppCompatActivity {
 
     @Bind(R.id.password)
+    private final
     EditText password_text;
 
     @Bind(R.id.email)
+    private final
     EditText email_text;
 
     @Bind(R.id.error_message)
+    private final
     LinearLayout error_message;
 
     @Bind(R.id.register)
+    private final
     Button registrationButton;
 
     @Bind(R.id.spinner)
+    private final
     ProgressBar progressBar;
 
     static final int REGISTRATION_REQUEST = 1;
 
-    static final int LOGIN_REQUEST = 2;
+    private static final int LOGIN_REQUEST = 2;
 
     static final int PROFILE_REQUEST = 1;
 

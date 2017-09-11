@@ -22,14 +22,14 @@ public class OpenGraphProperties implements Serializable {
     //
 
     @SerializedName("og_description")
-    public String description;
+    public final String description;
 
     //
     // Image
     //
 
     @SerializedName("og_image_url")
-    public String imageUrl;
+    public final String imageUrl;
 
     @SerializedName("og_image_secure_url")
     public String imageSecureUrl;
@@ -55,7 +55,7 @@ public class OpenGraphProperties implements Serializable {
     //
 
     @SerializedName("og_title")
-    public String openGraphTitle;
+    public final String openGraphTitle;
 
     //
     // Type
@@ -69,7 +69,7 @@ public class OpenGraphProperties implements Serializable {
     //
 
     @SerializedName("og_url")
-    public String url;
+    public final String url;
 
     //
     // Relations
@@ -78,7 +78,7 @@ public class OpenGraphProperties implements Serializable {
     // Owner relation ID
 
     @SerializedName("owner_id")
-    public int ownerId;
+    private final int ownerId;
 
     public OpenGraphProperties(String aImageUrl, String aDescription, String aTitle, String aUrl, int aOwnerId) {
 

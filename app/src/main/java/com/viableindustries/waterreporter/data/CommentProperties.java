@@ -11,22 +11,22 @@ import java.util.List;
 public class CommentProperties implements Serializable {
 
     @SerializedName("body")
-    public String body;
+    public final String body;
 
     @SerializedName("created")
-    public String created;
+    public final String created;
 
     @SerializedName("id")
     public int id;
 
     @SerializedName("images")
-    public List<ReportPhoto> images;
+    public final List<ReportPhoto> images;
 
     @SerializedName("owner_id")
     public int owner_id;
 
     @SerializedName("owner")
-    public User owner;
+    public final User owner;
 
     @SerializedName("post_id")
     public int post_id;
@@ -35,7 +35,7 @@ public class CommentProperties implements Serializable {
     public Report report;
 
     @SerializedName("post_state")
-    public String post_state;
+    public final String post_state;
 
     @SerializedName("status")
     public String status;

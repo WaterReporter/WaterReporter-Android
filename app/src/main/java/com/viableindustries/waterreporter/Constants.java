@@ -23,7 +23,7 @@ package com.viableindustries.waterreporter;
 /**
  * Constants used by multiple classes in this package
  */
-public final class Constants {
+final class Constants {
 
     // Defines a custom Intent action
     public static final String BROADCAST_ACTION = "com.viableindustries.waterreporter.BROADCAST";

@@ -10,10 +10,10 @@ import java.util.Map;
 public class RegistrationResponse {
 
     @SerializedName("meta")
-    private Map<String, Integer> meta;
+    private final Map<String, Integer> meta;
 
     @SerializedName("response")
-    private Map<String, Map<String, Object>> response;
+    private final Map<String, Map<String, Object>> response;
 
     public String getAccessToken() {
 

@@ -4,7 +4,7 @@ package com.viableindustries.waterreporter.data;
  * Created by brendanmcintyre on 8/4/17.
  */
 
-public class UserProfileHeader {
+class UserProfileHeader {
 
     private String description;
 
@@ -22,7 +22,7 @@ public class UserProfileHeader {
         return description;
     }
 
-    public void setDescription(User user){
+    private void setDescription(User user){
 
         String s = "";
 
@@ -40,7 +40,7 @@ public class UserProfileHeader {
         return title;
     }
 
-    public void setTitle(User user){
+    private void setTitle(User user){
 
         String s = "";
 
@@ -64,7 +64,7 @@ public class UserProfileHeader {
         return name;
     }
     
-    public void setName(User user){
+    private void setName(User user){
 
         String s = "";
 
@@ -94,7 +94,7 @@ public class UserProfileHeader {
         return avatarUrl;
     }
     
-    public void setAvatarUrl(String s){
+    private void setAvatarUrl(String s){
         this.avatarUrl = s;
     }
 

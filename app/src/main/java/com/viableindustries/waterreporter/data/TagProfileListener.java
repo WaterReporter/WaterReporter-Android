@@ -10,11 +10,11 @@ import com.viableindustries.waterreporter.OrganizationProfileActivity;
  * Created by brendanmcintyre on 4/12/17.
  */
 
-public class TagProfileListener implements View.OnClickListener {
+class TagProfileListener implements View.OnClickListener {
 
-        private Context mContext;
+        private final Context mContext;
 
-        private HashTag hashTag;
+        private final HashTag hashTag;
 
         public TagProfileListener(Context aContext, HashTag hashTag) {
             this.mContext = aContext;

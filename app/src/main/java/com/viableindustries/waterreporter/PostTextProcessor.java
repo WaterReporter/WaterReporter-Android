@@ -8,7 +8,7 @@ import android.text.style.StyleSpan;
  * Created by brendanmcintyre on 4/12/17.
  */
 
-public class PostTextProcessor {
+class PostTextProcessor {
 
     public static SpannableStringBuilder process(String text) {
 

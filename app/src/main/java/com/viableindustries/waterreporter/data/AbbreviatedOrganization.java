@@ -9,10 +9,10 @@ import com.google.gson.annotations.SerializedName;
 public class AbbreviatedOrganization {
 
     @SerializedName("id")
-    public int id;
+    public final int id;
 
     @SerializedName("name")
-    public String name;
+    public final String name;
 
     public AbbreviatedOrganization (int aId, String aName) {
 

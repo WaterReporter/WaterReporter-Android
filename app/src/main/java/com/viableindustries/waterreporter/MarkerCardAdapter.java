@@ -22,17 +22,17 @@ import java.util.List;
 
 public class MarkerCardAdapter extends RecyclerView.Adapter<MarkerCardAdapter.ViewHolder> {
 
-    private List<Report> mDataset;
+    private final List<Report> mDataset;
 
-    private Context mContext;
+    private final Context mContext;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public CardView cardView;
-        public ImageView postImage;
+        public final CardView cardView;
+        public final ImageView postImage;
 
         public ViewHolder(CardView v) {
             super(v);

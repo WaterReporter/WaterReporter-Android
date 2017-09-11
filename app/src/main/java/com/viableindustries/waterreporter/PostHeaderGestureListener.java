@@ -8,7 +8,7 @@ import android.view.MotionEvent;
  * Created by brendanmcintyre on 8/30/17.
  */
 
-public class PostHeaderGestureListener extends GestureDetector.SimpleOnGestureListener {
+class PostHeaderGestureListener extends GestureDetector.SimpleOnGestureListener {
 
     private static final String DEBUG_TAG = "Gestures";
 

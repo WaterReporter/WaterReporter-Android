@@ -21,7 +21,7 @@ public class PhotoPickerDialogFragment extends DialogFragment {
     }
 
     //Create a listener that attaches to the calling activity
-    PhotoPickerDialogListener listener;
+    private PhotoPickerDialogListener listener;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

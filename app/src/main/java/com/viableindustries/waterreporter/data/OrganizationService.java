@@ -11,14 +11,14 @@ import retrofit.http.Query;
  */
 public interface OrganizationService {
 
-    String ENDPOINT = "https://api.waterreporter.org/v2";
+    String ENDPOINT = "https://api.waterreporter.org/v2/data";
 
     RestAdapter restAdapter = new RestAdapter.Builder()
             .setLogLevel(RestAdapter.LogLevel.BASIC)
             .setEndpoint(ENDPOINT)
             .build();
 
-    @GET("/data/organization")
+    @GET("/organization")
     void getMany(@Header("Authorization") String authorization,
                  @Header("Content-Type") String contentType,
                  @Query("page") int page,
@@ -26,7 +26,7 @@ public interface OrganizationService {
                  @Query("q") String q,
                  CancelableCallback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
 
-    @GET("/data/organization")
+    @GET("/organization")
     void getOrganizations(@Header("Authorization") String authorization,
                           @Header("Content-Type") String contentType,
                           @Query("page") int page,
@@ -34,14 +34,14 @@ public interface OrganizationService {
                           @Query("q") String q,
                           CancelableCallback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
 
-    @GET("/data/organization/{organization}")
+    @GET("/organization/{organization}")
     void getOrganization(@Header("Authorization") String authorization,
                          @Header("Content-Type") String contentType,
                          @Path("organization") int organizationId,
                          @Query("q") String q,
                          CancelableCallback<Organization> organizationCallback);
 
-    @GET("/data/organization/{organization}/reports")
+    @GET("/organization/{organization}/reports")
     void getOrganizationReports(@Header("Authorization") String authorization,
                                 @Header("Content-Type") String contentType,
                                 @Path("organization") int organizationId,
@@ -50,7 +50,7 @@ public interface OrganizationService {
                                 @Query("q") String q,
                                 CancelableCallback<FeatureCollection> featureCollectionCallback);
 
-    @GET("/data/organization/{organization}/users")
+    @GET("/organization/{organization}/users")
     void getOrganizationMembers(@Header("Authorization") String authorization,
                                 @Header("Content-Type") String contentType,
                                 @Path("organization") int organizationId,

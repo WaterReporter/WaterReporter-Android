@@ -44,46 +44,48 @@ import static java.lang.Boolean.TRUE;
 
 public class TagProfileActivity extends AppCompatActivity {
 
-    TextView tagNameView;
+    private TextView tagNameView;
 
-    LinearLayout profileStats;
+    private LinearLayout profileStats;
 
-    LinearLayout reportStat;
+    private LinearLayout reportStat;
 
-    TextView reportCounter;
+    private TextView reportCounter;
 
-    TextView reportCountLabel;
+    private TextView reportCountLabel;
 
-    LinearLayout actionStat;
+    private LinearLayout actionStat;
 
-    TextView actionCounter;
+    private TextView actionCounter;
 
-    TextView actionCountLabel;
+    private TextView actionCountLabel;
 
-    LinearLayout groupStat;
+    private LinearLayout groupStat;
 
-    TextView groupCounter;
+    private TextView groupCounter;
 
-    TextView groupCountLabel;
+    private TextView groupCountLabel;
 
-    LinearLayout promptBlock;
+    private LinearLayout promptBlock;
 
-    TextView promptMessage;
+    private TextView promptMessage;
 
-    Button startPostButton;
+    private Button startPostButton;
 
     @Bind(R.id.timeline)
+    private final
     SwipeRefreshLayout timeLineContainer;
 
     @Bind(R.id.timeline_items)
+    private final
     ListView timeLine;
 
     @Bind(R.id.listTabs)
     FrameLayout listTabs;
 
-    protected TimelineAdapter timelineAdapter;
+    private TimelineAdapter timelineAdapter;
 
-    protected List<Report> reportCollection = new ArrayList<>();
+    private final List<Report> reportCollection = new ArrayList<>();
 
     private String complexQuery;
 
@@ -207,7 +209,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
     }
 
-    protected void addListViewHeader() {
+    private void addListViewHeader() {
 
         LayoutInflater inflater = getLayoutInflater();
 
@@ -326,7 +328,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
     }
 
-    protected void setReportCountState(int count) {
+    private void setReportCountState(int count) {
 
         reportCounter.setText(String.valueOf(reportCount));
         reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
@@ -345,7 +347,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
     }
 
-    protected void countReports(String query, final String filterName) {
+    private void countReports(String query, final String filterName) {
 
         final String accessToken = prefs.getString("access_token", "");
 
@@ -475,7 +477,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
     }
 
-    protected void fetchOrganizations(int limit, int page, final String query) {
+    private void fetchOrganizations(int limit, int page, final String query) {
 
         final String accessToken = prefs.getString("access_token", "");
 

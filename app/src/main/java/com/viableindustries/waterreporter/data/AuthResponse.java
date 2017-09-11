@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class AuthResponse implements Serializable {
 
     @SerializedName("access_token")
-    private String access_token;
+    private final String access_token;
 
     @SerializedName("expires_in")
     private String expires_in;
