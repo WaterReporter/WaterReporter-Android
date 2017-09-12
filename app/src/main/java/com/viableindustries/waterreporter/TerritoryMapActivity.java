@@ -36,21 +36,23 @@ import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-import com.viableindustries.waterreporter.data.CancelableCallback;
-import com.viableindustries.waterreporter.data.FeatureCollection;
-import com.viableindustries.waterreporter.data.Geometry;
-import com.viableindustries.waterreporter.data.HucStates;
-import com.viableindustries.waterreporter.data.MappedReportsHolder;
-import com.viableindustries.waterreporter.data.QueryFilter;
-import com.viableindustries.waterreporter.data.QueryParams;
-import com.viableindustries.waterreporter.data.QuerySort;
-import com.viableindustries.waterreporter.data.Report;
-import com.viableindustries.waterreporter.data.ReportHolder;
-import com.viableindustries.waterreporter.data.ReportService;
-import com.viableindustries.waterreporter.data.Territory;
-import com.viableindustries.waterreporter.data.TerritoryHolder;
-import com.viableindustries.waterreporter.mbox.CustomMarkerView;
-import com.viableindustries.waterreporter.mbox.CustomMarkerViewOptions;
+import com.viableindustries.waterreporter.constants.HucStates;
+import com.viableindustries.waterreporter.data.interfaces.api.post.ReportService;
+import com.viableindustries.waterreporter.data.objects.FeatureCollection;
+import com.viableindustries.waterreporter.data.objects.Geometry;
+import com.viableindustries.waterreporter.data.objects.post.Report;
+import com.viableindustries.waterreporter.data.objects.post.ReportHolder;
+import com.viableindustries.waterreporter.data.objects.query.QueryFilter;
+import com.viableindustries.waterreporter.data.objects.query.QueryParams;
+import com.viableindustries.waterreporter.data.objects.query.QuerySort;
+import com.viableindustries.waterreporter.data.objects.territory.Territory;
+import com.viableindustries.waterreporter.data.objects.territory.TerritoryHolder;
+import com.viableindustries.waterreporter.map_box.CustomMarkerView;
+import com.viableindustries.waterreporter.map_box.CustomMarkerViewOptions;
+import com.viableindustries.waterreporter.map_box.MappedReportsHolder;
+import com.viableindustries.waterreporter.user_interface.adapters.MarkerCardAdapter;
+import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
+import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,42 +68,29 @@ public class TerritoryMapActivity extends AppCompatActivity {
     private final List<LatLng> latLngs = new ArrayList<>();
 
     @Bind(R.id.customActionBar)
-    private final
     LinearLayout customActionBar;
 
     @Bind(R.id.actionBarTitle)
-    private final
     TextView actionBarTitle;
 
     @Bind(R.id.actionBarSubtitle)
-    private final
     TextView actionBarSubtitle;
 
     @Bind(R.id.backArrow)
-    private final
     RelativeLayout backArrow;
 
     @Bind(R.id.mapview)
-    private final
     MapView mapView;
 
     @Bind(R.id.postList)
-    private final
     RecyclerView postList;
 
     @Bind(R.id.locationIconView)
-    private final
     ImageView locationIcon;
 
     private MapboxMap mMapboxMap;
 
     private MappedReportsHolder mappedReportsHolder;
-
-    protected TimelineAdapter timelineAdapter;
-
-    protected List<Report> reportCollection = new ArrayList<>();
-
-    private String territoryNameText;
 
     private Context mContext;
 
@@ -111,9 +100,6 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     private SharedPreferences prefs;
 
-    private Resources resources;
-
-    private RecyclerView.Adapter mAdapter;
     private LinearLayoutManager mLayoutManager;
 
     @Override
@@ -138,7 +124,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
         mContext = this;
 
-        resources = getResources();
+        Resources resources = getResources();
 
         mappedReportsHolder = new MappedReportsHolder();
 
@@ -235,7 +221,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     private void setActionBarTitle() {
 
-        territoryNameText = AttributeTransformUtility.parseWatershedName(mTerritory, false);
+        String territoryNameText = AttributeTransformUtility.parseWatershedName(mTerritory, false);
 
         actionBarTitle.setText(territoryNameText);
 
@@ -266,14 +252,14 @@ public class TerritoryMapActivity extends AppCompatActivity {
     private void setWatershedComponents() {
 
         // Load other posts in the watershed
-        fetchPosts(50, 1, buildQuery(true, "report", null), false);
+        fetchPosts(50, 1, buildQuery(true, null));
 
         // Set action bar title
         setActionBarTitle();
 
     }
 
-    private String buildQuery(boolean order, String collection, String[][] optionalFilters) {
+    private String buildQuery(boolean order, String[][] optionalFilters) {
 
         List<QuerySort> queryOrder = null;
 
@@ -317,7 +303,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     }
 
-    private void fetchPosts(int limit, final int page, String query, final boolean refresh) {
+    private void fetchPosts(int limit, final int page, String query) {
 
         final String accessToken = prefs.getString("access_token", "");
 
@@ -383,7 +369,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
     private void onFetchSuccess(List<Report> posts) {
 
         // specify an adapter (see also next example)
-        mAdapter = new MarkerCardAdapter(this, posts);
+        RecyclerView.Adapter mAdapter = new MarkerCardAdapter(this, posts);
 
         try {
 

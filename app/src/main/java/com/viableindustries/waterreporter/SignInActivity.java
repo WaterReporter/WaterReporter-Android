@@ -10,14 +10,14 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.viableindustries.waterreporter.data.AuthResponse;
-import com.viableindustries.waterreporter.data.CancelableCallback;
-import com.viableindustries.waterreporter.data.LogInBody;
-import com.viableindustries.waterreporter.data.Organization;
-import com.viableindustries.waterreporter.data.SecurityService;
-import com.viableindustries.waterreporter.data.User;
-import com.viableindustries.waterreporter.data.UserBasicResponse;
-import com.viableindustries.waterreporter.data.UserService;
+import com.viableindustries.waterreporter.data.interfaces.security.SecurityService;
+import com.viableindustries.waterreporter.data.interfaces.api.user.UserService;
+import com.viableindustries.waterreporter.data.objects.auth.AuthResponse;
+import com.viableindustries.waterreporter.data.objects.auth.LogInBody;
+import com.viableindustries.waterreporter.data.objects.organization.Organization;
+import com.viableindustries.waterreporter.data.objects.user.User;
+import com.viableindustries.waterreporter.data.objects.user.UserBasicResponse;
+import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -36,23 +36,18 @@ import retrofit.client.Response;
 public class SignInActivity extends AppCompatActivity {
 
     @Bind(R.id.password)
-    private final
     EditText password_text;
 
     @Bind(R.id.email)
-    private final
     EditText email_text;
 
     @Bind(R.id.error_message)
-    private final
     LinearLayout error_message;
 
     @Bind(R.id.log_in)
-    private final
     Button logInButton;
 
     @Bind(R.id.spinner)
-    private final
     ProgressBar progressBar;
 
     private static final int REGISTRATION_REQUEST = 1;
@@ -65,8 +60,6 @@ public class SignInActivity extends AppCompatActivity {
 
     private Pattern emailPattern;
 
-    private SharedPreferences prefs;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -76,7 +69,7 @@ public class SignInActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         emailPattern = android.util.Patterns.EMAIL_ADDRESS;
 

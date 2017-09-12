@@ -19,17 +19,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.viableindustries.waterreporter.data.CancelableCallback;
-import com.viableindustries.waterreporter.data.FeatureCollection;
-import com.viableindustries.waterreporter.data.GroupListHolder;
-import com.viableindustries.waterreporter.data.Organization;
-import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
-import com.viableindustries.waterreporter.data.OrganizationService;
-import com.viableindustries.waterreporter.data.QueryFilter;
-import com.viableindustries.waterreporter.data.QueryParams;
-import com.viableindustries.waterreporter.data.QuerySort;
-import com.viableindustries.waterreporter.data.Report;
-import com.viableindustries.waterreporter.data.ReportService;
+import com.viableindustries.waterreporter.data.interfaces.api.organization.OrganizationService;
+import com.viableindustries.waterreporter.data.interfaces.api.post.ReportService;
+import com.viableindustries.waterreporter.data.objects.FeatureCollection;
+import com.viableindustries.waterreporter.data.objects.organization.GroupListHolder;
+import com.viableindustries.waterreporter.data.objects.organization.Organization;
+import com.viableindustries.waterreporter.data.objects.organization.OrganizationFeatureCollection;
+import com.viableindustries.waterreporter.data.objects.post.Report;
+import com.viableindustries.waterreporter.data.objects.query.QueryFilter;
+import com.viableindustries.waterreporter.data.objects.query.QueryParams;
+import com.viableindustries.waterreporter.data.objects.query.QuerySort;
+import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
+import com.viableindustries.waterreporter.utilities.CancelableCallback;
+import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,8 +47,6 @@ import static java.lang.Boolean.TRUE;
 public class TagProfileActivity extends AppCompatActivity {
 
     private TextView tagNameView;
-
-    private LinearLayout profileStats;
 
     private LinearLayout reportStat;
 
@@ -70,14 +70,10 @@ public class TagProfileActivity extends AppCompatActivity {
 
     private TextView promptMessage;
 
-    private Button startPostButton;
-
     @Bind(R.id.timeline)
-    private final
     SwipeRefreshLayout timeLineContainer;
 
     @Bind(R.id.timeline_items)
-    private final
     ListView timeLine;
 
     @Bind(R.id.listTabs)
@@ -145,7 +141,7 @@ public class TagProfileActivity extends AppCompatActivity {
                     @Override
                     public void onRefresh() {
                         Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
-                        // This method performs the actual data-refresh operation.
+                        // This method performs the actual api-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
 
                         countReports(complexQuery, "state");
@@ -190,7 +186,7 @@ public class TagProfileActivity extends AppCompatActivity {
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
 
-                // Triggered only when new data needs to be appended to the list
+                // Triggered only when new api needs to be appended to the list
 
                 if (actionFocus) {
 
@@ -202,7 +198,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
                 }
 
-                return true; // ONLY if more data is actually being loaded; false otherwise.
+                return true; // ONLY if more api is actually being loaded; false otherwise.
 
             }
         };
@@ -217,7 +213,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
         promptBlock = (LinearLayout) header.findViewById(R.id.promptBlock);
         promptMessage = (TextView) header.findViewById(R.id.prompt);
-        startPostButton = (Button) header.findViewById(R.id.startPost);
+        Button startPostButton = (Button) header.findViewById(R.id.startPost);
 
         // Add text and click listener to startPostButton
 
@@ -251,7 +247,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
         groupStat = (LinearLayout) header.findViewById(R.id.groupStat);
 
-        profileStats = (LinearLayout) header.findViewById(R.id.profileStats);
+        LinearLayout profileStats = (LinearLayout) header.findViewById(R.id.profileStats);
 
         // Attach click listeners to stat elements
 

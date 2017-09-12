@@ -24,21 +24,24 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
-import com.viableindustries.waterreporter.data.CancelableCallback;
-import com.viableindustries.waterreporter.data.FeatureCollection;
-import com.viableindustries.waterreporter.data.Organization;
-import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
-import com.viableindustries.waterreporter.data.QueryFilter;
-import com.viableindustries.waterreporter.data.QueryParams;
-import com.viableindustries.waterreporter.data.QuerySort;
-import com.viableindustries.waterreporter.data.Report;
-import com.viableindustries.waterreporter.data.ReportHolder;
-import com.viableindustries.waterreporter.data.ReportService;
-import com.viableindustries.waterreporter.data.User;
-import com.viableindustries.waterreporter.data.UserGroupList;
-import com.viableindustries.waterreporter.data.UserHolder;
-import com.viableindustries.waterreporter.data.UserService;
-import com.viableindustries.waterreporter.dialogs.ReportActionDialogListener;
+import com.viableindustries.waterreporter.data.interfaces.api.post.ReportService;
+import com.viableindustries.waterreporter.data.interfaces.api.user.UserService;
+import com.viableindustries.waterreporter.data.objects.FeatureCollection;
+import com.viableindustries.waterreporter.data.objects.organization.Organization;
+import com.viableindustries.waterreporter.data.objects.organization.OrganizationFeatureCollection;
+import com.viableindustries.waterreporter.data.objects.post.Report;
+import com.viableindustries.waterreporter.data.objects.post.ReportHolder;
+import com.viableindustries.waterreporter.data.objects.query.QueryFilter;
+import com.viableindustries.waterreporter.data.objects.query.QueryParams;
+import com.viableindustries.waterreporter.data.objects.query.QuerySort;
+import com.viableindustries.waterreporter.data.objects.user.User;
+import com.viableindustries.waterreporter.data.objects.user.UserGroupList;
+import com.viableindustries.waterreporter.data.objects.user.UserHolder;
+import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
+import com.viableindustries.waterreporter.user_interface.dialogs.ReportActionDialogListener;
+import com.viableindustries.waterreporter.utilities.CancelableCallback;
+import com.viableindustries.waterreporter.utilities.CircleTransform;
+import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,8 +55,6 @@ import retrofit.client.Response;
 import static java.lang.Boolean.TRUE;
 
 public class UserProfileActivity extends AppCompatActivity implements ReportActionDialogListener {
-
-    private TextView userTitle;
 
     private TextView userDescription;
 
@@ -77,16 +78,10 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     private LinearLayout groupStat;
 
-    private LinearLayout profileMeta;
-
-    private LinearLayout profileStats;
-
     @Bind(R.id.timeline)
-    private final
     SwipeRefreshLayout timeLineContainer;
 
     @Bind(R.id.timeline_items)
-    private final
     ListView timeLine;
 
     @Bind(R.id.listTabs)
@@ -102,16 +97,6 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     private final List<Report> reportCollection = new ArrayList<>();
 
-    private String userDescriptionText;
-
-    private String userTitleText;
-
-    private String userNameText;
-
-    private String userAvatarUrl;
-
-    private String userOrganization;
-
     private String complexQuery;
 
     private int userId;
@@ -125,8 +110,6 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
     private boolean hasGroups = false;
 
     private SharedPreferences prefs;
-
-    private SharedPreferences coreProfile;
 
     private User user;
 
@@ -147,7 +130,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+        SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
         Log.d("storedavatar", coreProfile.getString("picture", ""));
 
@@ -177,7 +160,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
                     public void onRefresh() {
                         Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
 
-                        // This method performs the actual data-refresh operation.
+                        // This method performs the actual api-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
 
                         countReports(complexQuery, "state");
@@ -220,7 +203,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
 
-                // Triggered only when new data needs to be appended to the list
+                // Triggered only when new api needs to be appended to the list
 
                 if (actionFocus) {
 
@@ -232,7 +215,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                 }
 
-                return true; // ONLY if more data is actually being loaded; false otherwise.
+                return true; // ONLY if more api is actually being loaded; false otherwise.
 
             }
         };
@@ -251,7 +234,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         TextView userName = (TextView) header.findViewById(R.id.userName);
 
-        userTitle = (TextView) header.findViewById(R.id.userTitle);
+        TextView userTitle = (TextView) header.findViewById(R.id.userTitle);
 
         userDescription = (TextView) header.findViewById(R.id.userDescription);
 
@@ -275,18 +258,18 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         groupStat = (LinearLayout) header.findViewById(R.id.groupStat);
 
-        profileMeta = (LinearLayout) header.findViewById(R.id.profileMeta);
+        LinearLayout profileMeta = (LinearLayout) header.findViewById(R.id.profileMeta);
 
-        profileStats = (LinearLayout) header.findViewById(R.id.profileStats);
+        LinearLayout profileStats = (LinearLayout) header.findViewById(R.id.profileStats);
 
-        userTitleText = user.properties.title;
-        userDescriptionText = user.properties.description;
-        userNameText = String.format("%s %s", user.properties.first_name, user.properties.last_name);
-        userOrganization = user.properties.organization_name;
+        String userTitleText = user.properties.title;
+        String userDescriptionText = user.properties.description;
+        String userNameText = String.format("%s %s", user.properties.first_name, user.properties.last_name);
+        String userOrganization = user.properties.organization_name;
 
         // Locate valid avatar field
 
-        userAvatarUrl = user.properties.picture;
+        String userAvatarUrl = user.properties.picture;
 
         Picasso.with(this)
                 .load(userAvatarUrl)

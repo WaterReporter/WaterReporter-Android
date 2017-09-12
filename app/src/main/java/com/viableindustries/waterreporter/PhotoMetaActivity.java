@@ -46,35 +46,42 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.squareup.picasso.Picasso;
-import com.viableindustries.waterreporter.data.AbbreviatedOrganization;
-import com.viableindustries.waterreporter.data.ApiDispatcher;
-import com.viableindustries.waterreporter.data.CacheManager;
-import com.viableindustries.waterreporter.data.CancelableCallback;
-import com.viableindustries.waterreporter.data.CursorPositionTracker;
-import com.viableindustries.waterreporter.data.DisplayDecimal;
-import com.viableindustries.waterreporter.data.Geometry;
-import com.viableindustries.waterreporter.data.GeometryResponse;
-import com.viableindustries.waterreporter.data.HashTag;
-import com.viableindustries.waterreporter.data.HashtagCollection;
-import com.viableindustries.waterreporter.data.ImageService;
-import com.viableindustries.waterreporter.data.OpenGraph;
-import com.viableindustries.waterreporter.data.OpenGraphProperties;
-import com.viableindustries.waterreporter.data.OpenGraphResponse;
-import com.viableindustries.waterreporter.data.OpenGraphTask;
-import com.viableindustries.waterreporter.data.Organization;
-import com.viableindustries.waterreporter.data.QueryFilter;
-import com.viableindustries.waterreporter.data.QueryParams;
-import com.viableindustries.waterreporter.data.QuerySort;
-import com.viableindustries.waterreporter.data.Report;
-import com.viableindustries.waterreporter.data.ReportHolder;
-import com.viableindustries.waterreporter.data.ReportPatchBody;
-import com.viableindustries.waterreporter.data.ReportPostBody;
-import com.viableindustries.waterreporter.data.ReportService;
-import com.viableindustries.waterreporter.data.TagHolder;
-import com.viableindustries.waterreporter.data.TagService;
-import com.viableindustries.waterreporter.data.User;
-import com.viableindustries.waterreporter.data.UserHolder;
-import com.viableindustries.waterreporter.data.UserProperties;
+import com.viableindustries.waterreporter.data.interfaces.api.image.ImageService;
+import com.viableindustries.waterreporter.data.interfaces.api.post.ReportService;
+import com.viableindustries.waterreporter.data.interfaces.api.post.SendPostCallbacks;
+import com.viableindustries.waterreporter.data.interfaces.api.hashtag.HashTagService;
+import com.viableindustries.waterreporter.data.objects.Geometry;
+import com.viableindustries.waterreporter.data.objects.GeometryResponse;
+import com.viableindustries.waterreporter.data.objects.hashtag.HashTag;
+import com.viableindustries.waterreporter.data.objects.hashtag.HashtagCollection;
+import com.viableindustries.waterreporter.data.objects.hashtag.TagHolder;
+import com.viableindustries.waterreporter.data.objects.open_graph.OpenGraphProperties;
+import com.viableindustries.waterreporter.data.objects.open_graph.OpenGraphResponse;
+import com.viableindustries.waterreporter.data.objects.organization.AbbreviatedOrganization;
+import com.viableindustries.waterreporter.data.objects.organization.Organization;
+import com.viableindustries.waterreporter.data.objects.post.Report;
+import com.viableindustries.waterreporter.data.objects.post.ReportHolder;
+import com.viableindustries.waterreporter.data.objects.post.ReportPatchBody;
+import com.viableindustries.waterreporter.data.objects.post.ReportPostBody;
+import com.viableindustries.waterreporter.data.objects.query.QueryFilter;
+import com.viableindustries.waterreporter.data.objects.query.QueryParams;
+import com.viableindustries.waterreporter.data.objects.query.QuerySort;
+import com.viableindustries.waterreporter.data.objects.user.User;
+import com.viableindustries.waterreporter.data.objects.user.UserHolder;
+import com.viableindustries.waterreporter.data.objects.user.UserProperties;
+import com.viableindustries.waterreporter.data.services.ImagePostService;
+import com.viableindustries.waterreporter.user_interface.adapters.OrganizationCheckListAdapter;
+import com.viableindustries.waterreporter.user_interface.adapters.TagSuggestionAdapter;
+import com.viableindustries.waterreporter.user_interface.dialogs.PhotoPickerDialogFragment;
+import com.viableindustries.waterreporter.utilities.ApiDispatcher;
+import com.viableindustries.waterreporter.utilities.CacheManager;
+import com.viableindustries.waterreporter.utilities.CancelableCallback;
+import com.viableindustries.waterreporter.utilities.ConnectionUtility;
+import com.viableindustries.waterreporter.utilities.CursorPositionTracker;
+import com.viableindustries.waterreporter.utilities.DisplayDecimal;
+import com.viableindustries.waterreporter.utilities.FileUtils;
+import com.viableindustries.waterreporter.utilities.OpenGraph;
+import com.viableindustries.waterreporter.utilities.OpenGraphTask;
 
 import org.jsoup.nodes.Document;
 
@@ -106,70 +113,70 @@ public class PhotoMetaActivity extends AppCompatActivity
         EasyPermissions.PermissionCallbacks {
 
     @Bind(R.id.scrollView)
-    private ScrollView parentLayout;
+    ScrollView parentLayout;
 
     @Bind(R.id.comment_input)
-    private EditText commentsField;
+    EditText commentsField;
 
     @Bind(R.id.tag_component)
-    private HorizontalScrollView tagComponent;
+    HorizontalScrollView tagComponent;
 
     @Bind(R.id.tag_results)
-    private LinearLayout tagResults;
+    LinearLayout tagResults;
 
     @Bind(R.id.post_image_preview)
-    private ImageView mImageView;
+    ImageView mImageView;
 
     @Bind(R.id.groups)
-    private LinearLayout groupList;
+    LinearLayout groupList;
 
     @Bind(R.id.comment_component)
     LinearLayout commentComponent;
 
     @Bind(R.id.camera_button_container)
-    private RelativeLayout cameraButtonContainer;
+    RelativeLayout cameraButtonContainer;
 
     @Bind(R.id.add_post_image)
-    private ImageView addImageIcon;
+    ImageView addImageIcon;
 
     @Bind(R.id.location_component)
     LinearLayout locationComponent;
 
     @Bind(R.id.location_button_container)
-    private RelativeLayout locationButtonContainer;
+    RelativeLayout locationButtonContainer;
 
     @Bind(R.id.add_location)
-    private ImageView addLocationIcon;
+    ImageView addLocationIcon;
 
     @Bind(R.id.edit_location)
-    private ImageView editLocationIcon;
+    ImageView editLocationIcon;
 
     @Bind(R.id.location_output)
-    private TextView locationOutput;
+    TextView locationOutput;
 
     @Bind(R.id.post_report)
-    private FloatingActionButton postReport;
+    FloatingActionButton postReport;
 
     @Bind(R.id.post_success)
-    private FloatingActionButton postSuccess;
+    FloatingActionButton postSuccess;
 
     @Bind(R.id.progress_bar)
-    private ProgressBar progressBar;
+    ProgressBar progressBar;
 
     @Bind(R.id.ogData)
-    private CardView ogData;
+    CardView ogData;
 
     @Bind(R.id.ogImage)
-    private ImageView ogImage;
+    ImageView ogImage;
 
     @Bind(R.id.ogTitle)
-    private TextView ogTitle;
+    TextView ogTitle;
 
     @Bind(R.id.ogDescription)
-    private TextView ogDescription;
+    TextView ogDescription;
 
     @Bind(R.id.ogUrl)
-    private TextView ogUrl;
+    TextView ogUrl;
 
     private static final int ACTION_SET_LOCATION = 0;
 
@@ -199,8 +206,6 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     private ReportService reportService;
 
-    private ImageService imageService;
-
     private SharedPreferences mSharedPreferences;
 
     private SharedPreferences groupMemberships;
@@ -218,10 +223,6 @@ public class PhotoMetaActivity extends AppCompatActivity
     private static final int ACTION_TAKE_PHOTO = 1;
     private static final int ACTION_SELECT_PHOTO = 2;
 
-    private boolean photoCaptured = false;
-
-    final private String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
-
     private Uri imageUri;
 
     private static final int RC_ALL_PERMISSIONS = 100;
@@ -235,8 +236,6 @@ public class PhotoMetaActivity extends AppCompatActivity
     private Handler handler;
 
     private Runnable tagSearchRunnable;
-
-    private TagSuggestionAdapter tagSuggestionAdapter;
 
     private String query;
 
@@ -286,7 +285,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         reportService = ReportService.restAdapter.create(ReportService.class);
 
-        imageService = ImageService.restAdapter.create(ImageService.class);
+        ImageService imageService = ImageService.restAdapter.create(ImageService.class);
 
         if (!ConnectionUtility.connectionActive(this)) {
 
@@ -732,9 +731,9 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         Log.d("", accessToken);
 
-        RestAdapter restAdapter = TagService.restAdapter;
+        RestAdapter restAdapter = HashTagService.restAdapter;
 
-        TagService service = restAdapter.create(TagService.class);
+        HashTagService service = restAdapter.create(HashTagService.class);
 
         service.getMany(accessToken, "application/json", page, limit, query, new CancelableCallback<HashtagCollection>() {
 
@@ -768,7 +767,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             baseTagList.addAll(hashTags);
 
-            tagSuggestionAdapter = new TagSuggestionAdapter(this, baseTagList);
+            TagSuggestionAdapter tagSuggestionAdapter = new TagSuggestionAdapter(this, baseTagList);
 
             final int adapterCount = tagSuggestionAdapter.getCount();
 
@@ -871,6 +870,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             case ACTION_TAKE_PHOTO:
 
+                boolean photoCaptured = false;
                 if (resultCode == RESULT_OK) {
 
                     FileUtils.galleryAddPic(this, mTempImagePath);
@@ -1026,7 +1026,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                 } else {
 
-                    Log.d("image", "no image data");
+                    Log.d("image", "no image api");
 
                 }
 
@@ -1061,7 +1061,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         postSuccess.setVisibility(View.VISIBLE);
 
-        // Clear the app data cache
+        // Clear the app api cache
 
         CacheManager.deleteCache(getBaseContext());
 
@@ -1161,7 +1161,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         geometryResponse = new GeometryResponse(geometryList, type);
 
-        // Abort with message if neither comments nor Open Graph data are present
+        // Abort with message if neither comments nor Open Graph api are present
 
         if ((commentsText.isEmpty() && openGraphProperties == null) && !editMode) {
 
@@ -1332,7 +1332,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
-    // POST report data
+    // POST report api
 
     private void sendFullPost(ReportPostBody reportPostBody) {
 
@@ -1520,7 +1520,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             for (int i = 0; i < adapterCount; i++) {
 
-                View item = adapter.getView(i, null, null);
+                View item = adapter.getView(i, null, groupList);
 
                 groupList.addView(item);
 
@@ -1550,6 +1550,7 @@ public class PhotoMetaActivity extends AppCompatActivity
             // See: https://developer.android.com/training/camera/photobasics.html
             // https://developer.android.com/reference/android/os/FileUriExposedException.html
 
+            String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
             imageUri = FileProvider.getUriForFile(this, FILE_PROVIDER_AUTHORITY, f);
 
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
@@ -1760,7 +1761,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         super.onResume();
 
-        // Check for a data connection!
+        // Check for a api connection!
 
         if (!ConnectionUtility.connectionActive(this)) {
 

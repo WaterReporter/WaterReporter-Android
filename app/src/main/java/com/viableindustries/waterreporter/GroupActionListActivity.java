@@ -18,12 +18,14 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
-import com.viableindustries.waterreporter.data.CancelableCallback;
-import com.viableindustries.waterreporter.data.Organization;
-import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
-import com.viableindustries.waterreporter.data.OrganizationService;
-import com.viableindustries.waterreporter.data.QueryParams;
-import com.viableindustries.waterreporter.data.QuerySort;
+import com.viableindustries.waterreporter.data.interfaces.api.organization.OrganizationService;
+import com.viableindustries.waterreporter.data.objects.organization.Organization;
+import com.viableindustries.waterreporter.data.objects.organization.OrganizationFeatureCollection;
+import com.viableindustries.waterreporter.data.objects.query.QueryParams;
+import com.viableindustries.waterreporter.data.objects.query.QuerySort;
+import com.viableindustries.waterreporter.user_interface.adapters.GroupActionListAdapter;
+import com.viableindustries.waterreporter.utilities.CancelableCallback;
+import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,26 +38,20 @@ import retrofit.client.Response;
 public class GroupActionListActivity extends AppCompatActivity {
 
     @Bind(R.id.organizationListContainer)
-    private final
     SwipeRefreshLayout organizationListContainer;
 
     @Bind(R.id.skipAhead)
-    private final
     ImageButton skipAhead;
 
     @Bind(R.id.search_box)
-    private final
     EditText listFilter;
 
     @Bind(R.id.organizationList)
-    private final
     ListView listView;
 
     private ArrayList<Organization> organizations;
 
     private GroupActionListAdapter adapter;
-
-    private boolean isRegistrationFlow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +81,7 @@ public class GroupActionListActivity extends AppCompatActivity {
                     @Override
                     public void onRefresh() {
                         Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
-                        // This method performs the actual data-refresh operation.
+                        // This method performs the actual api-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
                         buildList(1, 20, true);
 
@@ -135,11 +131,11 @@ public class GroupActionListActivity extends AppCompatActivity {
                 @Override
                 public boolean onLoadMore(int page, int totalItemsCount) {
 
-                    // Triggered only when new data needs to be appended to the list
+                    // Triggered only when new api needs to be appended to the list
 
                     buildList(page, 20, false);
 
-                    return true; // ONLY if more data is actually being loaded; false otherwise.
+                    return true; // ONLY if more api is actually being loaded; false otherwise.
 
                 }
             });

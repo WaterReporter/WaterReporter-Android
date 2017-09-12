@@ -13,13 +13,15 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-import com.viableindustries.waterreporter.data.CancelableCallback;
-import com.viableindustries.waterreporter.data.Favorite;
-import com.viableindustries.waterreporter.data.FavoriteCollection;
-import com.viableindustries.waterreporter.data.Report;
-import com.viableindustries.waterreporter.data.ReportHolder;
-import com.viableindustries.waterreporter.data.ReportService;
-import com.viableindustries.waterreporter.data.User;
+import com.viableindustries.waterreporter.data.interfaces.api.post.ReportService;
+import com.viableindustries.waterreporter.data.objects.favorite.Favorite;
+import com.viableindustries.waterreporter.data.objects.favorite.FavoriteCollection;
+import com.viableindustries.waterreporter.data.objects.post.Report;
+import com.viableindustries.waterreporter.data.objects.post.ReportHolder;
+import com.viableindustries.waterreporter.data.objects.user.User;
+import com.viableindustries.waterreporter.user_interface.adapters.UserListAdapter;
+import com.viableindustries.waterreporter.utilities.CancelableCallback;
+import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,15 +34,12 @@ import retrofit.client.Response;
 public class PostFavoriteListActivity extends AppCompatActivity {
 
     @Bind(R.id.memberListContainer)
-    private final
     SwipeRefreshLayout memberListContainer;
 
     @Bind(R.id.memberList)
-    private final
     ListView memberList;
 
     @Bind(R.id.backArrow)
-    private final
     RelativeLayout backButton;
 
     private Context mContext;
@@ -78,7 +77,7 @@ public class PostFavoriteListActivity extends AppCompatActivity {
                     @Override
                     public void onRefresh() {
                         Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
-                        // This method performs the actual data-refresh operation.
+                        // This method performs the actual api-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
                         fetchFavorites(100, 1, post.id, true);
                     }
@@ -108,7 +107,7 @@ public class PostFavoriteListActivity extends AppCompatActivity {
 
     private void populateUsers(List<User> users) {
 
-        userListAdapter = new UserListAdapter(this, users, true);
+        userListAdapter = new UserListAdapter(this, users);
 
         memberList.setAdapter(userListAdapter);
 
@@ -123,11 +122,11 @@ public class PostFavoriteListActivity extends AppCompatActivity {
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
 
-                // Triggered only when new data needs to be appended to the list
+                // Triggered only when new api needs to be appended to the list
 
                 fetchFavorites(100, page, post.id, false);
 
-                return true; // ONLY if more data is actually being loaded; false otherwise.
+                return true; // ONLY if more api is actually being loaded; false otherwise.
 
             }
 

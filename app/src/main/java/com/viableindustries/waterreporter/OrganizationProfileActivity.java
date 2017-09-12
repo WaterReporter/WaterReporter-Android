@@ -26,21 +26,25 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
-import com.viableindustries.waterreporter.data.CancelableCallback;
-import com.viableindustries.waterreporter.data.FeatureCollection;
-import com.viableindustries.waterreporter.data.Organization;
-import com.viableindustries.waterreporter.data.OrganizationHolder;
-import com.viableindustries.waterreporter.data.OrganizationMemberList;
-import com.viableindustries.waterreporter.data.OrganizationService;
-import com.viableindustries.waterreporter.data.QueryFilter;
-import com.viableindustries.waterreporter.data.QueryParams;
-import com.viableindustries.waterreporter.data.QuerySort;
-import com.viableindustries.waterreporter.data.Report;
-import com.viableindustries.waterreporter.data.ReportService;
-import com.viableindustries.waterreporter.data.User;
-import com.viableindustries.waterreporter.data.UserCollection;
-import com.viableindustries.waterreporter.data.UserOrgPatch;
-import com.viableindustries.waterreporter.data.UserService;
+import com.viableindustries.waterreporter.data.interfaces.api.organization.OrganizationService;
+import com.viableindustries.waterreporter.data.interfaces.api.post.ReportService;
+import com.viableindustries.waterreporter.data.interfaces.api.user.UserService;
+import com.viableindustries.waterreporter.data.objects.FeatureCollection;
+import com.viableindustries.waterreporter.data.objects.organization.Organization;
+import com.viableindustries.waterreporter.data.objects.organization.OrganizationHolder;
+import com.viableindustries.waterreporter.data.objects.organization.OrganizationMemberList;
+import com.viableindustries.waterreporter.data.objects.post.Report;
+import com.viableindustries.waterreporter.data.objects.query.QueryFilter;
+import com.viableindustries.waterreporter.data.objects.query.QueryParams;
+import com.viableindustries.waterreporter.data.objects.query.QuerySort;
+import com.viableindustries.waterreporter.data.objects.user.User;
+import com.viableindustries.waterreporter.data.objects.user.UserCollection;
+import com.viableindustries.waterreporter.data.objects.user.UserOrgPatch;
+import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
+import com.viableindustries.waterreporter.utilities.CancelableCallback;
+import com.viableindustries.waterreporter.utilities.CircleTransform;
+import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
+import com.viableindustries.waterreporter.utilities.PatternEditableBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,10 +58,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class OrganizationProfileActivity extends AppCompatActivity {
-
-    private LinearLayout profileMeta;
-
-    private LinearLayout profileStats;
 
     private LinearLayout reportStat;
 
@@ -77,8 +77,6 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     private TextView peopleCountLabel;
 
-    private TextView organizationName;
-
     private TextView organizationDescription;
 
     private ImageView organizationLogo;
@@ -86,11 +84,9 @@ public class OrganizationProfileActivity extends AppCompatActivity {
     private Button joinOrganization;
 
     @Bind(R.id.timeline)
-    private final
     SwipeRefreshLayout timeLineContainer;
 
     @Bind(R.id.timeline_items)
-    private final
     ListView timeLine;
 
     @Bind(R.id.listTabs)
@@ -100,17 +96,9 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     private TextView promptMessage;
 
-    private Button startPostButton;
-
     private TimelineAdapter timelineAdapter;
 
     private final List<Report> reportCollection = new ArrayList<>();
-
-    private String organizationDescriptionText;
-
-    private String organizationNameText;
-
-    private String organizationLogoUrl;
 
     private String complexQuery;
 
@@ -168,7 +156,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                     @Override
                     public void onRefresh() {
                         Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
-                        // This method performs the actual data-refresh operation.
+                        // This method performs the actual api-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
 
                         countReports(complexQuery, "state");
@@ -213,7 +201,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
 
-                // Triggered only when new data needs to be appended to the list
+                // Triggered only when new api needs to be appended to the list
 
                 if (actionFocus) {
 
@@ -225,7 +213,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                 }
 
-                return true; // ONLY if more data is actually being loaded; false otherwise.
+                return true; // ONLY if more api is actually being loaded; false otherwise.
 
             }
         };
@@ -307,7 +295,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         promptBlock = (LinearLayout) header.findViewById(R.id.promptBlock);
         promptMessage = (TextView) header.findViewById(R.id.prompt);
-        startPostButton = (Button) header.findViewById(R.id.startPost);
+        Button startPostButton = (Button) header.findViewById(R.id.startPost);
 
         // Add text and click listener to startPostButton
 
@@ -320,7 +308,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             }
         });
 
-        organizationName = (TextView) header.findViewById(R.id.organizationName);
+        TextView organizationName = (TextView) header.findViewById(R.id.organizationName);
 
         organizationDescription = (TextView) header.findViewById(R.id.organizationDescription);
 
@@ -346,9 +334,9 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         peopleStat = (LinearLayout) header.findViewById(R.id.peopleStat);
 
-        profileMeta = (LinearLayout) header.findViewById(R.id.profileMeta);
+        LinearLayout profileMeta = (LinearLayout) header.findViewById(R.id.profileMeta);
 
-        profileStats = (LinearLayout) header.findViewById(R.id.profileStats);
+        LinearLayout profileStats = (LinearLayout) header.findViewById(R.id.profileStats);
 
         try {
 
@@ -382,9 +370,9 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         }
 
-        organizationDescriptionText = organization.properties.description;
-        organizationNameText = organization.properties.name;
-        organizationLogoUrl = organization.properties.picture;
+        String organizationDescriptionText = organization.properties.description;
+        String organizationNameText = organization.properties.name;
+        String organizationLogoUrl = organization.properties.picture;
 
         organizationName.setText(organizationNameText);
 

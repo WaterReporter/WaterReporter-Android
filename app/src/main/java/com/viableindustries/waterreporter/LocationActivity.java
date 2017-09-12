@@ -45,7 +45,7 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.services.android.ui.geocoder.GeocoderAutoCompleteView;
 import com.mapbox.services.api.geocoding.v5.GeocodingCriteria;
 import com.mapbox.services.api.geocoding.v5.models.CarmenFeature;
-import com.viableindustries.waterreporter.data.CancelableCallback;
+import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -74,11 +74,9 @@ public class LocationActivity extends AppCompatActivity implements
         ResultCallback<LocationSettingsResult> {
 
     @Bind(R.id.mapview)
-    private final
     MapView mapView;
 
     @Bind(R.id.save_location)
-    private final
     FloatingActionButton saveLocation;
 
     private MapboxMap mMapboxMap;
@@ -89,8 +87,6 @@ public class LocationActivity extends AppCompatActivity implements
     //protected UserLocationOverlay mLocationOverlay;
 
     private boolean isZoomed = false;
-
-    private LatLng photoLocation;
 
     private static final String TAG = "location-settings";
 
@@ -178,7 +174,7 @@ public class LocationActivity extends AppCompatActivity implements
         mRequestingLocationUpdates = true;
         mLastUpdateTime = "";
 
-        // Update values using data stored in the Bundle.
+        // Update values using api stored in the Bundle.
         updateValuesFromBundle(savedInstanceState);
 
         // Kick off the process of building the GoogleApiClient, LocationRequest, and
@@ -278,7 +274,7 @@ public class LocationActivity extends AppCompatActivity implements
     }
 
     /**
-     * Updates fields based on data stored in the bundle.
+     * Updates fields based on api stored in the bundle.
      *
      * @param savedInstanceState The activity state saved in the Bundle.
      */
@@ -707,7 +703,7 @@ public class LocationActivity extends AppCompatActivity implements
     }
 
     /**
-     * Stores activity data in the Bundle.
+     * Stores activity api in the Bundle.
      */
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putBoolean(KEY_REQUESTING_LOCATION_UPDATES, mRequestingLocationUpdates);
@@ -718,7 +714,7 @@ public class LocationActivity extends AppCompatActivity implements
 
     private void getMapCenter() {
 
-        photoLocation = mMapboxMap.getCameraPosition().target;
+        LatLng photoLocation = mMapboxMap.getCameraPosition().target;
 
 //        mapView.ge
 

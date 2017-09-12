@@ -9,12 +9,13 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.viableindustries.waterreporter.data.CancelableCallback;
-import com.viableindustries.waterreporter.data.NotificationSetting;
-import com.viableindustries.waterreporter.data.Organization;
-import com.viableindustries.waterreporter.data.User;
-import com.viableindustries.waterreporter.data.UserHolder;
-import com.viableindustries.waterreporter.data.UserService;
+import com.viableindustries.waterreporter.data.interfaces.api.user.UserService;
+import com.viableindustries.waterreporter.data.objects.notification.NotificationSetting;
+import com.viableindustries.waterreporter.data.objects.organization.Organization;
+import com.viableindustries.waterreporter.data.objects.user.User;
+import com.viableindustries.waterreporter.data.objects.user.UserHolder;
+import com.viableindustries.waterreporter.user_interface.adapters.NotificationSettingAdapter;
+import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,6 @@ public class ProfileSettingsActivity extends AppCompatActivity {
     TextView logOut;
 
     @Bind(R.id.notification_settings)
-    private final
     LinearLayout notificationSettingsContainer;
 
     private SharedPreferences prefs;
@@ -207,7 +207,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
         }
 
-        NotificationSettingAdapter notificationSettingAdapter = new NotificationSettingAdapter(ProfileSettingsActivity.this, currentNotificationSettings, true);
+        NotificationSettingAdapter notificationSettingAdapter = new NotificationSettingAdapter(ProfileSettingsActivity.this, currentNotificationSettings);
 
         final int adapterCount = notificationSettingAdapter.getCount();
 

@@ -16,9 +16,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -26,18 +23,23 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.viableindustries.waterreporter.data.ApiDispatcher;
-import com.viableindustries.waterreporter.data.CancelableCallback;
-import com.viableindustries.waterreporter.data.FeatureCollection;
-import com.viableindustries.waterreporter.data.Organization;
-import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
-import com.viableindustries.waterreporter.data.QueryParams;
-import com.viableindustries.waterreporter.data.QuerySort;
-import com.viableindustries.waterreporter.data.Report;
-import com.viableindustries.waterreporter.data.ReportHolder;
-import com.viableindustries.waterreporter.data.ReportService;
-import com.viableindustries.waterreporter.data.UserService;
-import com.viableindustries.waterreporter.dialogs.ReportActionDialog;
+import com.viableindustries.waterreporter.constants.Constants;
+import com.viableindustries.waterreporter.data.interfaces.api.post.ReportService;
+import com.viableindustries.waterreporter.data.interfaces.api.user.UserService;
+import com.viableindustries.waterreporter.data.objects.FeatureCollection;
+import com.viableindustries.waterreporter.data.objects.organization.Organization;
+import com.viableindustries.waterreporter.data.objects.organization.OrganizationFeatureCollection;
+import com.viableindustries.waterreporter.data.objects.post.Report;
+import com.viableindustries.waterreporter.data.objects.post.ReportHolder;
+import com.viableindustries.waterreporter.data.objects.query.QueryParams;
+import com.viableindustries.waterreporter.data.objects.query.QuerySort;
+import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
+import com.viableindustries.waterreporter.user_interface.dialogs.ReportActionDialog;
+import com.viableindustries.waterreporter.utilities.ApiDispatcher;
+import com.viableindustries.waterreporter.utilities.CancelableCallback;
+import com.viableindustries.waterreporter.utilities.ConnectionUtility;
+import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
+import com.viableindustries.waterreporter.utilities.UploadStateReceiver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,24 +57,22 @@ public class MainActivity extends AppCompatActivity implements
         ReportActionDialog.ReportActionDialogCallback {
 
     @Bind(R.id.uploadProgressBar)
-    private ProgressBar uploadProgressBar;
+    ProgressBar uploadProgressBar;
 
     @Bind(R.id.uploadProgress)
-    private LinearLayout uploadProgress;
+    LinearLayout uploadProgress;
 
     @Bind(R.id.timeline)
-    private SwipeRefreshLayout timeline;
+    SwipeRefreshLayout timeline;
 
     @Bind(R.id.timeline_items)
-    private ListView listView;
+    ListView listView;
 
     static final int REGISTRATION_REQUEST = 1;
 
     private static final int LOGIN_REQUEST = 2;
 
     private SharedPreferences mSharedPreferences;
-
-    private SharedPreferences mCoreProfile;
 
     private int user_id;
 
@@ -97,8 +97,6 @@ public class MainActivity extends AppCompatActivity implements
     private EndlessScrollListener scrollListener;
 
     private int socialOptions;
-
-    private String mAccessToken;
 
     // An instance of the status broadcast receiver
     private UploadStateReceiver mUploadStateReceiver;
@@ -128,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements
 //                if (storedPost != null && !storedPost.isEmpty()) afterPostSend();
 
                 /*
-             * Gets the status from the Intent's extended data, and chooses the appropriate action
+             * Gets the status from the Intent's extended api, and chooses the appropriate action
              */
                 switch (intent.getIntExtra(Constants.EXTENDED_DATA_STATUS,
                         Constants.STATE_ACTION_COMPLETE)) {
@@ -144,11 +142,11 @@ public class MainActivity extends AppCompatActivity implements
                     case Constants.STATE_ACTION_PARSING:
                         //
                         break;
-                    // Logs "Writing the parsed data to the content provider" state
+                    // Logs "Writing the parsed api to the content provider" state
                     case Constants.STATE_ACTION_WRITING:
                         //
                         break;
-                    // Starts displaying data when the RSS download is complete
+                    // Starts displaying api when the RSS download is complete
                     case Constants.STATE_ACTION_COMPLETE:
                         // Logs the status
                         Log.d(CLASS_TAG, "State: COMPLETE");
@@ -181,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements
 
             boolean cleanSlate = mSharedPreferences.getBoolean("clean_slate", false);
 
-            mAccessToken = mSharedPreferences.getString("access_token", "");
+            String mAccessToken = mSharedPreferences.getString("access_token", "");
 
             user_id = mSharedPreferences.getInt("user_id", 0);
 
@@ -201,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 if (reportCollection.isEmpty()) {
 
-                    fetchPosts(5, 1, false, false);
+                    fetchPosts(5, 1, false);
 
                 }
 
@@ -221,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    void fetchPosts(int limit, final int page, final boolean transition, final boolean refresh) {
+    void fetchPosts(int limit, final int page, final boolean refresh) {
 
         final String mAccessToken = mSharedPreferences.getString("access_token", "");
 
@@ -410,7 +408,7 @@ public class MainActivity extends AppCompatActivity implements
 
         if (EasyPermissions.hasPermissions(this, permissions)) {
 
-            fetchPosts(5, 1, false, false);
+            fetchPosts(5, 1, false);
 
         } else {
 
@@ -484,7 +482,7 @@ public class MainActivity extends AppCompatActivity implements
 
         mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        mCoreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+        SharedPreferences mCoreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
         // Set up EndlessScrollListener
 
@@ -492,10 +490,10 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
 
-                // Triggered only when new data needs to be appended to the list
-                fetchPosts(5, page, false, false);
+                // Triggered only when new api needs to be appended to the list
+                fetchPosts(5, page, false);
 
-                return true; // ONLY if more data is actually being loaded; false otherwise.
+                return true; // ONLY if more api is actually being loaded; false otherwise.
 
             }
         };
@@ -505,10 +503,10 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onRefresh() {
                         Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
-                        // This method performs the actual data-refresh operation.
+                        // This method performs the actual api-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
 
-                        fetchPosts(5, 1, false, true);
+                        fetchPosts(5, 1, true);
 
                     }
                 }
@@ -534,7 +532,7 @@ public class MainActivity extends AppCompatActivity implements
 //        mSharedPreferences.edit().putInt("POST", 0).apply();
         mSharedPreferences.edit().remove("POST_SAVED_VIA_SERVICE").apply();
         uploadProgress.setVisibility(View.GONE);
-        fetchPosts(5, 1, false, true);
+        fetchPosts(5, 1, true);
 
     }
 
@@ -545,7 +543,7 @@ public class MainActivity extends AppCompatActivity implements
 
         timeline.setRefreshing(true);
 
-        fetchPosts(5, 1, false, true);
+        fetchPosts(5, 1, true);
 
     }
 
@@ -554,7 +552,7 @@ public class MainActivity extends AppCompatActivity implements
 
         super.onStart();
 
-        // Check for a data connection!
+        // Check for a api connection!
 
         connectionStatus();
 
@@ -581,7 +579,7 @@ public class MainActivity extends AppCompatActivity implements
 
         super.onResume();
 
-        // Check for a data connection!
+        // Check for a api connection!
 
         connectionStatus();
 

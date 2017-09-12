@@ -8,9 +8,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.viableindustries.waterreporter.data.CancelableCallback;
-import com.viableindustries.waterreporter.data.RegistrationResponse;
-import com.viableindustries.waterreporter.data.SecurityService;
+import com.viableindustries.waterreporter.data.interfaces.security.SecurityService;
+import com.viableindustries.waterreporter.data.objects.auth.RegistrationResponse;
+import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,20 +26,13 @@ import retrofit.client.Response;
 public class PasswordResetActivity extends Activity {
 
     @Bind(R.id.email)
-    private final
     EditText email_text;
 
     @Bind(R.id.reset_success)
-    private final
     TextView reset_success;
 
     @Bind(R.id.reset_error)
-    private final
     TextView reset_error;
-
-    private static final String EMAIL_PATTERN =
-            "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-                    + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
     private Pattern emailPattern;
 

@@ -13,8 +13,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.viableindustries.waterreporter.data.GroupListHolder;
-import com.viableindustries.waterreporter.data.Organization;
+import com.viableindustries.waterreporter.data.objects.organization.GroupListHolder;
+import com.viableindustries.waterreporter.data.objects.organization.Organization;
+import com.viableindustries.waterreporter.user_interface.adapters.OrganizationListAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,11 +29,9 @@ import static java.lang.Boolean.TRUE;
 public class RelatedGroupsActivity extends AppCompatActivity {
 
     @Bind(R.id.search_box)
-    private final
     EditText listFilter;
 
     @Bind(R.id.list)
-    private final
     ListView listView;
 
     private boolean generic;
@@ -86,7 +85,7 @@ public class RelatedGroupsActivity extends AppCompatActivity {
 
     private void populateOrganizations(ArrayList<Organization> orgs) {
 
-        final OrganizationListAdapter adapter = new OrganizationListAdapter(this, orgs, true);
+        final OrganizationListAdapter adapter = new OrganizationListAdapter(this, orgs);
 
         listView.setAdapter(adapter);
 

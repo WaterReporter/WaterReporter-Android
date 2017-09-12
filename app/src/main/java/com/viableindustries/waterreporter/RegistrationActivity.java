@@ -11,12 +11,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.viableindustries.waterreporter.data.AuthResponse;
-import com.viableindustries.waterreporter.data.CancelableCallback;
-import com.viableindustries.waterreporter.data.LogInBody;
-import com.viableindustries.waterreporter.data.RegistrationBody;
-import com.viableindustries.waterreporter.data.RegistrationResponse;
-import com.viableindustries.waterreporter.data.SecurityService;
+import com.viableindustries.waterreporter.data.interfaces.security.SecurityService;
+import com.viableindustries.waterreporter.data.objects.auth.AuthResponse;
+import com.viableindustries.waterreporter.data.objects.auth.LogInBody;
+import com.viableindustries.waterreporter.data.objects.auth.RegistrationBody;
+import com.viableindustries.waterreporter.data.objects.auth.RegistrationResponse;
+import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,23 +32,18 @@ import retrofit.client.Response;
 public class RegistrationActivity extends AppCompatActivity {
 
     @Bind(R.id.password)
-    private final
     EditText password_text;
 
     @Bind(R.id.email)
-    private final
     EditText email_text;
 
     @Bind(R.id.error_message)
-    private final
     LinearLayout error_message;
 
     @Bind(R.id.register)
-    private final
     Button registrationButton;
 
     @Bind(R.id.spinner)
-    private final
     ProgressBar progressBar;
 
     static final int REGISTRATION_REQUEST = 1;

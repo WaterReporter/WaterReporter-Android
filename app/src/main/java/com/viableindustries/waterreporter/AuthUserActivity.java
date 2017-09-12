@@ -29,22 +29,27 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
-import com.viableindustries.waterreporter.data.ApiDispatcher;
-import com.viableindustries.waterreporter.data.CancelableCallback;
-import com.viableindustries.waterreporter.data.FeatureCollection;
-import com.viableindustries.waterreporter.data.Organization;
-import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
-import com.viableindustries.waterreporter.data.QueryFilter;
-import com.viableindustries.waterreporter.data.QueryParams;
-import com.viableindustries.waterreporter.data.QuerySort;
-import com.viableindustries.waterreporter.data.Report;
-import com.viableindustries.waterreporter.data.ReportHolder;
-import com.viableindustries.waterreporter.data.ReportService;
-import com.viableindustries.waterreporter.data.User;
-import com.viableindustries.waterreporter.data.UserGroupList;
-import com.viableindustries.waterreporter.data.UserHolder;
-import com.viableindustries.waterreporter.data.UserService;
-import com.viableindustries.waterreporter.dialogs.ReportActionDialog;
+import com.viableindustries.waterreporter.constants.Constants;
+import com.viableindustries.waterreporter.data.interfaces.api.post.ReportService;
+import com.viableindustries.waterreporter.data.interfaces.api.user.UserService;
+import com.viableindustries.waterreporter.data.objects.FeatureCollection;
+import com.viableindustries.waterreporter.data.objects.organization.Organization;
+import com.viableindustries.waterreporter.data.objects.organization.OrganizationFeatureCollection;
+import com.viableindustries.waterreporter.data.objects.post.Report;
+import com.viableindustries.waterreporter.data.objects.post.ReportHolder;
+import com.viableindustries.waterreporter.data.objects.query.QueryFilter;
+import com.viableindustries.waterreporter.data.objects.query.QueryParams;
+import com.viableindustries.waterreporter.data.objects.query.QuerySort;
+import com.viableindustries.waterreporter.data.objects.user.User;
+import com.viableindustries.waterreporter.data.objects.user.UserGroupList;
+import com.viableindustries.waterreporter.data.objects.user.UserHolder;
+import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
+import com.viableindustries.waterreporter.user_interface.dialogs.ReportActionDialog;
+import com.viableindustries.waterreporter.utilities.ApiDispatcher;
+import com.viableindustries.waterreporter.utilities.CancelableCallback;
+import com.viableindustries.waterreporter.utilities.CircleTransform;
+import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
+import com.viableindustries.waterreporter.utilities.UploadStateReceiver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,8 +63,6 @@ import retrofit.client.Response;
 import static java.lang.Boolean.TRUE;
 
 public class AuthUserActivity extends AppCompatActivity implements ReportActionDialog.ReportActionDialogCallback {
-
-    private TextView userTitle;
 
     private TextView userDescription;
 
@@ -83,10 +86,6 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
     private LinearLayout groupStat;
 
-    private LinearLayout profileMeta;
-
-    private LinearLayout profileStats;
-
     private LinearLayout promptBlock;
 
     private TextView promptMessage;
@@ -94,36 +93,26 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
     private Button startPostButton;
 
     @Bind(R.id.uploadProgressBar)
-    private ProgressBar uploadProgressBar;
+    ProgressBar uploadProgressBar;
 
     @Bind(R.id.uploadProgress)
-    private LinearLayout uploadProgress;
+    LinearLayout uploadProgress;
 
     @Bind(R.id.timeline)
-    private SwipeRefreshLayout timeLineContainer;
+    SwipeRefreshLayout timeLineContainer;
 
     @Bind(R.id.timeline_items)
-    private ListView timeLine;
+    ListView timeLine;
 
     @Bind(R.id.listTabs)
     FrameLayout listTabs;
 
     @Bind(R.id.log_out)
-    private ImageButton logOutButton;
+    ImageButton logOutButton;
 
     private TimelineAdapter timelineAdapter;
 
     private final List<Report> reportCollection = new ArrayList<>();
-
-    private String userDescriptionText;
-
-    private String userTitleText;
-
-    private String userNameText;
-
-    private String userAvatarUrl;
-
-    private String userOrganization;
 
     private String complexQuery;
 
@@ -138,8 +127,6 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
     private boolean hasGroups = false;
 
     private SharedPreferences mSharedPreferences;
-
-    private SharedPreferences coreProfile;
 
     private User user;
 
@@ -170,7 +157,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
         mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+        SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
         mAccessToken = mSharedPreferences.getString("access_token", "");
 
@@ -208,7 +195,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
                     public void onRefresh() {
                         Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
 
-                        // This method performs the actual data-refresh operation.
+                        // This method performs the actual api-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
 
                         countReports(complexQuery, "state");
@@ -251,7 +238,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
 
-                // Triggered only when new data needs to be appended to the list
+                // Triggered only when new api needs to be appended to the list
 
                 if (actionFocus) {
 
@@ -263,7 +250,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
                 }
 
-                return true; // ONLY if more data is actually being loaded; false otherwise.
+                return true; // ONLY if more api is actually being loaded; false otherwise.
 
             }
         };
@@ -329,7 +316,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
         TextView userName = (TextView) header.findViewById(R.id.userName);
 
-        userTitle = (TextView) header.findViewById(R.id.userTitle);
+        TextView userTitle = (TextView) header.findViewById(R.id.userTitle);
 
         userDescription = (TextView) header.findViewById(R.id.userDescription);
 
@@ -353,18 +340,18 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
         groupStat = (LinearLayout) header.findViewById(R.id.groupStat);
 
-        profileMeta = (LinearLayout) header.findViewById(R.id.profileMeta);
+        LinearLayout profileMeta = (LinearLayout) header.findViewById(R.id.profileMeta);
 
-        profileStats = (LinearLayout) header.findViewById(R.id.profileStats);
+        LinearLayout profileStats = (LinearLayout) header.findViewById(R.id.profileStats);
 
-        userTitleText = user.properties.title;
-        userDescriptionText = user.properties.description;
-        userNameText = String.format("%s %s", user.properties.first_name, user.properties.last_name);
-        userOrganization = user.properties.organization_name;
+        String userTitleText = user.properties.title;
+        String userDescriptionText = user.properties.description;
+        String userNameText = String.format("%s %s", user.properties.first_name, user.properties.last_name);
+        String userOrganization = user.properties.organization_name;
 
         // Locate valid avatar field
 
-        userAvatarUrl = user.properties.picture;
+        String userAvatarUrl = user.properties.picture;
 
         Picasso.with(this)
                 .load(userAvatarUrl)
@@ -848,7 +835,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 //                if (storedPost != null && !storedPost.isEmpty()) afterPostSend();
 
              /*
-             * Gets the status from the Intent's extended data, and chooses the appropriate action
+             * Gets the status from the Intent's extended api, and chooses the appropriate action
              */
                 switch (intent.getIntExtra(Constants.EXTENDED_DATA_STATUS,
                         Constants.STATE_ACTION_COMPLETE)) {
@@ -864,11 +851,11 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
                     case Constants.STATE_ACTION_PARSING:
                         //
                         break;
-                    // Logs "Writing the parsed data to the content provider" state
+                    // Logs "Writing the parsed api to the content provider" state
                     case Constants.STATE_ACTION_WRITING:
                         //
                         break;
-                    // Starts displaying data when the RSS download is complete
+                    // Starts displaying api when the RSS download is complete
                     case Constants.STATE_ACTION_COMPLETE:
                         // Logs the status
                         Log.d(CLASS_TAG, "State: COMPLETE");

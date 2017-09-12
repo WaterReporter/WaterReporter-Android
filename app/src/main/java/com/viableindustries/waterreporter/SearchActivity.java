@@ -21,28 +21,32 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.viableindustries.waterreporter.data.BooleanQueryFilter;
-import com.viableindustries.waterreporter.data.CancelableCallback;
-import com.viableindustries.waterreporter.data.HashTag;
-import com.viableindustries.waterreporter.data.HashtagCollection;
-import com.viableindustries.waterreporter.data.Organization;
-import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
-import com.viableindustries.waterreporter.data.OrganizationService;
-import com.viableindustries.waterreporter.data.QueryFilter;
-import com.viableindustries.waterreporter.data.QueryParams;
-import com.viableindustries.waterreporter.data.QuerySort;
-import com.viableindustries.waterreporter.data.TagService;
-import com.viableindustries.waterreporter.data.Territory;
-import com.viableindustries.waterreporter.data.TerritoryCollection;
-import com.viableindustries.waterreporter.data.TerritoryService;
-import com.viableindustries.waterreporter.data.TrendingGroups;
-import com.viableindustries.waterreporter.data.TrendingPeople;
-import com.viableindustries.waterreporter.data.TrendingService;
-import com.viableindustries.waterreporter.data.TrendingTags;
-import com.viableindustries.waterreporter.data.TrendingTerritories;
-import com.viableindustries.waterreporter.data.User;
-import com.viableindustries.waterreporter.data.UserCollection;
-import com.viableindustries.waterreporter.data.UserService;
+import com.viableindustries.waterreporter.data.interfaces.api.organization.OrganizationService;
+import com.viableindustries.waterreporter.data.interfaces.api.hashtag.HashTagService;
+import com.viableindustries.waterreporter.data.interfaces.api.territory.TerritoryService;
+import com.viableindustries.waterreporter.data.interfaces.api.trending.TrendingService;
+import com.viableindustries.waterreporter.data.interfaces.api.user.UserService;
+import com.viableindustries.waterreporter.data.objects.hashtag.HashTag;
+import com.viableindustries.waterreporter.data.objects.hashtag.HashtagCollection;
+import com.viableindustries.waterreporter.data.objects.hashtag.TrendingTags;
+import com.viableindustries.waterreporter.data.objects.organization.Organization;
+import com.viableindustries.waterreporter.data.objects.organization.OrganizationFeatureCollection;
+import com.viableindustries.waterreporter.data.objects.organization.TrendingGroups;
+import com.viableindustries.waterreporter.data.objects.query.BooleanQueryFilter;
+import com.viableindustries.waterreporter.data.objects.query.QueryFilter;
+import com.viableindustries.waterreporter.data.objects.query.QueryParams;
+import com.viableindustries.waterreporter.data.objects.query.QuerySort;
+import com.viableindustries.waterreporter.data.objects.territory.Territory;
+import com.viableindustries.waterreporter.data.objects.territory.TerritoryCollection;
+import com.viableindustries.waterreporter.data.objects.territory.TrendingTerritories;
+import com.viableindustries.waterreporter.data.objects.user.TrendingPeople;
+import com.viableindustries.waterreporter.data.objects.user.User;
+import com.viableindustries.waterreporter.data.objects.user.UserCollection;
+import com.viableindustries.waterreporter.user_interface.adapters.OrganizationListAdapter;
+import com.viableindustries.waterreporter.user_interface.adapters.TagListAdapter;
+import com.viableindustries.waterreporter.user_interface.adapters.TerritoryListAdapter;
+import com.viableindustries.waterreporter.user_interface.adapters.UserListAdapter;
+import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,34 +60,34 @@ import retrofit.client.Response;
 public class SearchActivity extends FragmentActivity {
 
     @Bind(R.id.spinner)
-    private ProgressBar progressBar;
+    ProgressBar progressBar;
 
     @Bind(R.id.search_message_separator)
-    private View searchMessageSeparator;
+    View searchMessageSeparator;
 
     @Bind(R.id.search_message)
-    private TextView searchMessage;
+    TextView searchMessage;
 
     @Bind(R.id.search_box)
-    private EditText searchBox;
+    EditText searchBox;
 
     @Bind(R.id.clear_search)
-    private ImageButton clearSearch;
+    ImageButton clearSearch;
 
     @Bind(R.id.search_people)
-    private RelativeLayout searchPeople;
+    RelativeLayout searchPeople;
 
     @Bind(R.id.search_organizations)
-    private RelativeLayout searchOrgs;
+    RelativeLayout searchOrgs;
 
     @Bind(R.id.search_watersheds)
-    private RelativeLayout searchWatersheds;
+    RelativeLayout searchWatersheds;
 
     @Bind(R.id.search_tags)
-    private RelativeLayout searchTags;
+    RelativeLayout searchTags;
 
     @Bind(R.id.search_results)
-    private ListView searchResults;
+    ListView searchResults;
 
     private SharedPreferences prefs;
 
@@ -463,9 +467,9 @@ public class SearchActivity extends FragmentActivity {
 
         Log.d("", accessToken);
 
-        RestAdapter restAdapter = TagService.restAdapter;
+        RestAdapter restAdapter = HashTagService.restAdapter;
 
-        TagService service = restAdapter.create(TagService.class);
+        HashTagService service = restAdapter.create(HashTagService.class);
 
         service.getMany(accessToken, "application/json", page, limit, query, new CancelableCallback<HashtagCollection>() {
 
@@ -535,11 +539,11 @@ public class SearchActivity extends FragmentActivity {
 
                 baseUserList.addAll(users);
 
-                userListAdapter = new UserListAdapter(SearchActivity.this, baseUserList, true);
+                userListAdapter = new UserListAdapter(SearchActivity.this, baseUserList);
 
             } else {
 
-                userListAdapter = new UserListAdapter(SearchActivity.this, users, true);
+                userListAdapter = new UserListAdapter(SearchActivity.this, users);
 
             }
 
@@ -573,11 +577,11 @@ public class SearchActivity extends FragmentActivity {
 
                 baseOrganizationList.addAll(organizations);
 
-                orgListAdapter = new OrganizationListAdapter(SearchActivity.this, baseOrganizationList, true);
+                orgListAdapter = new OrganizationListAdapter(SearchActivity.this, baseOrganizationList);
 
             } else {
 
-                orgListAdapter = new OrganizationListAdapter(SearchActivity.this, organizations, true);
+                orgListAdapter = new OrganizationListAdapter(SearchActivity.this, organizations);
 
             }
 
@@ -611,11 +615,11 @@ public class SearchActivity extends FragmentActivity {
 
                 baseTagList.addAll(hashTags);
 
-                tagListAdapter = new TagListAdapter(SearchActivity.this, baseTagList, true);
+                tagListAdapter = new TagListAdapter(SearchActivity.this, baseTagList);
 
             } else {
 
-                tagListAdapter = new TagListAdapter(SearchActivity.this, hashTags, true);
+                tagListAdapter = new TagListAdapter(SearchActivity.this, hashTags);
 
             }
 
@@ -649,11 +653,11 @@ public class SearchActivity extends FragmentActivity {
 
                 baseTerritoryList.addAll(territories);
 
-                territoryListAdapter = new TerritoryListAdapter(SearchActivity.this, baseTerritoryList, true);
+                territoryListAdapter = new TerritoryListAdapter(SearchActivity.this, baseTerritoryList);
 
             } else {
 
-                territoryListAdapter = new TerritoryListAdapter(SearchActivity.this, territories, true);
+                territoryListAdapter = new TerritoryListAdapter(SearchActivity.this, territories);
 
             }
 
@@ -797,7 +801,7 @@ public class SearchActivity extends FragmentActivity {
 
                     Log.d("Switch tab", "User list not empty");
 
-                    userListAdapter = new UserListAdapter(SearchActivity.this, baseUserList, true);
+                    userListAdapter = new UserListAdapter(SearchActivity.this, baseUserList);
 
                     searchResults.setAdapter(userListAdapter);
 
@@ -839,7 +843,7 @@ public class SearchActivity extends FragmentActivity {
 
                     Log.d("Switch tab", "Org list not empty");
 
-                    orgListAdapter = new OrganizationListAdapter(SearchActivity.this, baseOrganizationList, true);
+                    orgListAdapter = new OrganizationListAdapter(SearchActivity.this, baseOrganizationList);
 
                     searchResults.setAdapter(orgListAdapter);
 
@@ -882,7 +886,7 @@ public class SearchActivity extends FragmentActivity {
 
                     Log.d("Switch tab", "Tag list not empty");
 
-                    tagListAdapter = new TagListAdapter(SearchActivity.this, baseTagList, true);
+                    tagListAdapter = new TagListAdapter(SearchActivity.this, baseTagList);
 
                     searchResults.setAdapter(tagListAdapter);
 
@@ -927,7 +931,7 @@ public class SearchActivity extends FragmentActivity {
 
                     Log.d("Switch tab", "Territory list not empty");
 
-                    territoryListAdapter = new TerritoryListAdapter(SearchActivity.this, baseTerritoryList, true);
+                    territoryListAdapter = new TerritoryListAdapter(SearchActivity.this, baseTerritoryList);
 
                     searchResults.setAdapter(territoryListAdapter);
 

@@ -31,12 +31,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-import com.viableindustries.waterreporter.data.CacheManager;
-import com.viableindustries.waterreporter.data.CancelableCallback;
-import com.viableindustries.waterreporter.data.ImageProperties;
-import com.viableindustries.waterreporter.data.ImageService;
-import com.viableindustries.waterreporter.data.User;
-import com.viableindustries.waterreporter.data.UserService;
+import com.viableindustries.waterreporter.data.interfaces.api.image.ImageService;
+import com.viableindustries.waterreporter.data.interfaces.api.user.UserService;
+import com.viableindustries.waterreporter.data.objects.image.ImageProperties;
+import com.viableindustries.waterreporter.data.objects.user.User;
+import com.viableindustries.waterreporter.user_interface.dialogs.PhotoPickerDialogFragment;
+import com.viableindustries.waterreporter.utilities.CacheManager;
+import com.viableindustries.waterreporter.utilities.CancelableCallback;
+import com.viableindustries.waterreporter.utilities.CircleTransform;
+import com.viableindustries.waterreporter.utilities.FileUtils;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -69,37 +72,28 @@ public class ProfileBasicActivity extends AppCompatActivity implements
         EasyPermissions.PermissionCallbacks{
 
     @Bind(R.id.new_user_profile)
-    private final
     LinearLayout parentLayout;
 
     @Bind(R.id.first_name)
-    private final
     EditText firstNameInput;
 
     @Bind(R.id.last_name)
-    private final
     EditText lastNameInput;
 
     @Bind(R.id.user_bio)
-    private final
     EditText userBioInput;
 
     @Bind(R.id.new_user_avatar)
-    private final
     ImageView userAvatar;
 
     @Bind(R.id.new_user_avatar_preview)
-    private final
     ImageView avatarPreview;
 
     @Bind(R.id.save_profile)
     ImageButton saveProfileButton;
 
     @Bind(R.id.saving_message)
-    private final
     TextView savingMessage;
-
-    private File image;
 
     private String mTempImagePath;
 
@@ -147,6 +141,7 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
         // Create new image file and path reference
 
+        File image;
         try {
 
             image = FileUtils.createImageFile(this);
@@ -308,7 +303,7 @@ public class ProfileBasicActivity extends AppCompatActivity implements
                                             public void onSuccess(User user,
                                                                 Response response) {
 
-                                                // Clear the app data cache
+                                                // Clear the app api cache
 
                                                 CacheManager.deleteCache(getBaseContext());
 
@@ -535,7 +530,7 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
                 } else {
 
-                    Log.d("image", "no image data");
+                    Log.d("image", "no image api");
 
                 }
 

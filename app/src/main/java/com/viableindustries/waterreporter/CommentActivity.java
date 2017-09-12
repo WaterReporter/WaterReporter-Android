@@ -44,30 +44,37 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
-import com.viableindustries.waterreporter.data.CacheManager;
-import com.viableindustries.waterreporter.data.CancelableCallback;
-import com.viableindustries.waterreporter.data.Comment;
-import com.viableindustries.waterreporter.data.CommentCollection;
-import com.viableindustries.waterreporter.data.CommentPost;
-import com.viableindustries.waterreporter.data.CommentService;
-import com.viableindustries.waterreporter.data.HashTag;
-import com.viableindustries.waterreporter.data.HashtagCollection;
-import com.viableindustries.waterreporter.data.ImageProperties;
-import com.viableindustries.waterreporter.data.ImageService;
-import com.viableindustries.waterreporter.data.QueryFilter;
-import com.viableindustries.waterreporter.data.QueryParams;
-import com.viableindustries.waterreporter.data.QuerySort;
-import com.viableindustries.waterreporter.data.Report;
-import com.viableindustries.waterreporter.data.ReportHolder;
-import com.viableindustries.waterreporter.data.ReportService;
-import com.viableindustries.waterreporter.data.ReportStateBody;
-import com.viableindustries.waterreporter.data.TagHolder;
-import com.viableindustries.waterreporter.data.TagService;
-import com.viableindustries.waterreporter.data.UserProfileListener;
-import com.viableindustries.waterreporter.dialogs.CommentActionDialog;
-import com.viableindustries.waterreporter.dialogs.CommentActionDialogListener;
-import com.viableindustries.waterreporter.dialogs.CommentPhotoDialog;
-import com.viableindustries.waterreporter.dialogs.CommentPhotoDialogListener;
+import com.viableindustries.waterreporter.data.interfaces.api.comment.CommentService;
+import com.viableindustries.waterreporter.data.interfaces.api.image.ImageService;
+import com.viableindustries.waterreporter.data.interfaces.api.post.ReportService;
+import com.viableindustries.waterreporter.data.interfaces.api.hashtag.HashTagService;
+import com.viableindustries.waterreporter.data.objects.comment.Comment;
+import com.viableindustries.waterreporter.data.objects.comment.CommentCollection;
+import com.viableindustries.waterreporter.data.objects.comment.CommentPost;
+import com.viableindustries.waterreporter.data.objects.hashtag.HashTag;
+import com.viableindustries.waterreporter.data.objects.hashtag.HashtagCollection;
+import com.viableindustries.waterreporter.data.objects.hashtag.TagHolder;
+import com.viableindustries.waterreporter.data.objects.image.ImageProperties;
+import com.viableindustries.waterreporter.data.objects.post.Report;
+import com.viableindustries.waterreporter.data.objects.post.ReportHolder;
+import com.viableindustries.waterreporter.data.objects.post.ReportStateBody;
+import com.viableindustries.waterreporter.data.objects.query.QueryFilter;
+import com.viableindustries.waterreporter.data.objects.query.QueryParams;
+import com.viableindustries.waterreporter.data.objects.query.QuerySort;
+import com.viableindustries.waterreporter.user_interface.adapters.CommentAdapter;
+import com.viableindustries.waterreporter.user_interface.adapters.TagSuggestionAdapter;
+import com.viableindustries.waterreporter.user_interface.dialogs.CommentActionDialog;
+import com.viableindustries.waterreporter.user_interface.dialogs.CommentActionDialogListener;
+import com.viableindustries.waterreporter.user_interface.dialogs.CommentPhotoDialog;
+import com.viableindustries.waterreporter.user_interface.dialogs.CommentPhotoDialogListener;
+import com.viableindustries.waterreporter.user_interface.dialogs.PhotoPickerDialogFragment;
+import com.viableindustries.waterreporter.user_interface.listeners.UserProfileListener;
+import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
+import com.viableindustries.waterreporter.utilities.CacheManager;
+import com.viableindustries.waterreporter.utilities.CancelableCallback;
+import com.viableindustries.waterreporter.utilities.CircleTransform;
+import com.viableindustries.waterreporter.utilities.FileUtils;
+import com.viableindustries.waterreporter.utilities.PatternEditableBuilder;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -99,52 +106,42 @@ public class CommentActivity extends AppCompatActivity implements
         EasyPermissions.PermissionCallbacks {
 
     @Bind(R.id.commentListContainer)
-    private final
     SwipeRefreshLayout commentListContainer;
 
     @Bind(R.id.commentList)
-    private final
     ListView commentList;
 
     @Bind(R.id.comment_component)
     LinearLayout commentComponent;
 
     @Bind(R.id.camera_button_container)
-    private final
     RelativeLayout cameraButtonContainer;
 
     @Bind(R.id.send_button_container)
     RelativeLayout sendButtonContainer;
 
     @Bind(R.id.add_comment_image)
-    private final
     ImageView addImageIcon;
 
     @Bind(R.id.send)
-    private final
     ImageView sendComment;
 
     @Bind(R.id.comment_box)
     RelativeLayout commentBox;
 
     @Bind(R.id.comment_input)
-    private final
     EditText commentInput;
 
     @Bind(R.id.comment_image_preview)
-    private final
     ImageView mImageView;
 
     @Bind(R.id.suggestion_separator)
-    private final
     View suggestionSeparator;
 
     @Bind(R.id.tag_component)
-    private final
     HorizontalScrollView tagComponent;
 
     @Bind(R.id.tag_results)
-    private final
     LinearLayout tagResults;
 
     private Report report;
@@ -165,10 +162,6 @@ public class CommentActivity extends AppCompatActivity implements
 
     private static final int ACTION_SELECT_PHOTO = 2;
 
-    private boolean photoCaptured = false;
-
-    final private String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
-
     private Uri imageUri;
 
     private static final int RC_ALL_PERMISSIONS = 100;
@@ -186,8 +179,6 @@ public class CommentActivity extends AppCompatActivity implements
     private Handler handler;
 
     private Runnable tagSearchRunnable;
-
-    private TagSuggestionAdapter tagSuggestionAdapter;
 
     private String query;
 
@@ -330,9 +321,9 @@ public class CommentActivity extends AppCompatActivity implements
 
         Log.d("", accessToken);
 
-        RestAdapter restAdapter = TagService.restAdapter;
+        RestAdapter restAdapter = HashTagService.restAdapter;
 
-        TagService service = restAdapter.create(TagService.class);
+        HashTagService service = restAdapter.create(HashTagService.class);
 
         service.getMany(accessToken, "application/json", page, limit, query, new CancelableCallback<HashtagCollection>() {
 
@@ -368,7 +359,7 @@ public class CommentActivity extends AppCompatActivity implements
 
             baseTagList.addAll(hashTags);
 
-            tagSuggestionAdapter = new TagSuggestionAdapter(this, baseTagList);
+            TagSuggestionAdapter tagSuggestionAdapter = new TagSuggestionAdapter(this, baseTagList);
 
             final int adapterCount = tagSuggestionAdapter.getCount();
 
@@ -442,7 +433,7 @@ public class CommentActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
 
-                // Check for minimum data requirements
+                // Check for minimum api requirements
 
                 body = (commentInput.getText().length() > 0) ? commentInput.getText().toString() : null;
 
@@ -470,7 +461,7 @@ public class CommentActivity extends AppCompatActivity implements
                     @Override
                     public void onRefresh() {
                         Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
-                        // This method performs the actual data-refresh operation.
+                        // This method performs the actual api-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
                         fetchComments(50, 1);
                     }
@@ -764,7 +755,7 @@ public class CommentActivity extends AppCompatActivity implements
                 new CancelableCallback<ImageProperties>() {
                     @Override
                     public void onSuccess(ImageProperties imageProperties,
-                                        Response response) {
+                                          Response response) {
 
                         // Immediately delete the cached image file now that we no longer need it
 
@@ -774,7 +765,7 @@ public class CommentActivity extends AppCompatActivity implements
 
                         Log.w("Delete Check", "File deleted: " + tempFile + imageDeleted);
 
-                        // Clear the app data cache
+                        // Clear the app api cache
 
                         CacheManager.deleteCache(getBaseContext());
 
@@ -980,6 +971,7 @@ public class CommentActivity extends AppCompatActivity implements
 
             case ACTION_TAKE_PHOTO:
 
+                boolean photoCaptured = false;
                 if (resultCode == RESULT_OK) {
 
                     this.revokeUriPermission(imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -1110,7 +1102,7 @@ public class CommentActivity extends AppCompatActivity implements
 
                 } else {
 
-                    Log.d("image", "no image data");
+                    Log.d("image", "no image api");
 
                 }
 
@@ -1141,6 +1133,7 @@ public class CommentActivity extends AppCompatActivity implements
             // See: https://developer.android.com/training/camera/photobasics.html
             // https://developer.android.com/reference/android/os/FileUriExposedException.html
 
+            String FILE_PROVIDER_AUTHORITY = "com.viableindustries.waterreporter.fileprovider";
             imageUri = FileProvider.getUriForFile(this, FILE_PROVIDER_AUTHORITY, f);
 
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);

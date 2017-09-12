@@ -11,16 +11,18 @@ import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
-import com.viableindustries.waterreporter.data.CancelableCallback;
-import com.viableindustries.waterreporter.data.Organization;
-import com.viableindustries.waterreporter.data.OrganizationHolder;
-import com.viableindustries.waterreporter.data.OrganizationMemberList;
-import com.viableindustries.waterreporter.data.OrganizationService;
-import com.viableindustries.waterreporter.data.QueryFilter;
-import com.viableindustries.waterreporter.data.QueryParams;
-import com.viableindustries.waterreporter.data.QuerySort;
-import com.viableindustries.waterreporter.data.User;
-import com.viableindustries.waterreporter.data.UserCollection;
+import com.viableindustries.waterreporter.data.interfaces.api.organization.OrganizationService;
+import com.viableindustries.waterreporter.data.objects.organization.Organization;
+import com.viableindustries.waterreporter.data.objects.organization.OrganizationHolder;
+import com.viableindustries.waterreporter.data.objects.organization.OrganizationMemberList;
+import com.viableindustries.waterreporter.data.objects.query.QueryFilter;
+import com.viableindustries.waterreporter.data.objects.query.QueryParams;
+import com.viableindustries.waterreporter.data.objects.query.QuerySort;
+import com.viableindustries.waterreporter.data.objects.user.User;
+import com.viableindustries.waterreporter.data.objects.user.UserCollection;
+import com.viableindustries.waterreporter.user_interface.adapters.UserListAdapter;
+import com.viableindustries.waterreporter.utilities.CancelableCallback;
+import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,11 +37,9 @@ import retrofit.client.Response;
 public class OrganizationMembersActivity extends AppCompatActivity {
 
     @Bind(R.id.memberListContainer)
-    private final
     SwipeRefreshLayout memberListContainer;
 
     @Bind(R.id.memberList)
-    private final
     ListView memberList;
 
     private Organization organization;
@@ -75,7 +75,7 @@ public class OrganizationMembersActivity extends AppCompatActivity {
                     @Override
                     public void onRefresh() {
                         Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
-                        // This method performs the actual data-refresh operation.
+                        // This method performs the actual api-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
                         fetchOrganizationMembers(50, 1, organization.id, null, true);
                     }
@@ -104,7 +104,7 @@ public class OrganizationMembersActivity extends AppCompatActivity {
 
     private void populateUsers(List<User> users) {
 
-        userListAdapter = new UserListAdapter(this, users, true);
+        userListAdapter = new UserListAdapter(this, users);
 
         memberList.setAdapter(userListAdapter);
 
@@ -119,11 +119,11 @@ public class OrganizationMembersActivity extends AppCompatActivity {
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
 
-                // Triggered only when new data needs to be appended to the list
+                // Triggered only when new api needs to be appended to the list
 
                 fetchOrganizationMembers(50, page, organization.id, null, false);
 
-                return true; // ONLY if more data is actually being loaded; false otherwise.
+                return true; // ONLY if more api is actually being loaded; false otherwise.
 
             }
 

@@ -39,23 +39,28 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.style.layers.FillLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
-import com.viableindustries.waterreporter.data.CancelableCallback;
-import com.viableindustries.waterreporter.data.FeatureCollection;
-import com.viableindustries.waterreporter.data.GroupListHolder;
-import com.viableindustries.waterreporter.data.HucFeature;
-import com.viableindustries.waterreporter.data.HucStates;
-import com.viableindustries.waterreporter.data.Organization;
-import com.viableindustries.waterreporter.data.OrganizationFeatureCollection;
-import com.viableindustries.waterreporter.data.OrganizationService;
-import com.viableindustries.waterreporter.data.QueryFilter;
-import com.viableindustries.waterreporter.data.QueryParams;
-import com.viableindustries.waterreporter.data.QuerySort;
-import com.viableindustries.waterreporter.data.Report;
-import com.viableindustries.waterreporter.data.ReportHolder;
-import com.viableindustries.waterreporter.data.ReportService;
-import com.viableindustries.waterreporter.data.Territory;
-import com.viableindustries.waterreporter.data.TerritoryHolder;
-import com.viableindustries.waterreporter.dialogs.TimelineFilterDialog;
+import com.viableindustries.waterreporter.constants.HucStates;
+import com.viableindustries.waterreporter.data.interfaces.api.organization.OrganizationService;
+import com.viableindustries.waterreporter.data.interfaces.api.post.ReportService;
+import com.viableindustries.waterreporter.data.interfaces.api.territory.TerritoryGeometryCallbacks;
+import com.viableindustries.waterreporter.data.interfaces.api.territory.TerritoryHelpers;
+import com.viableindustries.waterreporter.data.objects.FeatureCollection;
+import com.viableindustries.waterreporter.data.objects.organization.GroupListHolder;
+import com.viableindustries.waterreporter.data.objects.organization.Organization;
+import com.viableindustries.waterreporter.data.objects.organization.OrganizationFeatureCollection;
+import com.viableindustries.waterreporter.data.objects.post.Report;
+import com.viableindustries.waterreporter.data.objects.post.ReportHolder;
+import com.viableindustries.waterreporter.data.objects.query.QueryFilter;
+import com.viableindustries.waterreporter.data.objects.query.QueryParams;
+import com.viableindustries.waterreporter.data.objects.query.QuerySort;
+import com.viableindustries.waterreporter.data.objects.territory.HucFeature;
+import com.viableindustries.waterreporter.data.objects.territory.Territory;
+import com.viableindustries.waterreporter.data.objects.territory.TerritoryHolder;
+import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
+import com.viableindustries.waterreporter.user_interface.dialogs.TimelineFilterDialog;
+import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
+import com.viableindustries.waterreporter.utilities.CancelableCallback;
+import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -76,15 +81,9 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
     private FlexboxLayout profileMeta;
 
-    private LinearLayout profileStats;
-
     private FlexboxLayout fblPostCount;
 
     private TextView postCountLabel;
-
-    FlexboxLayout fblActionCount;
-
-    private TextView actionCountLabel;
 
     private FlexboxLayout fblGroupCount;
 
@@ -92,53 +91,32 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
     private TextView territoryName;
 
-    private TextView territoryStates;
-
     private LinearLayout promptBlock;
 
     private TextView promptMessage;
 
-    private Button startPostButton;
-
-    private FlexboxLayout fblFilterGroup;
-
     private TextView tvFilterCategory;
 
     @Bind(R.id.customActionBar)
-    private final
     LinearLayout customActionBar;
 
     @Bind(R.id.actionBarTitle)
-    private final
     TextView actionBarTitle;
 
     @Bind(R.id.actionBarSubtitle)
-    private final
     TextView actionBarSubtitle;
 
     @Bind(R.id.backArrow)
-    private final
     RelativeLayout backArrow;
 
-    //    @Bind(R.id.mapview)
     private MapView mapView;
 
-    private MapboxMap mMapboxMap;
-
     @Bind(R.id.timeline_items)
-    private final
     ListView timeLine;
-
-//    @Bind(R.id.accessMap)
-private FloatingActionButton accessMap;
 
     private TimelineAdapter timelineAdapter;
 
     private final List<Report> reportCollection = new ArrayList<>();
-
-    private String territoryNameText;
-
-    private int territoryId;
 
     private String mActionQuery;
 
@@ -150,17 +128,7 @@ private FloatingActionButton accessMap;
 
     private String mMasterQuery;
 
-    private int actionCount = 0;
-
-    private int mStoryCount = 0;
-
-    private int mLikeCount = 0;
-
-    private int mCommentCount = 0;
-
     private int reportCount = 99999999;
-
-    private boolean actionFocus = false;
 
     private int mapButtonTopOffset;
 
@@ -236,7 +204,7 @@ private FloatingActionButton accessMap;
 //                    @Override
 //                    public void onRefresh() {
 //                        Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
-//                        // This method performs the actual data-refresh operation.
+//                        // This method performs the actual api-refresh operation.
 //                        // The method calls setRefreshing(false) when it's finished.
 //
 //                        countReports(complexQuery, "state");
@@ -289,11 +257,11 @@ private FloatingActionButton accessMap;
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
 
-                // Triggered only when new data needs to be appended to the list
+                // Triggered only when new api needs to be appended to the list
 
                 fetchPosts(5, page, mMasterQuery, false);
 
-                return true; // ONLY if more data is actually being loaded; false otherwise.
+                return true; // ONLY if more api is actually being loaded; false otherwise.
 
             }
 
@@ -531,7 +499,7 @@ private FloatingActionButton accessMap;
 
         mapView = (MapView) header.findViewById(R.id.mapView);
 
-        accessMap = (FloatingActionButton) header.findViewById(R.id.accessMap);
+        FloatingActionButton accessMap = (FloatingActionButton) header.findViewById(R.id.accessMap);
 
         accessMap.animate().y(mapButtonTopOffset).setDuration(1600).start();
 
@@ -547,7 +515,7 @@ private FloatingActionButton accessMap;
 
         promptBlock = (LinearLayout) header.findViewById(R.id.promptBlock);
         promptMessage = (TextView) header.findViewById(R.id.prompt);
-        startPostButton = (Button) header.findViewById(R.id.startPost);
+        Button startPostButton = (Button) header.findViewById(R.id.startPost);
 
         // Add text and click listener to startPostButton
 
@@ -562,7 +530,7 @@ private FloatingActionButton accessMap;
 
         territoryName = (TextView) header.findViewById(R.id.territoryName);
 
-        territoryStates = (TextView) header.findViewById(R.id.states);
+        TextView territoryStates = (TextView) header.findViewById(R.id.states);
 
         fblPostCount = (FlexboxLayout) header.findViewById(R.id.postCount);
 
@@ -572,15 +540,15 @@ private FloatingActionButton accessMap;
 
         postCountLabel = (TextView) header.findViewById(R.id.postCountLabel);
 
-        actionCountLabel = (TextView) header.findViewById(R.id.actionCountLabel);
+        TextView actionCountLabel = (TextView) header.findViewById(R.id.actionCountLabel);
 
         groupCountLabel = (TextView) header.findViewById(R.id.groupCountLabel);
 
         profileMeta = (FlexboxLayout) header.findViewById(R.id.profileMeta);
 
-        profileStats = (LinearLayout) header.findViewById(R.id.profileStats);
+        LinearLayout profileStats = (LinearLayout) header.findViewById(R.id.profileStats);
 
-        fblFilterGroup = (FlexboxLayout) header.findViewById(R.id.filterGroup);
+        FlexboxLayout fblFilterGroup = (FlexboxLayout) header.findViewById(R.id.filterGroup);
 
         tvFilterCategory = (TextView) header.findViewById(R.id.filterCategory);
 
@@ -597,7 +565,7 @@ private FloatingActionButton accessMap;
 
         try {
 
-            territoryId = territory.id;
+            int territoryId = territory.id;
 
         } catch (NullPointerException e) {
 
@@ -607,7 +575,7 @@ private FloatingActionButton accessMap;
 
         }
 
-        territoryNameText = AttributeTransformUtility.parseWatershedName(territory, false);
+        String territoryNameText = AttributeTransformUtility.parseWatershedName(territory, false);
 
         territoryName.setText(territoryNameText);
         actionBarTitle.setText(territoryNameText);

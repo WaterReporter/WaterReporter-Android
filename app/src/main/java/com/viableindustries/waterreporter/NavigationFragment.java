@@ -15,9 +15,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.viableindustries.waterreporter.data.User;
-import com.viableindustries.waterreporter.data.UserHolder;
-import com.viableindustries.waterreporter.data.UserProperties;
+import com.viableindustries.waterreporter.data.objects.user.User;
+import com.viableindustries.waterreporter.data.objects.user.UserHolder;
+import com.viableindustries.waterreporter.data.objects.user.UserProperties;
+import com.viableindustries.waterreporter.utilities.QueryBuilder;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -87,7 +88,7 @@ public class NavigationFragment extends Fragment {
 
                     timeline.setRefreshing(true);
 
-                    ((MainActivity) activity).fetchPosts(5, 1, false, true);
+                    ((MainActivity) activity).fetchPosts(5, 1, true);
 
                 } else {
 

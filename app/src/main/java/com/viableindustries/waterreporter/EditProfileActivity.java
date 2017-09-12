@@ -30,14 +30,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-import com.viableindustries.waterreporter.data.CacheManager;
-import com.viableindustries.waterreporter.data.CancelableCallback;
-import com.viableindustries.waterreporter.data.ImageProperties;
-import com.viableindustries.waterreporter.data.ImageService;
-import com.viableindustries.waterreporter.data.User;
-import com.viableindustries.waterreporter.data.UserHolder;
-import com.viableindustries.waterreporter.data.UserProperties;
-import com.viableindustries.waterreporter.data.UserService;
+import com.viableindustries.waterreporter.data.interfaces.api.image.ImageService;
+import com.viableindustries.waterreporter.data.interfaces.api.user.UserService;
+import com.viableindustries.waterreporter.data.objects.image.ImageProperties;
+import com.viableindustries.waterreporter.data.objects.user.User;
+import com.viableindustries.waterreporter.data.objects.user.UserHolder;
+import com.viableindustries.waterreporter.data.objects.user.UserProperties;
+import com.viableindustries.waterreporter.user_interface.dialogs.PhotoPickerDialogFragment;
+import com.viableindustries.waterreporter.utilities.CacheManager;
+import com.viableindustries.waterreporter.utilities.CancelableCallback;
+import com.viableindustries.waterreporter.utilities.CircleTransform;
+import com.viableindustries.waterreporter.utilities.FileUtils;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -68,57 +71,43 @@ public class EditProfileActivity extends AppCompatActivity implements
         EasyPermissions.PermissionCallbacks {
 
     @Bind(R.id.new_user_profile)
-    private final
     LinearLayout parentLayout;
 
     @Bind(R.id.first_name)
-    private final
     EditText firstNameInput;
 
     @Bind(R.id.last_name)
-    private final
     EditText lastNameInput;
 
     @Bind(R.id.user_title)
-    private final
     EditText userTitleInput;
 
     @Bind(R.id.user_organization_name)
-    private final
     EditText userOrganizationNameInput;
 
     @Bind(R.id.user_public_email)
-    private final
     EditText userPublicEmailInput;
 
     @Bind(R.id.user_telephone)
-    private final
     EditText userTelephoneInput;
 
     @Bind(R.id.user_bio)
-    private final
     EditText userBioInput;
 
     @Bind(R.id.current_user_avatar)
-    private final
     ImageView userAvatar;
 
     @Bind(R.id.current_user_avatar_preview)
-    private final
     ImageView avatarPreview;
 
     @Bind(R.id.change_image)
-    private final
     ImageButton editPhoto;
 
     @Bind(R.id.save_profile)
     ImageButton saveProfileButton;
 
     @Bind(R.id.saving_message)
-    private final
     TextView savingMessage;
-
-    private File image;
 
     private String mTempImagePath;
 
@@ -211,7 +200,7 @@ public class EditProfileActivity extends AppCompatActivity implements
 
             try {
 
-                image = FileUtils.createImageFile(this);
+                File image = FileUtils.createImageFile(this);
 
                 // Use FileProvider to comply with Android security requirements.
                 // See: https://developer.android.com/training/camera/photobasics.html
@@ -328,7 +317,7 @@ public class EditProfileActivity extends AppCompatActivity implements
 
                             getBaseContext().revokeUriPermission(imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                            // Clear the app data cache
+                            // Clear the app api cache
 
                             CacheManager.deleteCache(getBaseContext());
 
@@ -671,7 +660,7 @@ public class EditProfileActivity extends AppCompatActivity implements
 
                 } else {
 
-                    Log.d("image", "no image data");
+                    Log.d("image", "no image api");
 
                 }
 

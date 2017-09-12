@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
@@ -33,18 +32,25 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.style.layers.FillLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
-import com.viableindustries.waterreporter.data.CancelableCallback;
-import com.viableindustries.waterreporter.data.Comment;
-import com.viableindustries.waterreporter.data.CommentCollection;
-import com.viableindustries.waterreporter.data.HucFeature;
-import com.viableindustries.waterreporter.data.PostCommentListener;
-import com.viableindustries.waterreporter.data.PostFavoriteCountListener;
-import com.viableindustries.waterreporter.data.QueryParams;
-import com.viableindustries.waterreporter.data.QuerySort;
-import com.viableindustries.waterreporter.data.Report;
-import com.viableindustries.waterreporter.data.ReportHolder;
-import com.viableindustries.waterreporter.data.ReportService;
-import com.viableindustries.waterreporter.data.Territory;
+import com.viableindustries.waterreporter.data.interfaces.api.post.ReportService;
+import com.viableindustries.waterreporter.data.interfaces.api.territory.TerritoryGeometryCallbacks;
+import com.viableindustries.waterreporter.data.interfaces.api.territory.TerritoryHelpers;
+import com.viableindustries.waterreporter.data.objects.comment.Comment;
+import com.viableindustries.waterreporter.data.objects.comment.CommentCollection;
+import com.viableindustries.waterreporter.data.objects.post.Report;
+import com.viableindustries.waterreporter.data.objects.post.ReportHolder;
+import com.viableindustries.waterreporter.data.objects.query.QueryParams;
+import com.viableindustries.waterreporter.data.objects.query.QuerySort;
+import com.viableindustries.waterreporter.data.objects.territory.HucFeature;
+import com.viableindustries.waterreporter.data.objects.territory.Territory;
+import com.viableindustries.waterreporter.user_interface.adapters.CommentAdapter;
+import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
+import com.viableindustries.waterreporter.user_interface.adapters.TimelineItemViewHolder;
+import com.viableindustries.waterreporter.user_interface.listeners.PostCommentListener;
+import com.viableindustries.waterreporter.user_interface.listeners.PostFavoriteCountListener;
+import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
+import com.viableindustries.waterreporter.utilities.CancelableCallback;
+import com.viableindustries.waterreporter.utilities.DeviceDimensionsHelper;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -67,47 +73,19 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillOpacity;
 public class PostDetailActivity extends AppCompatActivity {
 
     @Bind(R.id.commentList)
-    private final
     ListView commentList;
 
-    @Bind(R.id.mapGroup)
-    FrameLayout mapGroup;
-
     @Bind(R.id.mapview)
-    private final
     MapView mapView;
 
     @Bind(R.id.mapMask)
-    private final
     View mapMask;
 
     @Bind(R.id.listViewLock)
-    private final
     View listViewLock;
 
     @Bind(R.id.listViewGroup)
-    private final
     LinearLayout listViewGroup;
-
-//    @Nullable
-//    @Bind(R.id.customActionBar)
-//    LinearLayout customActionBar;
-//
-//    @Nullable
-//    @Bind(R.id.actionBarTitle)
-//    TextView actionBarTitle;
-//
-//    @Nullable
-//    @Bind(R.id.actionBarSubtitle)
-//    TextView actionBarSubtitle;
-
-    private RelativeLayout mCommentCount;
-
-    private TextView mFullCommentCount;
-
-    private RelativeLayout mFavoriteCount;
-
-    private TextView mFullFavoriteCount;
 
     protected List<String> groups;
 
@@ -115,17 +93,9 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
 
-    private CommentAdapter commentAdapter;
-
     private List<Comment> commentCollectionList = new ArrayList<>();
 
     private Report mPost;
-
-    private ViewGroup mListViewHeader;
-
-    private MapboxMap mMapboxMap;
-
-    private GestureDetectorCompat mDetector;
 
     private boolean mDisplayMap;
 
@@ -159,7 +129,7 @@ public class PostDetailActivity extends AppCompatActivity {
 //
 //        }
 
-        // Retrieve report and attempt to display data
+        // Retrieve report and attempt to display api
 
         mPost = ReportHolder.getReport();
 
@@ -352,13 +322,13 @@ public class PostDetailActivity extends AppCompatActivity {
 
         LayoutInflater inflater = getLayoutInflater();
 
-        mListViewHeader = (ViewGroup) inflater.inflate(R.layout.post_detail_header, commentList, false);
+        ViewGroup mListViewHeader = (ViewGroup) inflater.inflate(R.layout.post_detail_header, commentList, false);
 
         final LinearLayout postContainer = (LinearLayout) mListViewHeader.findViewById(R.id.postContainer);
 
-        final TimelineAdapter.ViewHolder viewHolder;
+        final TimelineItemViewHolder viewHolder;
 
-        viewHolder = new TimelineAdapter.ViewHolder();
+        viewHolder = new TimelineItemViewHolder();
 
         viewHolder.postHeader = (LinearLayout) postContainer.findViewById(R.id.postHeader);
         viewHolder.postDate = (TextView) postContainer.findViewById(R.id.postDate);
@@ -441,10 +411,10 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private void populateActionCounts(final ViewGroup viewGroup, final Report post) {
 
-        mCommentCount = (RelativeLayout) viewGroup.findViewById(R.id.commentCount);
-        mFullCommentCount = (TextView) viewGroup.findViewById(R.id.fullCommentCount);
-        mFavoriteCount = (RelativeLayout) viewGroup.findViewById(R.id.favoriteCount);
-        mFullFavoriteCount = (TextView) viewGroup.findViewById(R.id.fullFavoriteCount);
+        RelativeLayout mCommentCount = (RelativeLayout) viewGroup.findViewById(R.id.commentCount);
+        TextView mFullCommentCount = (TextView) viewGroup.findViewById(R.id.fullCommentCount);
+        RelativeLayout mFavoriteCount = (RelativeLayout) viewGroup.findViewById(R.id.favoriteCount);
+        TextView mFullFavoriteCount = (TextView) viewGroup.findViewById(R.id.fullFavoriteCount);
 
         // Set value of comment count string
         int commentCount = post.properties.comments.size();
@@ -590,7 +560,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private void populateComments(List<Comment> comments) {
 
-        commentAdapter = new CommentAdapter(this, comments);
+        CommentAdapter commentAdapter = new CommentAdapter(this, comments);
 
         commentList.setAdapter(commentAdapter);
 
