@@ -6,7 +6,6 @@ import com.viableindustries.waterreporter.api.models.organization.OrganizationFe
 import com.viableindustries.waterreporter.api.models.user.UserCollection;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
-import retrofit.RestAdapter;
 import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Path;

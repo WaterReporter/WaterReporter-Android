@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
-import com.viableindustries.waterreporter.api.interfaces.data.user.UserService;
 import com.viableindustries.waterreporter.api.models.notification.NotificationSetting;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.user.User;

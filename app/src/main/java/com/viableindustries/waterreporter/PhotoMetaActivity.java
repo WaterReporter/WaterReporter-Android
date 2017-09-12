@@ -47,9 +47,6 @@ import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
-import com.viableindustries.waterreporter.api.interfaces.data.hashtag.HashTagService;
-import com.viableindustries.waterreporter.api.interfaces.data.image.ImageService;
-import com.viableindustries.waterreporter.api.interfaces.data.post.ReportService;
 import com.viableindustries.waterreporter.api.interfaces.data.post.SendPostCallbacks;
 import com.viableindustries.waterreporter.api.models.geometry.Geometry;
 import com.viableindustries.waterreporter.api.models.geometry.GeometryResponse;
@@ -105,7 +102,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 

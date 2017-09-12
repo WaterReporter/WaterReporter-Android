@@ -8,7 +8,6 @@ import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
 import java.util.Map;
 
-import retrofit.RestAdapter;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.Header;

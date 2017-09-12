@@ -20,8 +20,6 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
-import com.viableindustries.waterreporter.api.interfaces.data.organization.OrganizationService;
-import com.viableindustries.waterreporter.api.interfaces.data.post.ReportService;
 import com.viableindustries.waterreporter.api.models.FeatureCollection;
 import com.viableindustries.waterreporter.api.models.organization.GroupListHolder;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
@@ -39,7 +37,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 

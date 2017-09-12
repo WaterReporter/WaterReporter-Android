@@ -24,9 +24,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
-import com.viableindustries.waterreporter.constants.Constants;
-import com.viableindustries.waterreporter.api.interfaces.data.post.ReportService;
-import com.viableindustries.waterreporter.api.interfaces.data.user.UserService;
 import com.viableindustries.waterreporter.api.models.FeatureCollection;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.organization.OrganizationFeatureCollection;
@@ -34,6 +31,7 @@ import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.api.models.post.ReportHolder;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
+import com.viableindustries.waterreporter.constants.Constants;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
 import com.viableindustries.waterreporter.user_interface.dialogs.ReportActionDialog;
 import com.viableindustries.waterreporter.utilities.ApiDispatcher;
@@ -49,7 +47,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 

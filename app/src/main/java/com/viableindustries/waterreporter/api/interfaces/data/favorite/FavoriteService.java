@@ -4,7 +4,6 @@ import com.viableindustries.waterreporter.api.models.favorite.Favorite;
 import com.viableindustries.waterreporter.api.models.favorite.FavoritePostBody;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
-import retrofit.RestAdapter;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.Header;

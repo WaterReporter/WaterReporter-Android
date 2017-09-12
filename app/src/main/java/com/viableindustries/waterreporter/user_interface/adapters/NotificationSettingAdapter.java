@@ -16,7 +16,6 @@ import android.widget.Toast;
 import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.SignInActivity;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
-import com.viableindustries.waterreporter.api.interfaces.data.user.UserService;
 import com.viableindustries.waterreporter.api.models.notification.NotificationPatchBody;
 import com.viableindustries.waterreporter.api.models.notification.NotificationSetting;
 import com.viableindustries.waterreporter.api.models.user.User;

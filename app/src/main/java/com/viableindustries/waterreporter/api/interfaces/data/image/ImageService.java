@@ -3,7 +3,6 @@ package com.viableindustries.waterreporter.api.interfaces.data.image;
 import com.viableindustries.waterreporter.api.models.image.ImageProperties;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
-import retrofit.RestAdapter;
 import retrofit.http.Header;
 import retrofit.http.Multipart;
 import retrofit.http.POST;

@@ -10,7 +10,6 @@ import com.viableindustries.waterreporter.api.models.post.ReportPostBody;
 import com.viableindustries.waterreporter.api.models.post.ReportStateBody;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
-import retrofit.RestAdapter;
 import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;

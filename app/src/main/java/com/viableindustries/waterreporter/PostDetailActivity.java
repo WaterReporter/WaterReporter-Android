@@ -33,7 +33,6 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.style.layers.FillLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
-import com.viableindustries.waterreporter.api.interfaces.data.post.ReportService;
 import com.viableindustries.waterreporter.api.interfaces.data.territory.TerritoryGeometryCallbacks;
 import com.viableindustries.waterreporter.api.interfaces.data.territory.TerritoryHelpers;
 import com.viableindustries.waterreporter.api.models.comment.Comment;
@@ -60,7 +59,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 

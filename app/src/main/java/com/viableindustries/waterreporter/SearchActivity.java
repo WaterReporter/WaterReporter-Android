@@ -22,11 +22,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
-import com.viableindustries.waterreporter.api.interfaces.data.hashtag.HashTagService;
 import com.viableindustries.waterreporter.api.interfaces.data.organization.OrganizationService;
-import com.viableindustries.waterreporter.api.interfaces.data.territory.TerritoryService;
-import com.viableindustries.waterreporter.api.interfaces.data.trending.TrendingService;
-import com.viableindustries.waterreporter.api.interfaces.data.user.UserService;
 import com.viableindustries.waterreporter.api.models.hashtag.HashTag;
 import com.viableindustries.waterreporter.api.models.hashtag.HashtagCollection;
 import com.viableindustries.waterreporter.api.models.hashtag.TrendingTags;

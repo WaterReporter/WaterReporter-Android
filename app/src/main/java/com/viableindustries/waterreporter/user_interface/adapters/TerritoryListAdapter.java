@@ -13,9 +13,9 @@ import android.widget.TextView;
 
 import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.TerritoryActivity;
-import com.viableindustries.waterreporter.constants.HucStates;
 import com.viableindustries.waterreporter.api.models.territory.Territory;
 import com.viableindustries.waterreporter.api.models.territory.TerritoryHolder;
+import com.viableindustries.waterreporter.constants.HucStates;
 
 import java.util.ArrayList;
 

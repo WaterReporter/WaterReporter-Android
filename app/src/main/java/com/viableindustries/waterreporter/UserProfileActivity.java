@@ -1,32 +1,22 @@
 package com.viableindustries.waterreporter;
 
-import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
-import com.viableindustries.waterreporter.api.interfaces.data.post.ReportService;
-import com.viableindustries.waterreporter.api.interfaces.data.user.UserService;
 import com.viableindustries.waterreporter.api.models.FeatureCollection;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.organization.OrganizationFeatureCollection;
@@ -42,7 +32,6 @@ import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapte
 import com.viableindustries.waterreporter.user_interface.dialogs.ReportActionDialogListener;
 import com.viableindustries.waterreporter.user_interface.view_holders.UserProfileHeaderView;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
-import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 
 import java.util.ArrayList;
@@ -50,13 +39,12 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-import static java.lang.Boolean.TRUE;
-
-public class UserProfileActivity extends AppCompatActivity implements ReportActionDialogListener {
+public class UserProfileActivity extends AppCompatActivity implements
+        ReportActionDialogListener,
+        UserProfileHeaderView.UserProfileHeaderCallback {
 
     @Bind(R.id.timeline)
     SwipeRefreshLayout timeLineContainer;
@@ -541,7 +529,23 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     }
 
-    private void resetStats() {
+    public void showActions() {
+
+        actionFocus = true;
+
+        if (timeLine != null) {
+
+            timeLine.setSelection(0);
+
+        }
+
+        timeLineContainer.setRefreshing(true);
+
+        fetchPosts(5, 1, complexQuery, true);
+
+    }
+
+    public void resetStats() {
 
         mUserProfileHeaderView.reportCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
         mUserProfileHeaderView.reportCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));

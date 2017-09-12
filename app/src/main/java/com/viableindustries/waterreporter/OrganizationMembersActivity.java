@@ -12,7 +12,6 @@ import android.widget.ListView;
 
 import com.google.gson.Gson;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
-import com.viableindustries.waterreporter.api.interfaces.data.organization.OrganizationService;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.organization.OrganizationHolder;
 import com.viableindustries.waterreporter.api.models.organization.OrganizationMemberList;

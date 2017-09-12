@@ -9,7 +9,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
-import com.viableindustries.waterreporter.api.interfaces.security.SecurityService;
 import com.viableindustries.waterreporter.api.models.auth.RegistrationResponse;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
@@ -20,7 +19,6 @@ import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 

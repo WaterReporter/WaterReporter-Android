@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
-import com.viableindustries.waterreporter.api.interfaces.data.post.ReportService;
 import com.viableindustries.waterreporter.api.interfaces.data.post.SendPostCallbacks;
 import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.api.models.post.ReportPostBody;

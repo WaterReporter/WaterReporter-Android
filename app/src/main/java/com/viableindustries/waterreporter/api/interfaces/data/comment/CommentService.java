@@ -4,7 +4,6 @@ import com.viableindustries.waterreporter.api.models.comment.Comment;
 import com.viableindustries.waterreporter.api.models.comment.CommentPost;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
-import retrofit.RestAdapter;
 import retrofit.http.Body;
 import retrofit.http.Header;
 import retrofit.http.POST;

@@ -14,12 +14,10 @@ import com.google.gson.Gson;
 import com.viableindustries.waterreporter.MainActivity;
 import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
-import com.viableindustries.waterreporter.constants.Constants;
-import com.viableindustries.waterreporter.api.interfaces.data.image.ImageService;
-import com.viableindustries.waterreporter.api.interfaces.data.post.ReportService;
 import com.viableindustries.waterreporter.api.models.image.ImageProperties;
 import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.api.models.post.ReportPostBody;
+import com.viableindustries.waterreporter.constants.Constants;
 import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
 import com.viableindustries.waterreporter.utilities.BroadcastNotifier;
 

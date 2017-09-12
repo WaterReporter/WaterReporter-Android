@@ -37,8 +37,6 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
-import com.viableindustries.waterreporter.constants.HucStates;
-import com.viableindustries.waterreporter.api.interfaces.data.post.ReportService;
 import com.viableindustries.waterreporter.api.models.FeatureCollection;
 import com.viableindustries.waterreporter.api.models.geometry.Geometry;
 import com.viableindustries.waterreporter.api.models.post.Report;
@@ -48,6 +46,7 @@ import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
 import com.viableindustries.waterreporter.api.models.territory.Territory;
 import com.viableindustries.waterreporter.api.models.territory.TerritoryHolder;
+import com.viableindustries.waterreporter.constants.HucStates;
 import com.viableindustries.waterreporter.map_box.CustomMarkerView;
 import com.viableindustries.waterreporter.map_box.CustomMarkerViewOptions;
 import com.viableindustries.waterreporter.map_box.MappedReportsHolder;
@@ -60,7 +59,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 

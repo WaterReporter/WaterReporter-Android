@@ -12,7 +12,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
-import com.viableindustries.waterreporter.api.interfaces.security.SecurityService;
 import com.viableindustries.waterreporter.api.models.auth.AuthResponse;
 import com.viableindustries.waterreporter.api.models.auth.LogInBody;
 import com.viableindustries.waterreporter.api.models.auth.RegistrationBody;
@@ -24,7 +23,6 @@ import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 

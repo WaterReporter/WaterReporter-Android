@@ -3,6 +3,7 @@ package com.viableindustries.waterreporter.user_interface.view_holders;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.TextViewCompat;
 import android.text.TextUtils;
@@ -43,6 +44,14 @@ public class UserProfileHeaderView {
     public LinearLayout promptBlock;
     public TextView promptMessage;
     public Button startPostButton;
+
+    public interface UserProfileHeaderCallback {
+
+        void resetStats();
+
+        void showActions();
+
+    }
 
     public UserProfileHeaderView() {
     }
@@ -155,6 +164,36 @@ public class UserProfileHeaderView {
 
         // Attach click listeners to stat elements
 
+        reportStat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                reportCounter.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
+                reportCountLabel.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
+
+                actionCounter.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
+                actionCountLabel.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
+
+                resetStats(context, v);
+
+            }
+        });
+
+        actionStat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                actionCounter.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
+                actionCountLabel.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
+
+                reportCounter.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
+                reportCountLabel.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
+
+                showActions(context, v);
+
+            }
+        });
+
         groupStat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -170,6 +209,18 @@ public class UserProfileHeaderView {
         });
 
         header.setTag(this);
+
+    }
+
+    public void showActions(Context context, View view) {
+
+        ((UserProfileHeaderView.UserProfileHeaderCallback) context).showActions();
+
+    }
+
+    public void resetStats(Context context, View view) {
+
+        ((UserProfileHeaderView.UserProfileHeaderCallback) context).resetStats();
 
     }
 

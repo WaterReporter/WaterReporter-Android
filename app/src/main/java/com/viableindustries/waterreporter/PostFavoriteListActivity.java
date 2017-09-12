@@ -14,7 +14,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
-import com.viableindustries.waterreporter.api.interfaces.data.post.ReportService;
 import com.viableindustries.waterreporter.api.models.favorite.Favorite;
 import com.viableindustries.waterreporter.api.models.favorite.FavoriteCollection;
 import com.viableindustries.waterreporter.api.models.post.Report;

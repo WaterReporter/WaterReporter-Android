@@ -40,9 +40,6 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.style.layers.FillLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
-import com.viableindustries.waterreporter.constants.HucStates;
-import com.viableindustries.waterreporter.api.interfaces.data.organization.OrganizationService;
-import com.viableindustries.waterreporter.api.interfaces.data.post.ReportService;
 import com.viableindustries.waterreporter.api.interfaces.data.territory.TerritoryGeometryCallbacks;
 import com.viableindustries.waterreporter.api.interfaces.data.territory.TerritoryHelpers;
 import com.viableindustries.waterreporter.api.models.FeatureCollection;
@@ -57,6 +54,7 @@ import com.viableindustries.waterreporter.api.models.query.QuerySort;
 import com.viableindustries.waterreporter.api.models.territory.HucFeature;
 import com.viableindustries.waterreporter.api.models.territory.Territory;
 import com.viableindustries.waterreporter.api.models.territory.TerritoryHolder;
+import com.viableindustries.waterreporter.constants.HucStates;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
 import com.viableindustries.waterreporter.user_interface.dialogs.TimelineFilterDialog;
 import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
@@ -70,7 +68,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
