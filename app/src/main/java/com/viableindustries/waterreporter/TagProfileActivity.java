@@ -19,16 +19,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.viableindustries.waterreporter.data.interfaces.api.organization.OrganizationService;
-import com.viableindustries.waterreporter.data.interfaces.api.post.ReportService;
-import com.viableindustries.waterreporter.data.objects.FeatureCollection;
-import com.viableindustries.waterreporter.data.objects.organization.GroupListHolder;
-import com.viableindustries.waterreporter.data.objects.organization.Organization;
-import com.viableindustries.waterreporter.data.objects.organization.OrganizationFeatureCollection;
-import com.viableindustries.waterreporter.data.objects.post.Report;
-import com.viableindustries.waterreporter.data.objects.query.QueryFilter;
-import com.viableindustries.waterreporter.data.objects.query.QueryParams;
-import com.viableindustries.waterreporter.data.objects.query.QuerySort;
+import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.interfaces.data.organization.OrganizationService;
+import com.viableindustries.waterreporter.api.interfaces.data.post.ReportService;
+import com.viableindustries.waterreporter.api.models.FeatureCollection;
+import com.viableindustries.waterreporter.api.models.organization.GroupListHolder;
+import com.viableindustries.waterreporter.api.models.organization.Organization;
+import com.viableindustries.waterreporter.api.models.organization.OrganizationFeatureCollection;
+import com.viableindustries.waterreporter.api.models.post.Report;
+import com.viableindustries.waterreporter.api.models.query.QueryFilter;
+import com.viableindustries.waterreporter.api.models.query.QueryParams;
+import com.viableindustries.waterreporter.api.models.query.QuerySort;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
@@ -347,11 +348,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
         final String accessToken = prefs.getString("access_token", "");
 
-        RestAdapter restAdapter = ReportService.restAdapter;
-
-        ReportService service = restAdapter.create(ReportService.class);
-
-        service.getReports(accessToken, "application/json", 1, 1, query, new CancelableCallback<FeatureCollection>() {
+        RestClient.getReportService().getReports(accessToken, "application/json", 1, 1, query, new CancelableCallback<FeatureCollection>() {
 
             @Override
             public void onSuccess(FeatureCollection featureCollection, Response response) {
@@ -477,13 +474,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
         final String accessToken = prefs.getString("access_token", "");
 
-        Log.d("", accessToken);
-
-        RestAdapter restAdapter = OrganizationService.restAdapter;
-
-        OrganizationService service = restAdapter.create(OrganizationService.class);
-
-        service.getOrganizations(accessToken, "application/json", page, limit, query, new CancelableCallback<OrganizationFeatureCollection>() {
+        RestClient.getOrganizationService().getOrganizations(accessToken, "application/json", page, limit, query, new CancelableCallback<OrganizationFeatureCollection>() {
 
             @Override
             public void onSuccess(OrganizationFeatureCollection organizationFeatureCollection, Response response) {
@@ -538,15 +529,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
         final String accessToken = prefs.getString("access_token", "");
 
-        Log.d("", accessToken);
-
-        Log.d("URL", query);
-
-        RestAdapter restAdapter = ReportService.restAdapter;
-
-        ReportService service = restAdapter.create(ReportService.class);
-
-        service.getReports(accessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
+        RestClient.getReportService().getReports(accessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
 
             @Override
             public void onSuccess(FeatureCollection featureCollection, Response response) {

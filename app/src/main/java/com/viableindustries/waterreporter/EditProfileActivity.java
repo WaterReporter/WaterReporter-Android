@@ -30,12 +30,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-import com.viableindustries.waterreporter.data.interfaces.api.image.ImageService;
-import com.viableindustries.waterreporter.data.interfaces.api.user.UserService;
-import com.viableindustries.waterreporter.data.objects.image.ImageProperties;
-import com.viableindustries.waterreporter.data.objects.user.User;
-import com.viableindustries.waterreporter.data.objects.user.UserHolder;
-import com.viableindustries.waterreporter.data.objects.user.UserProperties;
+import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.interfaces.data.image.ImageService;
+import com.viableindustries.waterreporter.api.interfaces.data.user.UserService;
+import com.viableindustries.waterreporter.api.models.image.ImageProperties;
+import com.viableindustries.waterreporter.api.models.user.User;
+import com.viableindustries.waterreporter.api.models.user.UserHolder;
+import com.viableindustries.waterreporter.api.models.user.UserProperties;
 import com.viableindustries.waterreporter.user_interface.dialogs.PhotoPickerDialogFragment;
 import com.viableindustries.waterreporter.utilities.CacheManager;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
@@ -281,10 +282,6 @@ public class EditProfileActivity extends AppCompatActivity implements
 
         savingMessage.setText(getResources().getString(R.string.saving_profile));
 
-        final ImageService imageService = ImageService.restAdapter.create(ImageService.class);
-
-        final UserService userService = UserService.restAdapter.create(UserService.class);
-
         final int userId = prefs.getInt("user_id", 0);
 
         accessToken = prefs.getString("access_token", "");
@@ -307,7 +304,7 @@ public class EditProfileActivity extends AppCompatActivity implements
 
             TypedFile typedPhoto = new TypedFile(mimeType, photo);
 
-            imageService.postImageAsync(accessToken, typedPhoto,
+            RestClient.getImageService().postImageAsync(accessToken, typedPhoto,
                     new CancelableCallback<ImageProperties>() {
                         @Override
                         public void onSuccess(ImageProperties imageProperties,
@@ -413,9 +410,7 @@ public class EditProfileActivity extends AppCompatActivity implements
 
         }
 
-        final UserService userService = UserService.restAdapter.create(UserService.class);
-
-        userService.updateUser(accessToken,
+        RestClient.getUserService().updateUser(accessToken,
                 "application/json",
                 coreUser.id,
                 userPatch,

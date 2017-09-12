@@ -1,6 +1,6 @@
 package com.viableindustries.waterreporter.utilities;
 
-import com.viableindustries.waterreporter.data.objects.organization.Organization;
+import com.viableindustries.waterreporter.api.models.organization.Organization;
 
 import java.util.Comparator;
 

@@ -8,8 +8,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.viableindustries.waterreporter.data.interfaces.security.SecurityService;
-import com.viableindustries.waterreporter.data.objects.auth.RegistrationResponse;
+import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.interfaces.security.SecurityService;
+import com.viableindustries.waterreporter.api.models.auth.RegistrationResponse;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
 import java.util.HashMap;
@@ -70,10 +71,6 @@ public class PasswordResetActivity extends Activity {
 
     public void requestReset(View view) {
 
-        final RestAdapter restAdapter = SecurityService.restAdapter;
-
-        final SecurityService securityService = restAdapter.create(SecurityService.class);
-
         final SharedPreferences prefs =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
@@ -87,7 +84,7 @@ public class PasswordResetActivity extends Activity {
 
             resetBody.put("email", email);
 
-            securityService.reset(resetBody,
+            RestClient.getSecurityService().reset(resetBody,
                     new CancelableCallback<RegistrationResponse>() {
                         @Override
                         public void onSuccess(RegistrationResponse registrationResponse,

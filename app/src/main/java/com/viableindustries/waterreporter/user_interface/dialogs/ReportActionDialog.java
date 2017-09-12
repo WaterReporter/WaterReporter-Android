@@ -18,10 +18,10 @@ import android.widget.LinearLayout;
 import com.viableindustries.waterreporter.PhotoMetaActivity;
 import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.SignInActivity;
-import com.viableindustries.waterreporter.data.interfaces.api.post.DeletePostCallbacks;
-import com.viableindustries.waterreporter.data.objects.Geometry;
-import com.viableindustries.waterreporter.data.objects.post.Report;
-import com.viableindustries.waterreporter.data.objects.post.ReportHolder;
+import com.viableindustries.waterreporter.api.interfaces.data.post.DeletePostCallbacks;
+import com.viableindustries.waterreporter.api.models.geometry.Geometry;
+import com.viableindustries.waterreporter.api.models.post.Report;
+import com.viableindustries.waterreporter.api.models.post.ReportHolder;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapterHelpers;
 
 import java.util.List;

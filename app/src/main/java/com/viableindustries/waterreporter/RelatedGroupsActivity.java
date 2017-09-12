@@ -13,8 +13,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.viableindustries.waterreporter.data.objects.organization.GroupListHolder;
-import com.viableindustries.waterreporter.data.objects.organization.Organization;
+import com.viableindustries.waterreporter.api.models.organization.GroupListHolder;
+import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.user_interface.adapters.OrganizationListAdapter;
 
 import java.util.ArrayList;

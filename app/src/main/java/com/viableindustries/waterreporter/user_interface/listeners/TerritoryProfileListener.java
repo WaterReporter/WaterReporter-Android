@@ -6,8 +6,8 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.viableindustries.waterreporter.TerritoryActivity;
-import com.viableindustries.waterreporter.data.objects.territory.Territory;
-import com.viableindustries.waterreporter.data.objects.territory.TerritoryHolder;
+import com.viableindustries.waterreporter.api.models.territory.Territory;
+import com.viableindustries.waterreporter.api.models.territory.TerritoryHolder;
 
 /**
  * Created by brendanmcintyre on 4/13/17.

@@ -28,7 +28,7 @@
         tools:replace="android:icon">
 
         <service
-            android:name=".data.services.ImagePostService"
+            android:name=".api.services.ImagePostService"
             android:exported="false"/>
 
         <!-- Mapbox telemetry service -->

@@ -2,7 +2,7 @@ package com.viableindustries.waterreporter.utilities;
 
 import android.os.AsyncTask;
 
-import com.viableindustries.waterreporter.data.objects.open_graph.OpenGraphResponse;
+import com.viableindustries.waterreporter.api.models.open_graph.OpenGraphResponse;
 
 import org.jsoup.nodes.Document;
 

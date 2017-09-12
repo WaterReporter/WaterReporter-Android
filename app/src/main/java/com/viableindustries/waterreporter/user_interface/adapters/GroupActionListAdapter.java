@@ -18,10 +18,11 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.R;
-import com.viableindustries.waterreporter.data.interfaces.api.user.UserService;
-import com.viableindustries.waterreporter.data.objects.organization.Organization;
-import com.viableindustries.waterreporter.data.objects.user.User;
-import com.viableindustries.waterreporter.data.objects.user.UserOrgPatch;
+import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.interfaces.data.user.UserService;
+import com.viableindustries.waterreporter.api.models.organization.Organization;
+import com.viableindustries.waterreporter.api.models.user.User;
+import com.viableindustries.waterreporter.api.models.user.UserOrgPatch;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 
@@ -144,9 +145,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
         Map<String, Map> userPatch = UserOrgPatch.buildRequest(organization.id, operation);
 
-        UserService service = UserService.restAdapter.create(UserService.class);
-
-        service.updateUserOrganization(accessToken, "application/json", id, userPatch, new CancelableCallback<User>() {
+        RestClient.getUserService().updateUserOrganization(accessToken, "application/json", id, userPatch, new CancelableCallback<User>() {
 
             @Override
             public void onSuccess(User user, Response response) {

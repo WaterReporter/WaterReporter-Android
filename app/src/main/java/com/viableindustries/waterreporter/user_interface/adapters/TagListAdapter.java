@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.TagProfileActivity;
-import com.viableindustries.waterreporter.data.objects.hashtag.HashTag;
+import com.viableindustries.waterreporter.api.models.hashtag.HashTag;
 
 import java.util.List;
 

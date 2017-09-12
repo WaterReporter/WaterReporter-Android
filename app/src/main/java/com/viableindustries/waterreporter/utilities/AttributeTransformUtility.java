@@ -4,8 +4,8 @@ import android.content.res.Resources;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.viableindustries.waterreporter.data.objects.organization.Organization;
-import com.viableindustries.waterreporter.data.objects.territory.Territory;
+import com.viableindustries.waterreporter.api.models.organization.Organization;
+import com.viableindustries.waterreporter.api.models.territory.Territory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

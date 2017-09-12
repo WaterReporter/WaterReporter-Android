@@ -13,8 +13,8 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.PostDetailActivity;
 import com.viableindustries.waterreporter.R;
-import com.viableindustries.waterreporter.data.objects.post.Report;
-import com.viableindustries.waterreporter.data.objects.post.ReportHolder;
+import com.viableindustries.waterreporter.api.models.post.Report;
+import com.viableindustries.waterreporter.api.models.post.ReportHolder;
 
 import java.util.List;
 

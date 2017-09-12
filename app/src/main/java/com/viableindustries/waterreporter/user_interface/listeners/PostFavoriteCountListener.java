@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.view.View;
 
 import com.viableindustries.waterreporter.PostFavoriteListActivity;
-import com.viableindustries.waterreporter.data.objects.post.Report;
-import com.viableindustries.waterreporter.data.objects.post.ReportHolder;
+import com.viableindustries.waterreporter.api.models.post.Report;
+import com.viableindustries.waterreporter.api.models.post.ReportHolder;
 
 /**
  * Created by brendanmcintyre on 8/17/17.

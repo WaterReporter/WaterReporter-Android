@@ -18,11 +18,12 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
-import com.viableindustries.waterreporter.data.interfaces.api.organization.OrganizationService;
-import com.viableindustries.waterreporter.data.objects.organization.Organization;
-import com.viableindustries.waterreporter.data.objects.organization.OrganizationFeatureCollection;
-import com.viableindustries.waterreporter.data.objects.query.QueryParams;
-import com.viableindustries.waterreporter.data.objects.query.QuerySort;
+import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.interfaces.data.organization.OrganizationService;
+import com.viableindustries.waterreporter.api.models.organization.Organization;
+import com.viableindustries.waterreporter.api.models.organization.OrganizationFeatureCollection;
+import com.viableindustries.waterreporter.api.models.query.QueryParams;
+import com.viableindustries.waterreporter.api.models.query.QuerySort;
 import com.viableindustries.waterreporter.user_interface.adapters.GroupActionListAdapter;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
@@ -155,8 +156,6 @@ public class GroupActionListActivity extends AppCompatActivity {
 
         final String accessToken = prefs.getString("access_token", "");
 
-        OrganizationService service = OrganizationService.restAdapter.create(OrganizationService.class);
-
         // Create order_by list and add a sort parameter
 
         List<QuerySort> queryOrder = new ArrayList<>();
@@ -173,7 +172,7 @@ public class GroupActionListActivity extends AppCompatActivity {
 
         Log.d("URL", query);
 
-        service.getOrganizations(accessToken, "application/json", page, limit, query, new CancelableCallback<OrganizationFeatureCollection>() {
+        RestClient.getOrganizationService().getOrganizations(accessToken, "application/json", page, limit, query, new CancelableCallback<OrganizationFeatureCollection>() {
 
             @Override
             public void onSuccess(OrganizationFeatureCollection organizationCollectionResponse, Response response) {

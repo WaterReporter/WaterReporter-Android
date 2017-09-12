@@ -4,10 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
-import com.viableindustries.waterreporter.data.interfaces.api.post.ReportService;
-import com.viableindustries.waterreporter.data.interfaces.api.post.SendPostCallbacks;
-import com.viableindustries.waterreporter.data.objects.post.Report;
-import com.viableindustries.waterreporter.data.objects.post.ReportPostBody;
+import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.interfaces.data.post.ReportService;
+import com.viableindustries.waterreporter.api.interfaces.data.post.SendPostCallbacks;
+import com.viableindustries.waterreporter.api.models.post.Report;
+import com.viableindustries.waterreporter.api.models.post.ReportPostBody;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -44,9 +45,7 @@ public class ApiDispatcher {
 
     public static void sendFullPost(String accessToken, ReportPostBody reportPostBody, @NonNull final SendPostCallbacks callbacks) {
 
-        ReportService reportService = ReportService.restAdapter.create(ReportService.class);
-
-        reportService.postReport(accessToken, "application/json", reportPostBody,
+        RestClient.getReportService().postReport(accessToken, "application/json", reportPostBody,
                 new CancelableCallback<Report>() {
 
                     @Override

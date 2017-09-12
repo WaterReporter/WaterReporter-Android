@@ -9,11 +9,12 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.viableindustries.waterreporter.data.interfaces.api.user.UserService;
-import com.viableindustries.waterreporter.data.objects.notification.NotificationSetting;
-import com.viableindustries.waterreporter.data.objects.organization.Organization;
-import com.viableindustries.waterreporter.data.objects.user.User;
-import com.viableindustries.waterreporter.data.objects.user.UserHolder;
+import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.interfaces.data.user.UserService;
+import com.viableindustries.waterreporter.api.models.notification.NotificationSetting;
+import com.viableindustries.waterreporter.api.models.organization.Organization;
+import com.viableindustries.waterreporter.api.models.user.User;
+import com.viableindustries.waterreporter.api.models.user.UserHolder;
 import com.viableindustries.waterreporter.user_interface.adapters.NotificationSettingAdapter;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
@@ -108,9 +109,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
         final String accessToken = prefs.getString("access_token", "");
 
-        final UserService userService = UserService.restAdapter.create(UserService.class);
-
-        userService.getUser(accessToken,
+        RestClient.getUserService().getUser(accessToken,
                 "application/json",
                 userId,
                 new CancelableCallback<User>() {

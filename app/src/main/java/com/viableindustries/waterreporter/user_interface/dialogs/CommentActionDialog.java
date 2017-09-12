@@ -8,8 +8,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 
 import com.viableindustries.waterreporter.R;
-import com.viableindustries.waterreporter.data.objects.post.Report;
-import com.viableindustries.waterreporter.data.objects.post.ReportHolder;
+import com.viableindustries.waterreporter.api.models.post.Report;
+import com.viableindustries.waterreporter.api.models.post.ReportHolder;
 import com.viableindustries.waterreporter.utilities.HtmlCompat;
 
 /**

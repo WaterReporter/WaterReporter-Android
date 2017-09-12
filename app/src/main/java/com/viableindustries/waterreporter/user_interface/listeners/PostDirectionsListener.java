@@ -7,8 +7,8 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.view.View;
 
-import com.viableindustries.waterreporter.data.objects.Geometry;
-import com.viableindustries.waterreporter.data.objects.post.Report;
+import com.viableindustries.waterreporter.api.models.geometry.Geometry;
+import com.viableindustries.waterreporter.api.models.post.Report;
 
 import java.util.List;
 

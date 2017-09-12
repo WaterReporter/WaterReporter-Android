@@ -46,30 +46,31 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.squareup.picasso.Picasso;
-import com.viableindustries.waterreporter.data.interfaces.api.hashtag.HashTagService;
-import com.viableindustries.waterreporter.data.interfaces.api.image.ImageService;
-import com.viableindustries.waterreporter.data.interfaces.api.post.ReportService;
-import com.viableindustries.waterreporter.data.interfaces.api.post.SendPostCallbacks;
-import com.viableindustries.waterreporter.data.objects.Geometry;
-import com.viableindustries.waterreporter.data.objects.GeometryResponse;
-import com.viableindustries.waterreporter.data.objects.hashtag.HashTag;
-import com.viableindustries.waterreporter.data.objects.hashtag.HashtagCollection;
-import com.viableindustries.waterreporter.data.objects.hashtag.TagHolder;
-import com.viableindustries.waterreporter.data.objects.open_graph.OpenGraphProperties;
-import com.viableindustries.waterreporter.data.objects.open_graph.OpenGraphResponse;
-import com.viableindustries.waterreporter.data.objects.organization.AbbreviatedOrganization;
-import com.viableindustries.waterreporter.data.objects.organization.Organization;
-import com.viableindustries.waterreporter.data.objects.post.Report;
-import com.viableindustries.waterreporter.data.objects.post.ReportHolder;
-import com.viableindustries.waterreporter.data.objects.post.ReportPatchBody;
-import com.viableindustries.waterreporter.data.objects.post.ReportPostBody;
-import com.viableindustries.waterreporter.data.objects.query.QueryFilter;
-import com.viableindustries.waterreporter.data.objects.query.QueryParams;
-import com.viableindustries.waterreporter.data.objects.query.QuerySort;
-import com.viableindustries.waterreporter.data.objects.user.User;
-import com.viableindustries.waterreporter.data.objects.user.UserHolder;
-import com.viableindustries.waterreporter.data.objects.user.UserProperties;
-import com.viableindustries.waterreporter.data.services.ImagePostService;
+import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.interfaces.data.hashtag.HashTagService;
+import com.viableindustries.waterreporter.api.interfaces.data.image.ImageService;
+import com.viableindustries.waterreporter.api.interfaces.data.post.ReportService;
+import com.viableindustries.waterreporter.api.interfaces.data.post.SendPostCallbacks;
+import com.viableindustries.waterreporter.api.models.geometry.Geometry;
+import com.viableindustries.waterreporter.api.models.geometry.GeometryResponse;
+import com.viableindustries.waterreporter.api.models.hashtag.HashTag;
+import com.viableindustries.waterreporter.api.models.hashtag.HashtagCollection;
+import com.viableindustries.waterreporter.api.models.hashtag.TagHolder;
+import com.viableindustries.waterreporter.api.models.open_graph.OpenGraphProperties;
+import com.viableindustries.waterreporter.api.models.open_graph.OpenGraphResponse;
+import com.viableindustries.waterreporter.api.models.organization.AbbreviatedOrganization;
+import com.viableindustries.waterreporter.api.models.organization.Organization;
+import com.viableindustries.waterreporter.api.models.post.Report;
+import com.viableindustries.waterreporter.api.models.post.ReportHolder;
+import com.viableindustries.waterreporter.api.models.post.ReportPatchBody;
+import com.viableindustries.waterreporter.api.models.post.ReportPostBody;
+import com.viableindustries.waterreporter.api.models.query.QueryFilter;
+import com.viableindustries.waterreporter.api.models.query.QueryParams;
+import com.viableindustries.waterreporter.api.models.query.QuerySort;
+import com.viableindustries.waterreporter.api.models.user.User;
+import com.viableindustries.waterreporter.api.models.user.UserHolder;
+import com.viableindustries.waterreporter.api.models.user.UserProperties;
+import com.viableindustries.waterreporter.api.services.ImagePostService;
 import com.viableindustries.waterreporter.user_interface.adapters.OrganizationCheckListAdapter;
 import com.viableindustries.waterreporter.user_interface.adapters.TagSuggestionAdapter;
 import com.viableindustries.waterreporter.user_interface.dialogs.PhotoPickerDialogFragment;
@@ -204,8 +205,6 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     private Context mContext;
 
-    private ReportService reportService;
-
     private SharedPreferences mSharedPreferences;
 
     private SharedPreferences groupMemberships;
@@ -280,12 +279,6 @@ public class PhotoMetaActivity extends AppCompatActivity
         groupMemberships = getSharedPreferences(getString(R.string.group_membership_key), 0);
 
         associatedGroups = getSharedPreferences(getString(R.string.associated_group_key), 0);
-
-        // Instantiate API services
-
-        reportService = ReportService.restAdapter.create(ReportService.class);
-
-        ImageService imageService = ImageService.restAdapter.create(ImageService.class);
 
         if (!ConnectionUtility.connectionActive(this)) {
 
@@ -729,13 +722,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        Log.d("", accessToken);
-
-        RestAdapter restAdapter = HashTagService.restAdapter;
-
-        HashTagService service = restAdapter.create(HashTagService.class);
-
-        service.getMany(accessToken, "application/json", page, limit, query, new CancelableCallback<HashtagCollection>() {
+        RestClient.getHashTagService().getMany(accessToken, "application/json", page, limit, query, new CancelableCallback<HashtagCollection>() {
 
             @Override
             public void onSuccess(HashtagCollection hashtagCollection, Response response) {
@@ -1398,7 +1385,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         Log.d("groups", groups.toString());
 
-        reportService.updateReport(accessToken, "application/json", report.id, reportPatchBody,
+        RestClient.getReportService().updateReport(accessToken, "application/json", report.id, reportPatchBody,
                 new CancelableCallback<Report>() {
                     @Override
                     public void onSuccess(Report report, Response response) {

@@ -26,15 +26,16 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.TagProfileActivity;
-import com.viableindustries.waterreporter.data.interfaces.api.favorite.FavoriteService;
-import com.viableindustries.waterreporter.data.interfaces.api.post.DeletePostCallbacks;
-import com.viableindustries.waterreporter.data.interfaces.api.post.ReportService;
-import com.viableindustries.waterreporter.data.objects.favorite.Favorite;
-import com.viableindustries.waterreporter.data.objects.favorite.FavoritePostBody;
-import com.viableindustries.waterreporter.data.objects.open_graph.OpenGraphObject;
-import com.viableindustries.waterreporter.data.objects.organization.Organization;
-import com.viableindustries.waterreporter.data.objects.post.Report;
-import com.viableindustries.waterreporter.data.objects.post.ReportPhoto;
+import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.interfaces.data.favorite.FavoriteService;
+import com.viableindustries.waterreporter.api.interfaces.data.post.DeletePostCallbacks;
+import com.viableindustries.waterreporter.api.interfaces.data.post.ReportService;
+import com.viableindustries.waterreporter.api.models.favorite.Favorite;
+import com.viableindustries.waterreporter.api.models.favorite.FavoritePostBody;
+import com.viableindustries.waterreporter.api.models.open_graph.OpenGraphObject;
+import com.viableindustries.waterreporter.api.models.organization.Organization;
+import com.viableindustries.waterreporter.api.models.post.Report;
+import com.viableindustries.waterreporter.api.models.post.ReportPhoto;
 import com.viableindustries.waterreporter.user_interface.listeners.OrganizationProfileListener;
 import com.viableindustries.waterreporter.user_interface.listeners.TerritoryProfileListener;
 import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
@@ -114,9 +115,9 @@ public class TimelineAdapterHelpers {
 
         FavoritePostBody favoritePostBody = new FavoritePostBody(post.id);
 
-        FavoriteService service = FavoriteService.restAdapter.create(FavoriteService.class);
+        // Send API request
 
-        service.addFavorite(accessToken, "application/json", favoritePostBody, new CancelableCallback<Favorite>() {
+        RestClient.getFavoriteService().addFavorite(accessToken, "application/json", favoritePostBody, new CancelableCallback<Favorite>() {
 
             @Override
             public void onSuccess(Favorite favorite, Response response) {
@@ -176,11 +177,9 @@ public class TimelineAdapterHelpers {
 
         final String accessToken = mPreferences.getString("access_token", "");
 
-        // Build request object
+        // Send API request
 
-        FavoriteService service = FavoriteService.restAdapter.create(FavoriteService.class);
-
-        service.undoFavorite(accessToken, "application/json", favoriteId, new CancelableCallback<Void>() {
+        RestClient.getFavoriteService().undoFavorite(accessToken, "application/json", favoriteId, new CancelableCallback<Void>() {
 
             @Override
             public void onSuccess(Void v, Response response) {
@@ -529,9 +528,7 @@ public class TimelineAdapterHelpers {
 
         String accessToken = sharedPreferences.getString("access_token", "");
 
-        ReportService service = ReportService.restAdapter.create(ReportService.class);
-
-        service.deleteSingleReport(accessToken, post.id, new CancelableCallback<Response>() {
+        RestClient.getReportService().deleteSingleReport(accessToken, post.id, new CancelableCallback<Response>() {
 
             @Override
             public void onSuccess(Response response, Response _response) {

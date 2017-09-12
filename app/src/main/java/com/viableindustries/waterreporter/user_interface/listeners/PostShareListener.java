@@ -6,7 +6,7 @@ import android.content.res.Resources;
 import android.view.View;
 
 import com.viableindustries.waterreporter.R;
-import com.viableindustries.waterreporter.data.objects.post.Report;
+import com.viableindustries.waterreporter.api.models.post.Report;
 
 /**
  * Created by brendanmcintyre on 8/1/17.

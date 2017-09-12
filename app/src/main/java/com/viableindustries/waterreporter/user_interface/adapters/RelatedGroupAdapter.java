@@ -10,7 +10,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.R;
-import com.viableindustries.waterreporter.data.objects.organization.Organization;
+import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 
 import java.util.List;

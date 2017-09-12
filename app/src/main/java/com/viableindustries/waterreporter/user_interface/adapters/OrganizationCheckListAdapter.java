@@ -13,8 +13,8 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.viableindustries.waterreporter.R;
-import com.viableindustries.waterreporter.data.objects.organization.AbbreviatedOrganization;
-import com.viableindustries.waterreporter.data.objects.organization.Organization;
+import com.viableindustries.waterreporter.api.models.organization.AbbreviatedOrganization;
+import com.viableindustries.waterreporter.api.models.organization.Organization;
 
 import java.util.ArrayList;
 

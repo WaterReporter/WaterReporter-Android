@@ -15,8 +15,8 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.UserProfileActivity;
-import com.viableindustries.waterreporter.data.objects.user.User;
-import com.viableindustries.waterreporter.data.objects.user.UserHolder;
+import com.viableindustries.waterreporter.api.models.user.User;
+import com.viableindustries.waterreporter.api.models.user.UserHolder;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 
 import java.util.List;

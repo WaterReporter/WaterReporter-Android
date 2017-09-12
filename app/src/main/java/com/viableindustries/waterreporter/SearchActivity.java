@@ -21,27 +21,28 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.viableindustries.waterreporter.data.interfaces.api.hashtag.HashTagService;
-import com.viableindustries.waterreporter.data.interfaces.api.organization.OrganizationService;
-import com.viableindustries.waterreporter.data.interfaces.api.territory.TerritoryService;
-import com.viableindustries.waterreporter.data.interfaces.api.trending.TrendingService;
-import com.viableindustries.waterreporter.data.interfaces.api.user.UserService;
-import com.viableindustries.waterreporter.data.objects.hashtag.HashTag;
-import com.viableindustries.waterreporter.data.objects.hashtag.HashtagCollection;
-import com.viableindustries.waterreporter.data.objects.hashtag.TrendingTags;
-import com.viableindustries.waterreporter.data.objects.organization.Organization;
-import com.viableindustries.waterreporter.data.objects.organization.OrganizationFeatureCollection;
-import com.viableindustries.waterreporter.data.objects.organization.TrendingGroups;
-import com.viableindustries.waterreporter.data.objects.query.BooleanQueryFilter;
-import com.viableindustries.waterreporter.data.objects.query.QueryFilter;
-import com.viableindustries.waterreporter.data.objects.query.QueryParams;
-import com.viableindustries.waterreporter.data.objects.query.QuerySort;
-import com.viableindustries.waterreporter.data.objects.territory.Territory;
-import com.viableindustries.waterreporter.data.objects.territory.TerritoryCollection;
-import com.viableindustries.waterreporter.data.objects.territory.TrendingTerritories;
-import com.viableindustries.waterreporter.data.objects.user.TrendingPeople;
-import com.viableindustries.waterreporter.data.objects.user.User;
-import com.viableindustries.waterreporter.data.objects.user.UserCollection;
+import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.interfaces.data.hashtag.HashTagService;
+import com.viableindustries.waterreporter.api.interfaces.data.organization.OrganizationService;
+import com.viableindustries.waterreporter.api.interfaces.data.territory.TerritoryService;
+import com.viableindustries.waterreporter.api.interfaces.data.trending.TrendingService;
+import com.viableindustries.waterreporter.api.interfaces.data.user.UserService;
+import com.viableindustries.waterreporter.api.models.hashtag.HashTag;
+import com.viableindustries.waterreporter.api.models.hashtag.HashtagCollection;
+import com.viableindustries.waterreporter.api.models.hashtag.TrendingTags;
+import com.viableindustries.waterreporter.api.models.organization.Organization;
+import com.viableindustries.waterreporter.api.models.organization.OrganizationFeatureCollection;
+import com.viableindustries.waterreporter.api.models.organization.TrendingGroups;
+import com.viableindustries.waterreporter.api.models.query.BooleanQueryFilter;
+import com.viableindustries.waterreporter.api.models.query.QueryFilter;
+import com.viableindustries.waterreporter.api.models.query.QueryParams;
+import com.viableindustries.waterreporter.api.models.query.QuerySort;
+import com.viableindustries.waterreporter.api.models.territory.Territory;
+import com.viableindustries.waterreporter.api.models.territory.TerritoryCollection;
+import com.viableindustries.waterreporter.api.models.territory.TrendingTerritories;
+import com.viableindustries.waterreporter.api.models.user.TrendingPeople;
+import com.viableindustries.waterreporter.api.models.user.User;
+import com.viableindustries.waterreporter.api.models.user.UserCollection;
 import com.viableindustries.waterreporter.user_interface.adapters.OrganizationListAdapter;
 import com.viableindustries.waterreporter.user_interface.adapters.TagListAdapter;
 import com.viableindustries.waterreporter.user_interface.adapters.TerritoryListAdapter;
@@ -279,13 +280,7 @@ public class SearchActivity extends FragmentActivity {
 
         final String accessToken = prefs.getString("access_token", "");
 
-        Log.d("", accessToken);
-
-        RestAdapter restAdapter = OrganizationService.restAdapter;
-
-        OrganizationService service = restAdapter.create(OrganizationService.class);
-
-        service.getOrganizations(accessToken, "application/json", page, limit, query, new CancelableCallback<OrganizationFeatureCollection>() {
+        RestClient.getOrganizationService().getOrganizations(accessToken, "application/json", page, limit, query, new CancelableCallback<OrganizationFeatureCollection>() {
 
             @Override
             public void onSuccess(OrganizationFeatureCollection organizationFeatureCollection, Response response) {
@@ -311,13 +306,7 @@ public class SearchActivity extends FragmentActivity {
 
         final String accessToken = prefs.getString("access_token", "");
 
-        Log.d("", accessToken);
-
-        RestAdapter restAdapter = TrendingService.restAdapter;
-
-        TrendingService service = restAdapter.create(TrendingService.class);
-
-        service.getTrendingGroups(accessToken, "application/json", page, limit, new CancelableCallback<TrendingGroups>() {
+        RestClient.getTrendingService().getTrendingGroups(accessToken, "application/json", page, limit, new CancelableCallback<TrendingGroups>() {
 
             @Override
             public void onSuccess(TrendingGroups trendingGroups, Response response) {
@@ -341,13 +330,7 @@ public class SearchActivity extends FragmentActivity {
 
         final String accessToken = prefs.getString("access_token", "");
 
-        Log.d("", accessToken);
-
-        RestAdapter restAdapter = UserService.restAdapter;
-
-        UserService service = restAdapter.create(UserService.class);
-
-        service.getUsers(accessToken, "application/json", page, limit, query, new CancelableCallback<UserCollection>() {
+        RestClient.getUserService().getUsers(accessToken, "application/json", page, limit, query, new CancelableCallback<UserCollection>() {
 
             @Override
             public void onSuccess(UserCollection userCollection, Response response) {
@@ -373,13 +356,7 @@ public class SearchActivity extends FragmentActivity {
 
         final String accessToken = prefs.getString("access_token", "");
 
-        Log.d("", accessToken);
-
-        RestAdapter restAdapter = TrendingService.restAdapter;
-
-        TrendingService service = restAdapter.create(TrendingService.class);
-
-        service.getTrendingPeople(accessToken, "application/json", page, limit, new CancelableCallback<TrendingPeople>() {
+        RestClient.getTrendingService().getTrendingPeople(accessToken, "application/json", page, limit, new CancelableCallback<TrendingPeople>() {
 
             @Override
             public void onSuccess(TrendingPeople trendingPeople, Response response) {
@@ -403,13 +380,7 @@ public class SearchActivity extends FragmentActivity {
 
         final String accessToken = prefs.getString("access_token", "");
 
-        Log.d("", accessToken);
-
-        RestAdapter restAdapter = TerritoryService.restAdapter;
-
-        TerritoryService service = restAdapter.create(TerritoryService.class);
-
-        service.search(accessToken, "application/json", page, limit, query, new CancelableCallback<TerritoryCollection>() {
+        RestClient.getTerritoryService().search(accessToken, "application/json", page, limit, query, new CancelableCallback<TerritoryCollection>() {
 
             @Override
             public void onSuccess(TerritoryCollection territoryCollection, Response response) {
@@ -435,13 +406,7 @@ public class SearchActivity extends FragmentActivity {
 
         final String accessToken = prefs.getString("access_token", "");
 
-        Log.d("", accessToken);
-
-        RestAdapter restAdapter = TrendingService.restAdapter;
-
-        TrendingService service = restAdapter.create(TrendingService.class);
-
-        service.getTrendingTerritories(accessToken, "application/json", page, limit, new CancelableCallback<TrendingTerritories>() {
+        RestClient.getTrendingService().getTrendingTerritories(accessToken, "application/json", page, limit, new CancelableCallback<TrendingTerritories>() {
 
             @Override
             public void onSuccess(TrendingTerritories trendingTerritories, Response response) {
@@ -465,13 +430,7 @@ public class SearchActivity extends FragmentActivity {
 
         final String accessToken = prefs.getString("access_token", "");
 
-        Log.d("", accessToken);
-
-        RestAdapter restAdapter = HashTagService.restAdapter;
-
-        HashTagService service = restAdapter.create(HashTagService.class);
-
-        service.getMany(accessToken, "application/json", page, limit, query, new CancelableCallback<HashtagCollection>() {
+        RestClient.getHashTagService().getMany(accessToken, "application/json", page, limit, query, new CancelableCallback<HashtagCollection>() {
 
             @Override
             public void onSuccess(HashtagCollection hashtagCollection, Response response) {
@@ -497,13 +456,7 @@ public class SearchActivity extends FragmentActivity {
 
         final String accessToken = prefs.getString("access_token", "");
 
-        Log.d("", accessToken);
-
-        RestAdapter restAdapter = TrendingService.restAdapter;
-
-        TrendingService service = restAdapter.create(TrendingService.class);
-
-        service.getTrendingTags(accessToken, "application/json", page, limit, new CancelableCallback<TrendingTags>() {
+        RestClient.getTrendingService().getTrendingTags(accessToken, "application/json", page, limit, new CancelableCallback<TrendingTags>() {
 
             @Override
             public void onSuccess(TrendingTags trendingTags, Response response) {

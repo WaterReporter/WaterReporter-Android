@@ -44,23 +44,24 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
-import com.viableindustries.waterreporter.data.interfaces.api.comment.CommentService;
-import com.viableindustries.waterreporter.data.interfaces.api.hashtag.HashTagService;
-import com.viableindustries.waterreporter.data.interfaces.api.image.ImageService;
-import com.viableindustries.waterreporter.data.interfaces.api.post.ReportService;
-import com.viableindustries.waterreporter.data.objects.comment.Comment;
-import com.viableindustries.waterreporter.data.objects.comment.CommentCollection;
-import com.viableindustries.waterreporter.data.objects.comment.CommentPost;
-import com.viableindustries.waterreporter.data.objects.hashtag.HashTag;
-import com.viableindustries.waterreporter.data.objects.hashtag.HashtagCollection;
-import com.viableindustries.waterreporter.data.objects.hashtag.TagHolder;
-import com.viableindustries.waterreporter.data.objects.image.ImageProperties;
-import com.viableindustries.waterreporter.data.objects.post.Report;
-import com.viableindustries.waterreporter.data.objects.post.ReportHolder;
-import com.viableindustries.waterreporter.data.objects.post.ReportStateBody;
-import com.viableindustries.waterreporter.data.objects.query.QueryFilter;
-import com.viableindustries.waterreporter.data.objects.query.QueryParams;
-import com.viableindustries.waterreporter.data.objects.query.QuerySort;
+import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.interfaces.data.comment.CommentService;
+import com.viableindustries.waterreporter.api.interfaces.data.hashtag.HashTagService;
+import com.viableindustries.waterreporter.api.interfaces.data.image.ImageService;
+import com.viableindustries.waterreporter.api.interfaces.data.post.ReportService;
+import com.viableindustries.waterreporter.api.models.comment.Comment;
+import com.viableindustries.waterreporter.api.models.comment.CommentCollection;
+import com.viableindustries.waterreporter.api.models.comment.CommentPost;
+import com.viableindustries.waterreporter.api.models.hashtag.HashTag;
+import com.viableindustries.waterreporter.api.models.hashtag.HashtagCollection;
+import com.viableindustries.waterreporter.api.models.hashtag.TagHolder;
+import com.viableindustries.waterreporter.api.models.image.ImageProperties;
+import com.viableindustries.waterreporter.api.models.post.Report;
+import com.viableindustries.waterreporter.api.models.post.ReportHolder;
+import com.viableindustries.waterreporter.api.models.post.ReportStateBody;
+import com.viableindustries.waterreporter.api.models.query.QueryFilter;
+import com.viableindustries.waterreporter.api.models.query.QueryParams;
+import com.viableindustries.waterreporter.api.models.query.QuerySort;
 import com.viableindustries.waterreporter.user_interface.adapters.CommentAdapter;
 import com.viableindustries.waterreporter.user_interface.adapters.TagSuggestionAdapter;
 import com.viableindustries.waterreporter.user_interface.dialogs.CommentActionDialog;
@@ -319,13 +320,7 @@ public class CommentActivity extends AppCompatActivity implements
 
         final String accessToken = prefs.getString("access_token", "");
 
-        Log.d("", accessToken);
-
-        RestAdapter restAdapter = HashTagService.restAdapter;
-
-        HashTagService service = restAdapter.create(HashTagService.class);
-
-        service.getMany(accessToken, "application/json", page, limit, query, new CancelableCallback<HashtagCollection>() {
+        RestClient.getHashTagService().getMany(accessToken, "application/json", page, limit, query, new CancelableCallback<HashtagCollection>() {
 
             @Override
             public void onSuccess(HashtagCollection hashtagCollection, Response response) {
@@ -603,13 +598,9 @@ public class CommentActivity extends AppCompatActivity implements
 
         String query = new Gson().toJson(queryParams);
 
-        Log.d("URL", query);
-
-        ReportService service = ReportService.restAdapter.create(ReportService.class);
-
         commentListContainer.setRefreshing(true);
 
-        service.getReportComments(accessToken, "application/json", report.id, page, limit, query, new CancelableCallback<CommentCollection>() {
+        RestClient.getReportService().getReportComments(accessToken, "application/json", report.id, page, limit, query, new CancelableCallback<CommentCollection>() {
 
             @Override
             public void onSuccess(CommentCollection commentCollection, Response response) {
@@ -737,8 +728,6 @@ public class CommentActivity extends AppCompatActivity implements
 
         commentListContainer.setRefreshing(true);
 
-        final ImageService imageService = ImageService.restAdapter.create(ImageService.class);
-
         final String accessToken = prefs.getString("access_token", "");
 
         FileNameMap fileNameMap = URLConnection.getFileNameMap();
@@ -751,7 +740,7 @@ public class CommentActivity extends AppCompatActivity implements
 
         TypedFile typedPhoto = new TypedFile(mimeType, photo);
 
-        imageService.postImageAsync(accessToken, typedPhoto,
+        RestClient.getImageService().postImageAsync(accessToken, typedPhoto,
                 new CancelableCallback<ImageProperties>() {
                     @Override
                     public void onSuccess(ImageProperties imageProperties,
@@ -806,11 +795,7 @@ public class CommentActivity extends AppCompatActivity implements
 
         final String accessToken = prefs.getString("access_token", "");
 
-        Log.d("", accessToken);
-
-        CommentService service = CommentService.restAdapter.create(CommentService.class);
-
-        service.postComment(accessToken, "application/json", commentPost, new CancelableCallback<Comment>() {
+        RestClient.getCommentService().postComment(accessToken, "application/json", commentPost, new CancelableCallback<Comment>() {
 
             @Override
             public void onSuccess(Comment comment, Response response) {
@@ -860,13 +845,9 @@ public class CommentActivity extends AppCompatActivity implements
 
         final String accessToken = prefs.getString("access_token", "");
 
-        Log.d("", accessToken);
-
-        ReportService service = ReportService.restAdapter.create(ReportService.class);
-
         ReportStateBody reportStateBody = new ReportStateBody(reportId, state);
 
-        service.setReportState(accessToken, "application/json", reportId, reportStateBody, new CancelableCallback<Report>() {
+      RestClient.getReportService().setReportState(accessToken, "application/json", reportId, reportStateBody, new CancelableCallback<Report>() {
 
             @Override
             public void onSuccess(Report report, Response response) {

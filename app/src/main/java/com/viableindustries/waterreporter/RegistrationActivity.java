@@ -11,11 +11,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.viableindustries.waterreporter.data.interfaces.security.SecurityService;
-import com.viableindustries.waterreporter.data.objects.auth.AuthResponse;
-import com.viableindustries.waterreporter.data.objects.auth.LogInBody;
-import com.viableindustries.waterreporter.data.objects.auth.RegistrationBody;
-import com.viableindustries.waterreporter.data.objects.auth.RegistrationResponse;
+import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.interfaces.security.SecurityService;
+import com.viableindustries.waterreporter.api.models.auth.AuthResponse;
+import com.viableindustries.waterreporter.api.models.auth.LogInBody;
+import com.viableindustries.waterreporter.api.models.auth.RegistrationBody;
+import com.viableindustries.waterreporter.api.models.auth.RegistrationResponse;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
 import java.util.regex.Matcher;
@@ -83,10 +84,6 @@ public class RegistrationActivity extends AppCompatActivity {
 
     public void saveAccount(View view) {
 
-        RestAdapter restAdapter = SecurityService.restAdapter;
-
-        final SecurityService securityService = restAdapter.create(SecurityService.class);
-
         final String password = String.valueOf(password_text.getText());
 
         // Check to make sure that the user's password is at least 6 characters long.
@@ -115,7 +112,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
             RegistrationBody registrationBody = new RegistrationBody(email, password);
 
-            securityService.register(registrationBody,
+            RestClient.getSecurityService().register(registrationBody,
                     new CancelableCallback<RegistrationResponse>() {
                         @Override
                         public void onSuccess(RegistrationResponse registrationResponse,
@@ -164,7 +161,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                         getString(R.string.client_id), getString(R.string.redirect_uri),
                                         getString(R.string.scope), getString(R.string.state));
 
-                                securityService.save(logInBody,
+                                RestClient.getSecurityService().save(logInBody,
                                         new CancelableCallback<AuthResponse>() {
                                             @Override
                                             public void onSuccess(AuthResponse authResponse,

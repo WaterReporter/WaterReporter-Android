@@ -1,9 +1,9 @@
 package com.viableindustries.waterreporter.utilities;
 
 import com.google.gson.Gson;
-import com.viableindustries.waterreporter.data.objects.query.QueryFilter;
-import com.viableindustries.waterreporter.data.objects.query.QueryParams;
-import com.viableindustries.waterreporter.data.objects.query.QuerySort;
+import com.viableindustries.waterreporter.api.models.query.QueryFilter;
+import com.viableindustries.waterreporter.api.models.query.QueryParams;
+import com.viableindustries.waterreporter.api.models.query.QuerySort;
 
 import java.util.ArrayList;
 import java.util.List;

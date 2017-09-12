@@ -32,17 +32,18 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.style.layers.FillLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
-import com.viableindustries.waterreporter.data.interfaces.api.post.ReportService;
-import com.viableindustries.waterreporter.data.interfaces.api.territory.TerritoryGeometryCallbacks;
-import com.viableindustries.waterreporter.data.interfaces.api.territory.TerritoryHelpers;
-import com.viableindustries.waterreporter.data.objects.comment.Comment;
-import com.viableindustries.waterreporter.data.objects.comment.CommentCollection;
-import com.viableindustries.waterreporter.data.objects.post.Report;
-import com.viableindustries.waterreporter.data.objects.post.ReportHolder;
-import com.viableindustries.waterreporter.data.objects.query.QueryParams;
-import com.viableindustries.waterreporter.data.objects.query.QuerySort;
-import com.viableindustries.waterreporter.data.objects.territory.HucFeature;
-import com.viableindustries.waterreporter.data.objects.territory.Territory;
+import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.interfaces.data.post.ReportService;
+import com.viableindustries.waterreporter.api.interfaces.data.territory.TerritoryGeometryCallbacks;
+import com.viableindustries.waterreporter.api.interfaces.data.territory.TerritoryHelpers;
+import com.viableindustries.waterreporter.api.models.comment.Comment;
+import com.viableindustries.waterreporter.api.models.comment.CommentCollection;
+import com.viableindustries.waterreporter.api.models.post.Report;
+import com.viableindustries.waterreporter.api.models.post.ReportHolder;
+import com.viableindustries.waterreporter.api.models.query.QueryParams;
+import com.viableindustries.waterreporter.api.models.query.QuerySort;
+import com.viableindustries.waterreporter.api.models.territory.HucFeature;
+import com.viableindustries.waterreporter.api.models.territory.Territory;
 import com.viableindustries.waterreporter.user_interface.adapters.CommentAdapter;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineItemViewHolder;
@@ -446,11 +447,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private void fetchReport(int postId) {
 
-        RestAdapter restAdapter = ReportService.restAdapter;
-
-        ReportService service = restAdapter.create(ReportService.class);
-
-        service.getSingleReport("", "application/json", postId, new CancelableCallback<Report>() {
+       RestClient.getReportService().getSingleReport("", "application/json", postId, new CancelableCallback<Report>() {
 
             @Override
             public void onSuccess(Report report, Response response) {
@@ -506,13 +503,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         String query = new Gson().toJson(queryParams);
 
-        Log.d("URL", query);
-
-        ReportService service = ReportService.restAdapter.create(ReportService.class);
-
-//        commentListContainer.setRefreshing(true);
-
-        service.getReportComments(accessToken, "application/json", mPost.id, page, limit, query, new CancelableCallback<CommentCollection>() {
+        RestClient.getReportService().getReportComments(accessToken, "application/json", mPost.id, page, limit, query, new CancelableCallback<CommentCollection>() {
 
             @Override
             public void onSuccess(CommentCollection commentCollection, Response response) {
@@ -525,14 +516,10 @@ public class PostDetailActivity extends AppCompatActivity {
 
                 populateComments(commentCollectionList);
 
-//                commentListContainer.setRefreshing(false);
-
             }
 
             @Override
             public void onFailure(RetrofitError error) {
-
-//                commentListContainer.setRefreshing(false);
 
                 if (error == null) return;
 

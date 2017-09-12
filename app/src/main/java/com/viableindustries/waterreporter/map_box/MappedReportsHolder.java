@@ -1,6 +1,6 @@
 package com.viableindustries.waterreporter.map_box;
 
-import com.viableindustries.waterreporter.data.objects.post.Report;
+import com.viableindustries.waterreporter.api.models.post.Report;
 
 import java.util.HashMap;
 import java.util.Map;

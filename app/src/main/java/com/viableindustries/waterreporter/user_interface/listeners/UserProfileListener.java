@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.view.View;
 
 import com.viableindustries.waterreporter.UserProfileActivity;
-import com.viableindustries.waterreporter.data.objects.user.User;
-import com.viableindustries.waterreporter.data.objects.user.UserHolder;
+import com.viableindustries.waterreporter.api.models.user.User;
+import com.viableindustries.waterreporter.api.models.user.UserHolder;
 
 /**
  * Created by brendanmcintyre on 8/30/16.

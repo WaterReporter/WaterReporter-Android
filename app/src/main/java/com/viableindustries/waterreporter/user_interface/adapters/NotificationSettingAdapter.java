@@ -15,10 +15,11 @@ import android.widget.Toast;
 
 import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.SignInActivity;
-import com.viableindustries.waterreporter.data.interfaces.api.user.UserService;
-import com.viableindustries.waterreporter.data.objects.notification.NotificationPatchBody;
-import com.viableindustries.waterreporter.data.objects.notification.NotificationSetting;
-import com.viableindustries.waterreporter.data.objects.user.User;
+import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.interfaces.data.user.UserService;
+import com.viableindustries.waterreporter.api.models.notification.NotificationPatchBody;
+import com.viableindustries.waterreporter.api.models.notification.NotificationSetting;
+import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
 import java.util.HashMap;
@@ -113,11 +114,7 @@ public class NotificationSettingAdapter extends ArrayAdapter {
 
                 NotificationPatchBody notificationPatchBody = new NotificationPatchBody(settingPatch);
 
-                // Instantiate API service
-
-                UserService service = UserService.restAdapter.create(UserService.class);
-
-                service.updateUser(accessToken, "application/json", id, notificationPatchBody.settings, new CancelableCallback<User>() {
+                RestClient.getUserService().updateUser(accessToken, "application/json", id, notificationPatchBody.settings, new CancelableCallback<User>() {
 
                     @Override
                     public void onSuccess(User user, Response response) {

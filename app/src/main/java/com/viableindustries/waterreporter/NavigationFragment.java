@@ -15,9 +15,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.viableindustries.waterreporter.data.objects.user.User;
-import com.viableindustries.waterreporter.data.objects.user.UserHolder;
-import com.viableindustries.waterreporter.data.objects.user.UserProperties;
+import com.viableindustries.waterreporter.api.models.user.User;
+import com.viableindustries.waterreporter.api.models.user.UserHolder;
+import com.viableindustries.waterreporter.api.models.user.UserProperties;
 import com.viableindustries.waterreporter.utilities.QueryBuilder;
 
 import static android.content.Context.MODE_PRIVATE;

@@ -5,9 +5,9 @@ import android.content.Intent;
 import android.view.View;
 
 import com.viableindustries.waterreporter.TerritoryMapActivity;
-import com.viableindustries.waterreporter.data.objects.post.Report;
-import com.viableindustries.waterreporter.data.objects.post.ReportHolder;
-import com.viableindustries.waterreporter.data.objects.territory.TerritoryHolder;
+import com.viableindustries.waterreporter.api.models.post.Report;
+import com.viableindustries.waterreporter.api.models.post.ReportHolder;
+import com.viableindustries.waterreporter.api.models.territory.TerritoryHolder;
 
 /**
  * Created by brendanmcintyre on 8/1/17.

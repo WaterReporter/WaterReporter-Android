@@ -23,16 +23,17 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.constants.Constants;
-import com.viableindustries.waterreporter.data.interfaces.api.post.ReportService;
-import com.viableindustries.waterreporter.data.interfaces.api.user.UserService;
-import com.viableindustries.waterreporter.data.objects.FeatureCollection;
-import com.viableindustries.waterreporter.data.objects.organization.Organization;
-import com.viableindustries.waterreporter.data.objects.organization.OrganizationFeatureCollection;
-import com.viableindustries.waterreporter.data.objects.post.Report;
-import com.viableindustries.waterreporter.data.objects.post.ReportHolder;
-import com.viableindustries.waterreporter.data.objects.query.QueryParams;
-import com.viableindustries.waterreporter.data.objects.query.QuerySort;
+import com.viableindustries.waterreporter.api.interfaces.data.post.ReportService;
+import com.viableindustries.waterreporter.api.interfaces.data.user.UserService;
+import com.viableindustries.waterreporter.api.models.FeatureCollection;
+import com.viableindustries.waterreporter.api.models.organization.Organization;
+import com.viableindustries.waterreporter.api.models.organization.OrganizationFeatureCollection;
+import com.viableindustries.waterreporter.api.models.post.Report;
+import com.viableindustries.waterreporter.api.models.post.ReportHolder;
+import com.viableindustries.waterreporter.api.models.query.QueryParams;
+import com.viableindustries.waterreporter.api.models.query.QuerySort;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
 import com.viableindustries.waterreporter.user_interface.dialogs.ReportActionDialog;
 import com.viableindustries.waterreporter.utilities.ApiDispatcher;
@@ -75,10 +76,6 @@ public class MainActivity extends AppCompatActivity implements
     private SharedPreferences mSharedPreferences;
 
     private int user_id;
-
-    private final RestAdapter restAdapter = ReportService.restAdapter;
-
-    private final ReportService service = restAdapter.create(ReportService.class);
 
     private TimelineAdapter timelineAdapter;
 
@@ -221,11 +218,7 @@ public class MainActivity extends AppCompatActivity implements
 
     void fetchPosts(int limit, final int page, final boolean refresh) {
 
-        final ReportService service = ReportService.restAdapter.create(ReportService.class);
-
         final String mAccessToken = mSharedPreferences.getString("access_token", "");
-
-        Log.d("", mAccessToken);
 
         // We shouldn't need to retrieve this value again, but we'll deal with that issue later
         user_id = mSharedPreferences.getInt("user_id", 0);
@@ -246,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements
 
         Log.d("URL", query);
 
-        service.getReports(mAccessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
+        RestClient.getReportService().getReports(mAccessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
 
             @Override
             public void onSuccess(FeatureCollection featureCollection, Response response) {
@@ -340,9 +333,7 @@ public class MainActivity extends AppCompatActivity implements
         // We shouldn't need to retrieve this value again, but we'll deal with that issue later
         user_id = mSharedPreferences.getInt("user_id", 0);
 
-        UserService service = UserService.restAdapter.create(UserService.class);
-
-        service.getUserOrganization(mAccessToken, "application/json", user_id, new CancelableCallback<OrganizationFeatureCollection>() {
+        RestClient.getUserService().getUserOrganization(mAccessToken, "application/json", user_id, new CancelableCallback<OrganizationFeatureCollection>() {
 
             @Override
             public void onSuccess(OrganizationFeatureCollection organizationCollectionResponse, Response response) {

@@ -26,20 +26,18 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
-import com.viableindustries.waterreporter.data.interfaces.api.organization.OrganizationService;
-import com.viableindustries.waterreporter.data.interfaces.api.post.ReportService;
-import com.viableindustries.waterreporter.data.interfaces.api.user.UserService;
-import com.viableindustries.waterreporter.data.objects.FeatureCollection;
-import com.viableindustries.waterreporter.data.objects.organization.Organization;
-import com.viableindustries.waterreporter.data.objects.organization.OrganizationHolder;
-import com.viableindustries.waterreporter.data.objects.organization.OrganizationMemberList;
-import com.viableindustries.waterreporter.data.objects.post.Report;
-import com.viableindustries.waterreporter.data.objects.query.QueryFilter;
-import com.viableindustries.waterreporter.data.objects.query.QueryParams;
-import com.viableindustries.waterreporter.data.objects.query.QuerySort;
-import com.viableindustries.waterreporter.data.objects.user.User;
-import com.viableindustries.waterreporter.data.objects.user.UserCollection;
-import com.viableindustries.waterreporter.data.objects.user.UserOrgPatch;
+import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.models.FeatureCollection;
+import com.viableindustries.waterreporter.api.models.organization.Organization;
+import com.viableindustries.waterreporter.api.models.organization.OrganizationHolder;
+import com.viableindustries.waterreporter.api.models.organization.OrganizationMemberList;
+import com.viableindustries.waterreporter.api.models.post.Report;
+import com.viableindustries.waterreporter.api.models.query.QueryFilter;
+import com.viableindustries.waterreporter.api.models.query.QueryParams;
+import com.viableindustries.waterreporter.api.models.query.QuerySort;
+import com.viableindustries.waterreporter.api.models.user.User;
+import com.viableindustries.waterreporter.api.models.user.UserCollection;
+import com.viableindustries.waterreporter.api.models.user.UserOrgPatch;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
@@ -53,7 +51,6 @@ import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -220,7 +217,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     }
 
-    private void startPost(){
+    private void startPost() {
 
         Intent intent = new Intent(mContext, PhotoMetaActivity.class);
 
@@ -249,9 +246,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         Map<String, Map> userPatch = UserOrgPatch.buildRequest(organization.id, "add");
 
-        UserService service = UserService.restAdapter.create(UserService.class);
-
-        service.updateUserOrganization(accessToken, "application/json", id, userPatch, new CancelableCallback<User>() {
+        RestClient.getUserService().updateUserOrganization(accessToken, "application/json", id, userPatch, new CancelableCallback<User>() {
 
             @Override
             public void onSuccess(User user, Response response) {
@@ -548,11 +543,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         final String accessToken = prefs.getString("access_token", "");
 
-        RestAdapter restAdapter = ReportService.restAdapter;
-
-        ReportService service = restAdapter.create(ReportService.class);
-
-        service.getReports(accessToken, "application/json", 1, 1, query, new CancelableCallback<FeatureCollection>() {
+        RestClient.getReportService().getReports(accessToken, "application/json", 1, 1, query, new CancelableCallback<FeatureCollection>() {
 
             @Override
             public void onSuccess(FeatureCollection featureCollection, Response response) {
@@ -608,11 +599,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         final String accessToken = prefs.getString("access_token", "");
 
-        Log.d("", accessToken);
-
-        OrganizationService service = OrganizationService.restAdapter.create(OrganizationService.class);
-
-        service.getOrganizationMembers(accessToken, "application/json", organizationId, page, limit, null, new CancelableCallback<UserCollection>() {
+        RestClient.getOrganizationService().getOrganizationMembers(accessToken, "application/json", organizationId, page, limit, null, new CancelableCallback<UserCollection>() {
 
             @Override
             public void onSuccess(UserCollection userCollection, Response response) {
@@ -717,15 +704,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         final String accessToken = prefs.getString("access_token", "");
 
-        Log.d("", accessToken);
-
-        Log.d("URL", query);
-
-        RestAdapter restAdapter = ReportService.restAdapter;
-
-        ReportService service = restAdapter.create(ReportService.class);
-
-        service.getReports(accessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
+        RestClient.getReportService().getReports(accessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
 
             @Override
             public void onSuccess(FeatureCollection featureCollection, Response response) {

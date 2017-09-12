@@ -10,13 +10,14 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.viableindustries.waterreporter.data.interfaces.api.user.UserService;
-import com.viableindustries.waterreporter.data.interfaces.security.SecurityService;
-import com.viableindustries.waterreporter.data.objects.auth.AuthResponse;
-import com.viableindustries.waterreporter.data.objects.auth.LogInBody;
-import com.viableindustries.waterreporter.data.objects.organization.Organization;
-import com.viableindustries.waterreporter.data.objects.user.User;
-import com.viableindustries.waterreporter.data.objects.user.UserBasicResponse;
+import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.interfaces.data.user.UserService;
+import com.viableindustries.waterreporter.api.interfaces.security.SecurityService;
+import com.viableindustries.waterreporter.api.models.auth.AuthResponse;
+import com.viableindustries.waterreporter.api.models.auth.LogInBody;
+import com.viableindustries.waterreporter.api.models.organization.Organization;
+import com.viableindustries.waterreporter.api.models.user.User;
+import com.viableindustries.waterreporter.api.models.user.UserBasicResponse;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
 import java.util.Map;
@@ -105,10 +106,6 @@ public class SignInActivity extends AppCompatActivity {
 
     public void saveAccount(View view) {
 
-        final RestAdapter restAdapter = SecurityService.restAdapter;
-
-        final SecurityService securityService = restAdapter.create(SecurityService.class);
-
         final SharedPreferences prefs =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
@@ -128,7 +125,7 @@ public class SignInActivity extends AppCompatActivity {
                     getString(R.string.client_id), getString(R.string.redirect_uri),
                     getString(R.string.scope), getString(R.string.state));
 
-            securityService.save(logInBody,
+            RestClient.getSecurityService().save(logInBody,
                     new CancelableCallback<AuthResponse>() {
                         @Override
                         public void onSuccess(AuthResponse authResponse,
@@ -147,9 +144,7 @@ public class SignInActivity extends AppCompatActivity {
 
                             if (user_id == 0) {
 
-                                final UserService userService = UserService.restAdapter.create(UserService.class);
-
-                                userService.getActiveUser(accessToken, "application/json",
+                                RestClient.getUserService().getActiveUser(accessToken, "application/json",
                                         new CancelableCallback<UserBasicResponse>() {
                                             @Override
                                             public void onSuccess(UserBasicResponse userBasicResponse,
@@ -157,7 +152,7 @@ public class SignInActivity extends AppCompatActivity {
 
                                                 prefs.edit().putInt("user_id", userBasicResponse.getUserId()).apply();
 
-                                                userService.getUser(accessToken,
+                                                RestClient.getUserService().getUser(accessToken,
                                                         "application/json",
                                                         userBasicResponse.getUserId(),
                                                         new CancelableCallback<User>() {

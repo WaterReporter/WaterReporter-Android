@@ -11,15 +11,16 @@ import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
-import com.viableindustries.waterreporter.data.interfaces.api.organization.OrganizationService;
-import com.viableindustries.waterreporter.data.objects.organization.Organization;
-import com.viableindustries.waterreporter.data.objects.organization.OrganizationHolder;
-import com.viableindustries.waterreporter.data.objects.organization.OrganizationMemberList;
-import com.viableindustries.waterreporter.data.objects.query.QueryFilter;
-import com.viableindustries.waterreporter.data.objects.query.QueryParams;
-import com.viableindustries.waterreporter.data.objects.query.QuerySort;
-import com.viableindustries.waterreporter.data.objects.user.User;
-import com.viableindustries.waterreporter.data.objects.user.UserCollection;
+import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.interfaces.data.organization.OrganizationService;
+import com.viableindustries.waterreporter.api.models.organization.Organization;
+import com.viableindustries.waterreporter.api.models.organization.OrganizationHolder;
+import com.viableindustries.waterreporter.api.models.organization.OrganizationMemberList;
+import com.viableindustries.waterreporter.api.models.query.QueryFilter;
+import com.viableindustries.waterreporter.api.models.query.QueryParams;
+import com.viableindustries.waterreporter.api.models.query.QuerySort;
+import com.viableindustries.waterreporter.api.models.user.User;
+import com.viableindustries.waterreporter.api.models.user.UserCollection;
 import com.viableindustries.waterreporter.user_interface.adapters.UserListAdapter;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
@@ -166,11 +167,7 @@ public class OrganizationMembersActivity extends AppCompatActivity {
 
         final String accessToken = prefs.getString("access_token", "");
 
-        Log.d("", accessToken);
-
-        OrganizationService service = OrganizationService.restAdapter.create(OrganizationService.class);
-
-        service.getOrganizationMembers(accessToken, "application/json", organizationId, page, limit, query, new CancelableCallback<UserCollection>() {
+        RestClient.getOrganizationService().getOrganizationMembers(accessToken, "application/json", organizationId, page, limit, query, new CancelableCallback<UserCollection>() {
 
             @Override
             public void onSuccess(UserCollection userCollection, Response response) {

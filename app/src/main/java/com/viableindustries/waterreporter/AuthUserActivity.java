@@ -29,20 +29,21 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.constants.Constants;
-import com.viableindustries.waterreporter.data.interfaces.api.post.ReportService;
-import com.viableindustries.waterreporter.data.interfaces.api.user.UserService;
-import com.viableindustries.waterreporter.data.objects.FeatureCollection;
-import com.viableindustries.waterreporter.data.objects.organization.Organization;
-import com.viableindustries.waterreporter.data.objects.organization.OrganizationFeatureCollection;
-import com.viableindustries.waterreporter.data.objects.post.Report;
-import com.viableindustries.waterreporter.data.objects.post.ReportHolder;
-import com.viableindustries.waterreporter.data.objects.query.QueryFilter;
-import com.viableindustries.waterreporter.data.objects.query.QueryParams;
-import com.viableindustries.waterreporter.data.objects.query.QuerySort;
-import com.viableindustries.waterreporter.data.objects.user.User;
-import com.viableindustries.waterreporter.data.objects.user.UserGroupList;
-import com.viableindustries.waterreporter.data.objects.user.UserHolder;
+import com.viableindustries.waterreporter.api.interfaces.data.post.ReportService;
+import com.viableindustries.waterreporter.api.interfaces.data.user.UserService;
+import com.viableindustries.waterreporter.api.models.FeatureCollection;
+import com.viableindustries.waterreporter.api.models.organization.Organization;
+import com.viableindustries.waterreporter.api.models.organization.OrganizationFeatureCollection;
+import com.viableindustries.waterreporter.api.models.post.Report;
+import com.viableindustries.waterreporter.api.models.post.ReportHolder;
+import com.viableindustries.waterreporter.api.models.query.QueryFilter;
+import com.viableindustries.waterreporter.api.models.query.QueryParams;
+import com.viableindustries.waterreporter.api.models.query.QuerySort;
+import com.viableindustries.waterreporter.api.models.user.User;
+import com.viableindustries.waterreporter.api.models.user.UserGroupList;
+import com.viableindustries.waterreporter.api.models.user.UserHolder;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
 import com.viableindustries.waterreporter.user_interface.dialogs.ReportActionDialog;
 import com.viableindustries.waterreporter.utilities.ApiDispatcher;
@@ -490,11 +491,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
     private void countReports(String query, final String filterName) {
 
-        RestAdapter restAdapter = ReportService.restAdapter;
-
-        ReportService service = restAdapter.create(ReportService.class);
-
-        service.getReports(mAccessToken, "application/json", 1, 1, query, new CancelableCallback<FeatureCollection>() {
+        RestClient.getReportService().getReports(mAccessToken, "application/json", 1, 1, query, new CancelableCallback<FeatureCollection>() {
 
             @Override
             public void onSuccess(FeatureCollection featureCollection, Response response) {
@@ -547,9 +544,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
     private void fetchUserGroups(int userId) {
 
-        UserService service = UserService.restAdapter.create(UserService.class);
-
-        service.getUserOrganization(mAccessToken, "application/json", userId, new CancelableCallback<OrganizationFeatureCollection>() {
+        RestClient.getUserService().getUserOrganization(mAccessToken, "application/json", userId, new CancelableCallback<OrganizationFeatureCollection>() {
 
             @Override
             public void onSuccess(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
@@ -652,13 +647,7 @@ public class AuthUserActivity extends AppCompatActivity implements ReportActionD
 
     public void fetchReports(int limit, final int page, String query, final boolean refresh) {
 
-        Log.d("URL", query);
-
-        RestAdapter restAdapter = ReportService.restAdapter;
-
-        ReportService service = restAdapter.create(ReportService.class);
-
-        service.getReports(mAccessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
+        RestClient.getReportService().getReports(mAccessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
 
             @Override
             public void onSuccess(FeatureCollection featureCollection, Response response) {

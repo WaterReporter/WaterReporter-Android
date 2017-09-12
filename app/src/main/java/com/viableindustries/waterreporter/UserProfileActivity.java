@@ -24,21 +24,23 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
-import com.viableindustries.waterreporter.data.interfaces.api.post.ReportService;
-import com.viableindustries.waterreporter.data.interfaces.api.user.UserService;
-import com.viableindustries.waterreporter.data.objects.FeatureCollection;
-import com.viableindustries.waterreporter.data.objects.organization.Organization;
-import com.viableindustries.waterreporter.data.objects.organization.OrganizationFeatureCollection;
-import com.viableindustries.waterreporter.data.objects.post.Report;
-import com.viableindustries.waterreporter.data.objects.post.ReportHolder;
-import com.viableindustries.waterreporter.data.objects.query.QueryFilter;
-import com.viableindustries.waterreporter.data.objects.query.QueryParams;
-import com.viableindustries.waterreporter.data.objects.query.QuerySort;
-import com.viableindustries.waterreporter.data.objects.user.User;
-import com.viableindustries.waterreporter.data.objects.user.UserGroupList;
-import com.viableindustries.waterreporter.data.objects.user.UserHolder;
+import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.interfaces.data.post.ReportService;
+import com.viableindustries.waterreporter.api.interfaces.data.user.UserService;
+import com.viableindustries.waterreporter.api.models.FeatureCollection;
+import com.viableindustries.waterreporter.api.models.organization.Organization;
+import com.viableindustries.waterreporter.api.models.organization.OrganizationFeatureCollection;
+import com.viableindustries.waterreporter.api.models.post.Report;
+import com.viableindustries.waterreporter.api.models.post.ReportHolder;
+import com.viableindustries.waterreporter.api.models.query.QueryFilter;
+import com.viableindustries.waterreporter.api.models.query.QueryParams;
+import com.viableindustries.waterreporter.api.models.query.QuerySort;
+import com.viableindustries.waterreporter.api.models.user.User;
+import com.viableindustries.waterreporter.api.models.user.UserGroupList;
+import com.viableindustries.waterreporter.api.models.user.UserHolder;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
 import com.viableindustries.waterreporter.user_interface.dialogs.ReportActionDialogListener;
+import com.viableindustries.waterreporter.user_interface.view_holders.UserProfileHeaderView;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
@@ -56,28 +58,6 @@ import static java.lang.Boolean.TRUE;
 
 public class UserProfileActivity extends AppCompatActivity implements ReportActionDialogListener {
 
-    private TextView userDescription;
-
-    private ImageView userAvatar;
-
-    private TextView reportCounter;
-
-    private TextView actionCounter;
-
-    private TextView groupCounter;
-
-    private TextView reportCountLabel;
-
-    private TextView actionCountLabel;
-
-    private TextView groupCountLabel;
-
-    private LinearLayout reportStat;
-
-    private LinearLayout actionStat;
-
-    private LinearLayout groupStat;
-
     @Bind(R.id.timeline)
     SwipeRefreshLayout timeLineContainer;
 
@@ -86,12 +66,6 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     @Bind(R.id.listTabs)
     FrameLayout listTabs;
-
-    private LinearLayout promptBlock;
-
-    private TextView promptMessage;
-
-    private Button startPostButton;
 
     private TimelineAdapter timelineAdapter;
 
@@ -113,11 +87,11 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     private User user;
 
-    private int socialOptions;
-
     private Resources resources;
 
     private EndlessScrollListener scrollListener;
+
+    private UserProfileHeaderView mUserProfileHeaderView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -224,39 +198,28 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     private void addListViewHeader() {
 
+        mUserProfileHeaderView = new UserProfileHeaderView();
+
         LayoutInflater inflater = getLayoutInflater();
 
         ViewGroup header = (ViewGroup) inflater.inflate(R.layout.user_profile_header, timeLine, false);
 
-        promptBlock = (LinearLayout) header.findViewById(R.id.promptBlock);
-        promptMessage = (TextView) header.findViewById(R.id.prompt);
-        startPostButton = (Button) header.findViewById(R.id.startPost);
-
-        TextView userName = (TextView) header.findViewById(R.id.userName);
-
-        TextView userTitle = (TextView) header.findViewById(R.id.userTitle);
-
-        userDescription = (TextView) header.findViewById(R.id.userDescription);
-
-        userAvatar = (ImageView) header.findViewById(R.id.userAvatar);
-
-        reportCounter = (TextView) header.findViewById(R.id.reportCount);
-
-        actionCounter = (TextView) header.findViewById(R.id.actionCount);
-
-        groupCounter = (TextView) header.findViewById(R.id.groupCount);
-
-        reportCountLabel = (TextView) header.findViewById(R.id.reportCountLabel);
-
-        actionCountLabel = (TextView) header.findViewById(R.id.actionCountLabel);
-
-        groupCountLabel = (TextView) header.findViewById(R.id.groupCountLabel);
-
-        reportStat = (LinearLayout) header.findViewById(R.id.reportStat);
-
-        actionStat = (LinearLayout) header.findViewById(R.id.actionStat);
-
-        groupStat = (LinearLayout) header.findViewById(R.id.groupStat);
+        mUserProfileHeaderView.promptBlock = (LinearLayout) header.findViewById(R.id.promptBlock);
+        mUserProfileHeaderView.promptMessage = (TextView) header.findViewById(R.id.prompt);
+        mUserProfileHeaderView.startPostButton = (Button) header.findViewById(R.id.startPost);
+        mUserProfileHeaderView.userName = (TextView) header.findViewById(R.id.userName);
+        mUserProfileHeaderView.userTitle = (TextView) header.findViewById(R.id.userTitle);
+        mUserProfileHeaderView.userDescription = (TextView) header.findViewById(R.id.userDescription);
+        mUserProfileHeaderView.userAvatar = (ImageView) header.findViewById(R.id.userAvatar);
+        mUserProfileHeaderView.reportCounter = (TextView) header.findViewById(R.id.reportCount);
+        mUserProfileHeaderView.actionCounter = (TextView) header.findViewById(R.id.actionCount);
+        mUserProfileHeaderView.groupCounter = (TextView) header.findViewById(R.id.groupCount);
+        mUserProfileHeaderView.reportCountLabel = (TextView) header.findViewById(R.id.reportCountLabel);
+        mUserProfileHeaderView.actionCountLabel = (TextView) header.findViewById(R.id.actionCountLabel);
+        mUserProfileHeaderView.groupCountLabel = (TextView) header.findViewById(R.id.groupCountLabel);
+        mUserProfileHeaderView.reportStat = (LinearLayout) header.findViewById(R.id.reportStat);
+        mUserProfileHeaderView.actionStat = (LinearLayout) header.findViewById(R.id.actionStat);
+        mUserProfileHeaderView.groupStat = (LinearLayout) header.findViewById(R.id.groupStat);
 
         LinearLayout profileMeta = (LinearLayout) header.findViewById(R.id.profileMeta);
 
@@ -274,39 +237,39 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
         Picasso.with(this)
                 .load(userAvatarUrl)
                 .placeholder(R.drawable.user_avatar_placeholder_003)
-                .transform(new CircleTransform()).into(userAvatar);
+                .transform(new CircleTransform()).into(mUserProfileHeaderView.userAvatar);
 
-        userName.setText(userNameText);
+        mUserProfileHeaderView.userName.setText(userNameText);
 
         try {
 
             if (!userOrganization.isEmpty()) {
 
-                userTitle.setText(String.format("%s at %s", userTitleText, userOrganization));
+                mUserProfileHeaderView.userTitle.setText(String.format("%s at %s", userTitleText, userOrganization));
 
             } else {
 
-                userTitle.setText(userTitleText);
+                mUserProfileHeaderView.userTitle.setText(userTitleText);
 
             }
 
         } catch (NullPointerException ne) {
 
-            userTitle.setVisibility(View.GONE);
+            mUserProfileHeaderView.userTitle.setVisibility(View.GONE);
 
         }
 
         try {
 
-            userDescription.setText(userDescriptionText);
+            mUserProfileHeaderView.userDescription.setText(userDescriptionText);
 
         } catch (NullPointerException ne) {
 
-            userDescription.setVisibility(View.GONE);
+            mUserProfileHeaderView.userDescription.setVisibility(View.GONE);
 
         }
 
-        userDescription.setOnClickListener(new View.OnClickListener() {
+        mUserProfileHeaderView.userDescription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -314,14 +277,14 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                 int duration;
 
-                int maxLines = TextViewCompat.getMaxLines(userDescription);
+                int maxLines = TextViewCompat.getMaxLines(mUserProfileHeaderView.userDescription);
 
                 if (maxLines == 2) {
 
-                    userDescription.setEllipsize(null);
+                    mUserProfileHeaderView.userDescription.setEllipsize(null);
 
                     animation = ObjectAnimator.ofInt(
-                            userDescription,
+                            mUserProfileHeaderView.userDescription,
                             "maxLines",
                             2,
                             1000);
@@ -330,10 +293,10 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                 } else {
 
-                    userDescription.setEllipsize(TextUtils.TruncateAt.END);
+                    mUserProfileHeaderView.userDescription.setEllipsize(TextUtils.TruncateAt.END);
 
                     animation = ObjectAnimator.ofInt(
-                            userDescription,
+                            mUserProfileHeaderView.userDescription,
                             "maxLines",
                             1000,
                             2);
@@ -351,7 +314,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         // Attach click listeners to stat elements
 
-        reportStat.setOnClickListener(new View.OnClickListener() {
+        mUserProfileHeaderView.reportStat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -360,17 +323,17 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
             }
         });
 
-        actionStat.setOnClickListener(new View.OnClickListener() {
+        mUserProfileHeaderView.actionStat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 actionFocus = true;
 
-                actionCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
-                actionCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
+                mUserProfileHeaderView.actionCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
+                mUserProfileHeaderView.actionCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
 
-                reportCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
-                reportCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
+                mUserProfileHeaderView.reportCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
+                mUserProfileHeaderView.reportCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
 
                 if (timeLine != null) {
 
@@ -385,7 +348,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
             }
         });
 
-        groupStat.setOnClickListener(new View.OnClickListener() {
+        mUserProfileHeaderView.groupStat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -402,24 +365,26 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
             }
         });
 
+        header.setTag(mUserProfileHeaderView);
+
         timeLine.addHeaderView(header, null, false);
 
     }
 
     private void setReportCountState(int count) {
 
-        reportCounter.setText(String.valueOf(reportCount));
-        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
+        mUserProfileHeaderView.reportCounter.setText(String.valueOf(reportCount));
+        mUserProfileHeaderView.reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
 
         if (count < 1) {
 
-            if (promptBlock != null) {
+            if (mUserProfileHeaderView.promptBlock != null) {
 
-                startPostButton.setVisibility(View.GONE);
+                mUserProfileHeaderView.startPostButton.setVisibility(View.GONE);
 
-                promptBlock.setVisibility(View.VISIBLE);
+                mUserProfileHeaderView.promptBlock.setVisibility(View.VISIBLE);
 
-                promptMessage.setText(getString(R.string.prompt_no_posts_user, user.properties.first_name));
+                mUserProfileHeaderView.promptMessage.setText(getString(R.string.prompt_no_posts_user, user.properties.first_name));
 
             }
 
@@ -435,11 +400,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         final String accessToken = prefs.getString("access_token", "");
 
-        RestAdapter restAdapter = ReportService.restAdapter;
-
-        ReportService service = restAdapter.create(ReportService.class);
-
-        service.getReports(accessToken, "application/json", 1, 1, query, new CancelableCallback<FeatureCollection>() {
+        RestClient.getReportService().getReports(accessToken, "application/json", 1, 1, query, new CancelableCallback<FeatureCollection>() {
 
             @Override
             public void onSuccess(FeatureCollection featureCollection, Response response) {
@@ -449,10 +410,10 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
                 switch (filterName) {
                     case "state":
                         if (count > 0) {
-                            actionStat.setVisibility(View.VISIBLE);
+                            mUserProfileHeaderView.actionStat.setVisibility(View.VISIBLE);
                             actionCount = count;
-                            actionCounter.setText(String.valueOf(actionCount));
-                            actionCountLabel.setText(resources.getQuantityString(R.plurals.action_label, actionCount, actionCount));
+                            mUserProfileHeaderView.actionCounter.setText(String.valueOf(actionCount));
+                            mUserProfileHeaderView.actionCountLabel.setText(resources.getQuantityString(R.plurals.action_label, actionCount, actionCount));
                         }
                         break;
                     default:
@@ -494,11 +455,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         final String accessToken = prefs.getString("access_token", "");
 
-        Log.d("", accessToken);
-
-        UserService service = UserService.restAdapter.create(UserService.class);
-
-        service.getUserOrganization(accessToken, "application/json", userId, new CancelableCallback<OrganizationFeatureCollection>() {
+        RestClient.getUserService().getUserOrganization(accessToken, "application/json", userId, new CancelableCallback<OrganizationFeatureCollection>() {
 
             @Override
             public void onSuccess(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
@@ -509,10 +466,10 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                     int groupCount = organizations.size();
 
-                    groupCounter.setText(String.valueOf(groupCount));
-                    groupCountLabel.setText(resources.getQuantityString(R.plurals.group_label, groupCount, groupCount));
+                    mUserProfileHeaderView.groupCounter.setText(String.valueOf(groupCount));
+                    mUserProfileHeaderView.groupCountLabel.setText(resources.getQuantityString(R.plurals.group_label, groupCount, groupCount));
 
-                    groupStat.setVisibility(View.VISIBLE);
+                    mUserProfileHeaderView.groupStat.setVisibility(View.VISIBLE);
 
                     UserGroupList.setList(organizations);
 
@@ -603,15 +560,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         final String accessToken = prefs.getString("access_token", "");
 
-        Log.d("", accessToken);
-
-        Log.d("URL", query);
-
-        RestAdapter restAdapter = ReportService.restAdapter;
-
-        ReportService service = restAdapter.create(ReportService.class);
-
-        service.getReports(accessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
+        RestClient.getReportService().getReports(accessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
 
             @Override
             public void onSuccess(FeatureCollection featureCollection, Response response) {
@@ -628,17 +577,17 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                 if (reportCount > 0) {
 
-                    reportStat.setVisibility(View.VISIBLE);
+                    mUserProfileHeaderView.reportStat.setVisibility(View.VISIBLE);
 
-                    reportCounter.setText(String.valueOf(reportCount));
+                    mUserProfileHeaderView.reportCounter.setText(String.valueOf(reportCount));
 
-                    reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
+                    mUserProfileHeaderView.reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
 
                     setReportCountState(reportCount);
 
                 } else {
 
-                    reportStat.setVisibility(View.GONE);
+                    mUserProfileHeaderView.reportStat.setVisibility(View.GONE);
 
                     setReportCountState(reportCount);
 
@@ -755,11 +704,11 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
     private void resetStats() {
 
-        reportCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
-        reportCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
+        mUserProfileHeaderView.reportCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
+        mUserProfileHeaderView.reportCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
 
-        actionCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
-        actionCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
+        mUserProfileHeaderView.actionCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
+        mUserProfileHeaderView.actionCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
 
         actionFocus = false;
 
@@ -775,13 +724,9 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         final String accessToken = prefs.getString("access_token", "");
 
-        Log.d("", accessToken);
-
-        ReportService service = ReportService.restAdapter.create(ReportService.class);
-
         final Report report = ReportHolder.getReport();
 
-        service.deleteSingleReport(accessToken, report.id, new CancelableCallback<Response>() {
+        RestClient.getReportService().deleteSingleReport(accessToken, report.id, new CancelableCallback<Response>() {
 
             @Override
             public void onSuccess(Response response, Response response_) {
@@ -790,11 +735,11 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                 if (reportCount > 0) {
 
-                    reportCounter.setText(String.valueOf(reportCount));
+                    mUserProfileHeaderView.reportCounter.setText(String.valueOf(reportCount));
 
                 } else {
 
-                    reportStat.setVisibility(View.GONE);
+                    mUserProfileHeaderView.reportStat.setVisibility(View.GONE);
 
                 }
 
@@ -804,11 +749,11 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
                     if (actionCount > 0) {
 
-                        actionCounter.setText(String.valueOf(actionCount));
+                        mUserProfileHeaderView.actionCounter.setText(String.valueOf(actionCount));
 
                     } else {
 
-                        actionStat.setVisibility(View.GONE);
+                        mUserProfileHeaderView.actionStat.setVisibility(View.GONE);
 
                     }
 
@@ -889,7 +834,7 @@ public class UserProfileActivity extends AppCompatActivity implements ReportActi
 
         super.onDestroy();
 
-        Picasso.with(this).cancelRequest(userAvatar);
+        Picasso.with(this).cancelRequest(mUserProfileHeaderView.userAvatar);
 
         ButterKnife.unbind(this);
 

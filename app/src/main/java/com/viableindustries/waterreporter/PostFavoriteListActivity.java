@@ -13,12 +13,13 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-import com.viableindustries.waterreporter.data.interfaces.api.post.ReportService;
-import com.viableindustries.waterreporter.data.objects.favorite.Favorite;
-import com.viableindustries.waterreporter.data.objects.favorite.FavoriteCollection;
-import com.viableindustries.waterreporter.data.objects.post.Report;
-import com.viableindustries.waterreporter.data.objects.post.ReportHolder;
-import com.viableindustries.waterreporter.data.objects.user.User;
+import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.interfaces.data.post.ReportService;
+import com.viableindustries.waterreporter.api.models.favorite.Favorite;
+import com.viableindustries.waterreporter.api.models.favorite.FavoriteCollection;
+import com.viableindustries.waterreporter.api.models.post.Report;
+import com.viableindustries.waterreporter.api.models.post.ReportHolder;
+import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.user_interface.adapters.UserListAdapter;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
@@ -141,11 +142,7 @@ public class PostFavoriteListActivity extends AppCompatActivity {
 
         final String accessToken = prefs.getString("access_token", "");
 
-        Log.d("", accessToken);
-
-        ReportService service = ReportService.restAdapter.create(ReportService.class);
-
-        service.getPostLikes(accessToken, "application/json", postId, page, limit, null, new CancelableCallback<FavoriteCollection>() {
+        RestClient.getReportService().getPostLikes(accessToken, "application/json", postId, page, limit, null, new CancelableCallback<FavoriteCollection>() {
 
             @Override
             public void onSuccess(FavoriteCollection favoriteCollection, Response response) {
