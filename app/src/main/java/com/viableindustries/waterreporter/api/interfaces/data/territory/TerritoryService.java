@@ -16,7 +16,7 @@ import retrofit.http.Query;
 
 public interface TerritoryService {
 
-    @GET("data/huc-8")
+    @GET("/data/huc-8")
     void search(@Header("Authorization") String authorization,
                 @Header("Content-Type") String contentType,
                 @Query("page") int page,
@@ -24,7 +24,7 @@ public interface TerritoryService {
                 @Query("q") String q,
                 CancelableCallback<TerritoryCollection> territoryCollectionCallback);
 
-    @GET("data/territory")
+    @GET("/data/territory")
     void getMany(@Header("Authorization") String authorization,
                  @Header("Content-Type") String contentType,
                  @Query("page") int page,
@@ -32,7 +32,7 @@ public interface TerritoryService {
                  @Query("q") String q,
                  CancelableCallback<TerritoryCollection> territoryCollectionCallback);
 
-    @GET("data/territory/{territory}")
+    @GET("/data/territory/{territory}")
     void getSingle(@Header("Authorization") String authorization,
                    @Header("Content-Type") String contentType,
                    @Path("territory") int territoryId,

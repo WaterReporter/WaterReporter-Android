@@ -16,7 +16,7 @@ import retrofit.http.Query;
 
 public interface HashTagService {
 
-    @GET("data/hashtag")
+    @GET("/data/hashtag")
     void getMany(@Header("Authorization") String authorization,
                  @Header("Content-Type") String contentType,
                  @Query("page") int page,
@@ -24,7 +24,7 @@ public interface HashTagService {
                  @Query("q") String q,
                  CancelableCallback<HashtagCollection> hashtagCollectionCallback);
 
-    @GET("data/hashtag/{tag}")
+    @GET("/data/hashtag/{tag}")
     void getOrganization(@Header("Authorization") String authorization,
                          @Header("Content-Type") String contentType,
                          @Path("tag") int tagId,

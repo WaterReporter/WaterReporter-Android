@@ -20,7 +20,7 @@ import retrofit.RestAdapter;
 
 public class RestClient {
 
-    private static final String BASE_URL = "https://api.waterreporter.org/v2/";
+    private static final String BASE_URL = "https://api.waterreporter.org/v2";
 
     private static final RestAdapter restAdapter = new RestAdapter.Builder()
             .setLogLevel(RestAdapter.LogLevel.FULL)

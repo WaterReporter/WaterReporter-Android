@@ -17,7 +17,7 @@ import retrofit.http.Query;
  */
 public interface OrganizationService {
 
-    @GET("data/organization")
+    @GET("/data/organization")
     void getMany(@Header("Authorization") String authorization,
                  @Header("Content-Type") String contentType,
                  @Query("page") int page,
@@ -25,7 +25,7 @@ public interface OrganizationService {
                  @Query("q") String q,
                  CancelableCallback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
 
-    @GET("data/organization")
+    @GET("/data/organization")
     void getOrganizations(@Header("Authorization") String authorization,
                           @Header("Content-Type") String contentType,
                           @Query("page") int page,
@@ -33,14 +33,14 @@ public interface OrganizationService {
                           @Query("q") String q,
                           CancelableCallback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
 
-    @GET("data/organization/{organization}")
+    @GET("/data/organization/{organization}")
     void getOrganization(@Header("Authorization") String authorization,
                          @Header("Content-Type") String contentType,
                          @Path("organization") int organizationId,
                          @Query("q") String q,
                          CancelableCallback<Organization> organizationCallback);
 
-    @GET("data/organization/{organization}/reports")
+    @GET("/data/organization/{organization}/reports")
     void getOrganizationReports(@Header("Authorization") String authorization,
                                 @Header("Content-Type") String contentType,
                                 @Path("organization") int organizationId,
@@ -49,7 +49,7 @@ public interface OrganizationService {
                                 @Query("q") String q,
                                 CancelableCallback<FeatureCollection> featureCollectionCallback);
 
-    @GET("data/organization/{organization}/users")
+    @GET("/data/organization/{organization}/users")
     void getOrganizationMembers(@Header("Authorization") String authorization,
                                 @Header("Content-Type") String contentType,
                                 @Path("organization") int organizationId,

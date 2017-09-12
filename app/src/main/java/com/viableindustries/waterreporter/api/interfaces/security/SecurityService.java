@@ -19,17 +19,17 @@ import retrofit.http.POST;
 public interface SecurityService {
 
     @Headers({"Content-Type: application/json"})
-    @POST("auth/remote")
+    @POST("/auth/remote")
     void save(@Body LogInBody logInBody,
               CancelableCallback<AuthResponse> authResponseCallback);
 
     @Headers({"Content-Type: application/json"})
-    @POST("user/register")
+    @POST("/user/register")
     void register(@Body RegistrationBody registrationBody,
                   CancelableCallback<RegistrationResponse> registrationResponseCallback);
 
     @Headers({"Content-Type: application/json"})
-    @POST("reset")
+    @POST("/reset")
     void reset
             (@Body Map<String, String> resetBody,
              CancelableCallback<RegistrationResponse> cb);

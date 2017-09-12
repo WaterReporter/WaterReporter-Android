@@ -14,7 +14,7 @@ import retrofit.http.POST;
  */
 public interface CommentService {
 
-    @POST("data/comment")
+    @POST("/data/comment")
     void postComment
             (@Header("Authorization") String authorization,
              @Header("Content-Type") String contentType,

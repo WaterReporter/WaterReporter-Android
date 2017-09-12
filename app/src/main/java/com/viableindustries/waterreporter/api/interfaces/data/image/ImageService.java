@@ -16,13 +16,13 @@ import retrofit.mime.TypedFile;
 public interface ImageService {
 
     @Multipart
-    @POST("data/media/image")
+    @POST("/data/media/image")
     ImageProperties postImage
             (@Header("Authorization") String authorization,
              @Part("image") TypedFile photo);
 
     @Multipart
-    @POST("data/media/image")
+    @POST("/data/media/image")
     void postImageAsync
             (@Header("Authorization") String authorization,
              @Part("image") TypedFile photo,

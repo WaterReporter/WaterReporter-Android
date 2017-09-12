@@ -17,13 +17,13 @@ import retrofit.http.Path;
 
 public interface FavoriteService {
 
-    @POST("data/like")
+    @POST("/data/like")
     void addFavorite(@Header("Authorization") String authorization,
                      @Header("Content-Type") String contentType,
                      @Body FavoritePostBody favoritePostBody,
                      CancelableCallback<Favorite> favoriteCallback);
 
-    @DELETE("data/like/{id}")
+    @DELETE("/data/like/{id}")
     void undoFavorite(@Header("Authorization") String authorization,
                       @Header("Content-Type") String contentType,
                       @Path("id") int featureId,
