@@ -10,19 +10,19 @@ import java.io.Serializable;
 public class AuthResponse implements Serializable {
 
     @SerializedName("access_token")
-    private String access_token;
+    String access_token;
 
     @SerializedName("expires_in")
-    private String expires_in;
+    String expires_in;
 
     @SerializedName("scope")
-    private String scope;
+    String scope;
 
     @SerializedName("state")
-    private String state;
+    String state;
 
     @SerializedName("token_type")
-    private String token_type;
+    String token_type;
 
     public String getAccessToken() {
 

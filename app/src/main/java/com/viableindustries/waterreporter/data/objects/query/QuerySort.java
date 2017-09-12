@@ -1,15 +1,23 @@
 package com.viableindustries.waterreporter.data.objects.query;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by brendanmcintyre on 3/3/16.
  */
 public class QuerySort {
 
+    @SerializedName("field")
+    private String field;
+
+    @SerializedName("direction")
+    private String direction;
+
     public QuerySort (String aField, String aDirection) {
 
-        String field = aField;
+        this.field = aField;
 
-        String direction = aDirection;
+        this.direction = aDirection;
 
     }
 

@@ -10,8 +10,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.viableindustries.waterreporter.data.interfaces.security.SecurityService;
 import com.viableindustries.waterreporter.data.interfaces.api.user.UserService;
+import com.viableindustries.waterreporter.data.interfaces.security.SecurityService;
 import com.viableindustries.waterreporter.data.objects.auth.AuthResponse;
 import com.viableindustries.waterreporter.data.objects.auth.LogInBody;
 import com.viableindustries.waterreporter.data.objects.organization.Organization;
@@ -147,7 +147,7 @@ public class SignInActivity extends AppCompatActivity {
 
                             if (user_id == 0) {
 
-                                final UserService userService = restAdapter.create(UserService.class);
+                                final UserService userService = UserService.restAdapter.create(UserService.class);
 
                                 userService.getActiveUser(accessToken, "application/json",
                                         new CancelableCallback<UserBasicResponse>() {

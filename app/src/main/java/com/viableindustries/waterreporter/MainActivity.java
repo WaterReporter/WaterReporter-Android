@@ -221,6 +221,8 @@ public class MainActivity extends AppCompatActivity implements
 
     void fetchPosts(int limit, final int page, final boolean refresh) {
 
+        final ReportService service = ReportService.restAdapter.create(ReportService.class);
+
         final String mAccessToken = mSharedPreferences.getString("access_token", "");
 
         Log.d("", mAccessToken);

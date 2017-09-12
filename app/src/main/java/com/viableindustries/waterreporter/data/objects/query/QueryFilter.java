@@ -1,17 +1,28 @@
 package com.viableindustries.waterreporter.data.objects.query;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by brendanmcintyre on 3/3/16.
  */
 public class QueryFilter {
 
+    @SerializedName("name")
+    private String name;
+
+    @SerializedName("op")
+    private String op;
+
+    @SerializedName("val")
+    private Object val;
+
     public QueryFilter (String aName, String aOp, Object aVal) {
 
-        String name = aName;
+        this.name = aName;
 
-        String op = aOp;
+        this.op = aOp;
 
-        Object val = aVal;
+        this.val = aVal;
 
     }
 

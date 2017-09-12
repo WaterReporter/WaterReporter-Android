@@ -1,26 +1,49 @@
 package com.viableindustries.waterreporter.data.objects.auth;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by brendanmcintyre on 8/28/15.
  */
 public class LogInBody {
 
+    @SerializedName("email")
+    String email;
+
+    @SerializedName("password")
+    String password;
+
+    @SerializedName("response_type")
+    String response_type;
+
+    @SerializedName("client_id")
+    String client_id;
+
+    @SerializedName("redirect_uri")
+    String redirect_uri;
+
+    @SerializedName("scope")
+    String scope;
+
+    @SerializedName("state")
+    public String state;
+
     public LogInBody (String aEmail, String aPassword, String aResponseType, String aClientId,
-                           String aRedirectUri, String aScope, String aState) {
+                      String aRedirectUri, String aScope, String aState) {
 
-        String email = aEmail;
+        this.email = aEmail;
 
-        String password = aPassword;
+        this.password = aPassword;
 
-        String response_type = aResponseType;
+        this.response_type = aResponseType;
 
-        String client_id = aClientId;
+        this.client_id = aClientId;
 
-        String redirect_uri = aRedirectUri;
+        this.redirect_uri = aRedirectUri;
 
-        String scope = aScope;
+        this.scope = aScope;
 
-        String state = aState;
+        this.state = aState;
 
     }
 

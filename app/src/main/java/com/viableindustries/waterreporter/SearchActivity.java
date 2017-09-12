@@ -21,8 +21,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.viableindustries.waterreporter.data.interfaces.api.organization.OrganizationService;
 import com.viableindustries.waterreporter.data.interfaces.api.hashtag.HashTagService;
+import com.viableindustries.waterreporter.data.interfaces.api.organization.OrganizationService;
 import com.viableindustries.waterreporter.data.interfaces.api.territory.TerritoryService;
 import com.viableindustries.waterreporter.data.interfaces.api.trending.TrendingService;
 import com.viableindustries.waterreporter.data.interfaces.api.user.UserService;

@@ -1,5 +1,7 @@
 package com.viableindustries.waterreporter.data.objects.query;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -7,11 +9,17 @@ import java.util.List;
  */
 public class QueryParams {
 
+    @SerializedName("filters")
+    private List<Object> filters;
+
+    @SerializedName("order_by")
+    private List<QuerySort> order_by;
+
     public QueryParams (List<Object> aFilters, List<QuerySort> aOrderBy) {
 
-        List<Object> filters = aFilters;
+        this.filters = aFilters;
 
-        List<QuerySort> order_by = aOrderBy;
+        this.order_by = aOrderBy;
 
     }
 
