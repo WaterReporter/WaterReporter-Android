@@ -57,7 +57,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private Pattern emailPattern;
 
-    private SharedPreferences prefs;
+    private SharedPreferences mSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +68,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         emailPattern = android.util.Patterns.EMAIL_ADDRESS;
 
@@ -132,7 +132,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
                                 int userId = registrationResponse.getUserId();
 
-                                prefs.edit()
+                                mSharedPreferences.edit()
                                         .putInt("user_id", userId)
                                         .apply();
 
@@ -171,11 +171,11 @@ public class RegistrationActivity extends AppCompatActivity {
 
                                                 // Store API access token
 
-                                                prefs.edit().putString("access_token", "Bearer " + authResponse.getAccessToken()).apply();
+                                                mSharedPreferences.edit().putString("access_token", "Bearer " + authResponse.getAccessToken()).apply();
 
                                                 // Set flag confirming successful registration
 
-                                                prefs.edit().putBoolean("clean_slate", true).apply();
+                                                mSharedPreferences.edit().putBoolean("clean_slate", true).apply();
 
                                                 startActivity(new Intent(RegistrationActivity.this, ProfileBasicActivity.class));
 

@@ -37,7 +37,7 @@ public class OrganizationCheckListAdapter extends ArrayAdapter<AbbreviatedOrgani
 
         Context mContext = aContext;
 
-        SharedPreferences prefs = mContext.getSharedPreferences(mContext.getPackageName(), 0);
+        SharedPreferences mSharedPreferences = mContext.getSharedPreferences(mContext.getPackageName(), 0);
 
         associatedGroups = mContext.getSharedPreferences(mContext.getString(R.string.associated_group_key), 0);
 

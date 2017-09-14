@@ -16,6 +16,7 @@ import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.api.models.user.UserHolder;
 import com.viableindustries.waterreporter.user_interface.adapters.NotificationSettingAdapter;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +44,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
     @Bind(R.id.notification_settings)
     LinearLayout notificationSettingsContainer;
 
-    private SharedPreferences prefs;
+    private SharedPreferences mSharedPreferences;
 
     private SharedPreferences coreProfile;
 
@@ -62,7 +63,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
@@ -70,17 +71,37 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
         associatedGroups = getSharedPreferences(getString(R.string.associated_group_key), 0);
 
+        // Retrieve stored User
+
+        retrieveStoredUser();
+
+    }
+
+    private void retrieveStoredUser(){
+
         user = UserHolder.getUser();
 
-        if (user.id > 0) {
+        try {
+
+            int userId = user.properties.id;
+
+        } catch (NullPointerException e) {
+
+            user = ModelStorage.getStoredUser(mSharedPreferences);
 
             refreshAccount(user.id);
 
-        } else {
+            try {
 
-            startActivity(new Intent(this, MainActivity.class));
+                int userId = user.properties.id;
 
-            finish();
+            } catch (NullPointerException _e) {
+
+                startActivity(new Intent(this, MainActivity.class));
+
+                finish();
+
+            }
 
         }
 
@@ -106,7 +127,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
     private void refreshAccount(int userId) {
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getUserService().getUser(accessToken,
                 "application/json",
@@ -118,7 +139,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
                         // Set flag confirming successful sign-in
 
-                        prefs.edit().putBoolean("clean_slate", true).apply();
+                        mSharedPreferences.edit().putBoolean("clean_slate", true).apply();
 
                         final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
@@ -235,7 +256,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
         // Clear stored token and user id values
 
-        prefs.edit().clear().apply();
+        mSharedPreferences.edit().clear().apply();
 
         // Clear stored active user profile
 
@@ -296,7 +317,13 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
+
         super.onResume();
+
+        // Retrieve stored User
+
+        retrieveStoredUser();
+
     }
 
     @Override

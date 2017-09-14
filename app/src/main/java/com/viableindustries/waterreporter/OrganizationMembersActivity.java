@@ -1,5 +1,6 @@
 package com.viableindustries.waterreporter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import com.viableindustries.waterreporter.api.models.user.UserCollection;
 import com.viableindustries.waterreporter.user_interface.adapters.UserListAdapter;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,6 +50,10 @@ public class OrganizationMembersActivity extends AppCompatActivity {
 
     private UserListAdapter userListAdapter;
 
+    private SharedPreferences mSharedPreferences;
+
+    private Context mContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -57,7 +63,13 @@ public class OrganizationMembersActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        organization = OrganizationHolder.getOrganization();
+        mContext = this;
+
+        mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        // Retrieve stored Organization
+
+        retrieveStoredOrganization();
 
         memberCollection = OrganizationMemberList.getList();
 
@@ -88,6 +100,36 @@ public class OrganizationMembersActivity extends AppCompatActivity {
 
         populateUsers(memberCollection);
 
+
+    }
+
+    private void retrieveStoredOrganization(){
+
+        organization = OrganizationHolder.getOrganization();
+
+        try {
+
+            int orgId = organization.properties.id;
+
+        } catch (NullPointerException e) {
+
+            organization = ModelStorage.getStoredGroup(mSharedPreferences);
+
+            fetchOrganizationMembers(50, 1, organization.id, null, true);
+
+            try {
+
+                int orgId = organization.properties.id;
+
+            } catch (NullPointerException _e) {
+
+                startActivity(new Intent(this, MainActivity.class));
+
+                finish();
+
+            }
+
+        }
 
     }
 
@@ -161,10 +203,10 @@ public class OrganizationMembersActivity extends AppCompatActivity {
 
     private void fetchOrganizationMembers(int limit, int page, int organizationId, final String query, final boolean refresh) {
 
-        final SharedPreferences prefs =
+        final SharedPreferences mSharedPreferences =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getOrganizationService().getOrganizationMembers(accessToken, "application/json", organizationId, page, limit, query, new CancelableCallback<UserCollection>() {
 
@@ -240,7 +282,13 @@ public class OrganizationMembersActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
+
         super.onResume();
+
+        // Retrieve stored Organization
+
+        retrieveStoredOrganization();
+
     }
 
     @Override

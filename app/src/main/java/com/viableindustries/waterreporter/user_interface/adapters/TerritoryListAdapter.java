@@ -1,7 +1,6 @@
 package com.viableindustries.waterreporter.user_interface.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +11,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.viableindustries.waterreporter.R;
-import com.viableindustries.waterreporter.TerritoryActivity;
 import com.viableindustries.waterreporter.api.models.territory.Territory;
-import com.viableindustries.waterreporter.api.models.territory.TerritoryHolder;
 import com.viableindustries.waterreporter.constants.HucStates;
+import com.viableindustries.waterreporter.user_interface.listeners.TerritoryProfileListener;
 
 import java.util.ArrayList;
 
@@ -91,16 +89,7 @@ public class TerritoryListAdapter extends ArrayAdapter<Territory> {
 
         // Add click listeners to layout elements
 
-        viewHolder.territoryItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                TerritoryHolder.setTerritory(territory);
-
-                mContext.startActivity(new Intent(mContext, TerritoryActivity.class));
-
-            }
-        });
+        viewHolder.territoryItem.setOnClickListener(new TerritoryProfileListener(mContext, territory));
 
         return convertView;
 

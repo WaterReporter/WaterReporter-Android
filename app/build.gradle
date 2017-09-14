@@ -20,21 +20,12 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
 }
-
-
-
-
-
-
-
-
-
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -58,4 +49,6 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'org.jsoup:jsoup:1.10.3'
     compile 'com.github.rubensousa:gravitysnaphelper:1.2'
+    compile 'com.airbnb:deeplinkdispatch:3.1.1'
+    annotationProcessor 'com.airbnb:deeplinkdispatch-processor:3.1.1'
 }

@@ -50,7 +50,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
     private GroupActionListAdapter.OrganizationFilter mFilter;
 
-    private final SharedPreferences prefs;
+    private final SharedPreferences mSharedPreferences;
 
     private final SharedPreferences groupPrefs;
 
@@ -66,7 +66,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
         this.mContext = aContext;
 
-        prefs = mContext.getSharedPreferences(mContext.getPackageName(), 0);
+        mSharedPreferences = mContext.getSharedPreferences(mContext.getPackageName(), 0);
 
         groupPrefs = mContext.getSharedPreferences(mContext.getString(R.string.group_membership_key), 0);
 
@@ -124,7 +124,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
         }
 
-        prefs.edit().putString("user_groups", orgIds).apply();
+        mSharedPreferences.edit().putString("user_groups", orgIds).apply();
 
     }
 
@@ -134,11 +134,11 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
         // Retrieve API token
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         // Retrieve user ID
 
-        int id = prefs.getInt("user_id", 0);
+        int id = mSharedPreferences.getInt("user_id", 0);
 
         // Build request object
 

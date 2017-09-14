@@ -42,6 +42,7 @@ import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapte
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
 import com.viableindustries.waterreporter.utilities.PatternEditableBuilder;
 
 import java.util.ArrayList;
@@ -117,7 +118,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     private Organization organization;
 
-    private SharedPreferences prefs;
+    private SharedPreferences mSharedPreferences;
 
     private SharedPreferences groupPrefs;
 
@@ -136,7 +137,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         groupPrefs = getSharedPreferences(getString(R.string.group_membership_key), 0);
 
@@ -144,7 +145,9 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         resources = getResources();
 
-        organization = OrganizationHolder.getOrganization();
+        // Retrieve stored Organization
+
+        retrieveStoredOrganization();
 
         // Set refresh listener on report feed container
 
@@ -184,16 +187,6 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         fetchOrganizationMembers(50, 1, organizationId);
 
-        // Retrieve first batch of user's reports
-
-        if (reportCollection.isEmpty()) {
-
-            timeLineContainer.setRefreshing(true);
-
-            fetchReports(5, 1, buildQuery(true, null), false);
-
-        }
-
         scrollListener = new EndlessScrollListener() {
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
@@ -217,6 +210,38 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     }
 
+    private void retrieveStoredOrganization(){
+
+        organization = OrganizationHolder.getOrganization();
+
+        try {
+
+            int orgId = organization.properties.id;
+
+        } catch (NullPointerException e) {
+
+            organization = ModelStorage.getStoredGroup(mSharedPreferences);
+
+            timeLineContainer.setRefreshing(true);
+
+            fetchReports(5, 1, buildQuery(true, null), false);
+
+            try {
+
+                int orgId = organization.properties.id;
+
+            } catch (NullPointerException _e) {
+
+                startActivity(new Intent(this, MainActivity.class));
+
+                finish();
+
+            }
+
+        }
+
+    }
+
     private void startPost() {
 
         Intent intent = new Intent(mContext, PhotoMetaActivity.class);
@@ -236,11 +261,11 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         // Retrieve API token
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         // Retrieve user ID
 
-        int id = prefs.getInt("user_id", 0);
+        int id = mSharedPreferences.getInt("user_id", 0);
 
         // Build request object
 
@@ -541,7 +566,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     private void countReports(String query, final String filterName) {
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getReportService().getReports(accessToken, "application/json", 1, 1, query, new CancelableCallback<FeatureCollection>() {
 
@@ -597,7 +622,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     private void fetchOrganizationMembers(int limit, int page, int organizationId) {
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getOrganizationService().getOrganizationMembers(accessToken, "application/json", organizationId, page, limit, null, new CancelableCallback<UserCollection>() {
 
@@ -702,7 +727,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     private void fetchReports(int limit, final int page, String query, final boolean refresh) {
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getReportService().getReports(accessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
 
@@ -813,7 +838,13 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
+
         super.onResume();
+
+        // Retrieve stored Organization
+
+        retrieveStoredOrganization();
+
     }
 
     @Override

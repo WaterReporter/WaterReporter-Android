@@ -33,6 +33,7 @@ import com.viableindustries.waterreporter.user_interface.dialogs.ReportActionDia
 import com.viableindustries.waterreporter.user_interface.view_holders.UserProfileHeaderView;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +72,7 @@ public class UserProfileActivity extends AppCompatActivity implements
 
     private boolean hasGroups = false;
 
-    private SharedPreferences prefs;
+    private SharedPreferences mSharedPreferences;
 
     private User user;
 
@@ -90,7 +91,7 @@ public class UserProfileActivity extends AppCompatActivity implements
 
         ButterKnife.bind(this);
 
-        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
@@ -100,19 +101,7 @@ public class UserProfileActivity extends AppCompatActivity implements
 
         // Retrieve stored User object
 
-        user = UserHolder.getUser();
-
-        try {
-
-            userId = user.properties.id;
-
-        } catch (NullPointerException e) {
-
-            startActivity(new Intent(this, MainActivity.class));
-
-            finish();
-
-        }
+        retrieveStoredUser();
 
         // Set refresh listener on report feed container
 
@@ -184,6 +173,34 @@ public class UserProfileActivity extends AppCompatActivity implements
 
     }
 
+    private void retrieveStoredUser(){
+
+        user = UserHolder.getUser();
+
+        try {
+
+            userId = user.properties.id;
+
+        } catch (NullPointerException e) {
+
+            user = ModelStorage.getStoredUser(mSharedPreferences);
+
+            try {
+
+                userId = user.properties.id;
+
+            } catch (NullPointerException _e) {
+
+                startActivity(new Intent(this, MainActivity.class));
+
+                finish();
+
+            }
+
+        }
+
+    }
+
     private void addListViewHeader() {
 
         mUserProfileHeaderView = new UserProfileHeaderView();
@@ -225,7 +242,7 @@ public class UserProfileActivity extends AppCompatActivity implements
 
     private void countReports(String query, final String filterName) {
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getReportService().getReports(accessToken, "application/json", 1, 1, query, new CancelableCallback<FeatureCollection>() {
 
@@ -280,7 +297,7 @@ public class UserProfileActivity extends AppCompatActivity implements
 
     private void fetchUserGroups(int userId) {
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getUserService().getUserOrganization(accessToken, "application/json", userId, new CancelableCallback<OrganizationFeatureCollection>() {
 
@@ -385,7 +402,7 @@ public class UserProfileActivity extends AppCompatActivity implements
 
     private void fetchPosts(int limit, final int page, String query, final boolean refresh) {
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getReportService().getReports(accessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
 
@@ -565,7 +582,7 @@ public class UserProfileActivity extends AppCompatActivity implements
 
         timeLineContainer.setRefreshing(true);
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         final Report report = ReportHolder.getReport();
 
@@ -664,7 +681,13 @@ public class UserProfileActivity extends AppCompatActivity implements
 
     @Override
     public void onResume() {
+        
         super.onResume();
+
+        // Retrieve stored User object
+
+        retrieveStoredUser();
+        
     }
 
     @Override

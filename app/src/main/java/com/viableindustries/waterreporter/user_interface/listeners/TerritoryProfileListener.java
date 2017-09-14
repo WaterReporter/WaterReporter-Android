@@ -8,6 +8,9 @@ import android.view.View;
 import com.viableindustries.waterreporter.TerritoryActivity;
 import com.viableindustries.waterreporter.api.models.territory.Territory;
 import com.viableindustries.waterreporter.api.models.territory.TerritoryHolder;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by brendanmcintyre on 4/13/17.
@@ -32,6 +35,10 @@ public class TerritoryProfileListener implements View.OnClickListener {
             Intent intent = new Intent(mContext, TerritoryActivity.class);
 
             TerritoryHolder.setTerritory(territory);
+
+            // Write model to temporary storage in SharedPreferences
+
+            ModelStorage.storeModel(mContext.getSharedPreferences(mContext.getPackageName(), MODE_PRIVATE), territory, "stored_territory");
 
             mContext.startActivity(intent);
 

@@ -150,10 +150,10 @@ public class GroupActionListActivity extends AppCompatActivity {
 
     private void buildList(int page, int limit, final boolean refresh) {
 
-        SharedPreferences prefs =
+        SharedPreferences mSharedPreferences =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         // Create order_by list and add a sort parameter
 

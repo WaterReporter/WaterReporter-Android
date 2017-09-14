@@ -53,6 +53,7 @@ import com.viableindustries.waterreporter.map_box.MappedReportsHolder;
 import com.viableindustries.waterreporter.user_interface.adapters.MarkerCardAdapter;
 import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +98,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     private Report mPost;
 
-    private SharedPreferences prefs;
+    private SharedPreferences mSharedPreferences;
 
     private LinearLayoutManager mLayoutManager;
 
@@ -119,7 +120,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
         }
 
-        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         mContext = this;
 
@@ -128,10 +129,12 @@ public class TerritoryMapActivity extends AppCompatActivity {
         mappedReportsHolder = new MappedReportsHolder();
 
         // Retrieve stored Territory
-        mTerritory = TerritoryHolder.getTerritory();
 
-        // Retrieve stored Report
-        mPost = ReportHolder.getReport();
+        retrieveStoredTerritory();
+
+        // Retrieve stored Post
+
+        retrieveStoredPost();
 
         // RecyclerView
 
@@ -215,6 +218,62 @@ public class TerritoryMapActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+    }
+
+    private void retrieveStoredTerritory(){
+
+        mTerritory = TerritoryHolder.getTerritory();
+
+        try {
+
+            int territoryId = mTerritory.properties.id;
+
+        } catch (NullPointerException e) {
+
+            mTerritory = ModelStorage.getStoredTerritory(mSharedPreferences);
+
+            try {
+
+                int territoryId = mTerritory.properties.id;
+
+            } catch (NullPointerException _e) {
+
+                startActivity(new Intent(this, MainActivity.class));
+
+                finish();
+
+            }
+
+        }
+
+    }
+
+    private void retrieveStoredPost(){
+
+        mPost = ReportHolder.getReport();
+
+        try {
+
+            int postId = mPost.properties.id;
+
+        } catch (NullPointerException e) {
+
+            mPost = ModelStorage.getStoredPost(mSharedPreferences);
+
+            try {
+
+                int postId = mPost.properties.id;
+
+            } catch (NullPointerException _e) {
+
+                startActivity(new Intent(this, MainActivity.class));
+
+                finish();
+
+            }
+
+        }
 
     }
 
@@ -304,7 +363,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     private void fetchPosts(int limit, final int page, String query) {
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getReportService().getReports(accessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
 
@@ -540,8 +599,19 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
+
         super.onResume();
+
         mapView.onResume();
+
+        // Retrieve stored Territory
+
+        retrieveStoredTerritory();
+
+        // Retrieve stored Post
+
+        retrieveStoredPost();
+
     }
 
     @Override

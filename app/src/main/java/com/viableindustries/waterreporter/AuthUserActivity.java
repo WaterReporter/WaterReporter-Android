@@ -41,6 +41,7 @@ import com.viableindustries.waterreporter.user_interface.view_holders.UserProfil
 import com.viableindustries.waterreporter.utilities.ApiDispatcher;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
 import com.viableindustries.waterreporter.utilities.UploadStateReceiver;
 
 import java.util.ArrayList;
@@ -128,19 +129,7 @@ public class AuthUserActivity extends AppCompatActivity implements
 
         // Retrieve stored User object
 
-        user = UserHolder.getUser();
-
-        try {
-
-            userId = user.properties.id;
-
-        } catch (NullPointerException e) {
-
-            startActivity(new Intent(this, MainActivity.class));
-
-            finish();
-
-        }
+        retrieveStoredUser();
 
         if (mSharedPreferences.getInt("user_id", 0) == userId) {
 
@@ -215,6 +204,34 @@ public class AuthUserActivity extends AppCompatActivity implements
 
             }
         };
+
+    }
+
+    private void retrieveStoredUser(){
+
+        user = UserHolder.getUser();
+
+        try {
+
+            userId = user.properties.id;
+
+        } catch (NullPointerException e) {
+
+            user = ModelStorage.getStoredUser(mSharedPreferences);
+
+            try {
+
+                userId = user.properties.id;
+
+            } catch (NullPointerException _e) {
+
+                startActivity(new Intent(this, MainActivity.class));
+
+                finish();
+
+            }
+
+        }
 
     }
 
@@ -665,6 +682,10 @@ public class AuthUserActivity extends AppCompatActivity implements
 
         super.onStart();
 
+        // Retrieve stored User object
+
+        retrieveStoredUser();
+
         // Check for active transmissions
 
         if ((ApiDispatcher.transmissionActive(this) || ApiDispatcher.getPendingPostId(this) > 0) && uploadProgress != null) {
@@ -687,6 +708,10 @@ public class AuthUserActivity extends AppCompatActivity implements
     public void onResume() {
 
         super.onResume();
+
+        // Retrieve stored User object
+
+        retrieveStoredUser();
 
         // Check for active transmissions
 

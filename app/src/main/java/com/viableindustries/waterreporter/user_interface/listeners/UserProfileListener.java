@@ -7,6 +7,9 @@ import android.view.View;
 import com.viableindustries.waterreporter.UserProfileActivity;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.api.models.user.UserHolder;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by brendanmcintyre on 8/30/16.
@@ -45,6 +48,10 @@ public class UserProfileListener implements View.OnClickListener {
         }
 
         UserHolder.setUser(user);
+
+        // Write model to temporary storage in SharedPreferences
+
+        ModelStorage.storeModel(mContext.getSharedPreferences(mContext.getPackageName(), MODE_PRIVATE), user, "stored_user");
 
         Intent intent = new Intent(mContext, UserProfileActivity.class);
 

@@ -166,7 +166,7 @@ public class CommentActivity extends AppCompatActivity implements
 
     private static final String TAG = "ProfileBasicActivity";
 
-    private SharedPreferences prefs;
+    private SharedPreferences mSharedPreferences;
 
     private Context mContext;
 
@@ -191,7 +191,7 @@ public class CommentActivity extends AppCompatActivity implements
 
         mContext = this;
 
-        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         report = ReportHolder.getReport();
 
@@ -313,7 +313,7 @@ public class CommentActivity extends AppCompatActivity implements
 
     private void fetchTags(int limit, int page, final String query) {
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getHashTagService().getMany(accessToken, "application/json", page, limit, query, new CancelableCallback<HashtagCollection>() {
 
@@ -575,7 +575,7 @@ public class CommentActivity extends AppCompatActivity implements
 
     private void fetchComments(int limit, int page) {
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         Log.d("", accessToken);
 
@@ -723,7 +723,7 @@ public class CommentActivity extends AppCompatActivity implements
 
         commentListContainer.setRefreshing(true);
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         FileNameMap fileNameMap = URLConnection.getFileNameMap();
 
@@ -788,7 +788,7 @@ public class CommentActivity extends AppCompatActivity implements
 
         working = true;
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getCommentService().postComment(accessToken, "application/json", commentPost, new CancelableCallback<Comment>() {
 
@@ -838,7 +838,7 @@ public class CommentActivity extends AppCompatActivity implements
 
     private void patchReport(int reportId, String state) {
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         ReportStateBody reportStateBody = new ReportStateBody(reportId, state);
 

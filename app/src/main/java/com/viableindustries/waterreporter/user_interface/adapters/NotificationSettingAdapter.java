@@ -95,15 +95,15 @@ public class NotificationSettingAdapter extends ArrayAdapter {
 
                 final SharedPreferences coreProfile = mContext.getSharedPreferences(mContext.getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
-                final SharedPreferences prefs = mContext.getSharedPreferences(mContext.getPackageName(), 0);
+                final SharedPreferences mSharedPreferences = mContext.getSharedPreferences(mContext.getPackageName(), 0);
 
                 // Retrieve API token
 
-                final String accessToken = prefs.getString("access_token", "");
+                final String accessToken = mSharedPreferences.getString("access_token", "");
 
                 // Retrieve user ID
 
-                int id = prefs.getInt("user_id", 0);
+                int id = mSharedPreferences.getInt("user_id", 0);
 
                 // Prepare request object
 

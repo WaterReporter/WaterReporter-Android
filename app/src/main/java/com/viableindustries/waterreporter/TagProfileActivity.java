@@ -93,7 +93,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
     private Context mContext;
 
-    private SharedPreferences prefs;
+    private SharedPreferences mSharedPreferences;
 
     private int socialOptions;
 
@@ -112,7 +112,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         mContext = this;
 
@@ -343,7 +343,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
     private void countReports(String query, final String filterName) {
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getReportService().getReports(accessToken, "application/json", 1, 1, query, new CancelableCallback<FeatureCollection>() {
 
@@ -469,7 +469,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
     private void fetchOrganizations(int limit, int page, final String query) {
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getOrganizationService().getOrganizations(accessToken, "application/json", page, limit, query, new CancelableCallback<OrganizationFeatureCollection>() {
 
@@ -524,7 +524,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
     private void fetchReports(int limit, final int page, String query, final boolean refresh) {
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getReportService().getReports(accessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
 

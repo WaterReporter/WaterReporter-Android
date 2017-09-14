@@ -1,7 +1,6 @@
 package com.viableindustries.waterreporter.user_interface.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +13,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.R;
-import com.viableindustries.waterreporter.UserProfileActivity;
 import com.viableindustries.waterreporter.api.models.user.User;
-import com.viableindustries.waterreporter.api.models.user.UserHolder;
+import com.viableindustries.waterreporter.user_interface.listeners.UserProfileListener;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 
 import java.util.List;
@@ -113,16 +111,7 @@ public class UserListAdapter extends ArrayAdapter<User> implements Filterable {
 
         // Add click listeners to layout elements
 
-        viewHolder.userItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                UserHolder.setUser(user);
-
-                mContext.startActivity(new Intent(mContext, UserProfileActivity.class));
-
-            }
-        });
+        viewHolder.userItem.setOnClickListener(new UserProfileListener(mContext, user));
 
         return convertView;
 

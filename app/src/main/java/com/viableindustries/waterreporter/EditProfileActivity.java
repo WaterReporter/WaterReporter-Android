@@ -112,7 +112,7 @@ public class EditProfileActivity extends AppCompatActivity implements
 
     private User coreUser;
 
-    private SharedPreferences prefs;
+    private SharedPreferences mSharedPreferences;
 
     private String accessToken;
 
@@ -145,7 +145,7 @@ public class EditProfileActivity extends AppCompatActivity implements
 
         ButterKnife.bind(this);
 
-        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
@@ -280,9 +280,9 @@ public class EditProfileActivity extends AppCompatActivity implements
 
         savingMessage.setText(getResources().getString(R.string.saving_profile));
 
-        final int userId = prefs.getInt("user_id", 0);
+        final int userId = mSharedPreferences.getInt("user_id", 0);
 
-        accessToken = prefs.getString("access_token", "");
+        accessToken = mSharedPreferences.getString("access_token", "");
 
         String filePath = mTempImagePath;
 
@@ -483,7 +483,7 @@ public class EditProfileActivity extends AppCompatActivity implements
 
         }
 
-        accessToken = prefs.getString("access_token", "");
+        accessToken = mSharedPreferences.getString("access_token", "");
 
         if (photoCaptured) {
 

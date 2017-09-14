@@ -7,6 +7,9 @@ import android.view.View;
 import com.viableindustries.waterreporter.OrganizationProfileActivity;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.organization.OrganizationHolder;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by brendanmcintyre on 8/30/16.
@@ -29,6 +32,10 @@ public class OrganizationProfileListener implements View.OnClickListener {
         Intent intent = new Intent(mContext, OrganizationProfileActivity.class);
 
         OrganizationHolder.setOrganization(organization);
+
+        // Write model to temporary storage in SharedPreferences
+
+        ModelStorage.storeModel(mContext.getSharedPreferences(mContext.getPackageName(), MODE_PRIVATE), organization, "stored_group");
 
         mContext.startActivity(intent);
 

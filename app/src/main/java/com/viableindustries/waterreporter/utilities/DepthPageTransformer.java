@@ -8,6 +8,7 @@ import android.view.View;
  */
 
 public class DepthPageTransformer implements ViewPager.PageTransformer {
+
     private static final float MIN_SCALE = 0.75f;
 
     public void transformPage(View view, float position) {

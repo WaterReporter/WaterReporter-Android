@@ -1,7 +1,6 @@
 package com.viableindustries.waterreporter.user_interface.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,10 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.viableindustries.waterreporter.OrganizationProfileActivity;
 import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
-import com.viableindustries.waterreporter.api.models.organization.OrganizationHolder;
+import com.viableindustries.waterreporter.user_interface.listeners.OrganizationProfileListener;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 
 import java.util.ArrayList;
@@ -117,16 +115,7 @@ public class OrganizationListAdapter extends ArrayAdapter<Organization> implemen
 
         // Add click listeners to layout elements
 
-        viewHolder.organizationItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                OrganizationHolder.setOrganization(organization);
-
-                mContext.startActivity(new Intent(mContext, OrganizationProfileActivity.class));
-
-            }
-        });
+        viewHolder.organizationItem.setOnClickListener(new OrganizationProfileListener(mContext, organization));
 
         return convertView;
 

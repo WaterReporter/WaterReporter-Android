@@ -60,6 +60,7 @@ import com.viableindustries.waterreporter.user_interface.dialogs.TimelineFilterD
 import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -87,7 +88,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
     private TextView groupCountLabel;
 
-    private TextView territoryName;
+    private TextView mTerritoryName;
 
     private LinearLayout promptBlock;
 
@@ -132,9 +133,9 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
     private Context mContext;
 
-    private Territory territory;
+    private Territory mTerritory;
 
-    private SharedPreferences prefs;
+    private SharedPreferences mSharedPreferences;
 
     private Resources resources;
 
@@ -152,13 +153,11 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
         ButterKnife.bind(this);
 
-        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         mContext = this;
 
         resources = getResources();
-
-//        mapButtonTopOffset = 320 - 28;
 
         float scale = getResources().getDisplayMetrics().density;
         mapButtonTopOffset = (int) (296 * scale);
@@ -173,49 +172,14 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
         }
 
-//        float scale = getResources().getDisplayMetrics().density;
-//        final int mapButtonTopOffsetPixels = (int) (mapButtonTopOffset * scale);
-
-//        accessMap.animate().y(mapButtonTopOffsetPixels).setDuration(250).start();
-//
-//        accessMap.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.splash_blue)));
-//
-//        accessMap.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                ReportHolder.setReport(null);
-//                startActivity(new Intent(TerritoryActivity.this, TerritoryMapActivity.class));
-//            }
-//        });
-
-        territory = TerritoryHolder.getTerritory();
-
         // Hide the docked metadata view
         customActionBar.setBackgroundColor(Color.TRANSPARENT);
         actionBarTitle.setAlpha(0.0f);
         actionBarSubtitle.setAlpha(0.0f);
 
-        // Set refresh listener on report feed container
+        // Retrieve stored Territory
 
-//        timeLineContainer.setOnRefreshListener(
-//                new SwipeRefreshLayout.OnRefreshListener() {
-//                    @Override
-//                    public void onRefresh() {
-//                        Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
-//                        // This method performs the actual api-refresh operation.
-//                        // The method calls setRefreshing(false) when it's finished.
-//
-//                        countReports(complexQuery, "state");
-//
-//                        resetStats();
-//
-//                    }
-//                }
-//        );
-
-        // Set color of swipe refresh arrow animation
-
-//        timeLineContainer.setColorSchemeResources(R.color.waterreporter_blue);
+        retrieveStoredTerritory();
 
         // Inflate and insert timeline header view
 
@@ -233,23 +197,9 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
         generateQueries();
 
-//        countReports(mActionQuery, "state");
-
         // Count related groups
 
         fetchOrganizations(10, 1, buildQuery(false, "group", null));
-
-        // Retrieve first batch of posts
-
-        if (reportCollection.isEmpty()) {
-
-//            timeLineContainer.setRefreshing(true);
-
-            mMasterQuery = buildQuery(true, "report", null);
-
-            fetchPosts(5, 1, mMasterQuery, true);
-
-        }
 
         scrollListener = new EndlessScrollListener() {
             @Override
@@ -334,6 +284,44 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
     }
 
+    private void retrieveStoredTerritory(){
+
+        mTerritory = TerritoryHolder.getTerritory();
+
+        try {
+
+            int mTerritoryId = mTerritory.properties.id;
+
+        } catch (NullPointerException e) {
+
+            mTerritory = ModelStorage.getStoredTerritory(mSharedPreferences);
+
+            try {
+
+                int mTerritoryId = mTerritory.properties.id;
+
+                // Retrieve first batch of posts
+
+                if (reportCollection.isEmpty()) {
+
+                    mMasterQuery = buildQuery(true, "report", null);
+
+                    fetchPosts(5, 1, mMasterQuery, true);
+
+                }
+
+            } catch (NullPointerException _e) {
+
+                startActivity(new Intent(this, MainActivity.class));
+
+                finish();
+
+            }
+
+        }
+
+    }
+
     private void generateQueries() {
 
         // Count reports with actions
@@ -385,7 +373,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
                         mapboxMap.animateCamera(CameraUpdateFactory
                                 .newCameraPosition(position), 500);
 
-                        TerritoryHelpers.fetchTerritoryGeometry(mContext, territory, new TerritoryGeometryCallbacks() {
+                        TerritoryHelpers.fetchTerritoryGeometry(mContext, mTerritory, new TerritoryGeometryCallbacks() {
 
                             @Override
                             public void onSuccess(@NonNull HucFeature hucFeature) {
@@ -398,7 +386,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
                                 latLngs.add(southWest);
                                 latLngs.add(northEast);
 
-//                                territoryStates.setText(hucFeature.properties.states.concat);
+//                                mTerritoryStates.setText(hucFeature.properties.states.concat);
 //                                actionBarSubtitle.setText(hucFeature.properties.states.concat);
 
                                 // Move camera to watershed bounds
@@ -429,7 +417,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
                         });
 
-                        String code = AttributeTransformUtility.getTerritoryCode(territory);
+                        String code = AttributeTransformUtility.getTerritoryCode(mTerritory);
                         String url = String.format("https://huc.waterreporter.org/8/%s", code);
 
                         try {
@@ -526,13 +514,11 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
             }
         });
 
-        territoryName = (TextView) header.findViewById(R.id.territoryName);
+        mTerritoryName = (TextView) header.findViewById(R.id.territoryName);
 
-        TextView territoryStates = (TextView) header.findViewById(R.id.states);
+        TextView mTerritoryStates = (TextView) header.findViewById(R.id.states);
 
         fblPostCount = (FlexboxLayout) header.findViewById(R.id.postCount);
-
-//        fblActionCount = (FlexboxLayout) header.findViewById(R.id.actionCount);
 
         fblGroupCount = (FlexboxLayout) header.findViewById(R.id.groupCount);
 
@@ -563,7 +549,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
         try {
 
-            int territoryId = territory.id;
+            int mTerritoryId = mTerritory.id;
 
         } catch (NullPointerException e) {
 
@@ -573,13 +559,13 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
         }
 
-        String territoryNameText = AttributeTransformUtility.parseWatershedName(territory, false);
+        String mTerritoryNameText = AttributeTransformUtility.parseWatershedName(mTerritory, false);
 
-        territoryName.setText(territoryNameText);
-        actionBarTitle.setText(territoryNameText);
+        mTerritoryName.setText(mTerritoryNameText);
+        actionBarTitle.setText(mTerritoryNameText);
 
-        territoryStates.setText(HucStates.STATES.get(territory.properties.huc_8_code));
-        actionBarSubtitle.setText(HucStates.STATES.get(territory.properties.huc_8_code));
+        mTerritoryStates.setText(HucStates.STATES.get(mTerritory.properties.huc_8_code));
+        actionBarSubtitle.setText(HucStates.STATES.get(mTerritory.properties.huc_8_code));
 
         // Attach click listeners to stat elements
 
@@ -604,7 +590,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
     private void fetchOrganizations(int limit, int page, final String query) {
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getOrganizationService().getOrganizations(accessToken, "application/json", page, limit, query, new CancelableCallback<OrganizationFeatureCollection>() {
 
@@ -679,9 +665,9 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
         if (collection.equals("group")) {
 
-            QueryFilter territoryFilter = new QueryFilter("huc_8_code", "eq", territory.properties.huc_8_code);
+            QueryFilter mTerritoryFilter = new QueryFilter("huc_8_code", "eq", mTerritory.properties.huc_8_code);
 
-            QueryFilter complexVal = new QueryFilter("territory", "has", territoryFilter);
+            QueryFilter complexVal = new QueryFilter("mTerritory", "has", mTerritoryFilter);
 
             QueryFilter complexFilter = new QueryFilter("reports", "any", complexVal);
 
@@ -689,11 +675,11 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
         } else {
 
-            QueryFilter complexVal = new QueryFilter("huc_8_code", "eq", territory.properties.huc_8_code);
+            QueryFilter complexVal = new QueryFilter("huc_8_code", "eq", mTerritory.properties.huc_8_code);
 
-            QueryFilter territoryFilter = new QueryFilter("territory", "has", complexVal);
+            QueryFilter mTerritoryFilter = new QueryFilter("mTerritory", "has", complexVal);
 
-            queryFilters.add(territoryFilter);
+            queryFilters.add(mTerritoryFilter);
 
             if (optionalFilters != null) {
 
@@ -719,7 +705,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
     private void fetchPosts(int limit, final int page, String query, final boolean refresh) {
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getReportService().getReports(accessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
 
@@ -850,7 +836,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
         Intent intent = new Intent(this, PhotoMetaActivity.class);
 
-        intent.putExtra("autoTag", String.format("\u0023%s", territoryName.getText().toString().replaceAll("[^a-zA-Z0-9]+", "")));
+        intent.putExtra("autoTag", String.format("\u0023%s", mTerritoryName.getText().toString().replaceAll("[^a-zA-Z0-9]+", "")));
 
         startActivity(intent);
 
@@ -966,8 +952,15 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
     @Override
     public void onResume() {
+
         super.onResume();
+
         mapView.onResume();
+
+        // Retrieve stored Territory
+
+        retrieveStoredTerritory();
+
     }
 
     @Override

@@ -67,7 +67,7 @@ public class SignInActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        SharedPreferences prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        SharedPreferences mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         emailPattern = android.util.Patterns.EMAIL_ADDRESS;
 
@@ -103,7 +103,7 @@ public class SignInActivity extends AppCompatActivity {
 
     public void saveAccount(View view) {
 
-        final SharedPreferences prefs =
+        final SharedPreferences mSharedPreferences =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         String password = String.valueOf(password_text.getText());
@@ -130,14 +130,14 @@ public class SignInActivity extends AppCompatActivity {
 
                             final String accessToken = "Bearer " + authResponse.getAccessToken();
 
-                            prefs.edit().putString("access_token", accessToken).apply();
+                            mSharedPreferences.edit().putString("access_token", accessToken).apply();
 
                             // Since the user may have arrived here after re-installing the app and
                             // bypassing the registration dialog, we need to check for the presence of
                             // a user id. If we don't have one stored, retrieve it via the UserService
                             // by including the token obtained just now upon successful log-in.
 
-                            int user_id = prefs.getInt("user_id", 0);
+                            int user_id = mSharedPreferences.getInt("user_id", 0);
 
                             if (user_id == 0) {
 
@@ -147,7 +147,7 @@ public class SignInActivity extends AppCompatActivity {
                                             public void onSuccess(UserBasicResponse userBasicResponse,
                                                                 Response response) {
 
-                                                prefs.edit().putInt("user_id", userBasicResponse.getUserId()).apply();
+                                                mSharedPreferences.edit().putInt("user_id", userBasicResponse.getUserId()).apply();
 
                                                 RestClient.getUserService().getUser(accessToken,
                                                         "application/json",
@@ -159,7 +159,7 @@ public class SignInActivity extends AppCompatActivity {
 
                                                                 // Set flag confirming successful sign-in
 
-                                                                prefs.edit().putBoolean("clean_slate", true).apply();
+                                                                mSharedPreferences.edit().putBoolean("clean_slate", true).apply();
 
                                                                 final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 

@@ -112,7 +112,7 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
     private static final String TAG = "ProfileBasicActivity";
 
-    private SharedPreferences prefs;
+    private SharedPreferences mSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +123,7 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
         ButterKnife.bind(this);
 
-        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         verifyPermissions();
 
@@ -233,9 +233,9 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
             savingMessage.setText(getResources().getString(R.string.saving_profile));
 
-            final int userId = prefs.getInt("user_id", 0);
+            final int userId = mSharedPreferences.getInt("user_id", 0);
 
-            final String accessToken = prefs.getString("access_token", "");
+            final String accessToken = mSharedPreferences.getString("access_token", "");
 
             String filePath = mTempImagePath;
 
@@ -690,10 +690,10 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
     private void resetStoredUserData() {
 
-        final SharedPreferences prefs =
+        final SharedPreferences mSharedPreferences =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        prefs.edit().clear().apply();
+        mSharedPreferences.edit().clear().apply();
 
     }
 

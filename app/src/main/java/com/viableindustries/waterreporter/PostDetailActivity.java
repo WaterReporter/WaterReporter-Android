@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +20,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -38,7 +38,6 @@ import com.viableindustries.waterreporter.api.interfaces.data.territory.Territor
 import com.viableindustries.waterreporter.api.models.comment.Comment;
 import com.viableindustries.waterreporter.api.models.comment.CommentCollection;
 import com.viableindustries.waterreporter.api.models.post.Report;
-import com.viableindustries.waterreporter.api.models.post.ReportHolder;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
 import com.viableindustries.waterreporter.api.models.territory.HucFeature;
@@ -51,8 +50,8 @@ import com.viableindustries.waterreporter.user_interface.listeners.PostFavoriteC
 import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 import com.viableindustries.waterreporter.utilities.DeviceDimensionsHelper;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +68,10 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillOpacity;
  * Created by Ryan Hamley on 10/14/14.
  * This activity displays detailed information about a report after clicking on its map marker.
  */
+@DeepLink({
+        "https://www.waterreporter.org/reports/{id}",
+        "https://www.waterreporter.org/community/reports/{id}"
+})
 public class PostDetailActivity extends AppCompatActivity {
 
     @Bind(R.id.commentList)
@@ -90,7 +93,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private Context mContext;
 
-    private SharedPreferences sharedPreferences;
+    private SharedPreferences mSharedPreferences;
 
     private List<Comment> commentCollectionList = new ArrayList<>();
 
@@ -112,7 +115,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         mContext = this;
 
-        sharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         mapView.onCreate(savedInstanceState);
 
@@ -122,17 +125,39 @@ public class PostDetailActivity extends AppCompatActivity {
         listViewLock.setClickable(false);
         listViewLock.setFocusable(false);
 
-//        if (Build.VERSION.SDK_INT >= 19) {
-//
-//            AttributeTransformUtility.setStatusBarTranslucent(getWindow(), true);
-//
-//        }
+        Intent intent = getIntent();
 
-        // Retrieve report and attempt to display api
+        if (intent.getBooleanExtra(DeepLink.IS_DEEP_LINK, false)) {
 
-        mPost = ReportHolder.getReport();
+            Bundle parameters = intent.getExtras();
+
+            try {
+
+                int postId = Integer.parseInt(parameters.getString("id"));
+
+                Log.d("post--id", postId + "");
+
+                if (postId > 0) fetchReport(postId);
+
+            } catch (NumberFormatException e) {
+
+                // Retrieve stored Post
+
+                retrieveStoredPost();
+
+            }
+
+        }
+
+    }
+
+    private void retrieveStoredPost() {
+
+        mPost = ModelStorage.getStoredPost(mSharedPreferences);
 
         try {
+
+            int postId = mPost.properties.id;
 
             addListViewHeader(mPost);
 
@@ -142,23 +167,9 @@ public class PostDetailActivity extends AppCompatActivity {
 
         } catch (NullPointerException e) {
 
-            Intent intent = getIntent();
-            String action = intent.getAction();
-            Uri data = intent.getData();
+            startActivity(new Intent(this, MainActivity.class));
 
-            Log.d("intentData", data.getLastPathSegment());
-
-            try {
-
-                int id = Integer.parseInt(data.getLastPathSegment());
-
-                fetchReport(id);
-
-            } catch (NumberFormatException nfe) {
-
-                startActivity(new Intent(mContext, MainActivity.class));
-
-            }
+            finish();
 
         }
 
@@ -222,9 +233,7 @@ public class PostDetailActivity extends AppCompatActivity {
                     String code = AttributeTransformUtility.getTerritoryCode(territory);
                     String url = String.format("https://huc.waterreporter.org/8/%s", code);
 
-                    try
-
-                    {
+                    try {
 
                         URL geoJsonUrl = new URL(url);
                         GeoJsonSource geoJsonSource = new GeoJsonSource("geojson", geoJsonUrl);
@@ -241,19 +250,14 @@ public class PostDetailActivity extends AppCompatActivity {
 
                         mapboxMap.addLayer(layer);
 
-                    } catch (
-                            MalformedURLException e)
-
-                    {
+                    } catch (Exception e) {
 
                         Log.d("Malformed URL", e.getMessage());
 
                     }
 
-
                 }
             });
-
 
         }
 
@@ -396,7 +400,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         postContainer.setTag(viewHolder);
 
-        TimelineAdapter.bindData(post, mContext, sharedPreferences, getSupportFragmentManager(), viewHolder, false, true);
+        TimelineAdapter.bindData(post, mContext, mSharedPreferences, getSupportFragmentManager(), viewHolder, false, true);
 
         // Display comment and favorite counts
 
@@ -445,12 +449,16 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private void fetchReport(int postId) {
 
-       RestClient.getReportService().getSingleReport("", "application/json", postId, new CancelableCallback<Report>() {
+        RestClient.getReportService().getSingleReport("", "application/json", postId, new CancelableCallback<Report>() {
 
             @Override
             public void onSuccess(Report report, Response response) {
 
                 mPost = report;
+
+                // Write Post to temporary storage in SharedPreferences
+
+                ModelStorage.storeModel(mSharedPreferences, mPost, "stored_post");
 
                 addListViewHeader(mPost);
 
@@ -483,7 +491,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private void fetchComments(int limit, int page) {
 
-        final String accessToken = sharedPreferences.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         Log.d("", accessToken);
 
@@ -571,23 +579,27 @@ public class PostDetailActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
+
         super.onResume();
+
         mapView.onResume();
-        sharedPreferences.edit().putBoolean("markerDetailOpen", false).apply();
+
+        // Retrieve stored Post
+
+        if (mPost == null) retrieveStoredPost();
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
         mapView.onPause();
-        sharedPreferences.edit().putBoolean("markerDetailOpen", false).apply();
     }
 
     @Override
     public void onStop() {
         super.onStop();
         mapView.onStop();
-        sharedPreferences.edit().putBoolean("markerDetailOpen", false).apply();
 
         // Cancel all pending network requests
 
@@ -600,11 +612,14 @@ public class PostDetailActivity extends AppCompatActivity {
         super.onDestroy();
         mapView.onDestroy();
         ButterKnife.unbind(this);
-        sharedPreferences.edit().putBoolean("markerDetailOpen", false).apply();
 
         // Cancel all pending network requests
 
         CancelableCallback.cancelAll();
+
+        // Clear model from temporary storage
+
+        ModelStorage.removeModel(mSharedPreferences, "stored_post");
 
     }
 

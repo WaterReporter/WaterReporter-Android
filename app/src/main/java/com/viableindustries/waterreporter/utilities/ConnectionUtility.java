@@ -10,6 +10,9 @@ import android.net.NetworkInfo;
 
 public class ConnectionUtility {
 
+    private ConnectionUtility() {
+    }
+
     public static boolean connectionActive(Context aContext) {
 
         ConnectivityManager connMgr = (ConnectivityManager)

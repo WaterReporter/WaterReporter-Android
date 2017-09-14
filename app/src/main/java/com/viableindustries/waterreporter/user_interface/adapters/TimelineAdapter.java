@@ -29,6 +29,7 @@ import com.viableindustries.waterreporter.user_interface.listeners.PostDetailLis
 import com.viableindustries.waterreporter.user_interface.listeners.PostMapListener;
 import com.viableindustries.waterreporter.user_interface.listeners.PostShareListener;
 import com.viableindustries.waterreporter.user_interface.listeners.UserProfileListener;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import java.util.List;
 
@@ -244,6 +245,8 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
                 args.putInt("layout_type", layoutType);
 
                 ReportHolder.setReport(post);
+
+                ModelStorage.storeModel(sharedPreferences, post, "stored_post");
 
                 ReportActionDialog reportActionDialog = new ReportActionDialog();
 

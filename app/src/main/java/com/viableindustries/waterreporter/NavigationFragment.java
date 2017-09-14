@@ -178,7 +178,7 @@ public class NavigationFragment extends Fragment {
 
                     timeline.setRefreshing(true);
 
-                    ((AuthUserActivity) activity).fetchReports(5, 1, QueryBuilder.userQuery(true, coreId, null), true);
+                    ((AuthUserActivity) activity).fetchPosts(5, 1, QueryBuilder.userQuery(true, coreId, null), true);
 
                 } else {
 

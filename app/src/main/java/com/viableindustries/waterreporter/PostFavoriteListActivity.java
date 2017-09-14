@@ -22,6 +22,7 @@ import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.user_interface.adapters.UserListAdapter;
 import com.viableindustries.waterreporter.utilities.CancelableCallback;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,9 @@ public class PostFavoriteListActivity extends AppCompatActivity {
 
     private Context mContext;
 
-    private Report post;
+    private Report mPost;
+
+    private SharedPreferences mSharedPreferences;
 
     private List<User> memberCollection = new ArrayList<>();
 
@@ -61,7 +64,7 @@ public class PostFavoriteListActivity extends AppCompatActivity {
 
         mContext = this;
 
-        post = ReportHolder.getReport();
+        mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +82,7 @@ public class PostFavoriteListActivity extends AppCompatActivity {
                         Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
                         // This method performs the actual api-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
-                        fetchFavorites(100, 1, post.id, true);
+                        fetchFavorites(100, 1, mPost.id, true);
                     }
                 }
         );
@@ -90,7 +93,39 @@ public class PostFavoriteListActivity extends AppCompatActivity {
 
         memberListContainer.setRefreshing(true);
 
-        fetchFavorites(100, 1, post.id, true);
+        // Retrieve stored Post
+
+        retrieveStoredPost();
+
+    }
+
+    private void retrieveStoredPost(){
+
+        mPost = ReportHolder.getReport();
+
+        try {
+
+            int postId = mPost.properties.id;
+
+        } catch (NullPointerException e) {
+
+            mPost = ModelStorage.getStoredPost(mSharedPreferences);
+
+            try {
+
+                int postId = mPost.properties.id;
+
+                fetchFavorites(100, 1, mPost.id, true);
+
+            } catch (NullPointerException _e) {
+
+                startActivity(new Intent(this, MainActivity.class));
+
+                finish();
+
+            }
+
+        }
 
     }
 
@@ -124,7 +159,7 @@ public class PostFavoriteListActivity extends AppCompatActivity {
 
                 // Triggered only when new api needs to be appended to the list
 
-                fetchFavorites(100, page, post.id, false);
+                fetchFavorites(100, page, mPost.id, false);
 
                 return true; // ONLY if more api is actually being loaded; false otherwise.
 
@@ -136,10 +171,10 @@ public class PostFavoriteListActivity extends AppCompatActivity {
 
     private void fetchFavorites(int limit, int page, int postId, final boolean refresh) {
 
-        final SharedPreferences prefs =
+        final SharedPreferences mSharedPreferences =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getReportService().getPostLikes(accessToken, "application/json", postId, page, limit, null, new CancelableCallback<FavoriteCollection>() {
 
@@ -211,7 +246,13 @@ public class PostFavoriteListActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
+
         super.onResume();
+
+        // Retrieve stored Post
+
+        retrieveStoredPost();
+
     }
 
     @Override

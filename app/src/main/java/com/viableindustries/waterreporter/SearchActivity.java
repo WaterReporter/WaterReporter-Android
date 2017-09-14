@@ -22,7 +22,6 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
-import com.viableindustries.waterreporter.api.interfaces.data.organization.OrganizationService;
 import com.viableindustries.waterreporter.api.models.hashtag.HashTag;
 import com.viableindustries.waterreporter.api.models.hashtag.HashtagCollection;
 import com.viableindustries.waterreporter.api.models.hashtag.TrendingTags;
@@ -50,7 +49,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -86,15 +84,9 @@ public class SearchActivity extends FragmentActivity {
     @Bind(R.id.search_results)
     ListView searchResults;
 
-    private SharedPreferences prefs;
+    private SharedPreferences mSharedPreferences;
 
     Intent intent;
-
-    private Context context;
-
-    RestAdapter restAdapter;
-
-    OrganizationService service;
 
     private TerritoryListAdapter territoryListAdapter;
 
@@ -129,6 +121,8 @@ public class SearchActivity extends FragmentActivity {
     private Resources resources;
 
     private String messageText;
+
+    private Context mContext;
 
     private String buildQuery(String collection, String sortField, String sortDirection, String searchChars) {
 
@@ -274,7 +268,7 @@ public class SearchActivity extends FragmentActivity {
 
     private void fetchOrganizations(int limit, int page, final String query, final boolean filterResults, final boolean switchCollection) {
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getOrganizationService().getOrganizations(accessToken, "application/json", page, limit, query, new CancelableCallback<OrganizationFeatureCollection>() {
 
@@ -300,7 +294,7 @@ public class SearchActivity extends FragmentActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getTrendingService().getTrendingGroups(accessToken, "application/json", page, limit, new CancelableCallback<TrendingGroups>() {
 
@@ -324,7 +318,7 @@ public class SearchActivity extends FragmentActivity {
 
     private void fetchUsers(int limit, int page, final String query, final boolean filterResults, final boolean switchCollection) {
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getUserService().getUsers(accessToken, "application/json", page, limit, query, new CancelableCallback<UserCollection>() {
 
@@ -350,7 +344,7 @@ public class SearchActivity extends FragmentActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getTrendingService().getTrendingPeople(accessToken, "application/json", page, limit, new CancelableCallback<TrendingPeople>() {
 
@@ -374,7 +368,7 @@ public class SearchActivity extends FragmentActivity {
 
     private void fetchTerritories(int limit, int page, final String query, final boolean filterResults, final boolean switchCollection) {
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getTerritoryService().search(accessToken, "application/json", page, limit, query, new CancelableCallback<TerritoryCollection>() {
 
@@ -400,7 +394,7 @@ public class SearchActivity extends FragmentActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getTrendingService().getTrendingTerritories(accessToken, "application/json", page, limit, new CancelableCallback<TrendingTerritories>() {
 
@@ -424,7 +418,7 @@ public class SearchActivity extends FragmentActivity {
 
     private void fetchTags(int limit, int page, final String query, final boolean filterResults, final boolean switchCollection) {
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getHashTagService().getMany(accessToken, "application/json", page, limit, query, new CancelableCallback<HashtagCollection>() {
 
@@ -450,7 +444,7 @@ public class SearchActivity extends FragmentActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        final String accessToken = prefs.getString("access_token", "");
+        final String accessToken = mSharedPreferences.getString("access_token", "");
 
         RestClient.getTrendingService().getTrendingTags(accessToken, "application/json", page, limit, new CancelableCallback<TrendingTags>() {
 
@@ -640,7 +634,7 @@ public class SearchActivity extends FragmentActivity {
 
             if (status == 403) {
 
-                startActivity(new Intent(context, SignInActivity.class));
+                startActivity(new Intent(mContext, SignInActivity.class));
 
             }
 
@@ -673,7 +667,9 @@ public class SearchActivity extends FragmentActivity {
 
         ButterKnife.bind(this);
 
-        prefs = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        mContext = this;
+
+        mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         resources = getResources();
 

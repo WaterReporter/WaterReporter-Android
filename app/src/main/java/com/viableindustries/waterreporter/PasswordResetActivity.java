@@ -69,7 +69,7 @@ public class PasswordResetActivity extends Activity {
 
     public void requestReset(View view) {
 
-        final SharedPreferences prefs =
+        final SharedPreferences mSharedPreferences =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         String email = String.valueOf(email_text.getText());
