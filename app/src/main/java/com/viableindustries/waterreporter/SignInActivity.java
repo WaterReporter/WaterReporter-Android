@@ -16,7 +16,7 @@ import com.viableindustries.waterreporter.api.models.auth.LogInBody;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.api.models.user.UserBasicResponse;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
+
 
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -123,9 +124,9 @@ public class SignInActivity extends AppCompatActivity {
                     getString(R.string.scope), getString(R.string.state));
 
             RestClient.getSecurityService().save(logInBody,
-                    new CancelableCallback<AuthResponse>() {
+                    new Callback<AuthResponse>() {
                         @Override
-                        public void onSuccess(AuthResponse authResponse,
+                        public void success(AuthResponse authResponse,
                                             Response response) {
 
                             final String accessToken = "Bearer " + authResponse.getAccessToken();
@@ -142,9 +143,9 @@ public class SignInActivity extends AppCompatActivity {
                             if (user_id == 0) {
 
                                 RestClient.getUserService().getActiveUser(accessToken, "application/json",
-                                        new CancelableCallback<UserBasicResponse>() {
+                                        new Callback<UserBasicResponse>() {
                                             @Override
-                                            public void onSuccess(UserBasicResponse userBasicResponse,
+                                            public void success(UserBasicResponse userBasicResponse,
                                                                 Response response) {
 
                                                 mSharedPreferences.edit().putInt("user_id", userBasicResponse.getUserId()).apply();
@@ -152,9 +153,9 @@ public class SignInActivity extends AppCompatActivity {
                                                 RestClient.getUserService().getUser(accessToken,
                                                         "application/json",
                                                         userBasicResponse.getUserId(),
-                                                        new CancelableCallback<User>() {
+                                                        new Callback<User>() {
                                                             @Override
-                                                            public void onSuccess(User user,
+                                                            public void success(User user,
                                                                                 Response response) {
 
                                                                 // Set flag confirming successful sign-in
@@ -206,7 +207,7 @@ public class SignInActivity extends AppCompatActivity {
                                                             }
 
                                                             @Override
-                                                            public void onFailure(RetrofitError error) {
+                                                            public void failure(RetrofitError error) {
                                                                 //
                                                                 onRequestError(error);
 
@@ -216,7 +217,7 @@ public class SignInActivity extends AppCompatActivity {
                                             }
 
                                             @Override
-                                            public void onFailure(RetrofitError error) {
+                                            public void failure(RetrofitError error) {
                                                 //
                                                 onRequestError(error);
 
@@ -232,7 +233,7 @@ public class SignInActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(RetrofitError error) {
+                        public void failure(RetrofitError error) {
 
                             onRequestError(error);
 
@@ -272,7 +273,7 @@ public class SignInActivity extends AppCompatActivity {
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
         Intent a = new Intent(Intent.ACTION_MAIN);
         a.addCategory(Intent.CATEGORY_HOME);
@@ -304,7 +305,7 @@ public class SignInActivity extends AppCompatActivity {
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
     }
 

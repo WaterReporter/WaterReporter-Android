@@ -42,13 +42,14 @@ import com.viableindustries.waterreporter.user_interface.adapters.OrganizationLi
 import com.viableindustries.waterreporter.user_interface.adapters.TagListAdapter;
 import com.viableindustries.waterreporter.user_interface.adapters.TerritoryListAdapter;
 import com.viableindustries.waterreporter.user_interface.adapters.UserListAdapter;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -270,17 +271,17 @@ public class SearchActivity extends FragmentActivity {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getOrganizationService().getOrganizations(accessToken, "application/json", page, limit, query, new CancelableCallback<OrganizationFeatureCollection>() {
+        RestClient.getOrganizationService().getOrganizations(accessToken, "application/json", page, limit, query, new Callback<OrganizationFeatureCollection>() {
 
             @Override
-            public void onSuccess(OrganizationFeatureCollection organizationFeatureCollection, Response response) {
+            public void success(OrganizationFeatureCollection organizationFeatureCollection, Response response) {
 
                 onGroupSuccess(organizationFeatureCollection.getFeatures(), filterResults, switchCollection);
 
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 onRequestError(error);
 
@@ -296,17 +297,17 @@ public class SearchActivity extends FragmentActivity {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getTrendingService().getTrendingGroups(accessToken, "application/json", page, limit, new CancelableCallback<TrendingGroups>() {
+        RestClient.getTrendingService().getTrendingGroups(accessToken, "application/json", page, limit, new Callback<TrendingGroups>() {
 
             @Override
-            public void onSuccess(TrendingGroups trendingGroups, Response response) {
+            public void success(TrendingGroups trendingGroups, Response response) {
 
                 onGroupSuccess(trendingGroups.getFeatures(), filterResults, switchCollection);
 
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 onRequestError(error);
 
@@ -320,17 +321,17 @@ public class SearchActivity extends FragmentActivity {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getUserService().getUsers(accessToken, "application/json", page, limit, query, new CancelableCallback<UserCollection>() {
+        RestClient.getUserService().getUsers(accessToken, "application/json", page, limit, query, new Callback<UserCollection>() {
 
             @Override
-            public void onSuccess(UserCollection userCollection, Response response) {
+            public void success(UserCollection userCollection, Response response) {
 
                 onPeopleSuccess(userCollection.getFeatures(), filterResults, switchCollection);
 
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 onRequestError(error);
 
@@ -346,17 +347,17 @@ public class SearchActivity extends FragmentActivity {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getTrendingService().getTrendingPeople(accessToken, "application/json", page, limit, new CancelableCallback<TrendingPeople>() {
+        RestClient.getTrendingService().getTrendingPeople(accessToken, "application/json", page, limit, new Callback<TrendingPeople>() {
 
             @Override
-            public void onSuccess(TrendingPeople trendingPeople, Response response) {
+            public void success(TrendingPeople trendingPeople, Response response) {
 
                 onPeopleSuccess(trendingPeople.getFeatures(), filterResults, switchCollection);
 
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 onRequestError(error);
 
@@ -370,17 +371,17 @@ public class SearchActivity extends FragmentActivity {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getTerritoryService().search(accessToken, "application/json", page, limit, query, new CancelableCallback<TerritoryCollection>() {
+        RestClient.getTerritoryService().search(accessToken, "application/json", page, limit, query, new Callback<TerritoryCollection>() {
 
             @Override
-            public void onSuccess(TerritoryCollection territoryCollection, Response response) {
+            public void success(TerritoryCollection territoryCollection, Response response) {
 
                 onTerritorySuccess(territoryCollection.getFeatures(), filterResults, switchCollection);
 
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 onRequestError(error);
 
@@ -396,17 +397,17 @@ public class SearchActivity extends FragmentActivity {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getTrendingService().getTrendingTerritories(accessToken, "application/json", page, limit, new CancelableCallback<TrendingTerritories>() {
+        RestClient.getTrendingService().getTrendingTerritories(accessToken, "application/json", page, limit, new Callback<TrendingTerritories>() {
 
             @Override
-            public void onSuccess(TrendingTerritories trendingTerritories, Response response) {
+            public void success(TrendingTerritories trendingTerritories, Response response) {
 
                 onTerritorySuccess(trendingTerritories.getFeatures(), filterResults, switchCollection);
 
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 onRequestError(error);
 
@@ -420,17 +421,17 @@ public class SearchActivity extends FragmentActivity {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getHashTagService().getMany(accessToken, "application/json", page, limit, query, new CancelableCallback<HashtagCollection>() {
+        RestClient.getHashTagService().getMany(accessToken, "application/json", page, limit, query, new Callback<HashtagCollection>() {
 
             @Override
-            public void onSuccess(HashtagCollection hashtagCollection, Response response) {
+            public void success(HashtagCollection hashtagCollection, Response response) {
 
                 onTagSuccess(hashtagCollection.getFeatures(), filterResults, switchCollection);
 
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 onRequestError(error);
 
@@ -446,17 +447,17 @@ public class SearchActivity extends FragmentActivity {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getTrendingService().getTrendingTags(accessToken, "application/json", page, limit, new CancelableCallback<TrendingTags>() {
+        RestClient.getTrendingService().getTrendingTags(accessToken, "application/json", page, limit, new Callback<TrendingTags>() {
 
             @Override
-            public void onSuccess(TrendingTags trendingTags, Response response) {
+            public void success(TrendingTags trendingTags, Response response) {
 
                 onTagSuccess(trendingTags.getFeatures(), filterResults, switchCollection);
 
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 onRequestError(error);
 
@@ -1093,7 +1094,7 @@ public class SearchActivity extends FragmentActivity {
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
     }
 

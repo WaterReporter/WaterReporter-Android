@@ -53,7 +53,7 @@ public class OpenGraphProperties {
     //
 
     @SerializedName("og_title")
-    public String openGraphTitle;
+    public String title;
 
     //
     // Type
@@ -81,7 +81,7 @@ public class OpenGraphProperties {
     public OpenGraphProperties(String aImageUrl, String aDescription, String aTitle, String aUrl, int aOwnerId) {
 
         this.description = aDescription;
-        this.openGraphTitle = aTitle;
+        this.title = aTitle;
         this.url = aUrl;
         this.imageUrl = aImageUrl;
         this.ownerId = aOwnerId;

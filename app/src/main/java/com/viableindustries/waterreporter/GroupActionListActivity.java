@@ -24,7 +24,7 @@ import com.viableindustries.waterreporter.api.models.organization.OrganizationFe
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
 import com.viableindustries.waterreporter.user_interface.adapters.GroupActionListAdapter;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
+
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 
 import java.util.ArrayList;
@@ -32,6 +32,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -171,10 +172,10 @@ public class GroupActionListActivity extends AppCompatActivity {
 
         Log.d("URL", query);
 
-        RestClient.getOrganizationService().getOrganizations(accessToken, "application/json", page, limit, query, new CancelableCallback<OrganizationFeatureCollection>() {
+        RestClient.getOrganizationService().getOrganizations(accessToken, "application/json", page, limit, query, new Callback<OrganizationFeatureCollection>() {
 
             @Override
-            public void onSuccess(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
+            public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
 
                 ArrayList<Organization> features = organizationCollectionResponse.getFeatures();
 
@@ -215,7 +216,7 @@ public class GroupActionListActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 try {
 
@@ -325,7 +326,7 @@ public class GroupActionListActivity extends AppCompatActivity {
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
     }
 

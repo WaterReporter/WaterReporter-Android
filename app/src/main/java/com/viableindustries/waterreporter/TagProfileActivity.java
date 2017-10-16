@@ -29,7 +29,7 @@ import com.viableindustries.waterreporter.api.models.query.QueryFilter;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
+
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 
 import java.util.ArrayList;
@@ -37,6 +37,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -345,10 +346,10 @@ public class TagProfileActivity extends AppCompatActivity {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getReportService().getReports(accessToken, "application/json", 1, 1, query, new CancelableCallback<FeatureCollection>() {
+        RestClient.getReportService().getReports(accessToken, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
 
             @Override
-            public void onSuccess(FeatureCollection featureCollection, Response response) {
+            public void success(FeatureCollection featureCollection, Response response) {
 
                 int count = featureCollection.getProperties().num_results;
 
@@ -371,7 +372,7 @@ public class TagProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 if (error == null) return;
 
@@ -471,10 +472,10 @@ public class TagProfileActivity extends AppCompatActivity {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getOrganizationService().getOrganizations(accessToken, "application/json", page, limit, query, new CancelableCallback<OrganizationFeatureCollection>() {
+        RestClient.getOrganizationService().getOrganizations(accessToken, "application/json", page, limit, query, new Callback<OrganizationFeatureCollection>() {
 
             @Override
-            public void onSuccess(OrganizationFeatureCollection organizationFeatureCollection, Response response) {
+            public void success(OrganizationFeatureCollection organizationFeatureCollection, Response response) {
 
                 ArrayList<Organization> organizations = organizationFeatureCollection.getFeatures();
 
@@ -496,7 +497,7 @@ public class TagProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 if (error == null) return;
 
@@ -526,10 +527,10 @@ public class TagProfileActivity extends AppCompatActivity {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getReportService().getReports(accessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
+        RestClient.getReportService().getReports(accessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
 
             @Override
-            public void onSuccess(FeatureCollection featureCollection, Response response) {
+            public void success(FeatureCollection featureCollection, Response response) {
 
                 List<Report> reports = featureCollection.getFeatures();
 
@@ -610,7 +611,7 @@ public class TagProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 try {
 
@@ -691,7 +692,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
     }
 
@@ -704,7 +705,7 @@ public class TagProfileActivity extends AppCompatActivity {
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
     }
 

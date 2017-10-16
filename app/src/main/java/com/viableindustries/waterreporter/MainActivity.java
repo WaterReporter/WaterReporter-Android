@@ -35,7 +35,7 @@ import com.viableindustries.waterreporter.constants.Constants;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
 import com.viableindustries.waterreporter.user_interface.dialogs.ReportActionDialog;
 import com.viableindustries.waterreporter.utilities.ApiDispatcher;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
+
 import com.viableindustries.waterreporter.utilities.ConnectionUtility;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.UploadStateReceiver;
@@ -47,6 +47,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -236,10 +237,10 @@ public class MainActivity extends AppCompatActivity implements
 
         Log.d("URL", query);
 
-        RestClient.getReportService().getReports(mAccessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
+        RestClient.getReportService().getReports(mAccessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
 
             @Override
-            public void onSuccess(FeatureCollection featureCollection, Response response) {
+            public void success(FeatureCollection featureCollection, Response response) {
 
                 List<Report> reports = featureCollection.getFeatures();
 
@@ -282,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 timeline.setRefreshing(false);
 
@@ -330,10 +331,10 @@ public class MainActivity extends AppCompatActivity implements
         // We shouldn't need to retrieve this value again, but we'll deal with that issue later
         user_id = mSharedPreferences.getInt("user_id", 0);
 
-        RestClient.getUserService().getUserOrganization(mAccessToken, "application/json", user_id, new CancelableCallback<OrganizationFeatureCollection>() {
+        RestClient.getUserService().getUserOrganization(mAccessToken, "application/json", user_id, new Callback<OrganizationFeatureCollection>() {
 
             @Override
-            public void onSuccess(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
+            public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
 
                 List<Organization> organizations = organizationCollectionResponse.getFeatures();
 
@@ -356,7 +357,7 @@ public class MainActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 if (error == null) return;
 
@@ -614,7 +615,7 @@ public class MainActivity extends AppCompatActivity implements
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
         // If the DownloadStateReceiver still exists, unregister it and set it to null
         if (mUploadStateReceiver != null) {
@@ -654,7 +655,7 @@ public class MainActivity extends AppCompatActivity implements
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
         Intent a = new Intent(Intent.ACTION_MAIN);
         a.addCategory(Intent.CATEGORY_HOME);

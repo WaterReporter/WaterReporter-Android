@@ -22,7 +22,7 @@ import com.viableindustries.waterreporter.api.models.query.QuerySort;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.api.models.user.UserCollection;
 import com.viableindustries.waterreporter.user_interface.adapters.UserListAdapter;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
+
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
@@ -33,6 +33,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -208,10 +209,10 @@ public class OrganizationMembersActivity extends AppCompatActivity {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getOrganizationService().getOrganizationMembers(accessToken, "application/json", organizationId, page, limit, query, new CancelableCallback<UserCollection>() {
+        RestClient.getOrganizationService().getOrganizationMembers(accessToken, "application/json", organizationId, page, limit, query, new Callback<UserCollection>() {
 
             @Override
-            public void onSuccess(UserCollection userCollection, Response response) {
+            public void success(UserCollection userCollection, Response response) {
 
                 ArrayList<User> members = userCollection.getFeatures();
 
@@ -252,7 +253,7 @@ public class OrganizationMembersActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 memberListContainer.setRefreshing(false);
 
@@ -305,7 +306,7 @@ public class OrganizationMembersActivity extends AppCompatActivity {
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
     }
 

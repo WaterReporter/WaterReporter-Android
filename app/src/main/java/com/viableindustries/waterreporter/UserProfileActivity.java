@@ -31,7 +31,7 @@ import com.viableindustries.waterreporter.api.models.user.UserHolder;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
 import com.viableindustries.waterreporter.user_interface.dialogs.ReportActionDialogListener;
 import com.viableindustries.waterreporter.user_interface.view_holders.UserProfileHeaderView;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
+
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
@@ -40,6 +40,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -244,10 +245,10 @@ public class UserProfileActivity extends AppCompatActivity implements
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getReportService().getReports(accessToken, "application/json", 1, 1, query, new CancelableCallback<FeatureCollection>() {
+        RestClient.getReportService().getReports(accessToken, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
 
             @Override
-            public void onSuccess(FeatureCollection featureCollection, Response response) {
+            public void success(FeatureCollection featureCollection, Response response) {
 
                 int count = featureCollection.getProperties().num_results;
 
@@ -269,7 +270,7 @@ public class UserProfileActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 if (error == null) return;
 
@@ -299,10 +300,10 @@ public class UserProfileActivity extends AppCompatActivity implements
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getUserService().getUserOrganization(accessToken, "application/json", userId, new CancelableCallback<OrganizationFeatureCollection>() {
+        RestClient.getUserService().getUserOrganization(accessToken, "application/json", userId, new Callback<OrganizationFeatureCollection>() {
 
             @Override
-            public void onSuccess(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
+            public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
 
                 ArrayList<Organization> organizations = organizationCollectionResponse.getFeatures();
 
@@ -324,7 +325,7 @@ public class UserProfileActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 if (error == null) return;
 
@@ -404,10 +405,10 @@ public class UserProfileActivity extends AppCompatActivity implements
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getReportService().getReports(accessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
+        RestClient.getReportService().getReports(accessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
 
             @Override
-            public void onSuccess(FeatureCollection featureCollection, Response response) {
+            public void success(FeatureCollection featureCollection, Response response) {
 
                 List<Report> reports = featureCollection.getFeatures();
 
@@ -482,7 +483,7 @@ public class UserProfileActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 try {
 
@@ -586,10 +587,10 @@ public class UserProfileActivity extends AppCompatActivity implements
 
         final Report report = ReportHolder.getReport();
 
-        RestClient.getReportService().deleteSingleReport(accessToken, report.id, new CancelableCallback<Response>() {
+        RestClient.getReportService().deleteSingleReport(accessToken, report.id, new Callback<Response>() {
 
             @Override
-            public void onSuccess(Response response, Response response_) {
+            public void success(Response response, Response response_) {
 
                 reportCount -= 1;
 
@@ -626,7 +627,7 @@ public class UserProfileActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 timeLineContainer.setRefreshing(false);
 
@@ -706,7 +707,7 @@ public class UserProfileActivity extends AppCompatActivity implements
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
     }
 

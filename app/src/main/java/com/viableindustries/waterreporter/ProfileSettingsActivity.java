@@ -15,7 +15,7 @@ import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.api.models.user.UserHolder;
 import com.viableindustries.waterreporter.user_interface.adapters.NotificationSettingAdapter;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
+
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import java.util.ArrayList;
@@ -24,6 +24,7 @@ import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -132,9 +133,9 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         RestClient.getUserService().getUser(accessToken,
                 "application/json",
                 userId,
-                new CancelableCallback<User>() {
+                new Callback<User>() {
                     @Override
-                    public void onSuccess(User user,
+                    public void success(User user,
                                         Response response) {
 
                         // Set flag confirming successful sign-in
@@ -186,7 +187,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(RetrofitError error) {
+                    public void failure(RetrofitError error) {
 
                         onRequestError(error);
 
@@ -309,7 +310,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
         startActivity(new Intent(this, AuthUserActivity.class));
 
@@ -340,7 +341,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
     }
 

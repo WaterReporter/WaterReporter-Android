@@ -8,8 +8,9 @@ import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.api.models.post.ReportPatchBody;
 import com.viableindustries.waterreporter.api.models.post.ReportPostBody;
 import com.viableindustries.waterreporter.api.models.post.ReportStateBody;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
+
+import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
@@ -34,33 +35,33 @@ public interface ReportService {
                     @Query("page") int page,
                     @Query("results_per_page") int numResults,
                     @Query("q") String q,
-                    CancelableCallback<FeatureCollection> featureCollectionCallback);
+                    Callback<FeatureCollection> featureCollectionCallback);
 
     @GET("/data/report/{report}")
     void getSingleReport(@Header("Authorization") String authorization,
                          @Header("Content-Type") String contentType,
                          @Path("report") int reportId,
-                         CancelableCallback<Report> report);
+                         Callback<Report> report);
 
     @PATCH("/data/report/{report}")
     void setReportState(@Header("Authorization") String authorization,
                         @Header("Content-Type") String contentType,
                         @Path("report") int reportId,
                         @Body ReportStateBody reportStateBody,
-                        CancelableCallback<Report> report);
+                        Callback<Report> report);
 
     @PATCH("/data/report/{report}")
     void updateReport(@Header("Authorization") String authorization,
                       @Header("Content-Type") String contentType,
                       @Path("report") int reportId,
                       @Body ReportPatchBody reportPatchBody,
-                      CancelableCallback<Report> report);
+                      Callback<Report> report);
 
     @GET("/data/report/{report}/groups")
     void getReportGroups(@Header("Authorization") String authorization,
                          @Header("Content-Type") String contentType,
                          @Path("report") int reportId,
-                         CancelableCallback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
+                         Callback<OrganizationFeatureCollection> organizationCollectionResponseCallback);
 
     @GET("/data/report/{report}/comments")
     void getReportComments(@Header("Authorization") String authorization,
@@ -69,7 +70,7 @@ public interface ReportService {
                            @Query("page") int page,
                            @Query("results_per_page") int numResults,
                            @Query("q") String q,
-                           CancelableCallback<CommentCollection> commentCollectionCallback);
+                           Callback<CommentCollection> commentCollectionCallback);
 
     @GET("/data/report/{report}/likes")
     void getPostLikes(@Header("Authorization") String authorization,
@@ -78,14 +79,14 @@ public interface ReportService {
                       @Query("page") int page,
                       @Query("results_per_page") int numResults,
                       @Query("q") String q,
-                      CancelableCallback<FavoriteCollection> favoriteCollectionCallback);
+                      Callback<FavoriteCollection> favoriteCollectionCallback);
 
     @POST("/data/report")
     void postReport
             (@Header("Authorization") String authorization,
              @Header("Content-Type") String contentType,
              @Body ReportPostBody reportPostBody,
-             CancelableCallback<Report> cb);
+             Callback<Report> cb);
 
     @POST("/data/report")
     Report postReportSync
@@ -96,6 +97,6 @@ public interface ReportService {
     @DELETE("/data/report/{report}")
     void deleteSingleReport(@Header("Authorization") String authorization,
                             @Path("report") int reportId,
-                            CancelableCallback<Response> responseCallback);
+                            Callback<Response> responseCallback);
 
 }

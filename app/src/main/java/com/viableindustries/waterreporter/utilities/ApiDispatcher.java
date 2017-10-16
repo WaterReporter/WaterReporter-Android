@@ -9,6 +9,7 @@ import com.viableindustries.waterreporter.api.interfaces.data.post.SendPostCallb
 import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.api.models.post.ReportPostBody;
 
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -45,17 +46,17 @@ public class ApiDispatcher {
     public static void sendFullPost(String accessToken, ReportPostBody reportPostBody, @NonNull final SendPostCallbacks callbacks) {
 
         RestClient.getReportService().postReport(accessToken, "application/json", reportPostBody,
-                new CancelableCallback<Report>() {
+                new Callback<Report>() {
 
                     @Override
-                    public void onSuccess(Report post, Response response) {
+                    public void success(Report post, Response response) {
 
                         callbacks.onSuccess(post);
 
                     }
 
                     @Override
-                    public void onFailure(RetrofitError error) {
+                    public void failure(RetrofitError error) {
 
                         callbacks.onError(error);
 

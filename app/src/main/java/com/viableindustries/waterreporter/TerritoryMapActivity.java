@@ -45,14 +45,13 @@ import com.viableindustries.waterreporter.api.models.query.QueryFilter;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
 import com.viableindustries.waterreporter.api.models.territory.Territory;
-import com.viableindustries.waterreporter.api.models.territory.TerritoryHolder;
 import com.viableindustries.waterreporter.constants.HucStates;
 import com.viableindustries.waterreporter.map_box.CustomMarkerView;
 import com.viableindustries.waterreporter.map_box.CustomMarkerViewOptions;
 import com.viableindustries.waterreporter.map_box.MappedReportsHolder;
 import com.viableindustries.waterreporter.user_interface.adapters.MarkerCardAdapter;
 import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
+
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import java.util.ArrayList;
@@ -60,6 +59,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -221,57 +221,41 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     }
 
-    private void retrieveStoredTerritory(){
+    private void retrieveStoredTerritory() {
 
-        mTerritory = TerritoryHolder.getTerritory();
+        mTerritory = ModelStorage.getStoredTerritory(mSharedPreferences);
 
         try {
 
             int territoryId = mTerritory.properties.id;
 
-        } catch (NullPointerException e) {
+            Log.v("retrofit--territory--id", "" + territoryId);
 
-            mTerritory = ModelStorage.getStoredTerritory(mSharedPreferences);
+        } catch (NullPointerException _e) {
 
-            try {
+            startActivity(new Intent(this, MainActivity.class));
 
-                int territoryId = mTerritory.properties.id;
-
-            } catch (NullPointerException _e) {
-
-                startActivity(new Intent(this, MainActivity.class));
-
-                finish();
-
-            }
+            finish();
 
         }
 
     }
 
-    private void retrieveStoredPost(){
+    private void retrieveStoredPost() {
 
-        mPost = ReportHolder.getReport();
+        mPost = ModelStorage.getStoredPost(mSharedPreferences);
 
         try {
 
             int postId = mPost.properties.id;
 
-        } catch (NullPointerException e) {
+            Log.v("retrofit--post--id", "" + postId);
 
-            mPost = ModelStorage.getStoredPost(mSharedPreferences);
+        } catch (NullPointerException _e) {
 
-            try {
+            startActivity(new Intent(this, MainActivity.class));
 
-                int postId = mPost.properties.id;
-
-            } catch (NullPointerException _e) {
-
-                startActivity(new Intent(this, MainActivity.class));
-
-                finish();
-
-            }
+            finish();
 
         }
 
@@ -363,25 +347,31 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     private void fetchPosts(int limit, final int page, String query) {
 
+        Log.v("retrofit--fetch", "loading posts");
+
+        Log.v("retrofit--query", query);
+
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getReportService().getReports(accessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
+        RestClient.getReportService().getReports(accessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
 
             @Override
-            public void onSuccess(FeatureCollection featureCollection, Response response) {
+            public void success(FeatureCollection featureCollection, Response response) {
+
+                Log.v("retrofit--features", featureCollection.toString());
 
                 List<Report> reports = featureCollection.getFeatures();
 
-                Log.v("list", reports.toString());
+                Log.v("retrofit--list", reports.toString());
 
                 onFetchSuccess(reports);
 
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
-                if (error == null) return;
+                Log.v("retrofit--error", error.toString());
 
                 Response errorResponse = error.getResponse();
 
@@ -435,7 +425,11 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
         int idx = 0;
 
+        Log.v("retrofit--posts", "at least one");
+
         if (posts.size() > 1) {
+
+            Log.v("retrofit--posts", "more than one");
 
             locationIcon.setVisibility(View.VISIBLE);
 
@@ -640,7 +634,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
     }
 

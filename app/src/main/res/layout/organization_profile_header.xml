@@ -18,7 +18,7 @@
         android:paddingRight="0dp"
         android:paddingTop="16dp">
 
-        <RelativeLayout
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1">
@@ -31,24 +31,37 @@
                 android:layout_centerVertical="false"
                 android:scaleType="fitXY" />
 
-            <Button
-                android:id="@+id/group_membership_button"
-                android:layout_width="64dp"
-                android:layout_height="32dp"
-                android:layout_alignParentBottom="true"
-                android:layout_below="@id/organizationLogo"
-                android:layout_centerHorizontal="false"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/green_button"
-                android:gravity="center"
-                android:text="@string/join_button"
-                android:textAllCaps="true"
-                android:textColor="#FFFFFF"
-                android:textSize="@dimen/small_text"
-                android:textStyle="bold"
-                android:visibility="gone" />
+            <!--<Button-->
+                <!--android:id="@+id/group_membership_button"-->
+                <!--android:layout_width="64dp"-->
+                <!--android:layout_height="32dp"-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:layout_below="@id/organizationLogo"-->
+                <!--android:layout_centerHorizontal="false"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:background="@drawable/green_button"-->
+                <!--android:gravity="center"-->
+                <!--android:text="@string/join_button"-->
+                <!--android:textAllCaps="true"-->
+                <!--android:textColor="#FFFFFF"-->
+                <!--android:textSize="@dimen/small_text"-->
+                <!--android:textStyle="bold"-->
+                <!--android:visibility="gone" />-->
 
-        </RelativeLayout>
+            <!--<ImageButton-->
+                <!--android:id="@+id/group_membership_button"-->
+                <!--android:layout_width="40dp"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:layout_gravity="top|end"-->
+                <!--android:background="@drawable/floating_action_green"-->
+                <!--android:clickable="true"-->
+                <!--android:elevation="1dp"-->
+                <!--android:padding="4dp"-->
+                <!--android:scaleType="fitXY"-->
+                <!--android:src="@drawable/ic_group_add_white_24dp"-->
+                <!--android:visibility="gone" />-->
+
+        </FrameLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="0dp"

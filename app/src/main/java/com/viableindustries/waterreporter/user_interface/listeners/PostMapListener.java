@@ -31,9 +31,9 @@ public class PostMapListener implements View.OnClickListener {
     @Override
     public void onClick(View view) {
 
-        ReportHolder.setReport(post);
+//        ReportHolder.setReport(post);
 
-        TerritoryHolder.setTerritory(post.properties.territory);
+//        TerritoryHolder.setTerritory(post.properties.territory);
 
         // Write models to temporary storage in SharedPreferences
 

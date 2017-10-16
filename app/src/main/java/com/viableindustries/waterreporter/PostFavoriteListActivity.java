@@ -17,10 +17,8 @@ import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.favorite.Favorite;
 import com.viableindustries.waterreporter.api.models.favorite.FavoriteCollection;
 import com.viableindustries.waterreporter.api.models.post.Report;
-import com.viableindustries.waterreporter.api.models.post.ReportHolder;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.user_interface.adapters.UserListAdapter;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
@@ -29,6 +27,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -99,31 +98,21 @@ public class PostFavoriteListActivity extends AppCompatActivity {
 
     }
 
-    private void retrieveStoredPost(){
+    private void retrieveStoredPost() {
 
-        mPost = ReportHolder.getReport();
+        mPost = ModelStorage.getStoredPost(mSharedPreferences);
 
         try {
 
             int postId = mPost.properties.id;
 
-        } catch (NullPointerException e) {
+            fetchFavorites(100, 1, mPost.id, true);
 
-            mPost = ModelStorage.getStoredPost(mSharedPreferences);
+        } catch (NullPointerException _e) {
 
-            try {
+            startActivity(new Intent(this, MainActivity.class));
 
-                int postId = mPost.properties.id;
-
-                fetchFavorites(100, 1, mPost.id, true);
-
-            } catch (NullPointerException _e) {
-
-                startActivity(new Intent(this, MainActivity.class));
-
-                finish();
-
-            }
+            finish();
 
         }
 
@@ -176,10 +165,10 @@ public class PostFavoriteListActivity extends AppCompatActivity {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getReportService().getPostLikes(accessToken, "application/json", postId, page, limit, null, new CancelableCallback<FavoriteCollection>() {
+        RestClient.getReportService().getPostLikes(accessToken, "application/json", postId, page, limit, null, new Callback<FavoriteCollection>() {
 
             @Override
-            public void onSuccess(FavoriteCollection favoriteCollection, Response response) {
+            public void success(FavoriteCollection favoriteCollection, Response response) {
 
                 ArrayList<Favorite> favorites = favoriteCollection.getFeatures();
 
@@ -216,7 +205,7 @@ public class PostFavoriteListActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 memberListContainer.setRefreshing(false);
 
@@ -269,7 +258,7 @@ public class PostFavoriteListActivity extends AppCompatActivity {
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
     }
 

@@ -45,7 +45,7 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.services.android.ui.geocoder.GeocoderAutoCompleteView;
 import com.mapbox.services.api.geocoding.v5.GeocodingCriteria;
 import com.mapbox.services.api.geocoding.v5.models.CarmenFeature;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
+
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -842,7 +842,7 @@ public class LocationActivity extends AppCompatActivity implements
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
     }
 

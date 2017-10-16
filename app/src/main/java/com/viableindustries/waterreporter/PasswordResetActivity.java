@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.auth.RegistrationResponse;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -83,9 +84,9 @@ public class PasswordResetActivity extends Activity {
             resetBody.put("email", email);
 
             RestClient.getSecurityService().reset(resetBody,
-                    new CancelableCallback<RegistrationResponse>() {
+                    new Callback<RegistrationResponse>() {
                         @Override
-                        public void onSuccess(RegistrationResponse registrationResponse,
+                        public void success(RegistrationResponse registrationResponse,
                                             Response response) {
 
                             int statusCode = registrationResponse.getCode();
@@ -105,7 +106,7 @@ public class PasswordResetActivity extends Activity {
                         }
 
                         @Override
-                        public void onFailure(RetrofitError error) {
+                        public void failure(RetrofitError error) {
 
                             error.printStackTrace();
 
@@ -137,7 +138,7 @@ public class PasswordResetActivity extends Activity {
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
     }
 

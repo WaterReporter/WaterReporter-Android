@@ -2,8 +2,9 @@ package com.viableindustries.waterreporter.api.interfaces.data.favorite;
 
 import com.viableindustries.waterreporter.api.models.favorite.Favorite;
 import com.viableindustries.waterreporter.api.models.favorite.FavoritePostBody;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
+
+import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.Header;
@@ -20,12 +21,12 @@ public interface FavoriteService {
     void addFavorite(@Header("Authorization") String authorization,
                      @Header("Content-Type") String contentType,
                      @Body FavoritePostBody favoritePostBody,
-                     CancelableCallback<Favorite> favoriteCallback);
+                     Callback<Favorite> favoriteCallback);
 
     @DELETE("/data/like/{id}")
     void undoFavorite(@Header("Authorization") String authorization,
                       @Header("Content-Type") String contentType,
                       @Path("id") int featureId,
-                      CancelableCallback<Void> callback);
+                      Callback<Void> callback);
 
 }

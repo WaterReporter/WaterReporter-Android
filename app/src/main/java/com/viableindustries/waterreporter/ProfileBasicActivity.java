@@ -36,7 +36,7 @@ import com.viableindustries.waterreporter.api.models.image.ImageProperties;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.user_interface.dialogs.PhotoPickerDialogFragment;
 import com.viableindustries.waterreporter.utilities.CacheManager;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
+
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.FileUtils;
 
@@ -60,6 +60,7 @@ import butterknife.ButterKnife;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedFile;
@@ -256,9 +257,9 @@ public class ProfileBasicActivity extends AppCompatActivity implements
                 TypedFile typedPhoto = new TypedFile(mimeType, photo);
 
                 RestClient.getImageService().postImageAsync(accessToken, typedPhoto,
-                        new CancelableCallback<ImageProperties>() {
+                        new Callback<ImageProperties>() {
                             @Override
-                            public void onSuccess(ImageProperties imageProperties,
+                            public void success(ImageProperties imageProperties,
                                                 Response response) {
 
                                 // Retrieve the image id and add relation to PATCH request body
@@ -293,9 +294,9 @@ public class ProfileBasicActivity extends AppCompatActivity implements
                                         "application/json",
                                         userId,
                                         userPatch,
-                                        new CancelableCallback<User>() {
+                                        new Callback<User>() {
                                             @Override
-                                            public void onSuccess(User user,
+                                            public void success(User user,
                                                                 Response response) {
 
                                                 // Clear the app api cache
@@ -340,7 +341,7 @@ public class ProfileBasicActivity extends AppCompatActivity implements
                                             }
 
                                             @Override
-                                            public void onFailure(RetrofitError error) {
+                                            public void failure(RetrofitError error) {
                                                 savingMessage.setVisibility(View.GONE);
                                                 savingMessage.setText(getResources().getString(R.string.save));
                                             }
@@ -350,7 +351,7 @@ public class ProfileBasicActivity extends AppCompatActivity implements
                             }
 
                             @Override
-                            public void onFailure(RetrofitError error) {
+                            public void failure(RetrofitError error) {
                                 savingMessage.setVisibility(View.GONE);
                                 savingMessage.setText(getResources().getString(R.string.save));
                             }
@@ -722,7 +723,7 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
     }
 

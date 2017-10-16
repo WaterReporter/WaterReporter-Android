@@ -39,7 +39,7 @@ import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapte
 import com.viableindustries.waterreporter.user_interface.dialogs.ReportActionDialog;
 import com.viableindustries.waterreporter.user_interface.view_holders.UserProfileHeaderView;
 import com.viableindustries.waterreporter.utilities.ApiDispatcher;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
+
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 import com.viableindustries.waterreporter.utilities.UploadStateReceiver;
@@ -49,6 +49,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -287,10 +288,10 @@ public class AuthUserActivity extends AppCompatActivity implements
 
     private void countReports(String query, final String filterName) {
 
-        RestClient.getReportService().getReports(mAccessToken, "application/json", 1, 1, query, new CancelableCallback<FeatureCollection>() {
+        RestClient.getReportService().getReports(mAccessToken, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
 
             @Override
-            public void onSuccess(FeatureCollection featureCollection, Response response) {
+            public void success(FeatureCollection featureCollection, Response response) {
 
                 int count = featureCollection.getProperties().num_results;
 
@@ -312,7 +313,7 @@ public class AuthUserActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 if (error == null) return;
 
@@ -340,10 +341,10 @@ public class AuthUserActivity extends AppCompatActivity implements
 
     private void fetchUserGroups(int userId) {
 
-        RestClient.getUserService().getUserOrganization(mAccessToken, "application/json", userId, new CancelableCallback<OrganizationFeatureCollection>() {
+        RestClient.getUserService().getUserOrganization(mAccessToken, "application/json", userId, new Callback<OrganizationFeatureCollection>() {
 
             @Override
-            public void onSuccess(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
+            public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
 
                 ArrayList<Organization> organizations = organizationCollectionResponse.getFeatures();
 
@@ -363,7 +364,7 @@ public class AuthUserActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 if (error == null) return;
 
@@ -441,10 +442,10 @@ public class AuthUserActivity extends AppCompatActivity implements
 
     public void fetchPosts(int limit, final int page, String query, final boolean refresh) {
 
-        RestClient.getReportService().getReports(mAccessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
+        RestClient.getReportService().getReports(mAccessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
 
             @Override
-            public void onSuccess(FeatureCollection featureCollection, Response response) {
+            public void success(FeatureCollection featureCollection, Response response) {
 
                 List<Report> reports = featureCollection.getFeatures();
 
@@ -513,7 +514,7 @@ public class AuthUserActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 try {
 
@@ -740,7 +741,7 @@ public class AuthUserActivity extends AppCompatActivity implements
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
         Picasso.with(this).cancelRequest(mUserProfileHeaderView.userAvatar);
 
@@ -758,7 +759,7 @@ public class AuthUserActivity extends AppCompatActivity implements
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
         Picasso.with(this).cancelRequest(mUserProfileHeaderView.userAvatar);
 
@@ -771,7 +772,7 @@ public class AuthUserActivity extends AppCompatActivity implements
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
         Picasso.with(this).cancelRequest(mUserProfileHeaderView.userAvatar);
 

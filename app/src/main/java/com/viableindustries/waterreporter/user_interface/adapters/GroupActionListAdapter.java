@@ -22,13 +22,14 @@ import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.api.models.user.UserOrgPatch;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
+
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -144,10 +145,10 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
         Map<String, Map> userPatch = UserOrgPatch.buildRequest(organization.id, operation);
 
-        RestClient.getUserService().updateUserOrganization(accessToken, "application/json", id, userPatch, new CancelableCallback<User>() {
+        RestClient.getUserService().updateUserOrganization(accessToken, "application/json", id, userPatch, new Callback<User>() {
 
             @Override
-            public void onSuccess(User user, Response response) {
+            public void success(User user, Response response) {
 
                 String action;
 
@@ -186,7 +187,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 Response response = error.getResponse();
 

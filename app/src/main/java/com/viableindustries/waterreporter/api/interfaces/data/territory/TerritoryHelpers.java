@@ -8,8 +8,9 @@ import com.viableindustries.waterreporter.SignInActivity;
 import com.viableindustries.waterreporter.api.models.territory.HucGeometryCollection;
 import com.viableindustries.waterreporter.api.models.territory.Territory;
 import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
+
+import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -28,17 +29,17 @@ public final class TerritoryHelpers {
 
         String code = AttributeTransformUtility.getTerritoryCode(territory);
 
-        service.getGeometry("application/json", code, new CancelableCallback<HucGeometryCollection>() {
+        service.getGeometry("application/json", code, new Callback<HucGeometryCollection>() {
 
             @Override
-            public void onSuccess(HucGeometryCollection hucGeometryCollection, Response response) {
+            public void success(HucGeometryCollection hucGeometryCollection, Response response) {
 
                 callbacks.onSuccess(hucGeometryCollection.features.get(0));
 
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 if (error == null) return;
 

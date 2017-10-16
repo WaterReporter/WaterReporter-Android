@@ -58,7 +58,7 @@ import com.viableindustries.waterreporter.constants.HucStates;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
 import com.viableindustries.waterreporter.user_interface.dialogs.TimelineFilterDialog;
 import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
+
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
@@ -69,6 +69,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -592,10 +593,10 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getOrganizationService().getOrganizations(accessToken, "application/json", page, limit, query, new CancelableCallback<OrganizationFeatureCollection>() {
+        RestClient.getOrganizationService().getOrganizations(accessToken, "application/json", page, limit, query, new Callback<OrganizationFeatureCollection>() {
 
             @Override
-            public void onSuccess(OrganizationFeatureCollection organizationFeatureCollection, Response response) {
+            public void success(OrganizationFeatureCollection organizationFeatureCollection, Response response) {
 
                 ArrayList<Organization> organizations = organizationFeatureCollection.getFeatures();
 
@@ -613,7 +614,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 if (error == null) return;
 
@@ -707,10 +708,10 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getReportService().getReports(accessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
+        RestClient.getReportService().getReports(accessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
 
             @Override
-            public void onSuccess(FeatureCollection featureCollection, Response response) {
+            public void success(FeatureCollection featureCollection, Response response) {
 
                 List<Report> reports = featureCollection.getFeatures();
 
@@ -781,7 +782,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 try {
 
@@ -989,7 +990,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
     }
 

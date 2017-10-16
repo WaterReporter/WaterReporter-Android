@@ -68,7 +68,7 @@ import com.viableindustries.waterreporter.user_interface.dialogs.PhotoPickerDial
 import com.viableindustries.waterreporter.user_interface.listeners.UserProfileListener;
 import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
 import com.viableindustries.waterreporter.utilities.CacheManager;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
+
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.FileUtils;
 import com.viableindustries.waterreporter.utilities.PatternEditableBuilder;
@@ -91,6 +91,7 @@ import butterknife.ButterKnife;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedFile;
@@ -315,17 +316,17 @@ public class CommentActivity extends AppCompatActivity implements
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getHashTagService().getMany(accessToken, "application/json", page, limit, query, new CancelableCallback<HashtagCollection>() {
+        RestClient.getHashTagService().getMany(accessToken, "application/json", page, limit, query, new Callback<HashtagCollection>() {
 
             @Override
-            public void onSuccess(HashtagCollection hashtagCollection, Response response) {
+            public void success(HashtagCollection hashtagCollection, Response response) {
 
                 onTagSuccess(hashtagCollection.getFeatures());
 
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 onRequestError(error);
 
@@ -595,10 +596,10 @@ public class CommentActivity extends AppCompatActivity implements
 
         commentListContainer.setRefreshing(true);
 
-        RestClient.getReportService().getReportComments(accessToken, "application/json", report.id, page, limit, query, new CancelableCallback<CommentCollection>() {
+        RestClient.getReportService().getReportComments(accessToken, "application/json", report.id, page, limit, query, new Callback<CommentCollection>() {
 
             @Override
-            public void onSuccess(CommentCollection commentCollection, Response response) {
+            public void success(CommentCollection commentCollection, Response response) {
 
                 List<Comment> comments = commentCollection.getFeatures();
 
@@ -613,7 +614,7 @@ public class CommentActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 commentListContainer.setRefreshing(false);
 
@@ -736,9 +737,9 @@ public class CommentActivity extends AppCompatActivity implements
         TypedFile typedPhoto = new TypedFile(mimeType, photo);
 
         RestClient.getImageService().postImageAsync(accessToken, typedPhoto,
-                new CancelableCallback<ImageProperties>() {
+                new Callback<ImageProperties>() {
                     @Override
-                    public void onSuccess(ImageProperties imageProperties,
+                    public void success(ImageProperties imageProperties,
                                           Response response) {
 
                         // Immediately delete the cached image file now that we no longer need it
@@ -772,7 +773,7 @@ public class CommentActivity extends AppCompatActivity implements
                     }
 
                     @Override
-                    public void onFailure(RetrofitError error) {
+                    public void failure(RetrofitError error) {
                         onPostError(error);
                     }
 
@@ -790,10 +791,10 @@ public class CommentActivity extends AppCompatActivity implements
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getCommentService().postComment(accessToken, "application/json", commentPost, new CancelableCallback<Comment>() {
+        RestClient.getCommentService().postComment(accessToken, "application/json", commentPost, new Callback<Comment>() {
 
             @Override
-            public void onSuccess(Comment comment, Response response) {
+            public void success(Comment comment, Response response) {
 
                 // Lift UI lock
 
@@ -826,7 +827,7 @@ public class CommentActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 onPostError(error);
 
@@ -842,10 +843,10 @@ public class CommentActivity extends AppCompatActivity implements
 
         ReportStateBody reportStateBody = new ReportStateBody(reportId, state);
 
-      RestClient.getReportService().setReportState(accessToken, "application/json", reportId, reportStateBody, new CancelableCallback<Report>() {
+      RestClient.getReportService().setReportState(accessToken, "application/json", reportId, reportStateBody, new Callback<Report>() {
 
             @Override
-            public void onSuccess(Report report, Response response) {
+            public void success(Report report, Response response) {
 
                 // Update current bookmarked report
 
@@ -854,7 +855,7 @@ public class CommentActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 onPostError(error);
 
@@ -1246,7 +1247,7 @@ public class CommentActivity extends AppCompatActivity implements
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
     }
 
@@ -1259,7 +1260,7 @@ public class CommentActivity extends AppCompatActivity implements
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
     }
 

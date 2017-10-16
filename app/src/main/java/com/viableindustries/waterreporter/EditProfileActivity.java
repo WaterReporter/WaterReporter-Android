@@ -37,7 +37,7 @@ import com.viableindustries.waterreporter.api.models.user.UserHolder;
 import com.viableindustries.waterreporter.api.models.user.UserProperties;
 import com.viableindustries.waterreporter.user_interface.dialogs.PhotoPickerDialogFragment;
 import com.viableindustries.waterreporter.utilities.CacheManager;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
+
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.FileUtils;
 
@@ -61,6 +61,7 @@ import butterknife.ButterKnife;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedFile;
@@ -303,9 +304,9 @@ public class EditProfileActivity extends AppCompatActivity implements
             TypedFile typedPhoto = new TypedFile(mimeType, photo);
 
             RestClient.getImageService().postImageAsync(accessToken, typedPhoto,
-                    new CancelableCallback<ImageProperties>() {
+                    new Callback<ImageProperties>() {
                         @Override
-                        public void onSuccess(ImageProperties imageProperties,
+                        public void success(ImageProperties imageProperties,
                                             Response response) {
 
                             // Revoke Uri permissions
@@ -343,7 +344,7 @@ public class EditProfileActivity extends AppCompatActivity implements
                         }
 
                         @Override
-                        public void onFailure(RetrofitError error) {
+                        public void failure(RetrofitError error) {
                             savingMessage.setVisibility(View.GONE);
                             savingMessage.setText(getResources().getString(R.string.save));
                         }
@@ -412,9 +413,9 @@ public class EditProfileActivity extends AppCompatActivity implements
                 "application/json",
                 coreUser.id,
                 userPatch,
-                new CancelableCallback<User>() {
+                new Callback<User>() {
                     @Override
-                    public void onSuccess(User user,
+                    public void success(User user,
                                         Response response) {
 
                         final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
@@ -457,7 +458,7 @@ public class EditProfileActivity extends AppCompatActivity implements
                     }
 
                     @Override
-                    public void onFailure(RetrofitError error) {
+                    public void failure(RetrofitError error) {
                         savingMessage.setVisibility(View.GONE);
                         savingMessage.setText(getResources().getString(R.string.save));
                     }
@@ -830,7 +831,7 @@ public class EditProfileActivity extends AppCompatActivity implements
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
     }
 

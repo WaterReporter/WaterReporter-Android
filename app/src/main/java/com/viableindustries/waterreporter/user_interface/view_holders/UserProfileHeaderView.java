@@ -93,9 +93,13 @@ public class UserProfileHeaderView {
 
         try {
 
-            if (!userOrganization.isEmpty()) {
+            if (!userOrganization.isEmpty() && !userTitleText.isEmpty()) {
 
                 userTitle.setText(String.format("%s at %s", userTitleText, userOrganization));
+
+            } else if (!userOrganization.isEmpty() && userTitleText.isEmpty()) {
+
+                userTitle.setText(userOrganization);
 
             } else {
 

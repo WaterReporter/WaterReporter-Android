@@ -2,8 +2,9 @@ package com.viableindustries.waterreporter.api.interfaces.data.comment;
 
 import com.viableindustries.waterreporter.api.models.comment.Comment;
 import com.viableindustries.waterreporter.api.models.comment.CommentPost;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
+
+import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.Header;
 import retrofit.http.POST;
@@ -18,6 +19,6 @@ public interface CommentService {
             (@Header("Authorization") String authorization,
              @Header("Content-Type") String contentType,
              @Body CommentPost commentPost,
-             CancelableCallback<Comment> commentCallback);
+             Callback<Comment> commentCallback);
 
 }

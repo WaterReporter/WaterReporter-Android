@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -28,6 +30,8 @@ import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.FeatureCollection;
+import com.viableindustries.waterreporter.api.models.group.Group;
+import com.viableindustries.waterreporter.api.models.group.GroupFeatureCollection;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.organization.OrganizationHolder;
 import com.viableindustries.waterreporter.api.models.organization.OrganizationMemberList;
@@ -39,7 +43,6 @@ import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.api.models.user.UserCollection;
 import com.viableindustries.waterreporter.api.models.user.UserOrgPatch;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
@@ -52,6 +55,7 @@ import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -79,7 +83,8 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     private ImageView organizationLogo;
 
-    private Button joinOrganization;
+    @Bind(R.id.group_membership_button)
+    ImageButton joinOrganization;
 
     @Bind(R.id.timeline)
     SwipeRefreshLayout timeLineContainer;
@@ -175,6 +180,10 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         addListViewHeader();
 
+        // Check group membership
+
+        fetchUserGroups();
+
         // Count reports with actions
 
         complexQuery = buildQuery(true, new String[][]{
@@ -208,9 +217,11 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             }
         };
 
+        fetchReports(5, 1, buildQuery(true, null), false);
+
     }
 
-    private void retrieveStoredOrganization(){
+    private void retrieveStoredOrganization() {
 
         organization = OrganizationHolder.getOrganization();
 
@@ -271,10 +282,10 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         Map<String, Map> userPatch = UserOrgPatch.buildRequest(organization.id, "add");
 
-        RestClient.getUserService().updateUserOrganization(accessToken, "application/json", id, userPatch, new CancelableCallback<User>() {
+        RestClient.getUserService().updateUserOrganization(accessToken, "application/json", id, userPatch, new Callback<User>() {
 
             @Override
-            public void onSuccess(User user, Response response) {
+            public void success(User user, Response response) {
 
                 String action;
 
@@ -293,7 +304,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 Response response = error.getResponse();
 
@@ -334,7 +345,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         organizationLogo = (ImageView) header.findViewById(R.id.organizationLogo);
 
-        joinOrganization = (Button) header.findViewById(R.id.group_membership_button);
+//        joinOrganization = (ImageButton) header.findViewById(R.id.group_membership_button);
 
         reportCounter = (TextView) header.findViewById(R.id.reportCount);
 
@@ -370,25 +381,25 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         }
 
-        // Check group membership
-
-        int selected = groupPrefs.getInt(organization.properties.name, 0);
-
-        if (selected == 0) {
-
-            joinOrganization.setVisibility(View.VISIBLE);
-
-            joinOrganization.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    joinOrganization(organization);
-
-                }
-
-            });
-
-        }
+//        // Check group membership
+//
+//        int selected = groupPrefs.getInt(organization.properties.name, 0);
+//
+//        if (selected == 0) {
+//
+//            joinOrganization.setVisibility(View.VISIBLE);
+//
+//            joinOrganization.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//
+//                    joinOrganization(organization);
+//
+//                }
+//
+//            });
+//
+//        }
 
         String organizationDescriptionText = organization.properties.description;
         String organizationNameText = organization.properties.name;
@@ -568,10 +579,10 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getReportService().getReports(accessToken, "application/json", 1, 1, query, new CancelableCallback<FeatureCollection>() {
+        RestClient.getReportService().getReports(accessToken, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
 
             @Override
-            public void onSuccess(FeatureCollection featureCollection, Response response) {
+            public void success(FeatureCollection featureCollection, Response response) {
 
                 int count = featureCollection.getProperties().num_results;
 
@@ -594,7 +605,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 if (error == null) return;
 
@@ -624,10 +635,10 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getOrganizationService().getOrganizationMembers(accessToken, "application/json", organizationId, page, limit, null, new CancelableCallback<UserCollection>() {
+        RestClient.getOrganizationService().getOrganizationMembers(accessToken, "application/json", organizationId, page, limit, null, new Callback<UserCollection>() {
 
             @Override
-            public void onSuccess(UserCollection userCollection, Response response) {
+            public void success(UserCollection userCollection, Response response) {
 
                 ArrayList<User> members = userCollection.getFeatures();
 
@@ -649,7 +660,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 if (error == null) return;
 
@@ -729,10 +740,10 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getReportService().getReports(accessToken, "application/json", page, limit, query, new CancelableCallback<FeatureCollection>() {
+        RestClient.getReportService().getReports(accessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
 
             @Override
-            public void onSuccess(FeatureCollection featureCollection, Response response) {
+            public void success(FeatureCollection featureCollection, Response response) {
 
                 List<Report> reports = featureCollection.getFeatures();
 
@@ -797,7 +808,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 timeLineContainer.setRefreshing(false);
 
@@ -836,6 +847,85 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     }
 
+    private void fetchUserGroups() {
+
+        final String mAccessToken = mSharedPreferences.getString("access_token", "");
+
+        Log.d("", mAccessToken);
+
+        // We shouldn't need to retrieve this value again, but we'll deal with that issue later
+        int userId = mSharedPreferences.getInt("user_id", 0);
+
+        RestClient.getUserService().getUserGroups(mAccessToken, "application/json", userId, new Callback<GroupFeatureCollection>() {
+
+            @Override
+            public void success(GroupFeatureCollection groupFeatureCollection, Response response) {
+
+                List<Group> groups = groupFeatureCollection.getFeatures();
+
+                String orgIds = "";
+
+                if (!groups.isEmpty()) {
+
+                    for (Group group : groups) {
+
+                        orgIds += String.format(",%s", group.properties.organizationId);
+
+                    }
+
+                }
+
+                if (!orgIds.contains(String.valueOf(organization.id))) {
+
+                    joinOrganization.setColorFilter(ContextCompat.getColor(mContext, R.color.green_1), PorterDuff.Mode.SRC_ATOP);
+
+                    joinOrganization.setVisibility(View.VISIBLE);
+
+                    joinOrganization.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            joinOrganization(organization);
+
+                        }
+
+                    });
+
+                }
+
+                // Reset the user's stored group IDs.
+
+                mSharedPreferences.edit().putString("user_groups", orgIds).apply();
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(OrganizationProfileActivity.this, SignInActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
     @Override
     public void onResume() {
 
@@ -863,7 +953,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
     }
 

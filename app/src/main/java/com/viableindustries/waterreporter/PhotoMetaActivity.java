@@ -73,7 +73,7 @@ import com.viableindustries.waterreporter.user_interface.adapters.TagSuggestionA
 import com.viableindustries.waterreporter.user_interface.dialogs.PhotoPickerDialogFragment;
 import com.viableindustries.waterreporter.utilities.ApiDispatcher;
 import com.viableindustries.waterreporter.utilities.CacheManager;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
+
 import com.viableindustries.waterreporter.utilities.ConnectionUtility;
 import com.viableindustries.waterreporter.utilities.CursorPositionTracker;
 import com.viableindustries.waterreporter.utilities.DisplayDecimal;
@@ -102,6 +102,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -385,6 +386,16 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             report = ReportHolder.getReport();
 
+            // Set Open Graph data
+
+            if (report.properties.open_graph.size() > 0) {
+
+                openGraphProperties = report.properties.open_graph.get(0).properties;
+
+                    displayOpenGraphObject(openGraphProperties, openGraphProperties.url);
+
+            }
+
             // Set comment text
 
             if (report.properties.description != null && (report.properties.description.length() > 0)) {
@@ -553,7 +564,7 @@ public class PhotoMetaActivity extends AppCompatActivity
                 if (URLUtil.isValidUrl(lastWord)) {
 
                     try {
-                        fetchTags(lastWord);
+                        fetchOpenGraphData(lastWord);
                     } catch (IOException e) {
                         Snackbar.make(parentLayout, "Unable to read URL.",
                                 Snackbar.LENGTH_SHORT)
@@ -586,29 +597,44 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
-    private void displayOpenGraphObject(Map<String, String> openGraphObject, String url) {
+    private void displayOpenGraphObject(OpenGraphProperties openGraphProperties, String url) {
+
+        // Water Reporter accepts a post image OR Open Graph data
+        // but not both. After a successful Open Graph retrieval,
+        // clear any existing file references and reverse the
+        // visibility of the camera icon.
+
+        imageUri = null;
+
+        mTempImagePath = null;
+
+        addImageIcon.setVisibility(View.VISIBLE);
+
+        mImageView.setVisibility(View.GONE);
+
+        // Render Open Graph preview
 
         ogData.setVisibility(View.VISIBLE);
 
-        String imageUrl = openGraphObject.get("og:image");
+        String imageUrl = openGraphProperties.imageUrl;
 
         if (imageUrl.length() > 0) {
 
             Picasso.with(this)
-                    .load(openGraphObject.get("og:image"))
+                    .load(imageUrl)
                     .placeholder(R.drawable.open_graph_image_placeholder)
                     .into(ogImage);
 
         }
 
-        ogTitle.setText(openGraphObject.get("og:title"));
-        ogDescription.setText(openGraphObject.get("og:description"));
+        ogTitle.setText(openGraphProperties.title);
+        ogDescription.setText(openGraphProperties.description);
 
         String ogDomain;
 
         try {
 
-            ogDomain = OpenGraph.getDomainName(openGraphObject.get("og:url"));
+            ogDomain = OpenGraph.getDomainName(openGraphProperties.url);
 
         } catch (URISyntaxException e) {
 
@@ -620,13 +646,17 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         // Remove URL from comment text
 
-        String trimmedInput = query.substring(0, query.indexOf(url)).trim();
+        if (query != null) {
 
-        commentsField.setText(trimmedInput);
+            String trimmedInput = query.substring(0, query.indexOf(url)).trim();
+
+            commentsField.setText(trimmedInput);
+
+        }
 
     }
 
-    private void fetchTags(final String url) throws IOException {
+    private void fetchOpenGraphData(final String url) throws IOException {
 
         final String[] ogTags = new String[]{
                 "og:url",
@@ -648,29 +678,46 @@ public class PhotoMetaActivity extends AppCompatActivity
                     for (String tag : ogTags) {
                         String tagContent = OpenGraph.parseTag(output, tag);
                         Log.v(tag, tagContent);
-                        ogIdx.put(tag, tagContent);
+                        ogIdx.put(tag.replace(":", "_"), tagContent);
                     }
 
-                    if (ogIdx.get("og:url").length() > 0) {
-
-                        displayOpenGraphObject(ogIdx, url);
-
-                    }
+//                    if (ogIdx.get("og_url").length() > 0) {
+//
+//                        displayOpenGraphObject(ogIdx, url);
+//
+//                    }
 
 //                    String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(Calendar.getInstance().getTime());
 
                     openGraphProperties = new OpenGraphProperties(
-                            ogIdx.get("og:image"),
-                            ogIdx.get("og:description"),
-                            ogIdx.get("og:title"),
-                            ogIdx.get("og:url"),
+                            ogIdx.get("og_image"),
+                            ogIdx.get("og_description"),
+                            ogIdx.get("og_title"),
+                            ogIdx.get("og_url"),
                             mSharedPreferences.getInt("user_id", 0));
+
+                    if (ogIdx.get("og_url").length() > 0) {
+
+                        displayOpenGraphObject(openGraphProperties, openGraphProperties.url);
+
+                    }
 
                 } catch (NullPointerException e) {
 
-                    Snackbar.make(parentLayout, "Unable to read URL.",
-                            Snackbar.LENGTH_SHORT)
-                            .show();
+                    try {
+
+                        Snackbar.make(parentLayout, "Unable to read URL.",
+                                Snackbar.LENGTH_SHORT)
+                                .show();
+
+                    } catch (IllegalArgumentException i) {
+
+                        // Open Graph retrieval task finished in background
+                        // but layout references are unbound.
+
+                        finish();
+
+                    }
 
                 }
 
@@ -718,17 +765,17 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getHashTagService().getMany(accessToken, "application/json", page, limit, query, new CancelableCallback<HashtagCollection>() {
+        RestClient.getHashTagService().getMany(accessToken, "application/json", page, limit, query, new Callback<HashtagCollection>() {
 
             @Override
-            public void onSuccess(HashtagCollection hashtagCollection, Response response) {
+            public void success(HashtagCollection hashtagCollection, Response response) {
 
                 onTagSuccess(hashtagCollection.getFeatures());
 
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 onRequestError(error);
 
@@ -1030,7 +1077,11 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     private void addImage(View v) {
 
-        showPhotoPickerDialog();
+        if (openGraphProperties == null) {
+
+            showPhotoPickerDialog();
+
+        }
 
     }
 
@@ -1382,9 +1433,9 @@ public class PhotoMetaActivity extends AppCompatActivity
         Log.d("groups", groups.toString());
 
         RestClient.getReportService().updateReport(accessToken, "application/json", report.id, reportPatchBody,
-                new CancelableCallback<Report>() {
+                new Callback<Report>() {
                     @Override
-                    public void onSuccess(Report report, Response response) {
+                    public void success(Report report, Response response) {
 
                         // Hide ProgressBar
 
@@ -1433,7 +1484,7 @@ public class PhotoMetaActivity extends AppCompatActivity
                     }
 
                     @Override
-                    public void onFailure(RetrofitError error) {
+                    public void failure(RetrofitError error) {
                         onPostError();
                     }
 
@@ -1782,7 +1833,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
     }
 
@@ -1791,7 +1842,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
         finish();
 

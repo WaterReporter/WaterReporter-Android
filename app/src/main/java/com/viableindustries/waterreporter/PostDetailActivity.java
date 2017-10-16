@@ -48,7 +48,7 @@ import com.viableindustries.waterreporter.user_interface.adapters.TimelineItemVi
 import com.viableindustries.waterreporter.user_interface.listeners.PostCommentListener;
 import com.viableindustries.waterreporter.user_interface.listeners.PostFavoriteCountListener;
 import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
+
 import com.viableindustries.waterreporter.utilities.DeviceDimensionsHelper;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
@@ -58,6 +58,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -449,10 +450,10 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private void fetchReport(int postId) {
 
-        RestClient.getReportService().getSingleReport("", "application/json", postId, new CancelableCallback<Report>() {
+        RestClient.getReportService().getSingleReport("", "application/json", postId, new Callback<Report>() {
 
             @Override
-            public void onSuccess(Report report, Response response) {
+            public void success(Report report, Response response) {
 
                 mPost = report;
 
@@ -469,7 +470,7 @@ public class PostDetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 if (error == null) return;
 
@@ -509,10 +510,10 @@ public class PostDetailActivity extends AppCompatActivity {
 
         String query = new Gson().toJson(queryParams);
 
-        RestClient.getReportService().getReportComments(accessToken, "application/json", mPost.id, page, limit, query, new CancelableCallback<CommentCollection>() {
+        RestClient.getReportService().getReportComments(accessToken, "application/json", mPost.id, page, limit, query, new Callback<CommentCollection>() {
 
             @Override
-            public void onSuccess(CommentCollection commentCollection, Response response) {
+            public void success(CommentCollection commentCollection, Response response) {
 
                 List<Comment> comments = commentCollection.getFeatures();
 
@@ -525,7 +526,7 @@ public class PostDetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 if (error == null) return;
 
@@ -603,7 +604,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
     }
 
@@ -615,7 +616,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
         // Clear model from temporary storage
 

@@ -4,10 +4,11 @@ import com.viableindustries.waterreporter.api.models.auth.AuthResponse;
 import com.viableindustries.waterreporter.api.models.auth.LogInBody;
 import com.viableindustries.waterreporter.api.models.auth.RegistrationBody;
 import com.viableindustries.waterreporter.api.models.auth.RegistrationResponse;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
+
 
 import java.util.Map;
 
+import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.Headers;
 import retrofit.http.POST;
@@ -20,18 +21,18 @@ public interface SecurityService {
     @Headers({"Content-Type: application/json"})
     @POST("/auth/remote")
     void save(@Body LogInBody logInBody,
-              CancelableCallback<AuthResponse> authResponseCallback);
+              Callback<AuthResponse> authResponseCallback);
 
     @Headers({"Content-Type: application/json"})
     @POST("/user/register")
     void register(@Body RegistrationBody registrationBody,
-                  CancelableCallback<RegistrationResponse> registrationResponseCallback);
+                  Callback<RegistrationResponse> registrationResponseCallback);
 
     @Headers({"Content-Type: application/json"})
     @POST("/reset")
     void reset
             (@Body Map<String, String> resetBody,
-             CancelableCallback<RegistrationResponse> cb);
+             Callback<RegistrationResponse> cb);
 
 }
 

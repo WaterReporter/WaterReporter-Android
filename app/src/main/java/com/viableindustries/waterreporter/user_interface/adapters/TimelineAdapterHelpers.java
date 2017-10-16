@@ -37,7 +37,7 @@ import com.viableindustries.waterreporter.api.models.post.ReportPhoto;
 import com.viableindustries.waterreporter.user_interface.listeners.OrganizationProfileListener;
 import com.viableindustries.waterreporter.user_interface.listeners.TerritoryProfileListener;
 import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
+
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.DeviceDimensionsHelper;
 import com.viableindustries.waterreporter.utilities.OpenGraph;
@@ -48,6 +48,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -115,10 +116,10 @@ public class TimelineAdapterHelpers {
 
         // Send API request
 
-        RestClient.getFavoriteService().addFavorite(accessToken, "application/json", favoritePostBody, new CancelableCallback<Favorite>() {
+        RestClient.getFavoriteService().addFavorite(accessToken, "application/json", favoritePostBody, new Callback<Favorite>() {
 
             @Override
-            public void onSuccess(Favorite favorite, Response response) {
+            public void success(Favorite favorite, Response response) {
 
                 int newCount = currentCount + 1;
 
@@ -147,7 +148,7 @@ public class TimelineAdapterHelpers {
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 Response response = error.getResponse();
 
@@ -177,10 +178,10 @@ public class TimelineAdapterHelpers {
 
         // Send API request
 
-        RestClient.getFavoriteService().undoFavorite(accessToken, "application/json", favoriteId, new CancelableCallback<Void>() {
+        RestClient.getFavoriteService().undoFavorite(accessToken, "application/json", favoriteId, new Callback<Void>() {
 
             @Override
-            public void onSuccess(Void v, Response response) {
+            public void success(Void v, Response response) {
 
                 if (currentCount == 1) {
 
@@ -216,7 +217,7 @@ public class TimelineAdapterHelpers {
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 Response response = error.getResponse();
 
@@ -492,7 +493,7 @@ public class TimelineAdapterHelpers {
 
             // Load title, description and URL
 
-            title.setText(openGraphObject.properties.openGraphTitle);
+            title.setText(openGraphObject.properties.title);
 
             description.setText(openGraphObject.properties.description);
 
@@ -526,10 +527,10 @@ public class TimelineAdapterHelpers {
 
         String accessToken = sharedPreferences.getString("access_token", "");
 
-        RestClient.getReportService().deleteSingleReport(accessToken, post.id, new CancelableCallback<Response>() {
+        RestClient.getReportService().deleteSingleReport(accessToken, post.id, new Callback<Response>() {
 
             @Override
-            public void onSuccess(Response response, Response _response) {
+            public void success(Response response, Response _response) {
 
                 assert callbacks != null;
                 callbacks.onSuccess(_response);
@@ -537,7 +538,7 @@ public class TimelineAdapterHelpers {
             }
 
             @Override
-            public void onFailure(RetrofitError error) {
+            public void failure(RetrofitError error) {
 
                 assert callbacks != null;
                 callbacks.onError(error);

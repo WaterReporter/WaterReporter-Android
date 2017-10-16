@@ -2,8 +2,9 @@ package com.viableindustries.waterreporter.api.interfaces.data.hashtag;
 
 import com.viableindustries.waterreporter.api.models.hashtag.HashTag;
 import com.viableindustries.waterreporter.api.models.hashtag.HashtagCollection;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
+
+import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Path;
@@ -21,13 +22,13 @@ public interface HashTagService {
                  @Query("page") int page,
                  @Query("results_per_page") int numResults,
                  @Query("q") String q,
-                 CancelableCallback<HashtagCollection> hashtagCollectionCallback);
+                 Callback<HashtagCollection> hashtagCollectionCallback);
 
     @GET("/data/hashtag/{tag}")
     void getOrganization(@Header("Authorization") String authorization,
                          @Header("Content-Type") String contentType,
                          @Path("tag") int tagId,
                          @Query("q") String q,
-                         CancelableCallback<HashTag> hashTagCallback);
+                         Callback<HashTag> hashTagCallback);
 
 }

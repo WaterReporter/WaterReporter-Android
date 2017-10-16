@@ -19,12 +19,13 @@ import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.notification.NotificationPatchBody;
 import com.viableindustries.waterreporter.api.models.notification.NotificationSetting;
 import com.viableindustries.waterreporter.api.models.user.User;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
+
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -113,10 +114,10 @@ public class NotificationSettingAdapter extends ArrayAdapter {
 
                 NotificationPatchBody notificationPatchBody = new NotificationPatchBody(settingPatch);
 
-                RestClient.getUserService().updateUser(accessToken, "application/json", id, notificationPatchBody.settings, new CancelableCallback<User>() {
+                RestClient.getUserService().updateUser(accessToken, "application/json", id, notificationPatchBody.settings, new Callback<User>() {
 
                     @Override
-                    public void onSuccess(User user, Response response) {
+                    public void success(User user, Response response) {
 
                         // Update stored values of user's notification settings
 
@@ -137,7 +138,7 @@ public class NotificationSettingAdapter extends ArrayAdapter {
                     }
 
                     @Override
-                    public void onFailure(RetrofitError error) {
+                    public void failure(RetrofitError error) {
 
                         if (error == null) return;
 

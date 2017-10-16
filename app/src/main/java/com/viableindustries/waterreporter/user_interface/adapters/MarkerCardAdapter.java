@@ -2,19 +2,16 @@ package com.viableindustries.waterreporter.user_interface.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
-import com.viableindustries.waterreporter.PostDetailActivity;
 import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.api.models.post.Report;
-import com.viableindustries.waterreporter.api.models.post.ReportHolder;
+import com.viableindustries.waterreporter.user_interface.listeners.PostDetailListener;
 
 import java.util.List;
 
@@ -66,19 +63,22 @@ public class MarkerCardAdapter extends RecyclerView.Adapter<MarkerCardAdapter.Vi
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        final Report r = mDataset.get(position);
-        Picasso.with(mContext).load(r.properties.images.get(0).properties.thumbnail_retina).fit().into(holder.postImage);
+        final Report post = mDataset.get(position);
 
-        holder.cardView.setTag(r.id);
+        Picasso.with(mContext).load(post.properties.images.get(0).properties.thumbnail_retina).fit().into(holder.postImage);
 
-        holder.postImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ReportHolder.setReport(r);
-                Intent markerIntent = new Intent(mContext, PostDetailActivity.class);
-                mContext.startActivity(markerIntent);
-            }
-        });
+        holder.cardView.setTag(post.id);
+
+        holder.postImage.setOnClickListener(new PostDetailListener(mContext, post));
+
+//        holder.postImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                ReportHolder.setReport(r);
+//                Intent markerIntent = new Intent(mContext, PostDetailActivity.class);
+//                mContext.startActivity(markerIntent);
+//            }
+//        });
 
     }
 

@@ -16,13 +16,14 @@ import com.viableindustries.waterreporter.api.models.auth.AuthResponse;
 import com.viableindustries.waterreporter.api.models.auth.LogInBody;
 import com.viableindustries.waterreporter.api.models.auth.RegistrationBody;
 import com.viableindustries.waterreporter.api.models.auth.RegistrationResponse;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
+
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -111,9 +112,9 @@ public class RegistrationActivity extends AppCompatActivity {
             RegistrationBody registrationBody = new RegistrationBody(email, password);
 
             RestClient.getSecurityService().register(registrationBody,
-                    new CancelableCallback<RegistrationResponse>() {
+                    new Callback<RegistrationResponse>() {
                         @Override
-                        public void onSuccess(RegistrationResponse registrationResponse,
+                        public void success(RegistrationResponse registrationResponse,
                                             Response response) {
 
                             int responseCode = registrationResponse.getCode();
@@ -160,9 +161,9 @@ public class RegistrationActivity extends AppCompatActivity {
                                         getString(R.string.scope), getString(R.string.state));
 
                                 RestClient.getSecurityService().save(logInBody,
-                                        new CancelableCallback<AuthResponse>() {
+                                        new Callback<AuthResponse>() {
                                             @Override
-                                            public void onSuccess(AuthResponse authResponse,
+                                            public void success(AuthResponse authResponse,
                                                                 Response response) {
 
                                                 progressBar.setVisibility(View.GONE);
@@ -184,7 +185,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                             }
 
                                             @Override
-                                            public void onFailure(RetrofitError error) {
+                                            public void failure(RetrofitError error) {
 
                                                 progressBar.setVisibility(View.GONE);
 
@@ -199,7 +200,7 @@ public class RegistrationActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(RetrofitError error) {
+                        public void failure(RetrofitError error) {
 
                             progressBar.setVisibility(View.GONE);
 
@@ -233,7 +234,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
         Intent a = new Intent(Intent.ACTION_MAIN);
         a.addCategory(Intent.CATEGORY_HOME);
@@ -265,7 +266,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
         // Cancel all pending network requests
 
-        CancelableCallback.cancelAll();
+        //Callback.cancelAll();
 
     }
 

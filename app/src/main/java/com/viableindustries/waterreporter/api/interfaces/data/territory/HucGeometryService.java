@@ -1,8 +1,9 @@
 package com.viableindustries.waterreporter.api.interfaces.data.territory;
 
 import com.viableindustries.waterreporter.api.models.territory.HucGeometryCollection;
-import com.viableindustries.waterreporter.utilities.CancelableCallback;
 
+
+import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.http.GET;
 import retrofit.http.Header;
@@ -24,6 +25,6 @@ public interface HucGeometryService {
     @GET("/{code}")
     void getGeometry(@Header("Content-Type") String contentType,
                             @Path("code") String code,
-                            CancelableCallback<HucGeometryCollection> hucGeometryCollectionCallback);
+                            Callback<HucGeometryCollection> hucGeometryCollectionCallback);
 
 }
