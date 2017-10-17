@@ -28,6 +28,7 @@ import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.TagProfileActivity;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.interfaces.data.post.DeletePostCallbacks;
+import com.viableindustries.waterreporter.api.models.comment.Comment;
 import com.viableindustries.waterreporter.api.models.favorite.Favorite;
 import com.viableindustries.waterreporter.api.models.favorite.FavoritePostBody;
 import com.viableindustries.waterreporter.api.models.open_graph.OpenGraphObject;
@@ -466,6 +467,78 @@ public class TimelineAdapterHelpers {
         if (post.properties.open_graph.size() > 0) {
 
             final OpenGraphObject openGraphObject = post.properties.open_graph.get(0);
+
+            // Make CardView visible
+
+            cardView.setVisibility(View.VISIBLE);
+
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Uri webpage = Uri.parse(openGraphObject.properties.url);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+                    if (intent.resolveActivity(context.getPackageManager()) != null) {
+                        context.startActivity(intent);
+                    }
+                }
+            });
+
+            // Load image
+
+            Picasso.with(context)
+                    .load(openGraphObject.properties.imageUrl)
+                    .placeholder(R.drawable.open_graph_placeholder)
+                    .error(R.drawable.open_graph_placeholder)
+                    .fit()
+                    .into(imageView);
+
+            // Load title, description and URL
+
+            title.setText(openGraphObject.properties.title);
+
+            description.setText(openGraphObject.properties.description);
+
+            try {
+
+                url.setText(OpenGraph.getDomainName(openGraphObject.properties.url));
+
+            } catch (URISyntaxException e) {
+
+                url.setText("");
+
+            }
+
+        }
+
+    }
+
+    public static void setCommentOpenGraph(final Context context,
+                                           final Comment comment,
+                                           CardView cardView,
+                                           ImageView imageView,
+                                           TextView title,
+                                           TextView description,
+                                           TextView url) {
+
+        // Hide CardView
+
+        cardView.setVisibility(View.GONE);
+
+        // Reset image
+
+        imageView.setImageDrawable(null);
+
+        // Reset title, description and URL
+
+        title.setText("");
+
+        description.setText("");
+
+        url.setText("");
+
+        if (comment.properties.open_graph.size() > 0) {
+
+            final OpenGraphObject openGraphObject = comment.properties.open_graph.get(0);
 
             // Make CardView visible
 

@@ -54,7 +54,6 @@ import com.viableindustries.waterreporter.api.models.hashtag.HashTag;
 import com.viableindustries.waterreporter.api.models.hashtag.HashtagCollection;
 import com.viableindustries.waterreporter.api.models.hashtag.TagHolder;
 import com.viableindustries.waterreporter.api.models.open_graph.OpenGraphProperties;
-import com.viableindustries.waterreporter.api.models.open_graph.OpenGraphResponse;
 import com.viableindustries.waterreporter.api.models.organization.AbbreviatedOrganization;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.post.Report;
@@ -78,9 +77,6 @@ import com.viableindustries.waterreporter.utilities.CursorPositionTracker;
 import com.viableindustries.waterreporter.utilities.DisplayDecimal;
 import com.viableindustries.waterreporter.utilities.FileUtils;
 import com.viableindustries.waterreporter.utilities.OpenGraph;
-import com.viableindustries.waterreporter.utilities.OpenGraphTask;
-
-import org.jsoup.nodes.Document;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -113,7 +109,7 @@ public class PhotoMetaActivity extends AppCompatActivity
     ScrollView parentLayout;
 
     @Bind(R.id.comment_input)
-    EditText commentsField;
+    EditText commentInput;
 
     @Bind(R.id.tag_component)
     HorizontalScrollView tagComponent;
@@ -236,8 +232,6 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     private String tagToken;
 
-    private OpenGraphProperties openGraphProperties;
-
     private final List<Map<String, Integer>> images = new ArrayList<>();
 
     @Override
@@ -300,7 +294,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             if (autoTag.length() > 0) {
 
-                commentsField.setText(autoTag);
+                commentInput.setText(autoTag);
 
             } else {
 
@@ -359,7 +353,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             mImageView.setVisibility(View.VISIBLE);
 
-            commentsField.setText(savedInstanceState.getString("post_description"));
+            commentInput.setText(savedInstanceState.getString("post_description"));
 
             latitude = savedInstanceState.getDouble("latitude", 0);
 
@@ -389,7 +383,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             if (report.properties.open_graph.size() > 0) {
 
-                openGraphProperties = report.properties.open_graph.get(0).properties;
+                OpenGraphProperties openGraphProperties = report.properties.open_graph.get(0).properties;
 
                 displayOpenGraphObject(openGraphProperties, openGraphProperties.url);
 
@@ -399,7 +393,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             if (report.properties.description != null && (report.properties.description.length() > 0)) {
 
-                commentsField.setText(report.properties.description);
+                commentInput.setText(report.properties.description);
 
             }
 
@@ -432,7 +426,7 @@ public class PhotoMetaActivity extends AppCompatActivity
             cameraButtonContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    addImage(view);
+                    addPhoto();
                 }
             });
 
@@ -487,14 +481,14 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         };
 
-        commentsField.addTextChangedListener(new TextWatcher() {
+        commentInput.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
 
                 // Retrieve current cursor position
 
-                int pos = commentsField.getSelectionStart();
+                int pos = commentInput.getSelectionStart();
 
                 CursorPositionTracker.setPosition(pos);
 
@@ -563,11 +557,25 @@ public class PhotoMetaActivity extends AppCompatActivity
                 if (URLUtil.isValidUrl(lastWord)) {
 
                     try {
-                        fetchOpenGraphData(lastWord);
+
+                        OpenGraph.fetchOpenGraphData(
+                                PhotoMetaActivity.this,
+                                parentLayout,
+                                mSharedPreferences.getInt("user_id", 0),
+                                lastWord);
+
+                        if (OpenGraph.openGraphProperties != null && !OpenGraph.openGraphProperties.url.isEmpty()) {
+
+                            displayOpenGraphObject(OpenGraph.openGraphProperties, OpenGraph.openGraphProperties.url);
+
+                        }
+
                     } catch (IOException e) {
+
                         Snackbar.make(parentLayout, "Unable to read URL.",
                                 Snackbar.LENGTH_SHORT)
                                 .show();
+
                     }
 
                 }
@@ -584,7 +592,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                 // Ensure that the user's cursor is placed at the end of the selection
 
-                //commentsField.setSelection(commentsField.getText().length());
+                //commentInput.setSelection(commentInput.getText().length());
 
                 handler.removeCallbacks(tagSearchRunnable);
 
@@ -649,94 +657,76 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             String trimmedInput = query.substring(0, query.indexOf(url)).trim();
 
-            commentsField.setText(trimmedInput);
+            commentInput.setText(trimmedInput);
 
         }
 
     }
 
-    private void fetchOpenGraphData(final String url) throws IOException {
-
-        final String[] ogTags = new String[]{
-                "og:url",
-                "og:title",
-                "og:description",
-                "og:image"
-        };
-
-        final Map<String, String> ogIdx = new HashMap<>();
-
-        OpenGraphTask openGraphTask = new OpenGraphTask(new OpenGraphResponse() {
-
-            @Override
-            public void processFinish(Document output) {
-                //Here you will receive the result fired from async class
-                //of onPostExecute(result) method.
-                try {
-
-                    for (String tag : ogTags) {
-                        String tagContent = OpenGraph.parseTag(output, tag);
-                        Log.v(tag, tagContent);
-                        ogIdx.put(tag.replace(":", "_"), tagContent);
-                    }
-
-//                    if (ogIdx.get("og_url").length() > 0) {
+//    private void fetchOpenGraphData(final String url) throws IOException {
 //
-//                        displayOpenGraphObject(ogIdx, url);
+//        final String[] ogTags = new String[]{
+//                "og:url",
+//                "og:title",
+//                "og:description",
+//                "og:image"
+//        };
+//
+//        final Map<String, String> ogIdx = new HashMap<>();
+//
+//        OpenGraphTask openGraphTask = new OpenGraphTask(new OpenGraphResponse() {
+//
+//            @Override
+//            public void processFinish(Document output) {
+//                //Here you will receive the result fired from async class
+//                //of onPostExecute(result) method.
+//                try {
+//
+//                    for (String tag : ogTags) {
+//                        String tagContent = OpenGraph.parseTag(output, tag);
+//                        Log.v(tag, tagContent);
+//                        ogIdx.put(tag.replace(":", "_"), tagContent);
+//                    }
+//
+//                    openGraphProperties = new OpenGraphProperties(
+//                            ogIdx.get("og_image"),
+//                            ogIdx.get("og_description"),
+//                            ogIdx.get("og_title"),
+//                            ogIdx.get("og_url"),
+//                            mSharedPreferences.getInt("user_id", 0));
+//
+//                    if (ogIdx.get("og_title").length() > 0) {
+//
+//                        displayOpenGraphObject(openGraphProperties, openGraphProperties.url);
 //
 //                    }
-
-//                    String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(Calendar.getInstance().getTime());
-
-//                    if (ogIdx.get("og_image").isEmpty()) {
 //
-//                        Log.v("og_image--EXISTS", ogIdx.get("og_image"));
+//                } catch (NullPointerException e) {
 //
-//                        String defaultImageUrl = "https://www.waterreporter.org/images/og-placeholder_1024x1024-001.png";
+//                    try {
 //
-//                        ogIdx.put("og_image", defaultImageUrl);
+//                        Snackbar.make(parentLayout, "Unable to read URL.",
+//                                Snackbar.LENGTH_SHORT)
+//                                .show();
+//
+//                    } catch (IllegalArgumentException i) {
+//
+//                        // Open Graph retrieval task finished in background
+//                        // but layout references are unbound.
+//
+//                        finish();
 //
 //                    }
-
-                    openGraphProperties = new OpenGraphProperties(
-                            ogIdx.get("og_image"),
-                            ogIdx.get("og_description"),
-                            ogIdx.get("og_title"),
-                            ogIdx.get("og_url"),
-                            mSharedPreferences.getInt("user_id", 0));
-
-                    if (ogIdx.get("og_title").length() > 0) {
-
-                        displayOpenGraphObject(openGraphProperties, openGraphProperties.url);
-
-                    }
-
-                } catch (NullPointerException e) {
-
-                    try {
-
-                        Snackbar.make(parentLayout, "Unable to read URL.",
-                                Snackbar.LENGTH_SHORT)
-                                .show();
-
-                    } catch (IllegalArgumentException i) {
-
-                        // Open Graph retrieval task finished in background
-                        // but layout references are unbound.
-
-                        finish();
-
-                    }
-
-                }
-
-            }
-
-        });
-
-        openGraphTask.execute(url);
-
-    }
+//
+//                }
+//
+//            }
+//
+//        });
+//
+//        openGraphTask.execute(url);
+//
+//    }
 
     private String buildQuery(String sortField, String sortDirection, String searchChars) {
 
@@ -1084,9 +1074,9 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
-    private void addImage(View v) {
+    private void addPhoto() {
 
-        if (openGraphProperties == null) {
+        if (OpenGraph.openGraphProperties == null) {
 
             showPhotoPickerDialog();
 
@@ -1182,7 +1172,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         dateText = initializeDateField();
 
-        commentsText = commentsField.getText().toString();
+        commentsText = commentInput.getText().toString();
 
         Log.d("comments", commentsText);
 
@@ -1206,7 +1196,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         // Abort with message if neither comments nor Open Graph api are present
 
-        if ((commentsText.isEmpty() && openGraphProperties == null) && !editMode) {
+        if ((commentsText.isEmpty() && OpenGraph.openGraphProperties == null) && !editMode) {
 
             CharSequence text = "Please add a photo, write a comment, or paste a link to share.";
             Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
@@ -1370,9 +1360,9 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         List<OpenGraphProperties> social = new ArrayList<>();
 
-        if (openGraphProperties != null) {
+        if (OpenGraph.openGraphProperties != null) {
 
-            social.add(openGraphProperties);
+            social.add(OpenGraph.openGraphProperties);
 
         }
 
@@ -1749,7 +1739,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         if (id == R.id.action_save) {
 
-            commentsText = String.valueOf(commentsField.getText());
+            commentsText = String.valueOf(commentInput.getText());
 
             // Step through comment and location checks and warn the user if anything's missing.
 

@@ -24,6 +24,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -33,6 +34,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -52,6 +54,7 @@ import com.viableindustries.waterreporter.api.models.hashtag.HashTag;
 import com.viableindustries.waterreporter.api.models.hashtag.HashtagCollection;
 import com.viableindustries.waterreporter.api.models.hashtag.TagHolder;
 import com.viableindustries.waterreporter.api.models.image.ImageProperties;
+import com.viableindustries.waterreporter.api.models.open_graph.OpenGraphProperties;
 import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.api.models.post.ReportHolder;
 import com.viableindustries.waterreporter.api.models.post.ReportStateBody;
@@ -68,9 +71,9 @@ import com.viableindustries.waterreporter.user_interface.dialogs.PhotoPickerDial
 import com.viableindustries.waterreporter.user_interface.listeners.UserProfileListener;
 import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
 import com.viableindustries.waterreporter.utilities.CacheManager;
-
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.FileUtils;
+import com.viableindustries.waterreporter.utilities.OpenGraph;
 import com.viableindustries.waterreporter.utilities.PatternEditableBuilder;
 
 import java.io.File;
@@ -78,6 +81,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.FileNameMap;
+import java.net.URISyntaxException;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
@@ -140,6 +144,23 @@ public class CommentActivity extends AppCompatActivity implements
 
     @Bind(R.id.tag_results)
     LinearLayout tagResults;
+
+    // Open Graph preview
+
+    @Bind(R.id.ogData)
+    CardView ogData;
+
+    @Bind(R.id.ogImage)
+    ImageView ogImage;
+
+    @Bind(R.id.ogTitle)
+    TextView ogTitle;
+
+    @Bind(R.id.ogDescription)
+    TextView ogDescription;
+
+    @Bind(R.id.ogUrl)
+    TextView ogUrl;
 
     private Report report;
 
@@ -255,6 +276,34 @@ public class CommentActivity extends AppCompatActivity implements
                 }
 
                 Log.d("token", tagToken);
+
+                String lastWord = query.substring(query.lastIndexOf(" ") + 1);
+
+                if (URLUtil.isValidUrl(lastWord)) {
+
+                    try {
+
+                        OpenGraph.fetchOpenGraphData(
+                                CommentActivity.this,
+                                commentListContainer,
+                                mSharedPreferences.getInt("user_id", 0),
+                                lastWord);
+
+                        if (OpenGraph.openGraphProperties != null && !OpenGraph.openGraphProperties.url.isEmpty()) {
+
+                            displayOpenGraphObject(OpenGraph.openGraphProperties, OpenGraph.openGraphProperties.url);
+
+                        }
+
+                    } catch (IOException e) {
+
+                        Snackbar.make(commentListContainer, "Unable to read URL.",
+                                Snackbar.LENGTH_SHORT)
+                                .show();
+
+                    }
+
+                }
 
             }
 
@@ -652,7 +701,11 @@ public class CommentActivity extends AppCompatActivity implements
 
     private void addPhoto() {
 
-        showPhotoPickerDialog();
+        if (OpenGraph.openGraphProperties == null) {
+
+            showPhotoPickerDialog();
+
+        }
 
     }
 
@@ -740,7 +793,7 @@ public class CommentActivity extends AppCompatActivity implements
                 new Callback<ImageProperties>() {
                     @Override
                     public void success(ImageProperties imageProperties,
-                                          Response response) {
+                                        Response response) {
 
                         // Immediately delete the cached image file now that we no longer need it
 
@@ -843,7 +896,7 @@ public class CommentActivity extends AppCompatActivity implements
 
         ReportStateBody reportStateBody = new ReportStateBody(reportId, state);
 
-      RestClient.getReportService().setReportState(accessToken, "application/json", reportId, reportStateBody, new Callback<Report>() {
+        RestClient.getReportService().setReportState(accessToken, "application/json", reportId, reportStateBody, new Callback<Report>() {
 
             @Override
             public void success(Report report, Response response) {
@@ -1184,6 +1237,65 @@ public class CommentActivity extends AppCompatActivity implements
             // Ask for all permissions since the app is useless without them
             EasyPermissions.requestPermissions(this, getString(R.string.rationale_camera_files),
                     RC_ALL_PERMISSIONS, permissions);
+
+        }
+
+    }
+
+    private void displayOpenGraphObject(OpenGraphProperties openGraphProperties, String url) {
+
+        // Water Reporter accepts a post image OR Open Graph data
+        // but not both. After a successful Open Graph retrieval,
+        // clear any existing file references and reverse the
+        // visibility of the camera icon.
+
+        imageUri = null;
+
+        mTempImagePath = null;
+
+        addImageIcon.setVisibility(View.VISIBLE);
+
+        mImageView.setVisibility(View.GONE);
+
+        // Render Open Graph preview
+
+        ogData.setVisibility(View.VISIBLE);
+
+        String imageUrl = openGraphProperties.imageUrl;
+
+        Log.v("Display Open Graph img", imageUrl);
+
+        Picasso.with(this)
+                .load(imageUrl)
+                .placeholder(R.drawable.open_graph_placeholder)
+                .error(R.drawable.open_graph_placeholder)
+                .fit()
+                .into(ogImage);
+
+        ogTitle.setText(openGraphProperties.title);
+        ogDescription.setText(openGraphProperties.description);
+
+        String ogDomain;
+
+        try {
+
+            ogDomain = OpenGraph.getDomainName(openGraphProperties.url);
+
+        } catch (URISyntaxException e) {
+
+            ogDomain = "";
+
+        }
+
+        ogUrl.setText(ogDomain);
+
+        // Remove URL from comment text
+
+        if (query != null) {
+
+            String trimmedInput = query.substring(0, query.indexOf(url)).trim();
+
+            commentInput.setText(trimmedInput);
 
         }
 

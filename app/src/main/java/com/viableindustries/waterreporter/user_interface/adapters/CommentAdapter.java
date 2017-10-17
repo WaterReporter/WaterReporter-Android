@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,15 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
         ImageView actionBadge;
         LinearLayout reportStub;
         TextView tracker;
+
+        // Open Graph
+
+        CardView openGraphData;
+        ImageView ogImage;
+        TextView ogTitle;
+        TextView ogDescription;
+        TextView ogUrl;
+
     }
 
     @Override
@@ -69,6 +79,14 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
             viewHolder.actionTaken = (LinearLayout) convertView.findViewById(R.id.action_taken);
             viewHolder.reportStub = (LinearLayout) convertView.findViewById(R.id.post_stub);
             viewHolder.tracker = (TextView) convertView.findViewById(R.id.tracker);
+
+            // Open Graph
+
+            viewHolder.openGraphData = (CardView) convertView.findViewById(R.id.ogData);
+            viewHolder.ogImage = (ImageView) convertView.findViewById(R.id.ogImage);
+            viewHolder.ogTitle = (TextView) convertView.findViewById(R.id.ogTitle);
+            viewHolder.ogDescription = (TextView) convertView.findViewById(R.id.ogDescription);
+            viewHolder.ogUrl = (TextView) convertView.findViewById(R.id.ogUrl);
 
             convertView.setTag(viewHolder);
 
@@ -152,6 +170,17 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
         }
 
         Picasso.with(mContext).load(feature.properties.owner.properties.picture).placeholder(R.drawable.user_avatar_placeholder_003).transform(new CircleTransform()).into(viewHolder.ownerAvatar);
+
+        // Display Open Graph information, if any
+
+        TimelineAdapterHelpers.setCommentOpenGraph(
+                mContext,
+                feature,
+                viewHolder.openGraphData,
+                viewHolder.ogImage,
+                viewHolder.ogTitle,
+                viewHolder.ogDescription,
+                viewHolder.ogUrl);
 
         // Return the completed view to render on screen
         return convertView;

@@ -1,6 +1,7 @@
 package com.viableindustries.waterreporter.api.models.comment;
 
 import com.google.gson.annotations.SerializedName;
+import com.viableindustries.waterreporter.api.models.open_graph.OpenGraphObject;
 import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.api.models.post.ReportPhoto;
 import com.viableindustries.waterreporter.api.models.user.User;
@@ -38,6 +39,9 @@ public class CommentProperties {
 
     @SerializedName("post_state")
     public String post_state;
+
+    @SerializedName("social")
+    public List<OpenGraphObject> open_graph;
 
     @SerializedName("status")
     public String status;
