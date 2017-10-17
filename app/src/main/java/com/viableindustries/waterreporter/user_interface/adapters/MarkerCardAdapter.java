@@ -40,12 +40,14 @@ public class MarkerCardAdapter extends RecyclerView.Adapter<MarkerCardAdapter.Vi
         public final FrameLayout cardView;
         public final ImageView postImage;
         public final RelativeLayout openLink;
+        public final RelativeLayout actionBadge;
 
         public ViewHolder(FrameLayout v) {
             super(v);
             cardView = v;
             postImage = (ImageView) v.findViewById(R.id.postImage);
             openLink = (RelativeLayout) v.findViewById(R.id.openLink);
+            actionBadge = (RelativeLayout) v.findViewById(R.id.actionBadge);
         }
     }
 
@@ -74,13 +76,15 @@ public class MarkerCardAdapter extends RecyclerView.Adapter<MarkerCardAdapter.Vi
         // - replace the contents of the view with that element
         final Report post = mDataset.get(position);
 
+        // Set action badge state
+
+        TimelineAdapterHelpers.setActionBadge(post, holder.actionBadge);
+
         if (post.properties.open_graph.size() > 0) {
 
             Log.v("open--graph", "post has OG data");
 
             holder.openLink.setVisibility(View.VISIBLE);
-
-//            holder.postImage.setVisibility(View.GONE);
 
             final OpenGraphProperties openGraphProperties = post.properties.open_graph.get(0).properties;
 
@@ -90,9 +94,7 @@ public class MarkerCardAdapter extends RecyclerView.Adapter<MarkerCardAdapter.Vi
                     .with(mContext)
                     .load(imageUrl)
                     .resize(120, 120)
-//                    .placeholder(R.drawable.open_graph_placeholder)
                     .error(R.drawable.open_graph_placeholder)
-//                    .fit()
                     .centerCrop()
                     .into(holder.postImage);
 
@@ -111,8 +113,6 @@ public class MarkerCardAdapter extends RecyclerView.Adapter<MarkerCardAdapter.Vi
 
             holder.openLink.setVisibility(View.GONE);
 
-//            holder.postImage.setVisibility(View.VISIBLE);
-
             Picasso
                     .with(mContext)
                     .load(post.properties.images.get(0).properties.thumbnail_retina)
@@ -124,17 +124,6 @@ public class MarkerCardAdapter extends RecyclerView.Adapter<MarkerCardAdapter.Vi
         }
 
         holder.cardView.setTag(post.id);
-
-//        holder.postImage.setOnClickListener(new PostDetailListener(mContext, post));
-
-//        holder.postImage.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                ReportHolder.setReport(r);
-//                Intent markerIntent = new Intent(mContext, PostDetailActivity.class);
-//                mContext.startActivity(markerIntent);
-//            }
-//        });
 
     }
 

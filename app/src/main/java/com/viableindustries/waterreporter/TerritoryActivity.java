@@ -53,12 +53,10 @@ import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
 import com.viableindustries.waterreporter.api.models.territory.HucFeature;
 import com.viableindustries.waterreporter.api.models.territory.Territory;
-import com.viableindustries.waterreporter.api.models.territory.TerritoryHolder;
 import com.viableindustries.waterreporter.constants.HucStates;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
 import com.viableindustries.waterreporter.user_interface.dialogs.TimelineFilterDialog;
 import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
-
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
@@ -283,43 +281,31 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
             }
         });
 
-        fetchPosts(5, 1, mMasterQuery, false);
-
     }
 
-    private void retrieveStoredTerritory(){
+    private void retrieveStoredTerritory() {
 
-        mTerritory = TerritoryHolder.getTerritory();
+        mTerritory = ModelStorage.getStoredTerritory(mSharedPreferences);
 
         try {
 
             int mTerritoryId = mTerritory.properties.id;
 
-        } catch (NullPointerException e) {
+            // Retrieve first batch of posts
 
-            mTerritory = ModelStorage.getStoredTerritory(mSharedPreferences);
+            if (reportCollection.isEmpty()) {
 
-            try {
+                mMasterQuery = buildQuery(true, "report", null);
 
-                int mTerritoryId = mTerritory.properties.id;
-
-                // Retrieve first batch of posts
-
-                if (reportCollection.isEmpty()) {
-
-                    mMasterQuery = buildQuery(true, "report", null);
-
-                    fetchPosts(5, 1, mMasterQuery, true);
-
-                }
-
-            } catch (NullPointerException _e) {
-
-                startActivity(new Intent(this, MainActivity.class));
-
-                finish();
+                fetchPosts(5, 1, mMasterQuery, true);
 
             }
+
+        } catch (NullPointerException _e) {
+
+            startActivity(new Intent(this, MainActivity.class));
+
+            finish();
 
         }
 
@@ -668,9 +654,9 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
         if (collection.equals("group")) {
 
-            QueryFilter mTerritoryFilter = new QueryFilter("huc_8_code", "eq", mTerritory.properties.huc_8_code);
+            QueryFilter territoryFilter = new QueryFilter("huc_8_code", "eq", mTerritory.properties.huc_8_code);
 
-            QueryFilter complexVal = new QueryFilter("mTerritory", "has", mTerritoryFilter);
+            QueryFilter complexVal = new QueryFilter("territory", "has", territoryFilter);
 
             QueryFilter complexFilter = new QueryFilter("reports", "any", complexVal);
 
@@ -680,9 +666,9 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
             QueryFilter complexVal = new QueryFilter("huc_8_code", "eq", mTerritory.properties.huc_8_code);
 
-            QueryFilter mTerritoryFilter = new QueryFilter("mTerritory", "has", complexVal);
+            QueryFilter territoryFilter = new QueryFilter("territory", "has", complexVal);
 
-            queryFilters.add(mTerritoryFilter);
+            queryFilters.add(territoryFilter);
 
             if (optionalFilters != null) {
 

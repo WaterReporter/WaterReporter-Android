@@ -19,7 +19,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -74,7 +73,6 @@ import com.viableindustries.waterreporter.user_interface.adapters.TagSuggestionA
 import com.viableindustries.waterreporter.user_interface.dialogs.PhotoPickerDialogFragment;
 import com.viableindustries.waterreporter.utilities.ApiDispatcher;
 import com.viableindustries.waterreporter.utilities.CacheManager;
-
 import com.viableindustries.waterreporter.utilities.ConnectionUtility;
 import com.viableindustries.waterreporter.utilities.CursorPositionTracker;
 import com.viableindustries.waterreporter.utilities.DisplayDecimal;
@@ -393,7 +391,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                 openGraphProperties = report.properties.open_graph.get(0).properties;
 
-                    displayOpenGraphObject(openGraphProperties, openGraphProperties.url);
+                displayOpenGraphObject(openGraphProperties, openGraphProperties.url);
 
             }
 
@@ -621,18 +619,12 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         Log.v("Display Open Graph img", imageUrl);
 
-//        if (imageUrl.length() > 0) {
-
-            Picasso.with(this)
-                    .load(imageUrl)
-//                    .resize(320, 320)
-                    .placeholder(R.drawable.open_graph_placeholder)
-                    .error(R.drawable.open_graph_placeholder)
-                    .fit()
-//                    .centerCrop()
-                    .into(ogImage);
-
-//        }
+        Picasso.with(this)
+                .load(imageUrl)
+                .placeholder(R.drawable.open_graph_placeholder)
+                .error(R.drawable.open_graph_placeholder)
+                .fit()
+                .into(ogImage);
 
         ogTitle.setText(openGraphProperties.title);
         ogDescription.setText(openGraphProperties.description);

@@ -37,7 +37,6 @@ import com.viableindustries.waterreporter.api.models.post.ReportPhoto;
 import com.viableindustries.waterreporter.user_interface.listeners.OrganizationProfileListener;
 import com.viableindustries.waterreporter.user_interface.listeners.TerritoryProfileListener;
 import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
-
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.DeviceDimensionsHelper;
 import com.viableindustries.waterreporter.utilities.OpenGraph;
@@ -487,11 +486,9 @@ public class TimelineAdapterHelpers {
 
             Picasso.with(context)
                     .load(openGraphObject.properties.imageUrl)
-//                    .resize(imageView.getMeasuredWidth(), 200)
                     .placeholder(R.drawable.open_graph_placeholder)
                     .error(R.drawable.open_graph_placeholder)
                     .fit()
-//                    .centerCrop()
                     .into(imageView);
 
             // Load title, description and URL
