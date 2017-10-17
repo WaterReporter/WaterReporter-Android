@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -1296,6 +1297,12 @@ public class PhotoMetaActivity extends AppCompatActivity
         String filePath = mTempImagePath;
 
         if (imageUri == null) {
+
+            Map<String, Integer> defaultImage = new HashMap<>();
+
+            defaultImage.put("id", 6763);
+
+            images.add(defaultImage);
 
             sendFullPost(buildPostBody());
 

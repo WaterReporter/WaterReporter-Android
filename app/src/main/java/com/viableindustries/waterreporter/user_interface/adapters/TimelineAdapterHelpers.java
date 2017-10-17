@@ -237,7 +237,7 @@ public class TimelineAdapterHelpers {
 
         imageView.setVisibility(View.GONE);
 
-        if (post.properties.images.size() > 0) {
+        if (post.properties.images.size() > 0 && post.properties.open_graph.size() == 0) {
 
             ReportPhoto image = post.properties.images.get(0);
 
