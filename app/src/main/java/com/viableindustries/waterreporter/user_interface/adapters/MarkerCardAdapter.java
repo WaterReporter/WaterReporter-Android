@@ -2,14 +2,21 @@ package com.viableindustries.waterreporter.user_interface.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.R;
+import com.viableindustries.waterreporter.api.models.open_graph.OpenGraphProperties;
 import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.user_interface.listeners.PostDetailListener;
 
@@ -30,13 +37,15 @@ public class MarkerCardAdapter extends RecyclerView.Adapter<MarkerCardAdapter.Vi
     // you provide access to all the views for a api item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each api item is just a string in this case
-        public final CardView cardView;
+        public final FrameLayout cardView;
         public final ImageView postImage;
+        public final RelativeLayout openLink;
 
-        public ViewHolder(CardView v) {
+        public ViewHolder(FrameLayout v) {
             super(v);
             cardView = v;
             postImage = (ImageView) v.findViewById(R.id.postImage);
+            openLink = (RelativeLayout) v.findViewById(R.id.openLink);
         }
     }
 
@@ -51,7 +60,7 @@ public class MarkerCardAdapter extends RecyclerView.Adapter<MarkerCardAdapter.Vi
     public MarkerCardAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                            int viewType) {
         // create a new view
-        CardView v = (CardView) LayoutInflater.from(parent.getContext())
+        FrameLayout v = (FrameLayout) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.marker_card_view, parent, false);
         // set the view's size, margins, paddings and layout parameters
 //        ...
@@ -65,11 +74,58 @@ public class MarkerCardAdapter extends RecyclerView.Adapter<MarkerCardAdapter.Vi
         // - replace the contents of the view with that element
         final Report post = mDataset.get(position);
 
-        Picasso.with(mContext).load(post.properties.images.get(0).properties.thumbnail_retina).fit().into(holder.postImage);
+        if (post.properties.open_graph.size() > 0) {
+
+            Log.v("open--graph", "post has OG data");
+
+            holder.openLink.setVisibility(View.VISIBLE);
+
+//            holder.postImage.setVisibility(View.GONE);
+
+            final OpenGraphProperties openGraphProperties = post.properties.open_graph.get(0).properties;
+
+            String imageUrl = openGraphProperties.imageUrl;
+
+            Picasso
+                    .with(mContext)
+                    .load(imageUrl)
+                    .resize(120, 120)
+//                    .placeholder(R.drawable.open_graph_placeholder)
+                    .error(R.drawable.open_graph_placeholder)
+//                    .fit()
+                    .centerCrop()
+                    .into(holder.postImage);
+
+            holder.cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Uri webpage = Uri.parse(openGraphProperties.url);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+                    if (intent.resolveActivity(mContext.getPackageManager()) != null) {
+                        mContext.startActivity(intent);
+                    }
+                }
+            });
+
+        } else {
+
+            holder.openLink.setVisibility(View.GONE);
+
+//            holder.postImage.setVisibility(View.VISIBLE);
+
+            Picasso
+                    .with(mContext)
+                    .load(post.properties.images.get(0).properties.thumbnail_retina)
+                    .fit()
+                    .into(holder.postImage);
+
+            holder.postImage.setOnClickListener(new PostDetailListener(mContext, post));
+
+        }
 
         holder.cardView.setTag(post.id);
 
-        holder.postImage.setOnClickListener(new PostDetailListener(mContext, post));
+//        holder.postImage.setOnClickListener(new PostDetailListener(mContext, post));
 
 //        holder.postImage.setOnClickListener(new View.OnClickListener() {
 //            @Override

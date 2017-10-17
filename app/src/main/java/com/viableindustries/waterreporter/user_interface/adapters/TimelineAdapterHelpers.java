@@ -487,8 +487,11 @@ public class TimelineAdapterHelpers {
 
             Picasso.with(context)
                     .load(openGraphObject.properties.imageUrl)
-                    .placeholder(R.drawable.open_graph_image_placeholder)
+//                    .resize(imageView.getMeasuredWidth(), 200)
+                    .placeholder(R.drawable.open_graph_placeholder)
+                    .error(R.drawable.open_graph_placeholder)
                     .fit()
+//                    .centerCrop()
                     .into(imageView);
 
             // Load title, description and URL

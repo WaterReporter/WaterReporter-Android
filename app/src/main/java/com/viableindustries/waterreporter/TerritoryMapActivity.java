@@ -20,6 +20,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -150,7 +151,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
-                CardView cardView = (CardView) snapHelper.findSnapView(mLayoutManager);
+                FrameLayout cardView = (FrameLayout) snapHelper.findSnapView(mLayoutManager);
 
                 if (cardView != null) {
 
@@ -446,8 +447,8 @@ public class TerritoryMapActivity extends AppCompatActivity {
             options.anchor(0.5f, 0.5f);
             options.flat(true);
             options.reportId(report.id);
-            options.thumbNail(report.properties.images.get(0).properties.icon_retina);
-            options.fullImage(report.properties.images.get(0).properties.square_retina);
+//            options.thumbNail(report.properties.images.get(0).properties.icon_retina);
+//            options.fullImage(report.properties.images.get(0).properties.square_retina);
             options.status(report.properties.state);
             options.inFocus(0);
             options.index(idx);

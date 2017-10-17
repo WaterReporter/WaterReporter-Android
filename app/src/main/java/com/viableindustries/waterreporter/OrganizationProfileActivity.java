@@ -4,9 +4,11 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -84,7 +86,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
     private ImageView organizationLogo;
 
     @Bind(R.id.group_membership_button)
-    ImageButton joinOrganization;
+    FloatingActionButton joinOrganization;
 
     @Bind(R.id.timeline)
     SwipeRefreshLayout timeLineContainer;
@@ -877,7 +879,9 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                 if (!orgIds.contains(String.valueOf(organization.id))) {
 
-                    joinOrganization.setColorFilter(ContextCompat.getColor(mContext, R.color.green_1), PorterDuff.Mode.SRC_ATOP);
+//                    joinOrganization.setColorFilter(ContextCompat.getColor(mContext, R.color.green_1), PorterDuff.Mode.SRC_ATOP);
+
+                    joinOrganization.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.green_1)));
 
                     joinOrganization.setVisibility(View.VISIBLE);
 

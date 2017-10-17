@@ -283,6 +283,8 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
             }
         });
 
+        fetchPosts(5, 1, mMasterQuery, false);
+
     }
 
     private void retrieveStoredTerritory(){

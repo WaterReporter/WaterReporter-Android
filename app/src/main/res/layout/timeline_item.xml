@@ -155,12 +155,10 @@
             <ImageView
                 android:id="@+id/ogImage"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
                 android:adjustViewBounds="true"
                 android:background="@color/gray_224"
                 android:contentDescription="Open Graph image"
-                android:maxHeight="240dp"
-                android:minHeight="200dp"
                 android:scaleType="centerCrop" />
 
             <LinearLayout
@@ -183,7 +181,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
-                    android:maxLines="2"
+                    android:maxLines="4"
                     android:paddingTop="4dp"
                     android:textSize="14sp" />
 

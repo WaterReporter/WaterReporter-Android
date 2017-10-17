@@ -618,14 +618,20 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         String imageUrl = openGraphProperties.imageUrl;
 
-        if (imageUrl.length() > 0) {
+        Log.v("Display Open Graph img", imageUrl);
+
+//        if (imageUrl.length() > 0) {
 
             Picasso.with(this)
                     .load(imageUrl)
-                    .placeholder(R.drawable.open_graph_image_placeholder)
+//                    .resize(320, 320)
+                    .placeholder(R.drawable.open_graph_placeholder)
+                    .error(R.drawable.open_graph_placeholder)
+                    .fit()
+//                    .centerCrop()
                     .into(ogImage);
 
-        }
+//        }
 
         ogTitle.setText(openGraphProperties.title);
         ogDescription.setText(openGraphProperties.description);
@@ -689,6 +695,16 @@ public class PhotoMetaActivity extends AppCompatActivity
 
 //                    String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(Calendar.getInstance().getTime());
 
+//                    if (ogIdx.get("og_image").isEmpty()) {
+//
+//                        Log.v("og_image--EXISTS", ogIdx.get("og_image"));
+//
+//                        String defaultImageUrl = "https://www.waterreporter.org/images/og-placeholder_1024x1024-001.png";
+//
+//                        ogIdx.put("og_image", defaultImageUrl);
+//
+//                    }
+
                     openGraphProperties = new OpenGraphProperties(
                             ogIdx.get("og_image"),
                             ogIdx.get("og_description"),
@@ -696,7 +712,7 @@ public class PhotoMetaActivity extends AppCompatActivity
                             ogIdx.get("og_url"),
                             mSharedPreferences.getInt("user_id", 0));
 
-                    if (ogIdx.get("og_url").length() > 0) {
+                    if (ogIdx.get("og_title").length() > 0) {
 
                         displayOpenGraphObject(openGraphProperties, openGraphProperties.url);
 
