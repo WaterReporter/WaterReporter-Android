@@ -52,6 +52,7 @@ import com.viableindustries.waterreporter.api.interfaces.data.post.SendPostCallb
 import com.viableindustries.waterreporter.api.models.geometry.Geometry;
 import com.viableindustries.waterreporter.api.models.geometry.GeometryResponse;
 import com.viableindustries.waterreporter.api.models.group.Group;
+import com.viableindustries.waterreporter.api.models.group.GroupFeatureCollection;
 import com.viableindustries.waterreporter.api.models.hashtag.HashTag;
 import com.viableindustries.waterreporter.api.models.hashtag.HashtagCollection;
 import com.viableindustries.waterreporter.api.models.hashtag.TagHolder;
@@ -67,7 +68,6 @@ import com.viableindustries.waterreporter.api.models.query.QueryFilter;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
 import com.viableindustries.waterreporter.api.models.user.User;
-import com.viableindustries.waterreporter.api.models.user.UserHolder;
 import com.viableindustries.waterreporter.api.models.user.UserProperties;
 import com.viableindustries.waterreporter.api.services.ImagePostService;
 import com.viableindustries.waterreporter.user_interface.adapters.OrganizationCheckListAdapter;
@@ -1553,51 +1553,81 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     private void fetchUserGroups() {
 
-        ArrayList<AbbreviatedOrganization> abbreviatedOrganizations = new ArrayList<>();
+        final ArrayList<AbbreviatedOrganization> abbreviatedOrganizations = new ArrayList<>();
 
-        Map<String, ?> keys = groupMemberships.getAll();
+        int userId = mSharedPreferences.getInt("user_id", 0);
 
-        for (Map.Entry<String, ?> entry : keys.entrySet()) {
+        String mAccessToken = mSharedPreferences.getString("access_token", "");
 
-            int status = Integer.valueOf(entry.getValue().toString());
+        RestClient.getUserService().getUserGroups(mAccessToken, "application/json", userId, new Callback<GroupFeatureCollection>() {
 
-            if (status > 0) {
+            @Override
+            public void success(GroupFeatureCollection groupFeatureCollection, Response response) {
 
-                abbreviatedOrganizations.add(new AbbreviatedOrganization(status, entry.getKey()));
+                ArrayList<Group> groups = groupFeatureCollection.getFeatures();
 
-            }
+                for (Group group : groups) {
 
-        }
-
-        // If editing an existing report, we need to iterate the array of organizations
-        // associated with the report and persist references in preferences
-
-        if (editMode) {
-
-            for (Organization organization : report.properties.groups) {
-
-                // Check group membership
-
-                Group targetGroup = ModelStorage.getStoredGroup(groupMemberships, String.format("group_%s", organization.properties.id));
-
-                if (targetGroup != null) {
-
-                    abbreviatedOrganizations.add(new AbbreviatedOrganization(organization.properties.id, organization.properties.name));
+                    abbreviatedOrganizations.add(new AbbreviatedOrganization(group.properties.organizationId, group.properties.organization.properties.name));
 
                 }
 
-                // Track entry in associated groups preference.
-                // IMPORTANT: This is NOT the preference that records group memberships!
+                // If editing an existing report, we need to iterate the array of organizations
+                // associated with the report and persist references in preferences
 
-                associatedGroups.edit().putInt(organization.properties.name, organization.properties.id).apply();
+                if (editMode) {
+
+                    for (Organization organization : report.properties.groups) {
+
+                        for (AbbreviatedOrganization abbreviatedOrganization : abbreviatedOrganizations) {
+
+                            if (abbreviatedOrganization.id != organization.properties.id) {
+
+                                abbreviatedOrganizations.add(new AbbreviatedOrganization(organization.properties.id, organization.properties.name));
+
+                                // Track entry in associated groups preference.
+                                // IMPORTANT: This is NOT the preference that records group memberships!
+
+                                associatedGroups.edit().putInt(organization.properties.name, organization.properties.id).apply();
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+                Log.d("associated groups", associatedGroups.getAll().toString());
+
+                populateOrganizations(abbreviatedOrganizations);
 
             }
 
-        }
+            @Override
+            public void failure(RetrofitError error) {
 
-        Log.d("associated groups", associatedGroups.getAll().toString());
+                if (error == null) return;
 
-        populateOrganizations(abbreviatedOrganizations);
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(PhotoMetaActivity.this, SignInActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
 
     }
 

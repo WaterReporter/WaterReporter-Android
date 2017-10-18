@@ -57,9 +57,11 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
     private final SharedPreferences groupMembership;
 
+    private final View parentView;
+
     private String[] userGroups;
 
-    public GroupActionListAdapter(Context aContext, ArrayList<Organization> features, boolean aShowLeaveButton) {
+    public GroupActionListAdapter(Context aContext, ArrayList<Organization> features, boolean aShowLeaveButton, View aParentView) {
 
         super(aContext, 0, features);
 
@@ -68,6 +70,8 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
         this.filteredList = features;
 
         this.mContext = aContext;
+
+        this.parentView = aParentView;
 
         mSharedPreferences = mContext.getSharedPreferences(mContext.getPackageName(), 0);
 
@@ -222,7 +226,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
                 CharSequence text = String.format("Successfully %s %s", action, organization.properties.name);
 
-                Snackbar.make(view.getRootView(), text,
+                Snackbar.make(parentView, text,
                         Snackbar.LENGTH_SHORT)
                         .show();
 

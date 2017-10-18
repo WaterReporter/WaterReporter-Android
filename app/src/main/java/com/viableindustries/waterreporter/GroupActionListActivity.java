@@ -349,7 +349,7 @@ public class GroupActionListActivity extends AppCompatActivity {
 
     private void populateOrganizations(ArrayList<Organization> orgs) {
 
-        adapter = new GroupActionListAdapter(this, orgs, true);
+        adapter = new GroupActionListAdapter(this, orgs, true, listView);
 
         try {
 
