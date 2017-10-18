@@ -1,6 +1,7 @@
 package com.viableindustries.waterreporter;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -47,6 +48,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.interfaces.data.comment.DeleteCommentSuccessCallback;
 import com.viableindustries.waterreporter.api.models.comment.Comment;
 import com.viableindustries.waterreporter.api.models.comment.CommentCollection;
 import com.viableindustries.waterreporter.api.models.comment.CommentPost;
@@ -55,6 +57,7 @@ import com.viableindustries.waterreporter.api.models.hashtag.HashtagCollection;
 import com.viableindustries.waterreporter.api.models.hashtag.TagHolder;
 import com.viableindustries.waterreporter.api.models.image.ImageProperties;
 import com.viableindustries.waterreporter.api.models.open_graph.OpenGraphProperties;
+import com.viableindustries.waterreporter.api.models.open_graph.OpenGraphResponse;
 import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.api.models.post.ReportHolder;
 import com.viableindustries.waterreporter.api.models.post.ReportStateBody;
@@ -72,9 +75,13 @@ import com.viableindustries.waterreporter.user_interface.listeners.UserProfileLi
 import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
 import com.viableindustries.waterreporter.utilities.CacheManager;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
+import com.viableindustries.waterreporter.utilities.CursorPositionTracker;
 import com.viableindustries.waterreporter.utilities.FileUtils;
 import com.viableindustries.waterreporter.utilities.OpenGraph;
+import com.viableindustries.waterreporter.utilities.OpenGraphTask;
 import com.viableindustries.waterreporter.utilities.PatternEditableBuilder;
+
+import org.jsoup.nodes.Document;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -103,6 +110,7 @@ import retrofit.mime.TypedFile;
 public class CommentActivity extends AppCompatActivity implements
         CommentPhotoDialogListener,
         CommentActionDialogListener,
+        DeleteCommentSuccessCallback,
         PhotoPickerDialogFragment.PhotoPickerDialogListener,
         EasyPermissions.PermissionCallbacks {
 
@@ -202,6 +210,10 @@ public class CommentActivity extends AppCompatActivity implements
 
     private String tagToken;
 
+    private boolean retrievingOpenGraphData;
+
+    private OpenGraphProperties openGraphProperties;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -263,11 +275,63 @@ public class CommentActivity extends AppCompatActivity implements
             @Override
             public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
 
+                // Retrieve current cursor position
+
+                int pos = commentInput.getSelectionStart();
+
+                CursorPositionTracker.setPosition(pos);
+
                 query = cs.toString();
 
-                if (!query.isEmpty() && query.contains("#")) {
+                if (!query.isEmpty()) {
 
-                    tagToken = query.substring(query.lastIndexOf("#")).replace("#", "");
+                    try {
+
+                        // Identify previous character and handle octothorpes
+
+                        String previousCharacter = query.substring(pos - 1, pos);
+
+                        Log.d("selectionEdge", previousCharacter);
+
+                        if (previousCharacter.equals(" ")) {
+
+                            // Spaces are not allowed in tags,
+                            // therefore reset octothorpe index
+                            // to the default value
+
+                            CursorPositionTracker.resetHashIndex();
+
+                        }
+
+                        if (previousCharacter.equals("#") && CursorPositionTracker.getHashIndex() == 9999) {
+
+                            CursorPositionTracker.setHashIndex(pos - 1);
+
+                        }
+
+                        if (CursorPositionTracker.getHashIndex() < 9999) {
+
+                            // Extract substring bounded by octothorpe position
+                            // and current cursor position
+
+                            tagToken = query.substring(CursorPositionTracker.getHashIndex() + 1, pos);
+
+                            Log.d("selectionEdgeToken", tagToken);
+
+                        } else {
+
+                            // Previous character not an octothorpe and
+                            // none is already present
+
+                            tagToken = "";
+
+                        }
+
+                    } catch (StringIndexOutOfBoundsException e) {
+
+                        tagToken = "";
+
+                    }
 
                 } else {
 
@@ -277,33 +341,33 @@ public class CommentActivity extends AppCompatActivity implements
 
                 Log.d("token", tagToken);
 
-                String lastWord = query.substring(query.lastIndexOf(" ") + 1);
-
-                if (URLUtil.isValidUrl(lastWord)) {
-
-                    try {
-
-                        OpenGraph.fetchOpenGraphData(
-                                CommentActivity.this,
-                                commentListContainer,
-                                mSharedPreferences.getInt("user_id", 0),
-                                lastWord);
-
-                        if (OpenGraph.openGraphProperties != null && !OpenGraph.openGraphProperties.url.isEmpty()) {
-
-                            displayOpenGraphObject(OpenGraph.openGraphProperties, OpenGraph.openGraphProperties.url);
-
-                        }
-
-                    } catch (IOException e) {
-
-                        Snackbar.make(commentListContainer, "Unable to read URL.",
-                                Snackbar.LENGTH_SHORT)
-                                .show();
-
-                    }
-
-                }
+//                String lastWord = query.substring(query.lastIndexOf(" ") + 1);
+//
+//                if (URLUtil.isValidUrl(lastWord)) {
+//
+//                    try {
+//
+//                        OpenGraph.fetchOpenGraphData(
+//                                CommentActivity.this,
+//                                commentListContainer,
+//                                mSharedPreferences.getInt("user_id", 0),
+//                                lastWord);
+//
+//                        if (OpenGraph.openGraphProperties != null) {
+//
+//                            displayOpenGraphObject(OpenGraph.openGraphProperties, OpenGraph.openGraphProperties.url);
+//
+//                        }
+//
+//                    } catch (IOException e) {
+//
+//                        Snackbar.make(commentListContainer, "Unable to read URL.",
+//                                Snackbar.LENGTH_SHORT)
+//                                .show();
+//
+//                    }
+//
+//                }
 
             }
 
@@ -317,11 +381,47 @@ public class CommentActivity extends AppCompatActivity implements
 
                 // Ensure that the user's cursor is placed at the end of the selection
 
-                commentInput.setSelection(commentInput.getText().length());
+//                commentInput.setSelection(commentInput.getText().length());
 
                 handler.removeCallbacks(tagSearchRunnable);
 
                 handler.postDelayed(tagSearchRunnable, 300 /*delay*/);
+
+                String lastWord = query.substring(query.lastIndexOf(" ") + 1);
+
+                if (URLUtil.isValidUrl(lastWord)) {
+
+                    if (retrievingOpenGraphData) {
+
+                        return;
+
+                    }
+
+                    try {
+
+                        retrievingOpenGraphData = true;
+
+                        fetchOpenGraphData(
+                                CommentActivity.this,
+                                commentListContainer,
+                                mSharedPreferences.getInt("user_id", 0),
+                                lastWord);
+
+                        if (openGraphProperties != null) {
+
+                            displayOpenGraphObject(openGraphProperties, openGraphProperties.url);
+
+                        }
+
+                    } catch (IOException e) {
+
+                        Snackbar.make(commentListContainer, "Unable to read URL.",
+                                Snackbar.LENGTH_SHORT)
+                                .show();
+
+                    }
+
+                }
 
             }
 
@@ -477,7 +577,8 @@ public class CommentActivity extends AppCompatActivity implements
 
                 body = (commentInput.getText().length() > 0) ? commentInput.getText().toString() : null;
 
-                if (working || (body == null && mTempImagePath == null)) return;
+                if (working || (openGraphProperties == null && body == null && mTempImagePath == null))
+                    return;
 
                 final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
@@ -693,7 +794,7 @@ public class CommentActivity extends AppCompatActivity implements
 
     private void populateComments(List<Comment> comments) {
 
-        commentAdapter = new CommentAdapter(this, comments);
+        commentAdapter = new CommentAdapter(this, mSharedPreferences, commentListContainer, comments);
 
         commentList.setAdapter(commentAdapter);
 
@@ -701,7 +802,7 @@ public class CommentActivity extends AppCompatActivity implements
 
     private void addPhoto() {
 
-        if (OpenGraph.openGraphProperties == null) {
+        if (openGraphProperties == null) {
 
             showPhotoPickerDialog();
 
@@ -727,7 +828,21 @@ public class CommentActivity extends AppCompatActivity implements
 
         } catch (NullPointerException ne) {
 
-            CommentPost commentPost = new CommentPost(body, null, report.id, state, "public");
+            List<OpenGraphProperties> social = new ArrayList<>();
+
+            if (openGraphProperties != null) {
+
+                social.add(openGraphProperties);
+
+            }
+
+            CommentPost commentPost = new CommentPost(
+                    body,
+                    null,
+                    report.id,
+                    state,
+                    social,
+                    "public");
 
             sendComment(commentPost);
 
@@ -819,7 +934,13 @@ public class CommentActivity extends AppCompatActivity implements
 
                         images.add(image_id);
 
-                        CommentPost commentPost = new CommentPost(body, images, report.id, reportState, "public");
+                        CommentPost commentPost = new CommentPost(
+                                body,
+                                images,
+                                report.id,
+                                reportState,
+                                null,
+                                "public");
 
                         sendComment(commentPost);
 
@@ -849,11 +970,21 @@ public class CommentActivity extends AppCompatActivity implements
             @Override
             public void success(Comment comment, Response response) {
 
+                // Clear Open Graph data and UI components
+
+                openGraphProperties = null;
+
+                ogData.setVisibility(View.GONE);
+
                 // Lift UI lock
 
                 working = false;
 
                 commentListContainer.setRefreshing(false);
+
+                // Show comment list
+
+                commentListContainer.setVisibility(View.VISIBLE);
 
                 // Clear the comment box
 
@@ -867,15 +998,17 @@ public class CommentActivity extends AppCompatActivity implements
 
                 mImageView.setVisibility(View.GONE);
 
-                try {
+                fetchComments(50, 1);
 
-                    commentAdapter.notifyDataSetChanged();
+//                try {
+//
+//                    commentAdapter.notifyDataSetChanged();
+//
+//                } catch (NullPointerException ne) {
 
-                } catch (NullPointerException ne) {
+//                    populateComments(commentCollectionList);
 
-                    populateComments(commentCollectionList);
-
-                }
+//                }
 
             }
 
@@ -1242,6 +1375,72 @@ public class CommentActivity extends AppCompatActivity implements
 
     }
 
+    private void fetchOpenGraphData(
+            final Activity activity,
+            final View parentLayout,
+            final int userId,
+            final String url) throws IOException {
+
+        final String[] ogTags = new String[]{
+                "og:url",
+                "og:title",
+                "og:description",
+                "og:image"
+        };
+
+        final Map<String, String> ogIdx = new HashMap<>();
+
+        OpenGraphTask openGraphTask = new OpenGraphTask(new OpenGraphResponse() {
+
+            @Override
+            public void processFinish(Document output) {
+                //Here you will receive the result fired from async class
+                //of onPostExecute(result) method.
+                try {
+
+                    for (String tag : ogTags) {
+                        String tagContent = OpenGraph.parseTag(output, tag);
+                        Log.v(tag, tagContent);
+                        ogIdx.put(tag.replace(":", "_"), tagContent);
+                    }
+
+                    openGraphProperties = OpenGraph.buildOpenGraphObject(ogIdx, userId);
+
+                    if (!openGraphProperties.title.isEmpty()) {
+
+                        displayOpenGraphObject(openGraphProperties, openGraphProperties.url);
+
+                    }
+
+                    retrievingOpenGraphData = false;
+
+                } catch (NullPointerException e) {
+
+                    try {
+
+                        Snackbar.make(parentLayout, "Unable to read URL.",
+                                Snackbar.LENGTH_SHORT)
+                                .show();
+
+                    } catch (IllegalArgumentException i) {
+
+                        // Open Graph retrieval task finished in background
+                        // but layout references are unbound.
+
+                        activity.finish();
+
+                    }
+
+                }
+
+            }
+
+        });
+
+        openGraphTask.execute(url);
+
+    }
+
     private void displayOpenGraphObject(OpenGraphProperties openGraphProperties, String url) {
 
         // Water Reporter accepts a post image OR Open Graph data
@@ -1256,6 +1455,10 @@ public class CommentActivity extends AppCompatActivity implements
         addImageIcon.setVisibility(View.VISIBLE);
 
         mImageView.setVisibility(View.GONE);
+
+        // Hide comment list
+
+        commentListContainer.setVisibility(View.GONE);
 
         // Render Open Graph preview
 
@@ -1293,11 +1496,28 @@ public class CommentActivity extends AppCompatActivity implements
 
         if (query != null) {
 
-            String trimmedInput = query.substring(0, query.indexOf(url)).trim();
+            try {
 
-            commentInput.setText(trimmedInput);
+                String trimmedInput = query.substring(0, query.indexOf(url)).trim();
+
+                commentInput.setText(trimmedInput);
+
+            } catch (IndexOutOfBoundsException e) {
+
+                openGraphProperties = null;
+
+            }
 
         }
+
+    }
+
+    @Override
+    public void onCommentDelete(Comment comment) {
+
+        commentListContainer.setRefreshing(true);
+
+        fetchComments(50, 1);
 
     }
 

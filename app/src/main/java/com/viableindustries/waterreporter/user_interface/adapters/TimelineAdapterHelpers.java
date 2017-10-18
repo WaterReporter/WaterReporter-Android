@@ -27,6 +27,7 @@ import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.TagProfileActivity;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.interfaces.data.comment.DeleteCommentCallbacks;
 import com.viableindustries.waterreporter.api.interfaces.data.post.DeletePostCallbacks;
 import com.viableindustries.waterreporter.api.models.comment.Comment;
 import com.viableindustries.waterreporter.api.models.favorite.Favorite;
@@ -601,6 +602,34 @@ public class TimelineAdapterHelpers {
         String accessToken = sharedPreferences.getString("access_token", "");
 
         RestClient.getReportService().deleteSingleReport(accessToken, post.id, new Callback<Response>() {
+
+            @Override
+            public void success(Response response, Response _response) {
+
+                assert callbacks != null;
+                callbacks.onSuccess(_response);
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                assert callbacks != null;
+                callbacks.onError(error);
+
+            }
+
+        });
+
+    }
+
+    public static void deleteComment(final Context context, Comment comment, @Nullable final DeleteCommentCallbacks callbacks) {
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getPackageName(), MODE_PRIVATE);
+
+        String accessToken = sharedPreferences.getString("access_token", "");
+
+        RestClient.getCommentService().deleteSingleComment(accessToken, comment.id, new Callback<Response>() {
 
             @Override
             public void success(Response response, Response _response) {

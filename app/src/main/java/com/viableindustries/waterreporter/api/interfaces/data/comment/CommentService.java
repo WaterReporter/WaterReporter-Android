@@ -5,9 +5,12 @@ import com.viableindustries.waterreporter.api.models.comment.CommentPost;
 
 
 import retrofit.Callback;
+import retrofit.client.Response;
 import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.Header;
 import retrofit.http.POST;
+import retrofit.http.Path;
 
 /**
  * Created by brendanmcintyre on 8/27/15.
@@ -20,5 +23,10 @@ public interface CommentService {
              @Header("Content-Type") String contentType,
              @Body CommentPost commentPost,
              Callback<Comment> commentCallback);
+
+    @DELETE("/data/comment/{comment}")
+    void deleteSingleComment(@Header("Authorization") String authorization,
+                            @Path("comment") int commentId,
+                            Callback<Response> responseCallback);
 
 }

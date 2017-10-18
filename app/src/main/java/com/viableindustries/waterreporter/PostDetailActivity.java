@@ -554,7 +554,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private void populateComments(List<Comment> comments) {
 
-        CommentAdapter commentAdapter = new CommentAdapter(this, comments);
+        CommentAdapter commentAdapter = new CommentAdapter(this, mSharedPreferences, commentList, comments);
 
         commentList.setAdapter(commentAdapter);
 

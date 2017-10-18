@@ -1,6 +1,7 @@
 package com.viableindustries.waterreporter;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Context;
@@ -54,6 +55,7 @@ import com.viableindustries.waterreporter.api.models.hashtag.HashTag;
 import com.viableindustries.waterreporter.api.models.hashtag.HashtagCollection;
 import com.viableindustries.waterreporter.api.models.hashtag.TagHolder;
 import com.viableindustries.waterreporter.api.models.open_graph.OpenGraphProperties;
+import com.viableindustries.waterreporter.api.models.open_graph.OpenGraphResponse;
 import com.viableindustries.waterreporter.api.models.organization.AbbreviatedOrganization;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.post.Report;
@@ -77,6 +79,9 @@ import com.viableindustries.waterreporter.utilities.CursorPositionTracker;
 import com.viableindustries.waterreporter.utilities.DisplayDecimal;
 import com.viableindustries.waterreporter.utilities.FileUtils;
 import com.viableindustries.waterreporter.utilities.OpenGraph;
+import com.viableindustries.waterreporter.utilities.OpenGraphTask;
+
+import org.jsoup.nodes.Document;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -233,6 +238,10 @@ public class PhotoMetaActivity extends AppCompatActivity
     private String tagToken;
 
     private final List<Map<String, Integer>> images = new ArrayList<>();
+
+    private boolean retrievingOpenGraphData;
+
+    private OpenGraphProperties openGraphProperties;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -552,33 +561,33 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                 Log.d("token", tagToken);
 
-                String lastWord = query.substring(query.lastIndexOf(" ") + 1);
-
-                if (URLUtil.isValidUrl(lastWord)) {
-
-                    try {
-
-                        OpenGraph.fetchOpenGraphData(
-                                PhotoMetaActivity.this,
-                                parentLayout,
-                                mSharedPreferences.getInt("user_id", 0),
-                                lastWord);
-
-                        if (OpenGraph.openGraphProperties != null && !OpenGraph.openGraphProperties.url.isEmpty()) {
-
-                            displayOpenGraphObject(OpenGraph.openGraphProperties, OpenGraph.openGraphProperties.url);
-
-                        }
-
-                    } catch (IOException e) {
-
-                        Snackbar.make(parentLayout, "Unable to read URL.",
-                                Snackbar.LENGTH_SHORT)
-                                .show();
-
-                    }
-
-                }
+//                String lastWord = query.substring(query.lastIndexOf(" ") + 1);
+//
+//                if (URLUtil.isValidUrl(lastWord)) {
+//
+//                    try {
+//
+//                        OpenGraph.fetchOpenGraphData(
+//                                PhotoMetaActivity.this,
+//                                parentLayout,
+//                                mSharedPreferences.getInt("user_id", 0),
+//                                lastWord);
+//
+//                        if (OpenGraph.openGraphProperties != null) {
+//
+//                            displayOpenGraphObject(OpenGraph.openGraphProperties, OpenGraph.openGraphProperties.url);
+//
+//                        }
+//
+//                    } catch (IOException e) {
+//
+//                        Snackbar.make(parentLayout, "Unable to read URL.",
+//                                Snackbar.LENGTH_SHORT)
+//                                .show();
+//
+//                    }
+//
+//                }
 
             }
 
@@ -598,9 +607,111 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                 handler.postDelayed(tagSearchRunnable, 300 /*delay*/);
 
+                String lastWord = query.substring(query.lastIndexOf(" ") + 1);
+
+                if (URLUtil.isValidUrl(lastWord)) {
+
+                    if (retrievingOpenGraphData) {
+
+                        return;
+
+                    }
+
+                    try {
+
+                        retrievingOpenGraphData = true;
+
+                        fetchOpenGraphData(
+                                PhotoMetaActivity.this,
+                                parentLayout,
+                                mSharedPreferences.getInt("user_id", 0),
+                                lastWord);
+
+                        if (openGraphProperties != null) {
+
+                            displayOpenGraphObject(openGraphProperties, openGraphProperties.url);
+
+                        }
+
+                    } catch (IOException e) {
+
+                        Snackbar.make(parentLayout, "Unable to read URL.",
+                                Snackbar.LENGTH_SHORT)
+                                .show();
+
+                    }
+
+                }
+
             }
 
         });
+
+    }
+
+    private void fetchOpenGraphData(
+            final Activity activity,
+            final View parentLayout,
+            final int userId,
+            final String url) throws IOException {
+
+        final String[] ogTags = new String[]{
+                "og:url",
+                "og:title",
+                "og:description",
+                "og:image"
+        };
+
+        final Map<String, String> ogIdx = new HashMap<>();
+
+        OpenGraphTask openGraphTask = new OpenGraphTask(new OpenGraphResponse() {
+
+            @Override
+            public void processFinish(Document output) {
+                //Here you will receive the result fired from async class
+                //of onPostExecute(result) method.
+                try {
+
+                    for (String tag : ogTags) {
+                        String tagContent = OpenGraph.parseTag(output, tag);
+                        Log.v(tag, tagContent);
+                        ogIdx.put(tag.replace(":", "_"), tagContent);
+                    }
+
+                    openGraphProperties = OpenGraph.buildOpenGraphObject(ogIdx, userId);
+
+                    if (!openGraphProperties.title.isEmpty()) {
+
+                        displayOpenGraphObject(openGraphProperties, openGraphProperties.url);
+
+                    }
+
+                    retrievingOpenGraphData = false;
+
+                } catch (NullPointerException e) {
+
+                    try {
+
+                        Snackbar.make(parentLayout, "Unable to read URL.",
+                                Snackbar.LENGTH_SHORT)
+                                .show();
+
+                    } catch (IllegalArgumentException i) {
+
+                        // Open Graph retrieval task finished in background
+                        // but layout references are unbound.
+
+                        activity.finish();
+
+                    }
+
+                }
+
+            }
+
+        });
+
+        openGraphTask.execute(url);
 
     }
 
@@ -655,78 +766,21 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         if (query != null) {
 
-            String trimmedInput = query.substring(0, query.indexOf(url)).trim();
+            try {
 
-            commentInput.setText(trimmedInput);
+                String trimmedInput = query.substring(0, query.indexOf(url)).trim();
+
+                commentInput.setText(trimmedInput);
+
+            } catch (IndexOutOfBoundsException e) {
+
+                openGraphProperties = null;
+
+            }
 
         }
 
     }
-
-//    private void fetchOpenGraphData(final String url) throws IOException {
-//
-//        final String[] ogTags = new String[]{
-//                "og:url",
-//                "og:title",
-//                "og:description",
-//                "og:image"
-//        };
-//
-//        final Map<String, String> ogIdx = new HashMap<>();
-//
-//        OpenGraphTask openGraphTask = new OpenGraphTask(new OpenGraphResponse() {
-//
-//            @Override
-//            public void processFinish(Document output) {
-//                //Here you will receive the result fired from async class
-//                //of onPostExecute(result) method.
-//                try {
-//
-//                    for (String tag : ogTags) {
-//                        String tagContent = OpenGraph.parseTag(output, tag);
-//                        Log.v(tag, tagContent);
-//                        ogIdx.put(tag.replace(":", "_"), tagContent);
-//                    }
-//
-//                    openGraphProperties = new OpenGraphProperties(
-//                            ogIdx.get("og_image"),
-//                            ogIdx.get("og_description"),
-//                            ogIdx.get("og_title"),
-//                            ogIdx.get("og_url"),
-//                            mSharedPreferences.getInt("user_id", 0));
-//
-//                    if (ogIdx.get("og_title").length() > 0) {
-//
-//                        displayOpenGraphObject(openGraphProperties, openGraphProperties.url);
-//
-//                    }
-//
-//                } catch (NullPointerException e) {
-//
-//                    try {
-//
-//                        Snackbar.make(parentLayout, "Unable to read URL.",
-//                                Snackbar.LENGTH_SHORT)
-//                                .show();
-//
-//                    } catch (IllegalArgumentException i) {
-//
-//                        // Open Graph retrieval task finished in background
-//                        // but layout references are unbound.
-//
-//                        finish();
-//
-//                    }
-//
-//                }
-//
-//            }
-//
-//        });
-//
-//        openGraphTask.execute(url);
-//
-//    }
 
     private String buildQuery(String sortField, String sortDirection, String searchChars) {
 
@@ -1076,7 +1130,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     private void addPhoto() {
 
-        if (OpenGraph.openGraphProperties == null) {
+        if (openGraphProperties == null) {
 
             showPhotoPickerDialog();
 
@@ -1196,7 +1250,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         // Abort with message if neither comments nor Open Graph api are present
 
-        if ((commentsText.isEmpty() && OpenGraph.openGraphProperties == null) && !editMode) {
+        if ((commentsText.isEmpty() && openGraphProperties == null) && !editMode) {
 
             CharSequence text = "Please add a photo, write a comment, or paste a link to share.";
             Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
@@ -1360,9 +1414,9 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         List<OpenGraphProperties> social = new ArrayList<>();
 
-        if (OpenGraph.openGraphProperties != null) {
+        if (openGraphProperties != null) {
 
-            social.add(OpenGraph.openGraphProperties);
+            social.add(openGraphProperties);
 
         }
 

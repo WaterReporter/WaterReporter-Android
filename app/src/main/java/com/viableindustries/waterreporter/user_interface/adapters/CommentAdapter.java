@@ -2,7 +2,9 @@ package com.viableindustries.waterreporter.user_interface.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
@@ -11,13 +13,19 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.R;
+import com.viableindustries.waterreporter.SignInActivity;
 import com.viableindustries.waterreporter.TagProfileActivity;
+import com.viableindustries.waterreporter.api.interfaces.data.comment.DeleteCommentCallbacks;
+import com.viableindustries.waterreporter.api.interfaces.data.comment.DeleteCommentSuccessCallback;
+import com.viableindustries.waterreporter.api.interfaces.data.post.DeletePostCallbacks;
 import com.viableindustries.waterreporter.api.models.comment.Comment;
 import com.viableindustries.waterreporter.api.models.post.ReportPhoto;
+import com.viableindustries.waterreporter.user_interface.dialogs.ReportActionDialog;
 import com.viableindustries.waterreporter.user_interface.listeners.UserProfileListener;
 import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
@@ -26,15 +34,24 @@ import com.viableindustries.waterreporter.utilities.PatternEditableBuilder;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 public class CommentAdapter extends ArrayAdapter<Comment> {
 
     private final Context mContext;
 
+    private final View mParentLayout;
+
+    final SharedPreferences mSharedPreferences;
+
     protected String groupList;
 
-    public CommentAdapter(Context aContext, List<Comment> features) {
+    public CommentAdapter(Context aContext, SharedPreferences sharedPreferences, View parentLayout, List<Comment> features) {
         super(aContext, 0, features);
         this.mContext = aContext;
+        this.mParentLayout = parentLayout;
+        this.mSharedPreferences = sharedPreferences;
     }
 
     static class ViewHolder {
@@ -55,6 +72,10 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
         TextView ogTitle;
         TextView ogDescription;
         TextView ogUrl;
+
+        // Delete comment
+
+        RelativeLayout deleteComment;
 
     }
 
@@ -87,6 +108,10 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
             viewHolder.ogTitle = (TextView) convertView.findViewById(R.id.ogTitle);
             viewHolder.ogDescription = (TextView) convertView.findViewById(R.id.ogDescription);
             viewHolder.ogUrl = (TextView) convertView.findViewById(R.id.ogUrl);
+
+            // Delete comment
+
+            viewHolder.deleteComment = (RelativeLayout) convertView.findViewById(R.id.deleteComment);
 
             convertView.setTag(viewHolder);
 
@@ -182,10 +207,66 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
                 viewHolder.ogDescription,
                 viewHolder.ogUrl);
 
+        // Display delete affordance if the authenticated user owns this comment
+
+        if (mSharedPreferences.getInt("user_id", 0) == feature.properties.owner_id) {
+
+            viewHolder.deleteComment.setVisibility(View.VISIBLE);
+
+            viewHolder.deleteComment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    TimelineAdapterHelpers.deleteComment(mContext, feature, new DeleteCommentCallbacks() {
+
+                        @Override
+                        public void onSuccess(@NonNull Response response) {
+
+                            ((DeleteCommentSuccessCallback) mContext).onCommentDelete(feature);
+
+                        }
+
+                        @Override
+                        public void onError(@NonNull RetrofitError error) {
+
+                            Response errorResponse = error.getResponse();
+
+                            // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                            if (errorResponse != null) {
+
+                                int status = errorResponse.getStatus();
+
+                                if (status == 403) {
+
+                                    mContext.startActivity(new Intent(mContext, SignInActivity.class));
+
+                                } else {
+
+                                    Snackbar.make(mParentLayout, "Unable to delete comment.",
+                                            Snackbar.LENGTH_SHORT)
+                                            .show();
+
+                                }
+
+                            }
+
+                        }
+
+                    });
+
+                }
+            });
+
+        } else {
+
+            viewHolder.deleteComment.setVisibility(View.GONE);
+
+        }
+
         // Return the completed view to render on screen
         return convertView;
 
     }
 
 }
-
