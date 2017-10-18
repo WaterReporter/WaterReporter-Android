@@ -13,8 +13,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.viableindustries.waterreporter.api.models.group.Group;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.user.UserGroupList;
+import com.viableindustries.waterreporter.user_interface.adapters.GroupListAdapter;
 import com.viableindustries.waterreporter.user_interface.adapters.OrganizationListAdapter;
 
 import java.util.ArrayList;
@@ -47,17 +49,16 @@ public class UserGroupsActivity extends AppCompatActivity {
 
         generic = getIntent().getExtras().getBoolean("GENERIC_USER", TRUE);
 
-        ArrayList<Organization> organizations = UserGroupList.getList();
+        ArrayList<Group> groups = UserGroupList.getList();
 
-        Collections.sort(organizations, new Comparator<Organization>() {
+        Collections.sort(groups, new Comparator<Group>() {
             @Override
-            public int compare(Organization organization1, Organization organization2) {
-                return organization1.properties.name.compareTo(organization2.properties.name);
+            public int compare(Group group1, Group group2) {
+                return group1.properties.organization.properties.name.compareTo(group2.properties.organization.properties.name);
             }
         });
 
-        populateOrganizations(organizations);
-
+        populateOrganizations(groups);
 
     }
 
@@ -83,9 +84,9 @@ public class UserGroupsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void populateOrganizations(ArrayList<Organization> orgs) {
+    private void populateOrganizations(ArrayList<Group> groups) {
 
-        final OrganizationListAdapter adapter = new OrganizationListAdapter(this, orgs);
+        final GroupListAdapter adapter = new GroupListAdapter(this, groups);
 
         listView.setAdapter(adapter);
 

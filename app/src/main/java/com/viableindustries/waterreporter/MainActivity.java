@@ -25,8 +25,8 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.FeatureCollection;
-import com.viableindustries.waterreporter.api.models.organization.Organization;
-import com.viableindustries.waterreporter.api.models.organization.OrganizationFeatureCollection;
+import com.viableindustries.waterreporter.api.models.group.Group;
+import com.viableindustries.waterreporter.api.models.group.GroupFeatureCollection;
 import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.api.models.post.ReportHolder;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
@@ -35,7 +35,6 @@ import com.viableindustries.waterreporter.constants.Constants;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
 import com.viableindustries.waterreporter.user_interface.dialogs.ReportActionDialog;
 import com.viableindustries.waterreporter.utilities.ApiDispatcher;
-
 import com.viableindustries.waterreporter.utilities.ConnectionUtility;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.UploadStateReceiver;
@@ -73,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private SharedPreferences mSharedPreferences;
 
-    private int user_id;
+    private int userId;
 
     private TimelineAdapter timelineAdapter;
 
@@ -176,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements
 
             String mAccessToken = mSharedPreferences.getString("access_token", "");
 
-            user_id = mSharedPreferences.getInt("user_id", 0);
+            userId = mSharedPreferences.getInt("user_id", 0);
 
             // We need to force legacy users to log into a fresh session
             // to ensure that the new version can collect and store the
@@ -184,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements
 
             // If user_id is 0, then the user hasn't registered
 
-            if (user_id == 0 || "".equals(mAccessToken) || !cleanSlate) {
+            if (userId == 0 || "".equals(mAccessToken) || !cleanSlate) {
 
                 mSharedPreferences.edit().clear().apply();
 
@@ -219,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements
         final String mAccessToken = mSharedPreferences.getString("access_token", "");
 
         // We shouldn't need to retrieve this value again, but we'll deal with that issue later
-        user_id = mSharedPreferences.getInt("user_id", 0);
+        userId = mSharedPreferences.getInt("user_id", 0);
 
         // Create order_by list and add a sort parameter
 
@@ -329,30 +328,26 @@ public class MainActivity extends AppCompatActivity implements
         Log.d("", mAccessToken);
 
         // We shouldn't need to retrieve this value again, but we'll deal with that issue later
-        user_id = mSharedPreferences.getInt("user_id", 0);
+        userId = mSharedPreferences.getInt("user_id", 0);
 
-        RestClient.getUserService().getUserOrganization(mAccessToken, "application/json", user_id, new Callback<OrganizationFeatureCollection>() {
+        RestClient.getUserService().getUserGroups(mAccessToken, "application/json", userId, new Callback<GroupFeatureCollection>() {
 
             @Override
-            public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
+            public void success(GroupFeatureCollection groupFeatureCollection, Response response) {
 
-                List<Organization> organizations = organizationCollectionResponse.getFeatures();
-
-                String orgIds = "";
-
-                if (!organizations.isEmpty()) {
-
-                    for (Organization organization : organizations) {
-
-                        orgIds += String.format(",%s", organization.id);
-
-                    }
-
-                }
+                ArrayList<Group> groups = groupFeatureCollection.getFeatures();
 
                 // Reset the user's stored group IDs.
 
-                mSharedPreferences.edit().putString("user_groups", orgIds).apply();
+                SharedPreferences groupMembership = getSharedPreferences(getString(R.string.group_membership_key), 0);
+
+                groupMembership.edit().clear().apply();
+
+                for (Group group : groups) {
+
+                    groupMembership.edit().putInt(group.properties.organization.properties.name, group.properties.organization.properties.id).apply();
+
+                }
 
             }
 

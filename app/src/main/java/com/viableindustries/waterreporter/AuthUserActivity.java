@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -24,6 +25,8 @@ import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.FeatureCollection;
+import com.viableindustries.waterreporter.api.models.group.Group;
+import com.viableindustries.waterreporter.api.models.group.GroupFeatureCollection;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.organization.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.api.models.post.Report;
@@ -329,23 +332,35 @@ public class AuthUserActivity extends AppCompatActivity implements
 
     private void fetchUserGroups(int userId) {
 
-        RestClient.getUserService().getUserOrganization(mAccessToken, "application/json", userId, new Callback<OrganizationFeatureCollection>() {
+        RestClient.getUserService().getUserGroups(mAccessToken, "application/json", userId, new Callback<GroupFeatureCollection>() {
 
             @Override
-            public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
+            public void success(GroupFeatureCollection groupFeatureCollection, Response response) {
 
-                ArrayList<Organization> organizations = organizationCollectionResponse.getFeatures();
+                ArrayList<Group> groups = groupFeatureCollection.getFeatures();
 
-                if (!organizations.isEmpty()) {
+                if (!groups.isEmpty()) {
 
-                    int groupCount = organizations.size();
+                    int groupCount = groups.size();
 
                     mUserProfileHeaderView.groupCounter.setText(String.valueOf(groupCount));
                     mUserProfileHeaderView.groupCountLabel.setText(resources.getQuantityString(R.plurals.group_label, groupCount, groupCount));
 
                     mUserProfileHeaderView.groupStat.setVisibility(View.VISIBLE);
 
-                    UserGroupList.setList(organizations);
+                    UserGroupList.setList(groups);
+
+                }
+
+                // Reset the user's stored group IDs.
+
+                SharedPreferences groupMembership = getSharedPreferences(getString(R.string.group_membership_key), 0);
+
+                for (Group group : groups) {
+
+                    groupMembership.edit().clear().apply();
+
+                    groupMembership.edit().putInt(group.properties.organization.properties.name, group.properties.organization.properties.id).apply();
 
                 }
 

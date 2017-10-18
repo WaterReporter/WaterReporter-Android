@@ -1,5 +1,6 @@
 package com.viableindustries.waterreporter.api.models.user;
 
+import com.viableindustries.waterreporter.api.models.group.Group;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 
 import java.util.ArrayList;
@@ -10,17 +11,17 @@ import java.util.ArrayList;
 
 public class UserGroupList {
 
-    private static ArrayList<Organization> organizationList;
+    private static ArrayList<Group> groupList;
 
-    public static ArrayList<Organization> getList() {
+    public static ArrayList<Group> getList() {
 
-        return organizationList;
+        return groupList;
 
     }
 
-    public static void setList(ArrayList<Organization> organizationList) {
+    public static void setList(ArrayList<Group> aGroupList) {
 
-        UserGroupList.organizationList = organizationList;
+        UserGroupList.groupList = aGroupList;
 
     }
 

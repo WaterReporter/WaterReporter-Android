@@ -18,6 +18,8 @@ import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.FeatureCollection;
+import com.viableindustries.waterreporter.api.models.group.Group;
+import com.viableindustries.waterreporter.api.models.group.GroupFeatureCollection;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.organization.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.api.models.post.Report;
@@ -292,23 +294,23 @@ public class UserProfileActivity extends AppCompatActivity implements
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getUserService().getUserOrganization(accessToken, "application/json", userId, new Callback<OrganizationFeatureCollection>() {
+        RestClient.getUserService().getUserGroups(accessToken, "application/json", userId, new Callback<GroupFeatureCollection>() {
 
             @Override
-            public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
+            public void success(GroupFeatureCollection groupFeatureCollection, Response response) {
 
-                ArrayList<Organization> organizations = organizationCollectionResponse.getFeatures();
+                ArrayList<Group> groups = groupFeatureCollection.getFeatures();
 
-                if (!organizations.isEmpty()) {
+                if (!groups.isEmpty()) {
 
-                    int groupCount = organizations.size();
+                    int groupCount = groups.size();
 
                     mUserProfileHeaderView.groupCounter.setText(String.valueOf(groupCount));
                     mUserProfileHeaderView.groupCountLabel.setText(resources.getQuantityString(R.plurals.group_label, groupCount, groupCount));
 
                     mUserProfileHeaderView.groupStat.setVisibility(View.VISIBLE);
 
-                    UserGroupList.setList(organizations);
+                    UserGroupList.setList(groups);
 
                     hasGroups = true;
 
