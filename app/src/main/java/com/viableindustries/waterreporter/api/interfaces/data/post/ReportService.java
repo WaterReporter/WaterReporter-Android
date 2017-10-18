@@ -38,8 +38,7 @@ public interface ReportService {
                     Callback<FeatureCollection> featureCollectionCallback);
 
     @GET("/data/report/{report}")
-    void getSingleReport(@Header("Authorization") String authorization,
-                         @Header("Content-Type") String contentType,
+    void getSingleReport(@Header("Content-Type") String contentType,
                          @Path("report") int reportId,
                          Callback<Report> report);
 

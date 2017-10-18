@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +21,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -48,7 +48,6 @@ import com.viableindustries.waterreporter.user_interface.adapters.TimelineItemVi
 import com.viableindustries.waterreporter.user_interface.listeners.PostCommentListener;
 import com.viableindustries.waterreporter.user_interface.listeners.PostFavoriteCountListener;
 import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
-
 import com.viableindustries.waterreporter.utilities.DeviceDimensionsHelper;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
@@ -56,8 +55,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -69,25 +66,17 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillOpacity;
  * Created by Ryan Hamley on 10/14/14.
  * This activity displays detailed information about a report after clicking on its map marker.
  */
-@DeepLink({
-        "https://www.waterreporter.org/reports/{id}",
-        "https://www.waterreporter.org/community/reports/{id}"
-})
+
 public class PostDetailActivity extends AppCompatActivity {
 
-    @Bind(R.id.commentList)
     ListView commentList;
 
-    @Bind(R.id.mapview)
     MapView mapView;
 
-    @Bind(R.id.mapMask)
     View mapMask;
 
-    @Bind(R.id.listViewLock)
     View listViewLock;
 
-    @Bind(R.id.listViewGroup)
     LinearLayout listViewGroup;
 
     protected List<String> groups;
@@ -112,11 +101,19 @@ public class PostDetailActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_post_detail);
 
-        ButterKnife.bind(this);
+        commentList = (ListView) findViewById(R.id.commentList);
+
+        listViewLock = findViewById(R.id.listViewLock);
+
+        mapMask = findViewById(R.id.mapMask);
+
+        listViewGroup = (LinearLayout) findViewById(R.id.listViewGroup);
 
         mContext = this;
 
         mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        mapView = (MapView) findViewById(R.id.mapView);
 
         mapView.onCreate(savedInstanceState);
 
@@ -126,15 +123,16 @@ public class PostDetailActivity extends AppCompatActivity {
         listViewLock.setClickable(false);
         listViewLock.setFocusable(false);
 
-        Intent intent = getIntent();
+        // ATTENTION: This was auto-generated to handle app links.
+        Intent appLinkIntent = getIntent();
+        String appLinkAction = appLinkIntent.getAction();
+        Uri appLinkData = appLinkIntent.getData();
 
-        if (intent.getBooleanExtra(DeepLink.IS_DEEP_LINK, false)) {
-
-            Bundle parameters = intent.getExtras();
+        if (appLinkData != null) {
 
             try {
 
-                int postId = Integer.parseInt(parameters.getString("id"));
+                int postId = Integer.parseInt(appLinkData.getLastPathSegment());
 
                 Log.d("post--id", postId + "");
 
@@ -147,6 +145,10 @@ public class PostDetailActivity extends AppCompatActivity {
                 retrieveStoredPost();
 
             }
+
+        } else {
+
+            retrieveStoredPost();
 
         }
 
@@ -409,6 +411,12 @@ public class PostDetailActivity extends AppCompatActivity {
 
         // Add populated header view to report timeline
 
+        if (commentList == null) {
+
+            commentList = (ListView) findViewById(R.id.commentList);
+
+        }
+
         commentList.addHeaderView(mListViewHeader, null, false);
 
     }
@@ -450,7 +458,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private void fetchReport(int postId) {
 
-        RestClient.getReportService().getSingleReport("", "application/json", postId, new Callback<Report>() {
+        RestClient.getReportService().getSingleReport("application/json", postId, new Callback<Report>() {
 
             @Override
             public void success(Report report, Response response) {
@@ -587,7 +595,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         // Retrieve stored Post
 
-        if (mPost == null) retrieveStoredPost();
+//        retrieveStoredPost();
 
     }
 
@@ -612,7 +620,7 @@ public class PostDetailActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
-        ButterKnife.unbind(this);
+//        ButterKnife.unbind(this);
 
         // Cancel all pending network requests
 

@@ -13,8 +13,8 @@ android {
         applicationId "com.viableindustries.waterreporter"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 22
-        versionName "2.2.0-alpha"
+        versionCode 23
+        versionName "2.2.0-beta"
         multiDexEnabled true
     }
 
@@ -49,6 +49,4 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'org.jsoup:jsoup:1.10.3'
     compile 'com.github.rubensousa:gravitysnaphelper:1.2'
-    compile 'com.airbnb:deeplinkdispatch:3.1.1'
-    annotationProcessor 'com.airbnb:deeplinkdispatch-processor:3.1.1'
 }
