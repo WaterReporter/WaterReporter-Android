@@ -132,7 +132,7 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
 
             viewHolder.postThumb.setVisibility(View.VISIBLE);
 
-            if (feature != null && feature.properties.open_graph.size() > 0) {
+            if (feature != null && feature.properties.open_graph.size() < 1) {
 
                 Picasso.with(mContext).load(imagePath).fit().centerCrop().into(viewHolder.postThumb);
 
