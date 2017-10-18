@@ -37,6 +37,7 @@ import com.viableindustries.waterreporter.user_interface.dialogs.ReportActionDia
 import com.viableindustries.waterreporter.utilities.ApiDispatcher;
 import com.viableindustries.waterreporter.utilities.ConnectionUtility;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
 import com.viableindustries.waterreporter.utilities.UploadStateReceiver;
 
 import java.util.ArrayList;
@@ -345,7 +346,9 @@ public class MainActivity extends AppCompatActivity implements
 
                 for (Group group : groups) {
 
-                    groupMembership.edit().putInt(group.properties.organization.properties.name, group.properties.organization.properties.id).apply();
+                    ModelStorage.storeModel(groupMembership, group, group.properties.organization.properties.name);
+
+//                    groupMembership.edit().putInt(group.properties.organization.properties.name, group.properties.organization.properties.id).apply();
 
                 }
 

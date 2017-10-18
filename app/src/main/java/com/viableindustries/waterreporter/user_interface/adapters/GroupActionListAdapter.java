@@ -3,6 +3,7 @@ package com.viableindustries.waterreporter.user_interface.adapters;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,16 +15,16 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.models.group.Group;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.user.User;
-import com.viableindustries.waterreporter.api.models.user.UserOrgPatch;
-
+import com.viableindustries.waterreporter.api.models.user.UserMembershipPatch;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
     private final SharedPreferences mSharedPreferences;
 
-    private final SharedPreferences groupPrefs;
+    private final SharedPreferences groupMembership;
 
     private String[] userGroups;
 
@@ -69,7 +70,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
         mSharedPreferences = mContext.getSharedPreferences(mContext.getPackageName(), 0);
 
-        groupPrefs = mContext.getSharedPreferences(mContext.getString(R.string.group_membership_key), 0);
+        groupMembership = mContext.getSharedPreferences(mContext.getString(R.string.group_membership_key), 0);
 
         boolean showLeaveButton = aShowLeaveButton;
 
@@ -129,6 +130,18 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
     }
 
+    private List<Map<String, Object>> buildGroupPatch(int organizationId, int userId) {
+
+        User user = ModelStorage.getStoredUser(mSharedPreferences);
+
+        List<Map<String, Object>> groupObjects = new ArrayList<>();
+
+        if (user.properties.gro)
+
+            return groupObjects;
+
+    }
+
     private void changeOrgStatus(final Organization organization, final View view) {
 
         final String operation = (view.getTag().equals("join_group")) ? "add" : "remove";
@@ -143,12 +156,26 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
         // Build request object
 
-        Map<String, Map> userPatch = UserOrgPatch.buildRequest(organization.id, operation);
+        Map<String, Map> userPatch = UserMembershipPatch.buildRequest(organization.id, operation);
 
-        RestClient.getUserService().updateUserOrganization(accessToken, "application/json", id, userPatch, new Callback<User>() {
+        RestClient.getUserService().updateUserMemberships(accessToken, "application/json", id, userPatch, new Callback<User>() {
 
             @Override
             public void success(User user, Response response) {
+
+                // Reset the user's stored groups.
+
+                groupMembership.edit().clear().apply();
+
+                if (user.properties.groups.size() > 0) {
+
+                    for (Group group : user.properties.groups) {
+
+                        ModelStorage.storeModel(groupMembership, group, group.properties.organization.properties.name);
+
+                    }
+
+                }
 
                 String action;
 
@@ -162,8 +189,6 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
                     view.setTag("leave_group");
 
-                    groupPrefs.edit().putInt(organization.properties.name, organization.properties.id).apply();
-
                 } else {
 
                     action = "left";
@@ -174,15 +199,17 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
                     view.setTag("join_group");
 
-                    groupPrefs.edit().putInt(organization.properties.name, 0).apply();
-
                 }
 
                 CharSequence text = String.format("Successfully %s %s", action, organization.properties.name);
-                int duration = Toast.LENGTH_SHORT;
+//                int duration = Toast.LENGTH_SHORT;
+//
+//                Toast toast = Toast.makeText(mContext, text, duration);
+//                toast.show();
 
-                Toast toast = Toast.makeText(mContext, text, duration);
-                toast.show();
+                Snackbar.make(view.getRootView(), text,
+                        Snackbar.LENGTH_SHORT)
+                        .show();
 
             }
 
@@ -205,7 +232,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
     @NonNull
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
-        GroupActionListAdapter.ViewHolder viewHolder;
+        ViewHolder viewHolder;
 
         if (convertView == null) {
 
@@ -236,9 +263,11 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
         // Check group membership
 
-        int selected = groupPrefs.getInt(organization.properties.name, 0);
+        Group targetGroup = ModelStorage.getStoredGroup(groupMembership, organization.properties.name);
 
-        if (selected > 0) {
+        try {
+
+            int selected = targetGroup.properties.organizationId;
 
             viewHolder.groupMembershipButton.setTag("leave_group");
 
@@ -246,7 +275,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
             viewHolder.groupMembershipButton.setBackgroundResource(R.drawable.orange_button);
 
-        } else {
+        } catch (NullPointerException e) {
 
             viewHolder.groupMembershipButton.setTag("join_group");
 

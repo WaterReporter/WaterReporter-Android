@@ -57,7 +57,7 @@ public interface UserService {
                     Callback<User> userResponseCallback);
 
     @PATCH("/data/user/{user}")
-    void updateUserOrganization(@Header("Authorization") String authorization,
+    void updateUserMemberships(@Header("Authorization") String authorization,
                                 @Header("Content-Type") String contentType,
                                 @Path("user") int user_id,
                                 @Body Map<String, Map> userPatch,

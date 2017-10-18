@@ -3,6 +3,7 @@ package com.viableindustries.waterreporter.utilities;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
+import com.viableindustries.waterreporter.api.models.group.Group;
 import com.viableindustries.waterreporter.api.models.hashtag.HashTag;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.post.Report;
@@ -34,11 +35,19 @@ public class ModelStorage {
 
     }
 
-    public static Organization getStoredGroup(SharedPreferences sharedPreferences) {
+    public static Organization getStoredOrganization(SharedPreferences sharedPreferences) {
 
-        String storedGroup = sharedPreferences.getString("stored_group", "");
+        String storedOrganization = sharedPreferences.getString("stored_organization", "");
 
-        return new Gson().fromJson(storedGroup, Organization.class);
+        return new Gson().fromJson(storedOrganization, Organization.class);
+
+    }
+
+    public static Group getStoredGroup(SharedPreferences sharedPreferences, String organizationName) {
+
+        String storedGroup = sharedPreferences.getString(organizationName, "");
+
+        return new Gson().fromJson(storedGroup, Group.class);
 
     }
 

@@ -13,8 +13,8 @@ public class GroupProperties {
     @SerializedName("joined_on")
     public String joined;
 
-    @SerializedName("id")
-    public int id;
+//    @SerializedName("id")
+//    public int id;
 
     @SerializedName("organization_id")
     public int organizationId;

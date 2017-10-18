@@ -483,8 +483,20 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
         accessMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ReportHolder.setReport(null);
+
+                /*
+                Remove any temporary stored post data since the map
+                doesn't need to focus on a particular location. Then
+                store watershed (territory) data for retrieval in the
+                TerritoryMapActivity.
+                */
+
+                ModelStorage.removeModel(mSharedPreferences, "stored_post");
+
+                ModelStorage.storeModel(mSharedPreferences, mTerritory, "stored_territory");
+
                 startActivity(new Intent(TerritoryActivity.this, TerritoryMapActivity.class));
+
             }
         });
 

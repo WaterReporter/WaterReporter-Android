@@ -1,12 +1,14 @@
 package com.viableindustries.waterreporter.api.models.user;
 
 import com.google.gson.annotations.SerializedName;
+import com.viableindustries.waterreporter.api.models.group.Group;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.post.ReportPhoto;
 import com.viableindustries.waterreporter.api.models.role.Role;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -54,6 +56,9 @@ public class UserProperties {
     @SerializedName("first_name")
     public String first_name;
 
+    @SerializedName("groups")
+    public List<Group> groups;
+
     @SerializedName("id")
     public int id;
 
@@ -81,13 +86,24 @@ public class UserProperties {
     @SerializedName("title")
     public String title;
 
-    public UserProperties(int aId, String aDescription, String aFirstName,
-                          String aLastName, String aOrganizationName, String aPicture,
-                          String aPublicEmail, String aTitle, ArrayList<ReportPhoto> aImages,
-                          ArrayList<Organization> aOrganizations, ArrayList<Role> aRoles) {
+    public UserProperties(
+            int aId,
+            String aDescription,
+            String aFirstName,
+            String aLastName,
+            String aOrganizationName,
+            String aPicture,
+            String aPublicEmail,
+            String aTitle,
+            List<Group> aGroups,
+            ArrayList<ReportPhoto> aImages,
+            ArrayList<Organization> aOrganizations,
+            ArrayList<Role> aRoles
+    ) {
 
         this.description = aDescription;
         this.first_name = aFirstName;
+        this.groups = aGroups;
         this.id = aId;
         this.images = aImages;
         this.last_name = aLastName;

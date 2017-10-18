@@ -254,9 +254,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
         } catch (NullPointerException _e) {
 
-            startActivity(new Intent(this, MainActivity.class));
-
-            finish();
+            mPost = null;
 
         }
 
@@ -409,6 +407,8 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
     private void onFetchSuccess(List<Report> posts) {
 
+        Log.v("retrofit--posts", "at least one");
+
         // specify an adapter (see also next example)
         RecyclerView.Adapter mAdapter = new MarkerCardAdapter(this, posts);
 
@@ -426,7 +426,7 @@ public class TerritoryMapActivity extends AppCompatActivity {
 
         int idx = 0;
 
-        Log.v("retrofit--posts", "at least one");
+//        Log.v("retrofit--posts", "at least one");
 
         if (posts.size() > 1) {
 

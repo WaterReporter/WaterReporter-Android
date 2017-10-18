@@ -356,11 +356,13 @@ public class AuthUserActivity extends AppCompatActivity implements
 
                 SharedPreferences groupMembership = getSharedPreferences(getString(R.string.group_membership_key), 0);
 
+                groupMembership.edit().clear().apply();
+
                 for (Group group : groups) {
 
-                    groupMembership.edit().clear().apply();
+                    ModelStorage.storeModel(groupMembership, group, group.properties.organization.properties.name);
 
-                    groupMembership.edit().putInt(group.properties.organization.properties.name, group.properties.organization.properties.id).apply();
+//                    groupMembership.edit().putInt(group.properties.organization.properties.name, group.properties.organization.properties.id).apply();
 
                 }
 

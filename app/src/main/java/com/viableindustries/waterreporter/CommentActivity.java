@@ -407,12 +407,6 @@ public class CommentActivity extends AppCompatActivity implements
                                 mSharedPreferences.getInt("user_id", 0),
                                 lastWord);
 
-                        if (openGraphProperties != null) {
-
-                            displayOpenGraphObject(openGraphProperties, openGraphProperties.url);
-
-                        }
-
                     } catch (IOException e) {
 
                         Snackbar.make(commentListContainer, "Unable to read URL.",
@@ -1406,9 +1400,13 @@ public class CommentActivity extends AppCompatActivity implements
 
                     openGraphProperties = OpenGraph.buildOpenGraphObject(ogIdx, userId);
 
-                    if (!openGraphProperties.title.isEmpty()) {
+                    if (!openGraphProperties.title.isEmpty() && !openGraphProperties.url.isEmpty()) {
 
                         displayOpenGraphObject(openGraphProperties, openGraphProperties.url);
+
+                    } else {
+
+                        openGraphProperties = null;
 
                     }
 

@@ -1,12 +1,6 @@
 package com.viableindustries.waterreporter.utilities;
 
-import android.app.Activity;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
-import android.view.View;
-
 import com.viableindustries.waterreporter.api.models.open_graph.OpenGraphProperties;
-import com.viableindustries.waterreporter.api.models.open_graph.OpenGraphResponse;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -16,7 +10,6 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -60,9 +53,13 @@ public class OpenGraph {
     }
 
     public static String getDomainName(String url) throws URISyntaxException {
+
         URI uri = new URI(url);
+
         String domain = uri.getHost();
+
         return domain.startsWith("www.") ? domain.substring(4) : domain;
+
     }
 
     public static OpenGraphProperties buildOpenGraphObject(Map<String, String> tagIndex, int userId) {

@@ -29,13 +29,11 @@ public class OrganizationProfileListener implements View.OnClickListener {
     @Override
     public void onClick(View view) {
 
-        Intent intent = new Intent(mContext, OrganizationProfileActivity.class);
-
-//        OrganizationHolder.setOrganization(organization);
-
         // Write model to temporary storage in SharedPreferences
 
         ModelStorage.storeModel(mContext.getSharedPreferences(mContext.getPackageName(), MODE_PRIVATE), organization, "stored_group");
+
+        Intent intent = new Intent(mContext, OrganizationProfileActivity.class);
 
         mContext.startActivity(intent);
 

@@ -186,11 +186,11 @@ public class NavigationFragment extends Fragment {
                     UserProperties userProperties = new UserProperties(coreId, coreProfile.getString("description", ""),
                             coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
                             coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
-                            coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null);
+                            coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null, null);
 
                     User coreUser = User.createUser(coreId, userProperties);
 
-//                    UserHolder.setUser(coreUser);
+                    // Place core user data in temporary storage
 
                     ModelStorage.storeModel(getContext().getSharedPreferences(getContext().getPackageName(), MODE_PRIVATE), coreUser, "stored_user");
 

@@ -29,8 +29,6 @@ public class PostDetailListener implements View.OnClickListener {
     @Override
     public void onClick(View view) {
 
-        ReportHolder.setReport(post);
-
         // Write model to temporary storage in SharedPreferences
 
         ModelStorage.storeModel(mContext.getSharedPreferences(mContext.getPackageName(), MODE_PRIVATE), post, "stored_post");

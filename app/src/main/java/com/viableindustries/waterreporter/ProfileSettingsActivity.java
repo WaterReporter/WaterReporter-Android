@@ -13,9 +13,7 @@ import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.notification.NotificationSetting;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.user.User;
-import com.viableindustries.waterreporter.api.models.user.UserHolder;
 import com.viableindustries.waterreporter.user_interface.adapters.NotificationSettingAdapter;
-
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import java.util.ArrayList;
@@ -78,31 +76,21 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
     }
 
-    private void retrieveStoredUser(){
+    private void retrieveStoredUser() {
 
-        user = UserHolder.getUser();
+        user = ModelStorage.getStoredUser(mSharedPreferences);
 
         try {
 
             int userId = user.properties.id;
 
-        } catch (NullPointerException e) {
-
-            user = ModelStorage.getStoredUser(mSharedPreferences);
-
             refreshAccount(user.id);
 
-            try {
+        } catch (NullPointerException _e) {
 
-                int userId = user.properties.id;
+            startActivity(new Intent(this, MainActivity.class));
 
-            } catch (NullPointerException _e) {
-
-                startActivity(new Intent(this, MainActivity.class));
-
-                finish();
-
-            }
+            finish();
 
         }
 

@@ -8,6 +8,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -40,7 +41,7 @@ import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.api.models.user.UserCollection;
-import com.viableindustries.waterreporter.api.models.user.UserOrgPatch;
+import com.viableindustries.waterreporter.api.models.user.UserMembershipPatch;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
@@ -265,9 +266,9 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         // Build request object
 
-        Map<String, Map> userPatch = UserOrgPatch.buildRequest(organization.id, "add");
+        Map<String, Map> userPatch = UserMembershipPatch.buildRequest(organization.id, "add");
 
-        RestClient.getUserService().updateUserOrganization(accessToken, "application/json", id, userPatch, new Callback<User>() {
+        RestClient.getUserService().updateUserMemberships(accessToken, "application/json", id, userPatch, new Callback<User>() {
 
             @Override
             public void success(User user, Response response) {
@@ -281,10 +282,14 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                 groupPrefs.edit().putInt(organization.properties.name, organization.properties.id).apply();
 
                 CharSequence text = String.format("Successfully %s %s", action, organization.properties.name);
-                int duration = Toast.LENGTH_SHORT;
+//                int duration = Toast.LENGTH_SHORT;
+//
+//                Toast toast = Toast.makeText(mContext, text, duration);
+//                toast.show();
 
-                Toast toast = Toast.makeText(mContext, text, duration);
-                toast.show();
+                Snackbar.make(timeLineContainer,text,
+                        Snackbar.LENGTH_SHORT)
+                        .show();
 
             }
 

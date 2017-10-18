@@ -40,6 +40,7 @@ import com.viableindustries.waterreporter.utilities.CacheManager;
 
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.FileUtils;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -441,7 +442,7 @@ public class EditProfileActivity extends AppCompatActivity implements
 
                         User coreUser = User.createUser(user.id, userProperties);
 
-                        UserHolder.setUser(coreUser);
+                        ModelStorage.storeModel(mSharedPreferences, coreUser, "stored_user");
 
                         final Handler handler = new Handler();
 

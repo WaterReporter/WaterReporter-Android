@@ -78,6 +78,7 @@ import com.viableindustries.waterreporter.utilities.ConnectionUtility;
 import com.viableindustries.waterreporter.utilities.CursorPositionTracker;
 import com.viableindustries.waterreporter.utilities.DisplayDecimal;
 import com.viableindustries.waterreporter.utilities.FileUtils;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
 import com.viableindustries.waterreporter.utilities.OpenGraph;
 import com.viableindustries.waterreporter.utilities.OpenGraphTask;
 
@@ -627,12 +628,6 @@ public class PhotoMetaActivity extends AppCompatActivity
                                 mSharedPreferences.getInt("user_id", 0),
                                 lastWord);
 
-                        if (openGraphProperties != null) {
-
-                            displayOpenGraphObject(openGraphProperties, openGraphProperties.url);
-
-                        }
-
                     } catch (IOException e) {
 
                         Snackbar.make(parentLayout, "Unable to read URL.",
@@ -680,9 +675,13 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                     openGraphProperties = OpenGraph.buildOpenGraphObject(ogIdx, userId);
 
-                    if (!openGraphProperties.title.isEmpty()) {
+                    if (!openGraphProperties.title.isEmpty() && !openGraphProperties.url.isEmpty()) {
 
                         displayOpenGraphObject(openGraphProperties, openGraphProperties.url);
+
+                    } else {
+
+                        openGraphProperties = null;
 
                     }
 
@@ -1173,7 +1172,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                 User coreUser = User.createUser(coreId, userProperties);
 
-                UserHolder.setUser(coreUser);
+                ModelStorage.storeModel(mSharedPreferences, coreUser, "stored_user");
 
                 // Re-direct user to main activity feed, which has the effect of preventing
                 // unwanted access to the history stack
@@ -1525,7 +1524,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                                 User coreUser = User.createUser(coreId, userProperties);
 
-                                UserHolder.setUser(coreUser);
+                                ModelStorage.storeModel(mSharedPreferences, coreUser, "stored_user");
 
                                 // Re-direct user to main activity feed, which has the effect of preventing
                                 // unwanted access to the history stack

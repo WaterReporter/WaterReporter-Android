@@ -43,7 +43,7 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
 
     private final View mParentLayout;
 
-    final SharedPreferences mSharedPreferences;
+    private final SharedPreferences mSharedPreferences;
 
     protected String groupList;
 
@@ -132,7 +132,11 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
 
             viewHolder.postThumb.setVisibility(View.VISIBLE);
 
-            Picasso.with(mContext).load(imagePath).fit().centerCrop().into(viewHolder.postThumb);
+            if (feature != null && feature.properties.open_graph.size() > 0) {
+
+                Picasso.with(mContext).load(imagePath).fit().centerCrop().into(viewHolder.postThumb);
+
+            }
 
         } catch (IndexOutOfBoundsException ib) {
 
