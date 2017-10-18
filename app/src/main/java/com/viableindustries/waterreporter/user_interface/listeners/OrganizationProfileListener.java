@@ -31,7 +31,7 @@ public class OrganizationProfileListener implements View.OnClickListener {
 
         Intent intent = new Intent(mContext, OrganizationProfileActivity.class);
 
-        OrganizationHolder.setOrganization(organization);
+//        OrganizationHolder.setOrganization(organization);
 
         // Write model to temporary storage in SharedPreferences
 

@@ -14,7 +14,6 @@ import android.widget.ListView;
 import com.google.gson.Gson;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
-import com.viableindustries.waterreporter.api.models.organization.OrganizationHolder;
 import com.viableindustries.waterreporter.api.models.organization.OrganizationMemberList;
 import com.viableindustries.waterreporter.api.models.query.QueryFilter;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
@@ -22,7 +21,6 @@ import com.viableindustries.waterreporter.api.models.query.QuerySort;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.api.models.user.UserCollection;
 import com.viableindustries.waterreporter.user_interface.adapters.UserListAdapter;
-
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
@@ -104,31 +102,21 @@ public class OrganizationMembersActivity extends AppCompatActivity {
 
     }
 
-    private void retrieveStoredOrganization(){
+    private void retrieveStoredOrganization() {
 
-        organization = OrganizationHolder.getOrganization();
+        organization = ModelStorage.getStoredGroup(mSharedPreferences);
+
+        fetchOrganizationMembers(50, 1, organization.id, null, true);
 
         try {
 
             int orgId = organization.properties.id;
 
-        } catch (NullPointerException e) {
+        } catch (NullPointerException _e) {
 
-            organization = ModelStorage.getStoredGroup(mSharedPreferences);
+            startActivity(new Intent(this, MainActivity.class));
 
-            fetchOrganizationMembers(50, 1, organization.id, null, true);
-
-            try {
-
-                int orgId = organization.properties.id;
-
-            } catch (NullPointerException _e) {
-
-                startActivity(new Intent(this, MainActivity.class));
-
-                finish();
-
-            }
+            finish();
 
         }
 

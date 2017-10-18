@@ -22,6 +22,7 @@ import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.api.models.favorite.Favorite;
 import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.api.models.post.ReportHolder;
+import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.api.models.user.UserHolder;
 import com.viableindustries.waterreporter.user_interface.dialogs.ReportActionDialog;
 import com.viableindustries.waterreporter.user_interface.listeners.PostCommentListener;
@@ -214,7 +215,9 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
             // comparing the transient user id stored in the UserHolder class and the `owner_id`
             // field of the current post.
 
-            if (UserHolder.getUser().properties.id != post.properties.owner_id) {
+            User user = ModelStorage.getStoredUser(sharedPreferences);
+
+            if (user.properties.id != post.properties.owner_id) {
 
                 viewHolder.ownerAvatar.setOnClickListener(new UserProfileListener(context, post.properties.owner));
 

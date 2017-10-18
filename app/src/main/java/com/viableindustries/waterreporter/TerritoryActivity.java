@@ -948,7 +948,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
         // Retrieve stored Territory
 
-        retrieveStoredTerritory();
+        if (mTerritory == null) retrieveStoredTerritory();
 
     }
 
@@ -975,6 +975,8 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
         super.onDestroy();
         mapView.onDestroy();
         ButterKnife.unbind(this);
+
+        ModelStorage.removeModel(mSharedPreferences, "stored_territory");
 
         // Cancel all pending network requests
 

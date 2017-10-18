@@ -959,7 +959,7 @@ public class CommentActivity extends AppCompatActivity implements
 
         // Change UI state
 
-        commentListContainer.setRefreshing(true);
+//        commentListContainer.setRefreshing(true);
 
         working = true;
 

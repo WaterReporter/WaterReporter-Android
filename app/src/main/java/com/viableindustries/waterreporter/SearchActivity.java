@@ -45,7 +45,9 @@ import com.viableindustries.waterreporter.user_interface.adapters.UserListAdapte
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -141,6 +143,8 @@ public class SearchActivity extends FragmentActivity {
 
         if ("user".equals(collection)) {
 
+            Log.v("user--query--building", searchChars);
+
             if (searchChars != null && searchChars.length() > 0) {
 
                 List<Object> nameFilters = new ArrayList<>();
@@ -149,7 +153,7 @@ public class SearchActivity extends FragmentActivity {
 
                 for (String name : names) {
 
-                    Log.d("name", name);
+                    Log.d("user--query--name", name);
 
                 }
 
@@ -171,11 +175,17 @@ public class SearchActivity extends FragmentActivity {
 
                     nameFilters.add(userLastNameFilter);
 
-                    BooleanQueryFilter booleanNameFilter = new BooleanQueryFilter(nameFilters);
+//                    BooleanQueryFilter booleanNameFilter = new BooleanQueryFilter(nameFilters);
 
-                    queryFilters.add(booleanNameFilter);
+                    Map<String, List<Object>> booleanQueryFilterMap = new HashMap<>();
+
+                    booleanQueryFilterMap.put("or", nameFilters);
+
+                    queryFilters.add(booleanQueryFilterMap);
 
                 }
+
+                Log.v("user--query--filters", queryFilters.toString());
 
             } else {
 
@@ -320,6 +330,8 @@ public class SearchActivity extends FragmentActivity {
     private void fetchUsers(int limit, int page, final String query, final boolean filterResults, final boolean switchCollection) {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
+
+        Log.v("user--query--final", query);
 
         RestClient.getUserService().getUsers(accessToken, "application/json", page, limit, query, new Callback<UserCollection>() {
 
@@ -921,6 +933,8 @@ public class SearchActivity extends FragmentActivity {
                     displayProgressMessage("people");
 
                     searchMessage.setVisibility(View.VISIBLE);
+
+                    Log.v("user--query", query);
 
                     fetchUsers(10, 1, buildQuery("user", "last_name", "asc", query), true, true);
 

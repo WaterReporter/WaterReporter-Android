@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.api.models.user.UserHolder;
 import com.viableindustries.waterreporter.api.models.user.UserProperties;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
 import com.viableindustries.waterreporter.utilities.QueryBuilder;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -189,7 +190,9 @@ public class NavigationFragment extends Fragment {
 
                     User coreUser = User.createUser(coreId, userProperties);
 
-                    UserHolder.setUser(coreUser);
+//                    UserHolder.setUser(coreUser);
+
+                    ModelStorage.storeModel(getContext().getSharedPreferences(getContext().getPackageName(), MODE_PRIVATE), coreUser, "stored_user");
 
                     startActivity(new Intent(activity, AuthUserActivity.class));
 

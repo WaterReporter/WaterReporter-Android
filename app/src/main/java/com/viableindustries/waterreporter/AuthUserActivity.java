@@ -33,13 +33,11 @@ import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.api.models.user.UserGroupList;
-import com.viableindustries.waterreporter.api.models.user.UserHolder;
 import com.viableindustries.waterreporter.constants.Constants;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
 import com.viableindustries.waterreporter.user_interface.dialogs.ReportActionDialog;
 import com.viableindustries.waterreporter.user_interface.view_holders.UserProfileHeaderView;
 import com.viableindustries.waterreporter.utilities.ApiDispatcher;
-
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 import com.viableindustries.waterreporter.utilities.UploadStateReceiver;
@@ -208,29 +206,19 @@ public class AuthUserActivity extends AppCompatActivity implements
 
     }
 
-    private void retrieveStoredUser(){
+    private void retrieveStoredUser() {
 
-        user = UserHolder.getUser();
+        user = ModelStorage.getStoredUser(mSharedPreferences);
 
         try {
 
             userId = user.properties.id;
 
-        } catch (NullPointerException e) {
+        } catch (NullPointerException _e) {
 
-            user = ModelStorage.getStoredUser(mSharedPreferences);
+            startActivity(new Intent(this, MainActivity.class));
 
-            try {
-
-                userId = user.properties.id;
-
-            } catch (NullPointerException _e) {
-
-                startActivity(new Intent(this, MainActivity.class));
-
-                finish();
-
-            }
+            finish();
 
         }
 

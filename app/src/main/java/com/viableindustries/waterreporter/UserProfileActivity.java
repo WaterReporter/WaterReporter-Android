@@ -27,11 +27,9 @@ import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.api.models.user.UserGroupList;
-import com.viableindustries.waterreporter.api.models.user.UserHolder;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
 import com.viableindustries.waterreporter.user_interface.dialogs.ReportActionDialogListener;
 import com.viableindustries.waterreporter.user_interface.view_holders.UserProfileHeaderView;
-
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
@@ -141,21 +139,11 @@ public class UserProfileActivity extends AppCompatActivity implements
 
         fetchUserGroups(userId);
 
-        // Retrieve first batch of user's reports
-
-        if (reportCollection.isEmpty()) {
-
-            timeLineContainer.setRefreshing(true);
-
-            fetchPosts(5, 1, buildQuery(true, null), false);
-
-        }
-
         scrollListener = new EndlessScrollListener() {
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
 
-                // Triggered only when new api needs to be appended to the list
+                // Triggered only when new data should be appended to the list
 
                 if (actionFocus) {
 
@@ -167,36 +155,36 @@ public class UserProfileActivity extends AppCompatActivity implements
 
                 }
 
-                return true; // ONLY if more api is actually being loaded; false otherwise.
+                return true; // ONLY if more data are actually being loaded; false otherwise.
 
             }
         };
 
     }
 
-    private void retrieveStoredUser(){
+    private void retrieveStoredUser() {
 
-        user = UserHolder.getUser();
+        user = ModelStorage.getStoredUser(mSharedPreferences);
 
         try {
 
             userId = user.properties.id;
 
-        } catch (NullPointerException e) {
+            // Retrieve first batch of user's reports
 
-            user = ModelStorage.getStoredUser(mSharedPreferences);
+            if (reportCollection.isEmpty()) {
 
-            try {
+                timeLineContainer.setRefreshing(true);
 
-                userId = user.properties.id;
-
-            } catch (NullPointerException _e) {
-
-                startActivity(new Intent(this, MainActivity.class));
-
-                finish();
+                fetchPosts(5, 1, buildQuery(true, null), false);
 
             }
+
+        } catch (NullPointerException _e) {
+
+            startActivity(new Intent(this, MainActivity.class));
+
+            finish();
 
         }
 
@@ -223,13 +211,17 @@ public class UserProfileActivity extends AppCompatActivity implements
 
         if (count < 1) {
 
-            if (mUserProfileHeaderView.promptBlock != null) {
+            try {
 
                 mUserProfileHeaderView.startPostButton.setVisibility(View.GONE);
 
                 mUserProfileHeaderView.promptBlock.setVisibility(View.VISIBLE);
 
                 mUserProfileHeaderView.promptMessage.setText(getString(R.string.prompt_no_posts_user, user.properties.first_name));
+
+            } catch (NullPointerException e) {
+
+                finish();
 
             }
 
@@ -682,13 +674,13 @@ public class UserProfileActivity extends AppCompatActivity implements
 
     @Override
     public void onResume() {
-        
+
         super.onResume();
 
         // Retrieve stored User object
 
-        retrieveStoredUser();
-        
+        if (user == null) retrieveStoredUser();
+
     }
 
     @Override
@@ -704,6 +696,8 @@ public class UserProfileActivity extends AppCompatActivity implements
         Picasso.with(this).cancelRequest(mUserProfileHeaderView.userAvatar);
 
         ButterKnife.unbind(this);
+
+        ModelStorage.removeModel(mSharedPreferences, "stored_user");
 
         // Cancel all pending network requests
 

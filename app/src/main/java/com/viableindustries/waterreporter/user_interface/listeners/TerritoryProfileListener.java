@@ -34,7 +34,7 @@ public class TerritoryProfileListener implements View.OnClickListener {
 
             Intent intent = new Intent(mContext, TerritoryActivity.class);
 
-            TerritoryHolder.setTerritory(territory);
+//            TerritoryHolder.setTerritory(territory);
 
             // Write model to temporary storage in SharedPreferences
 

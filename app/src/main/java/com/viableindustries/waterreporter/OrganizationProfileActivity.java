@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
@@ -21,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -35,7 +33,6 @@ import com.viableindustries.waterreporter.api.models.FeatureCollection;
 import com.viableindustries.waterreporter.api.models.group.Group;
 import com.viableindustries.waterreporter.api.models.group.GroupFeatureCollection;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
-import com.viableindustries.waterreporter.api.models.organization.OrganizationHolder;
 import com.viableindustries.waterreporter.api.models.organization.OrganizationMemberList;
 import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.api.models.query.QueryFilter;
@@ -202,7 +199,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
 
-                // Triggered only when new api needs to be appended to the list
+                // Triggered only when new data should be appended to the list
 
                 if (actionFocus) {
 
@@ -214,42 +211,34 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                 }
 
-                return true; // ONLY if more api is actually being loaded; false otherwise.
+                return true; // ONLY if more data are actually being loaded; false otherwise.
 
             }
         };
-
-        fetchReports(5, 1, buildQuery(true, null), false);
 
     }
 
     private void retrieveStoredOrganization() {
 
-        organization = OrganizationHolder.getOrganization();
+        organization = ModelStorage.getStoredGroup(mSharedPreferences);
 
         try {
 
             int orgId = organization.properties.id;
 
-        } catch (NullPointerException e) {
+            if (reportCollection.isEmpty()) {
 
-            organization = ModelStorage.getStoredGroup(mSharedPreferences);
+                timeLineContainer.setRefreshing(true);
 
-            timeLineContainer.setRefreshing(true);
-
-            fetchReports(5, 1, buildQuery(true, null), false);
-
-            try {
-
-                int orgId = organization.properties.id;
-
-            } catch (NullPointerException _e) {
-
-                startActivity(new Intent(this, MainActivity.class));
-
-                finish();
+                fetchReports(5, 1, buildQuery(true, null), true);
 
             }
+
+        } catch (NullPointerException _e) {
+
+            startActivity(new Intent(this, MainActivity.class));
+
+            finish();
 
         }
 
@@ -599,8 +588,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                         break;
                     default:
                         reportCount = count;
-                        reportCounter.setText(String.valueOf(reportCount));
-                        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
+                        setReportCountState(reportCount);
                         break;
                 }
 
@@ -765,6 +753,8 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                     reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
 
+                    setReportCountState(reportCount);
+
                 } else {
 
                     reportStat.setVisibility(View.GONE);
@@ -845,7 +835,13 @@ public class OrganizationProfileActivity extends AppCompatActivity {
         // Attach the adapter to a ListView
         timeLine.setAdapter(timelineAdapter);
 
-        attachScrollListener();
+        /* IMPORTANT
+            Don't set a scroll listener unless necessary,
+            otherwise it may trigger infinite API requests
+            when empty collection messages overflow the screen.
+            */
+
+        if (list.size() > 1) attachScrollListener();
 
     }
 
@@ -878,8 +874,6 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                 }
 
                 if (!orgIds.contains(String.valueOf(organization.id))) {
-
-//                    joinOrganization.setColorFilter(ContextCompat.getColor(mContext, R.color.green_1), PorterDuff.Mode.SRC_ATOP);
 
                     joinOrganization.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.green_1)));
 
@@ -937,7 +931,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         // Retrieve stored Organization
 
-        retrieveStoredOrganization();
+        if (organization == null) retrieveStoredOrganization();
 
     }
 
@@ -954,6 +948,8 @@ public class OrganizationProfileActivity extends AppCompatActivity {
         Picasso.with(this).cancelRequest(organizationLogo);
 
         ButterKnife.unbind(this);
+
+        ModelStorage.removeModel(mSharedPreferences, "stored_group");
 
         // Cancel all pending network requests
 

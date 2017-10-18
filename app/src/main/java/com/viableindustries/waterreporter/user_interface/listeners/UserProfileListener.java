@@ -47,7 +47,7 @@ public class UserProfileListener implements View.OnClickListener {
 
         }
 
-        UserHolder.setUser(user);
+//        UserHolder.setUser(user);
 
         // Write model to temporary storage in SharedPreferences
 
