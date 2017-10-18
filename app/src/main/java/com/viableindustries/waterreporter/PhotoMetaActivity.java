@@ -51,6 +51,7 @@ import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.interfaces.data.post.SendPostCallbacks;
 import com.viableindustries.waterreporter.api.models.geometry.Geometry;
 import com.viableindustries.waterreporter.api.models.geometry.GeometryResponse;
+import com.viableindustries.waterreporter.api.models.group.Group;
 import com.viableindustries.waterreporter.api.models.hashtag.HashTag;
 import com.viableindustries.waterreporter.api.models.hashtag.HashtagCollection;
 import com.viableindustries.waterreporter.api.models.hashtag.TagHolder;
@@ -1575,9 +1576,11 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             for (Organization organization : report.properties.groups) {
 
-                int selected = groupMemberships.getInt(organization.properties.name, 0);
+                // Check group membership
 
-                if (selected == 0) {
+                Group targetGroup = ModelStorage.getStoredGroup(groupMemberships, String.format("group_%s", organization.properties.id));
+
+                if (targetGroup != null) {
 
                     abbreviatedOrganizations.add(new AbbreviatedOrganization(organization.properties.id, organization.properties.name));
 

@@ -190,7 +190,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
                     for (Group group : user.properties.groups) {
 
-                        ModelStorage.storeModel(groupMembership, group, group.properties.organization.properties.name);
+                        ModelStorage.storeModel(groupMembership, group, String.format("group_%s", group.properties.organizationId));
 
                     }
 
@@ -278,7 +278,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
         // Check group membership
 
-        Group targetGroup = ModelStorage.getStoredGroup(groupMembership, organization.properties.name);
+        Group targetGroup = ModelStorage.getStoredGroup(groupMembership, String.format("group_%s", organization.properties.id));
 
         try {
 

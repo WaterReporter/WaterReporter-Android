@@ -360,7 +360,7 @@ public class AuthUserActivity extends AppCompatActivity implements
 
                 for (Group group : groups) {
 
-                    ModelStorage.storeModel(groupMembership, group, group.properties.organization.properties.name);
+                    ModelStorage.storeModel(groupMembership, group, String.format("group_%s", group.properties.organizationId));
 
                 }
 

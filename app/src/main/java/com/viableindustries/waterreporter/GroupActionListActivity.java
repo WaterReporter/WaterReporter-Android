@@ -19,13 +19,18 @@ import android.widget.ListView;
 
 import com.google.gson.Gson;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.models.group.Group;
+import com.viableindustries.waterreporter.api.models.group.GroupFeatureCollection;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.organization.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
+import com.viableindustries.waterreporter.api.models.user.User;
+import com.viableindustries.waterreporter.api.models.user.UserGroupList;
 import com.viableindustries.waterreporter.user_interface.adapters.GroupActionListAdapter;
 
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +59,14 @@ public class GroupActionListActivity extends AppCompatActivity {
 
     private GroupActionListAdapter adapter;
 
+    private SharedPreferences mSharedPreferences;
+
+    private String mAccessToken;
+
+    private User user;
+
+    private int userId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -72,6 +85,12 @@ public class GroupActionListActivity extends AppCompatActivity {
             skipAhead.setVisibility(View.VISIBLE);
 
         }
+
+        // Retrieve access token
+
+        mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        mAccessToken = mSharedPreferences.getString("access_token", "");
 
         // Initialize empty list to hold organizations
 
@@ -94,11 +113,31 @@ public class GroupActionListActivity extends AppCompatActivity {
 
         organizationListContainer.setColorSchemeResources(R.color.waterreporter_blue);
 
-        // Fetch organizations
+        // Load stored user data
 
-        organizationListContainer.setRefreshing(true);
+        retrieveStoredUser();
 
-        buildList(1, 20, true);
+    }
+
+    private void retrieveStoredUser() {
+
+        user = ModelStorage.getStoredUser(mSharedPreferences);
+
+        try {
+
+            userId = user.properties.id;
+
+            // Load user's groups
+
+            fetchUserGroups(userId);
+
+        } catch (NullPointerException _e) {
+
+            startActivity(new Intent(this, MainActivity.class));
+
+            finish();
+
+        }
 
     }
 
@@ -146,6 +185,62 @@ public class GroupActionListActivity extends AppCompatActivity {
             finish();
 
         }
+
+    }
+
+    private void fetchUserGroups(int userId) {
+
+        RestClient.getUserService().getUserGroups(mAccessToken, "application/json", userId, new Callback<GroupFeatureCollection>() {
+
+            @Override
+            public void success(GroupFeatureCollection groupFeatureCollection, Response response) {
+
+                ArrayList<Group> groups = groupFeatureCollection.getFeatures();
+
+                // Reset the user's stored groups.
+
+                SharedPreferences groupMembership = getSharedPreferences(getString(R.string.group_membership_key), 0);
+
+                groupMembership.edit().clear().apply();
+
+                for (Group group : groups) {
+
+                    ModelStorage.storeModel(groupMembership, group, String.format("group_%s", group.properties.organizationId));
+
+                }
+
+                // Load organization data
+
+                organizationListContainer.setRefreshing(true);
+
+                buildList(1, 20, true);
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(GroupActionListActivity.this, SignInActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
 
     }
 

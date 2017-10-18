@@ -346,9 +346,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 for (Group group : groups) {
 
-                    ModelStorage.storeModel(groupMembership, group, group.properties.organization.properties.name);
-
-//                    groupMembership.edit().putInt(group.properties.organization.properties.name, group.properties.organization.properties.id).apply();
+                    ModelStorage.storeModel(groupMembership, group, String.format("group_%s", group.properties.organizationId));
 
                 }
 

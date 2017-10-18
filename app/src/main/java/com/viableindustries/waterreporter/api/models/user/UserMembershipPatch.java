@@ -39,13 +39,25 @@ public final class UserMembershipPatch {
 
                 if (group.properties.isAdmin || group.properties.organizationId != orgId) {
 
-                    groupList.add(group.properties);
+                    groupList.add(new GroupProperties(
+                            group.properties.joined,
+                            group.properties.organizationId,
+                            group.properties.userId,
+                            group.properties.isAdmin,
+                            group.properties.isMember
+                    ));
 
                 }
 
             } else {
 
-                groupList.add(group.properties);
+                groupList.add(new GroupProperties(
+                        group.properties.joined,
+                        group.properties.organizationId,
+                        group.properties.userId,
+                        group.properties.isAdmin,
+                        group.properties.isMember
+                ));
 
             }
 

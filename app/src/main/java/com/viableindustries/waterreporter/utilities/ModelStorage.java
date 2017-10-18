@@ -43,9 +43,9 @@ public class ModelStorage {
 
     }
 
-    public static Group getStoredGroup(SharedPreferences sharedPreferences, String organizationName) {
+    public static Group getStoredGroup(SharedPreferences sharedPreferences, String organizationId) {
 
-        String storedGroup = sharedPreferences.getString(organizationName, "");
+        String storedGroup = sharedPreferences.getString(organizationId, "");
 
         return new Gson().fromJson(storedGroup, Group.class);
 
