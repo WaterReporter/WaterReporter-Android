@@ -104,17 +104,13 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     private String complexQuery;
 
-    private ViewGroup.LayoutParams listViewParams;
-
     private int organizationId;
 
-    private int actionCount = 0;
+    private int actionCount;
 
     private int reportCount = 99999999;
 
     private boolean actionFocus = false;
-
-    private boolean hasScrolled = false;
 
     private boolean hasMembers = false;
 
@@ -125,8 +121,6 @@ public class OrganizationProfileActivity extends AppCompatActivity {
     private SharedPreferences mSharedPreferences;
 
     private SharedPreferences groupPrefs;
-
-    private int socialOptions;
 
     private Resources resources;
 
@@ -163,7 +157,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                         // This method performs the actual api-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
 
-                        countReports(complexQuery, "state");
+                        countPosts(complexQuery, "state");
 
                         resetStats();
 
@@ -189,7 +183,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                 {"state", "eq", "closed"}
         });
 
-        countReports(complexQuery, "state");
+        countPosts(complexQuery, "state");
 
         // Retrieve the organization's members
 
@@ -203,11 +197,11 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                 if (actionFocus) {
 
-                    fetchReports(5, page, complexQuery, false);
+                    fetchPosts(5, page, complexQuery, false);
 
                 } else {
 
-                    fetchReports(5, page, buildQuery(true, null), false);
+                    fetchPosts(5, page, buildQuery(true, null), false);
 
                 }
 
@@ -224,13 +218,13 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         try {
 
-            int orgId = organization.properties.id;
+            organizationId = organization.properties.id;
 
             if (reportCollection.isEmpty()) {
 
                 timeLineContainer.setRefreshing(true);
 
-                fetchReports(5, 1, buildQuery(true, null), true);
+                fetchPosts(5, 1, buildQuery(true, null), false);
 
             }
 
@@ -497,7 +491,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                 timeLineContainer.setRefreshing(true);
 
-                fetchReports(5, 1, complexQuery, true);
+                fetchPosts(5, 1, complexQuery, true);
 
             }
         });
@@ -535,11 +529,11 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         timeLineContainer.setRefreshing(true);
 
-        fetchReports(5, 1, buildQuery(true, null), true);
+        fetchPosts(5, 1, buildQuery(true, null), true);
 
     }
 
-    private void setReportCountState(int count) {
+    private void setPostCountState(int count) {
 
         reportCounter.setText(String.valueOf(reportCount));
         reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
@@ -566,7 +560,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     }
 
-    private void countReports(String query, final String filterName) {
+    private void countPosts(String query, final String filterName) {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
@@ -588,7 +582,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                         break;
                     default:
                         reportCount = count;
-                        setReportCountState(reportCount);
+                        setPostCountState(reportCount);
                         break;
                 }
 
@@ -609,7 +603,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                     if (status == 403) {
 
-                        startActivity(new Intent(mContext, SignInActivity.class));
+                        startActivity(new Intent(OrganizationProfileActivity.this, SignInActivity.class));
 
                     }
 
@@ -726,7 +720,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     }
 
-    private void fetchReports(int limit, final int page, String query, final boolean refresh) {
+    private void fetchPosts(int limit, final int page, String query, final boolean refresh) {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
@@ -753,13 +747,13 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                     reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
 
-                    setReportCountState(reportCount);
+                    setPostCountState(reportCount);
 
                 } else {
 
                     reportStat.setVisibility(View.GONE);
 
-                    setReportCountState(reportCount);
+                    setPostCountState(reportCount);
 
                 }
 
@@ -795,7 +789,15 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                 }
 
-                timeLineContainer.setRefreshing(false);
+                try {
+
+                    timeLineContainer.setRefreshing(false);
+
+                } catch (NullPointerException e) {
+
+                    finish();
+
+                }
 
             }
 

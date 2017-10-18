@@ -204,11 +204,11 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
 
-                // Triggered only when new api needs to be appended to the list
+                // Triggered only when new data should be appended to the list
 
                 fetchPosts(5, page, mMasterQuery, false);
 
-                return true; // ONLY if more api is actually being loaded; false otherwise.
+                return true; // ONLY if more data are actually being loaded; false otherwise.
 
             }
 

@@ -227,7 +227,7 @@ public class AuthUserActivity extends AppCompatActivity implements
 
     }
 
-    private void setReportCountState(int count) {
+    private void setPostCountState(int count) {
 
         mUserProfileHeaderView.reportCounter.setText(String.valueOf(reportCount));
         mUserProfileHeaderView.reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
@@ -297,7 +297,7 @@ public class AuthUserActivity extends AppCompatActivity implements
                         break;
                     default:
                         reportCount = count;
-                        setReportCountState(reportCount);
+                        setPostCountState(reportCount);
                         break;
                 }
 
@@ -468,7 +468,7 @@ public class AuthUserActivity extends AppCompatActivity implements
 
                     mUserProfileHeaderView.reportStat.setVisibility(View.GONE);
 
-                    setReportCountState(reportCount);
+                    setPostCountState(reportCount);
 
                 }
 

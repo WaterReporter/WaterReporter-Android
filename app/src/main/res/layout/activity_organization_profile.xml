@@ -22,33 +22,6 @@
             android:scaleType="fitXY"
             android:src="@drawable/logo_horizontal_lockup" />
 
-        <!--<ImageButton-->
-        <!--android:id="@+id/log_out"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentEnd="true"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_centerVertical="true"-->
-        <!--android:layout_marginEnd="16dp"-->
-        <!--android:layout_marginRight="16dp"-->
-        <!--android:alpha="0.4"-->
-        <!--android:background="@null"-->
-        <!--android:src="@drawable/ic_settings_black_24dp"-->
-        <!--android:visibility="gone" />-->
-
-        <!--<ImageButton-->
-        <!--android:id="@+id/group_membership_button"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentEnd="true"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_centerVertical="true"-->
-        <!--android:layout_marginEnd="16dp"-->
-        <!--android:layout_marginRight="16dp"-->
-        <!--android:background="@null"-->
-        <!--android:src="@drawable/ic_group_add_black_24dp"-->
-        <!--android:visibility="gone" />-->
-
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
@@ -82,8 +55,6 @@
                 android:scrollbars="none" />
 
         </android.support.v4.widget.SwipeRefreshLayout>
-
-        <include layout="@layout/prompt_empty_profile" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/group_membership_button"

@@ -115,7 +115,7 @@ public class UserProfileActivity extends AppCompatActivity implements
                         // This method performs the actual api-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
 
-                        countReports(complexQuery, "state");
+                        countPosts(complexQuery, "state");
 
                         resetStats();
 
@@ -135,7 +135,7 @@ public class UserProfileActivity extends AppCompatActivity implements
 
         complexQuery = String.format(getResources().getString(R.string.complex_actions_query), userId, userId);
 
-        countReports(complexQuery, "state");
+        countPosts(complexQuery, "state");
 
         // Retrieve the user's groups
 
@@ -206,7 +206,7 @@ public class UserProfileActivity extends AppCompatActivity implements
 
     }
 
-    private void setReportCountState(int count) {
+    private void setPostCountState(int count) {
 
         mUserProfileHeaderView.reportCounter.setText(String.valueOf(reportCount));
         mUserProfileHeaderView.reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
@@ -235,7 +235,7 @@ public class UserProfileActivity extends AppCompatActivity implements
 
     }
 
-    private void countReports(String query, final String filterName) {
+    private void countPosts(String query, final String filterName) {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
@@ -257,7 +257,7 @@ public class UserProfileActivity extends AppCompatActivity implements
                         break;
                     default:
                         reportCount = count;
-                        setReportCountState(reportCount);
+                        setPostCountState(reportCount);
                         break;
                 }
 
@@ -422,13 +422,13 @@ public class UserProfileActivity extends AppCompatActivity implements
 
                     mUserProfileHeaderView.reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
 
-                    setReportCountState(reportCount);
+                    setPostCountState(reportCount);
 
                 } else {
 
                     mUserProfileHeaderView.reportStat.setVisibility(View.GONE);
 
-                    setReportCountState(reportCount);
+                    setPostCountState(reportCount);
 
                 }
 
