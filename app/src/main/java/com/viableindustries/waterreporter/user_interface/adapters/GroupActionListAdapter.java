@@ -27,6 +27,7 @@ import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -130,17 +131,17 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
     }
 
-    private List<Map<String, Object>> buildGroupPatch(int organizationId, int userId) {
-
-        User user = ModelStorage.getStoredUser(mSharedPreferences);
-
-        List<Map<String, Object>> groupObjects = new ArrayList<>();
-
-        if (user.properties.gro)
-
-            return groupObjects;
-
-    }
+//    private List<Map<String, Object>> buildGroupPatch(int organizationId, int userId) {
+//
+//        User user = ModelStorage.getStoredUser(mSharedPreferences);
+//
+//        List<Map<String, Object>> groupObjects = new ArrayList<>();
+//
+//        if (user.properties.gro)
+//
+//            return groupObjects;
+//
+//    }
 
     private void changeOrgStatus(final Organization organization, final View view) {
 
@@ -156,7 +157,25 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
         // Build request object
 
-        Map<String, Map> userPatch = UserMembershipPatch.buildRequest(organization.id, operation);
+        List<Group> currentGroups = new ArrayList<>();
+
+        Map<String, ?> storedGroups = groupMembership.getAll();
+
+        Iterator it = storedGroups.entrySet().iterator();
+
+        while (it.hasNext()) {
+
+            Map.Entry pair = (Map.Entry)it.next();
+
+            System.out.println(pair.getKey() + " = " + pair.getValue());
+
+            currentGroups.add(ModelStorage.getStoredGroup(groupMembership, pair.getKey().toString()));
+
+            it.remove(); // avoids a ConcurrentModificationException
+
+        }
+
+        Map<String, List> userPatch = UserMembershipPatch.buildRequest(currentGroups, id, organization.id, operation);
 
         RestClient.getUserService().updateUserMemberships(accessToken, "application/json", id, userPatch, new Callback<User>() {
 
@@ -202,10 +221,6 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
                 }
 
                 CharSequence text = String.format("Successfully %s %s", action, organization.properties.name);
-//                int duration = Toast.LENGTH_SHORT;
-//
-//                Toast toast = Toast.makeText(mContext, text, duration);
-//                toast.show();
 
                 Snackbar.make(view.getRootView(), text,
                         Snackbar.LENGTH_SHORT)

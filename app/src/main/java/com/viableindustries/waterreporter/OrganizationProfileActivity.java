@@ -49,6 +49,7 @@ import com.viableindustries.waterreporter.utilities.ModelStorage;
 import com.viableindustries.waterreporter.utilities.PatternEditableBuilder;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -121,7 +122,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     private SharedPreferences mSharedPreferences;
 
-    private SharedPreferences groupPrefs;
+    private SharedPreferences groupMembership;
 
     private Resources resources;
 
@@ -138,7 +139,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        groupPrefs = getSharedPreferences(getString(R.string.group_membership_key), 0);
+        groupMembership = getSharedPreferences(getString(R.string.group_membership_key), 0);
 
         mContext = this;
 
@@ -215,7 +216,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     private void retrieveStoredOrganization() {
 
-        organization = ModelStorage.getStoredGroup(mSharedPreferences);
+        organization = ModelStorage.getStoredOrganization(mSharedPreferences);
 
         try {
 
@@ -266,26 +267,50 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         // Build request object
 
-        Map<String, Map> userPatch = UserMembershipPatch.buildRequest(organization.id, "add");
+        List<Group> currentGroups = new ArrayList<>();
+
+        Map<String, ?> storedGroups = groupMembership.getAll();
+
+        Iterator it = storedGroups.entrySet().iterator();
+
+        while (it.hasNext()) {
+
+            Map.Entry pair = (Map.Entry)it.next();
+
+            System.out.println(pair.getKey() + " = " + pair.getValue());
+
+            currentGroups.add(ModelStorage.getStoredGroup(groupMembership, pair.getKey().toString()));
+
+            it.remove(); // avoids a ConcurrentModificationException
+
+        }
+
+        Map<String, List> userPatch = UserMembershipPatch.buildRequest(currentGroups, id, organization.id, "add");
 
         RestClient.getUserService().updateUserMemberships(accessToken, "application/json", id, userPatch, new Callback<User>() {
 
             @Override
             public void success(User user, Response response) {
 
-                String action;
-
-                action = "joined";
+                String action = "joined";
 
                 joinOrganization.setVisibility(View.GONE);
 
-                groupPrefs.edit().putInt(organization.properties.name, organization.properties.id).apply();
+                // Reset the user's stored groups.
+
+                groupMembership.edit().clear().apply();
+
+                if (user.properties.groups.size() > 0) {
+
+                    for (Group group : user.properties.groups) {
+
+                        ModelStorage.storeModel(groupMembership, group, group.properties.organization.properties.name);
+
+                    }
+
+                }
 
                 CharSequence text = String.format("Successfully %s %s", action, organization.properties.name);
-//                int duration = Toast.LENGTH_SHORT;
-//
-//                Toast toast = Toast.makeText(mContext, text, duration);
-//                toast.show();
 
                 Snackbar.make(timeLineContainer,text,
                         Snackbar.LENGTH_SHORT)
@@ -373,7 +398,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
 //        // Check group membership
 //
-//        int selected = groupPrefs.getInt(organization.properties.name, 0);
+//        int selected = groupMembership.getInt(organization.properties.name, 0);
 //
 //        if (selected == 0) {
 //
@@ -898,9 +923,17 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                 }
 
-                // Reset the user's stored group IDs.
+                // Reset the user's stored groups.
 
-                mSharedPreferences.edit().putString("user_groups", orgIds).apply();
+                SharedPreferences groupMembership = getSharedPreferences(getString(R.string.group_membership_key), 0);
+
+                groupMembership.edit().clear().apply();
+
+                for (Group group : groups) {
+
+                    ModelStorage.storeModel(groupMembership, group, group.properties.organization.properties.name);
+
+                }
 
             }
 

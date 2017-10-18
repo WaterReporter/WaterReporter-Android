@@ -352,7 +352,7 @@ public class AuthUserActivity extends AppCompatActivity implements
 
                 }
 
-                // Reset the user's stored group IDs.
+                // Reset the user's stored groups.
 
                 SharedPreferences groupMembership = getSharedPreferences(getString(R.string.group_membership_key), 0);
 
@@ -361,8 +361,6 @@ public class AuthUserActivity extends AppCompatActivity implements
                 for (Group group : groups) {
 
                     ModelStorage.storeModel(groupMembership, group, group.properties.organization.properties.name);
-
-//                    groupMembership.edit().putInt(group.properties.organization.properties.name, group.properties.organization.properties.id).apply();
 
                 }
 

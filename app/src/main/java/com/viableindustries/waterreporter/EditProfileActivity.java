@@ -156,7 +156,7 @@ public class EditProfileActivity extends AppCompatActivity implements
         UserProperties userProperties = new UserProperties(coreId, coreProfile.getString("description", ""),
                 coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
                 coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
-                coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null);
+                coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null, null);
 
         coreUser = User.createUser(coreId, userProperties);
 
@@ -438,7 +438,7 @@ public class EditProfileActivity extends AppCompatActivity implements
                         UserProperties userProperties = new UserProperties(user.id, coreProfile.getString("description", ""),
                                 coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
                                 coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
-                                coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null);
+                                coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null, null);
 
                         User coreUser = User.createUser(user.id, userProperties);
 

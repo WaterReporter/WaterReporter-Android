@@ -104,7 +104,7 @@ public class OrganizationMembersActivity extends AppCompatActivity {
 
     private void retrieveStoredOrganization() {
 
-        organization = ModelStorage.getStoredGroup(mSharedPreferences);
+        organization = ModelStorage.getStoredOrganization(mSharedPreferences);
 
         fetchOrganizationMembers(50, 1, organization.id, null, true);
 

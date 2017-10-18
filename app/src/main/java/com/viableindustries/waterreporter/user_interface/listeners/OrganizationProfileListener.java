@@ -31,7 +31,7 @@ public class OrganizationProfileListener implements View.OnClickListener {
 
         // Write model to temporary storage in SharedPreferences
 
-        ModelStorage.storeModel(mContext.getSharedPreferences(mContext.getPackageName(), MODE_PRIVATE), organization, "stored_group");
+        ModelStorage.storeModel(mContext.getSharedPreferences(mContext.getPackageName(), MODE_PRIVATE), organization, "stored_organization");
 
         Intent intent = new Intent(mContext, OrganizationProfileActivity.class);
 

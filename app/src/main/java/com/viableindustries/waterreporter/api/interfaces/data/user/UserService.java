@@ -7,6 +7,7 @@ import com.viableindustries.waterreporter.api.models.user.UserBasicResponse;
 import com.viableindustries.waterreporter.api.models.user.UserCollection;
 
 
+import java.util.List;
 import java.util.Map;
 
 import retrofit.Callback;
@@ -60,7 +61,7 @@ public interface UserService {
     void updateUserMemberships(@Header("Authorization") String authorization,
                                 @Header("Content-Type") String contentType,
                                 @Path("user") int user_id,
-                                @Body Map<String, Map> userPatch,
+                                @Body Map<String, List> userPatch,
                                 Callback<User> userResponseCallback);
 
     @GET("/data/user/{user}/organization")

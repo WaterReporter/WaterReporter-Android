@@ -1,8 +1,14 @@
 package com.viableindustries.waterreporter.api.models.user;
 
+import com.viableindustries.waterreporter.api.models.group.Group;
+import com.viableindustries.waterreporter.api.models.group.GroupProperties;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -13,41 +19,103 @@ public final class UserMembershipPatch {
     private UserMembershipPatch() {
     }
 
-    public static Map<String, List> buildRequest(int orgId) {
+    private static String createJoinDate() {
 
-        Map<String, List> requestData = new HashMap<>();
-        
-        // Set up organization object
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        return format.format(calendar.getTime());
 
-//        Map<String, List<Map>> organizationListWrapper = new HashMap<>();
+    }
+
+    private static List<GroupProperties> buildGroupList(List<Group> groups, int userId, int orgId, String action) {
+
+        List<GroupProperties> groupList = new ArrayList<>();
+
+        for (Group group : groups) {
+
+            if (action.equals("remove")) {
+
+                // If the user is an admin of the group, retain their membership!
+
+                if (group.properties.isAdmin || group.properties.organizationId != orgId) {
+
+                    groupList.add(group.properties);
+
+                }
+
+            } else {
+
+                groupList.add(group.properties);
+
+            }
+
+        }
+
+        if (action.equals("add")) {
+
+            groupList.add(new GroupProperties(
+                    createJoinDate(),
+                    orgId,
+                    userId,
+                    false,
+                    false
+            ));
+
+        }
+
+        return groupList;
+
+    }
+
+    private static List<Map> buildOrganizationList(List<Group> groups, int orgId, String action) {
 
         List<Map> organizationList = new ArrayList<>();
 
-        Map<String, Integer> organizationObj = new HashMap<>();
+        for (Group group : groups) {
 
-        organizationObj.put("id", orgId);
+            Map<String, Integer> organizationObject = new HashMap<>();
 
-        organizationList.add(organizationObj);
+            if (action.equals("remove")) {
 
-//        organizationListWrapper.put(action, organizationList);
+                if (group.properties.organizationId != orgId) {
 
-        requestData.put("organization", organizationList);
+                    organizationObject.put("id", group.properties.organizationId);
 
-        // Set up group object
+                    organizationList.add(organizationObject);
 
-//        Map<String, List<Map>> groupListWrapper = new HashMap<>();
+                }
 
-        List<Map> groupList = new ArrayList<>();
+            } else {
 
-        Map<String, Integer> groupObj = new HashMap<>();
+                organizationObject.put("id", group.properties.organizationId);
 
-        groupObj.put("organization_id", orgId);
+                organizationList.add(organizationObject);
 
-        groupList.add(groupObj);
+            }
 
-//        groupListWrapper.put(action, groupList);
+        }
 
-        requestData.put("groups", groupList);
+        if (action.equals("add")) {
+
+            Map<String, Integer> newOrganizationObject = new HashMap<>();
+
+            newOrganizationObject.put("id", orgId);
+
+            organizationList.add(newOrganizationObject);
+
+        }
+
+        return organizationList;
+
+    }
+
+    public static Map<String, List> buildRequest(List<Group> groups, int userId, int orgId, String action) {
+
+        Map<String, List> requestData = new HashMap<>();
+
+        requestData.put("groups", buildGroupList(groups, userId, orgId, action));
+
+        requestData.put("organization", buildOrganizationList(groups, orgId, action));
 
         return requestData;
 
