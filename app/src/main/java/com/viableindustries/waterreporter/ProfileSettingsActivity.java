@@ -155,7 +155,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
         Map<String, Boolean> userNotificationSettings = user.properties.getNotificationProperties();
 
-        if ("admin".equals(user.properties.roles.get(0).properties.name)) {
+        if (user.properties.isAdmin()) {
 
             notificationFields = user.properties.getAdminNotificationSettingFields();
 
@@ -173,12 +173,6 @@ public class ProfileSettingsActivity extends AppCompatActivity {
                     getPackageName());
 
             String description = getResources().getString(settingId);
-
-//            currentNotificationSettings.add(
-//                    new NotificationSetting(
-//                            field, description, coreProfile.getBoolean(field, false)
-//                    )
-//            );
 
             currentNotificationSettings.add(
                     new NotificationSetting(

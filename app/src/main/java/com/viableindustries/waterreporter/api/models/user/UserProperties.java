@@ -203,4 +203,16 @@ public class UserProperties {
 
     }
 
+    public boolean isAdmin() {
+
+        for (Role role : this.roles) {
+
+            if ("admin".equals(role.properties.name)) return true;
+
+        }
+
+        return false;
+
+    }
+
 }

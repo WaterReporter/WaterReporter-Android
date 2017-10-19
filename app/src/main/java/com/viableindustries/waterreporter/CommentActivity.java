@@ -64,6 +64,7 @@ import com.viableindustries.waterreporter.api.models.post.ReportStateBody;
 import com.viableindustries.waterreporter.api.models.query.QueryFilter;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
+import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.user_interface.adapters.CommentAdapter;
 import com.viableindustries.waterreporter.user_interface.adapters.TagSuggestionAdapter;
 import com.viableindustries.waterreporter.user_interface.dialogs.CommentActionDialog;
@@ -77,6 +78,7 @@ import com.viableindustries.waterreporter.utilities.CacheManager;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.CursorPositionTracker;
 import com.viableindustries.waterreporter.utilities.FileUtils;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
 import com.viableindustries.waterreporter.utilities.OpenGraph;
 import com.viableindustries.waterreporter.utilities.OpenGraphTask;
 import com.viableindustries.waterreporter.utilities.PatternEditableBuilder;
@@ -198,6 +200,8 @@ public class CommentActivity extends AppCompatActivity implements
 
     private SharedPreferences mSharedPreferences;
 
+    private SharedPreferences mCoreProfile;
+
     private Context mContext;
 
     private ArrayList<HashTag> baseTagList;
@@ -214,6 +218,10 @@ public class CommentActivity extends AppCompatActivity implements
 
     private OpenGraphProperties openGraphProperties;
 
+    private int userId;
+
+    private User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -227,6 +235,8 @@ public class CommentActivity extends AppCompatActivity implements
 
         mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
+        mCoreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
         report = ReportHolder.getReport();
 
         addListViewHeader(report);
@@ -235,9 +245,9 @@ public class CommentActivity extends AppCompatActivity implements
 
         verifyPermissions();
 
-        // Load comments
+        // Load stored data about the authenticated user
 
-        fetchComments(50, 1);
+        retrieveStoredUser();
 
         // Initialize empty list to hold hashtags
 
@@ -423,6 +433,28 @@ public class CommentActivity extends AppCompatActivity implements
 
     }
 
+    private void retrieveStoredUser() {
+
+        user = ModelStorage.getStoredUser(mCoreProfile, "auth_user");
+
+        try {
+
+            userId = user.properties.id;
+
+            // Load comments
+
+            fetchComments(50, 1);
+
+        } catch (NullPointerException _e) {
+
+            startActivity(new Intent(this, MainActivity.class));
+
+            finish();
+
+        }
+
+    }
+
     private String buildQuery(String sortField, String sortDirection, String searchChars) {
 
         // Create order_by list and add a sort parameter
@@ -576,7 +608,9 @@ public class CommentActivity extends AppCompatActivity implements
 
                 final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
-                if ("admin".equals(coreProfile.getString("role", ""))) {
+                final User authUser = ModelStorage.getStoredUser(coreProfile, "auth_user");
+
+                if (authUser.properties.isAdmin()) {
 
                     presentAdminActions();
 
