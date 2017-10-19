@@ -12,11 +12,9 @@ import android.widget.TextView;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.notification.NotificationSetting;
 import com.viableindustries.waterreporter.api.models.user.User;
-import com.viableindustries.waterreporter.api.models.user.UserProperties;
 import com.viableindustries.waterreporter.user_interface.adapters.NotificationSettingAdapter;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

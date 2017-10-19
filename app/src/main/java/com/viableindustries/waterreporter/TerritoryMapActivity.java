@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
@@ -52,7 +51,6 @@ import com.viableindustries.waterreporter.map_box.CustomMarkerViewOptions;
 import com.viableindustries.waterreporter.map_box.MappedReportsHolder;
 import com.viableindustries.waterreporter.user_interface.adapters.MarkerCardAdapter;
 import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
-
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import java.util.ArrayList;

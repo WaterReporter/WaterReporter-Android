@@ -9,7 +9,6 @@ import com.viableindustries.waterreporter.api.models.post.ReportPatchBody;
 import com.viableindustries.waterreporter.api.models.post.ReportPostBody;
 import com.viableindustries.waterreporter.api.models.post.ReportStateBody;
 
-
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;

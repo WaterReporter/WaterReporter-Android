@@ -20,7 +20,6 @@ import com.viableindustries.waterreporter.api.models.notification.NotificationPa
 import com.viableindustries.waterreporter.api.models.notification.NotificationSetting;
 import com.viableindustries.waterreporter.api.models.user.User;
 
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

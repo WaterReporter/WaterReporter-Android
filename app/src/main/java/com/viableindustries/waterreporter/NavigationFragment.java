@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.viableindustries.waterreporter.api.models.user.User;
-import com.viableindustries.waterreporter.api.models.user.UserHolder;
-import com.viableindustries.waterreporter.api.models.user.UserProperties;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 import com.viableindustries.waterreporter.utilities.QueryBuilder;
 

@@ -1,7 +1,6 @@
 package com.viableindustries.waterreporter.api.models.user;
 
 import com.viableindustries.waterreporter.api.models.group.Group;
-import com.viableindustries.waterreporter.api.models.organization.Organization;
 
 import java.util.ArrayList;
 

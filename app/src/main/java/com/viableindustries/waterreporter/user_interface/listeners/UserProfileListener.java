@@ -6,7 +6,6 @@ import android.view.View;
 
 import com.viableindustries.waterreporter.UserProfileActivity;
 import com.viableindustries.waterreporter.api.models.user.User;
-import com.viableindustries.waterreporter.api.models.user.UserHolder;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import static android.content.Context.MODE_PRIVATE;

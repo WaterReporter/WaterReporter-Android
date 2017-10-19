@@ -2,7 +2,6 @@ package com.viableindustries.waterreporter.api.interfaces.data.image;
 
 import com.viableindustries.waterreporter.api.models.image.ImageProperties;
 
-
 import retrofit.Callback;
 import retrofit.http.Header;
 import retrofit.http.Multipart;

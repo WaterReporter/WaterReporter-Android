@@ -3,7 +3,6 @@ package com.viableindustries.waterreporter.api.interfaces.data.comment;
 import com.viableindustries.waterreporter.api.models.comment.Comment;
 import com.viableindustries.waterreporter.api.models.comment.CommentPost;
 
-
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;

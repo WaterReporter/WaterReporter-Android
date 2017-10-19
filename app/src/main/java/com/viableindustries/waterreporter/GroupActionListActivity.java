@@ -26,9 +26,7 @@ import com.viableindustries.waterreporter.api.models.organization.OrganizationFe
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
 import com.viableindustries.waterreporter.api.models.user.User;
-import com.viableindustries.waterreporter.api.models.user.UserGroupList;
 import com.viableindustries.waterreporter.user_interface.adapters.GroupActionListAdapter;
-
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 

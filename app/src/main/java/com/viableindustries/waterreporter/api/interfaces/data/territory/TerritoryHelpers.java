@@ -9,7 +9,6 @@ import com.viableindustries.waterreporter.api.models.territory.HucGeometryCollec
 import com.viableindustries.waterreporter.api.models.territory.Territory;
 import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
 
-
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;

@@ -5,7 +5,6 @@ import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.organization.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.api.models.user.UserCollection;
 
-
 import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Header;

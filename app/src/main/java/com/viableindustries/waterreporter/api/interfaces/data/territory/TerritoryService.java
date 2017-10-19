@@ -3,7 +3,6 @@ package com.viableindustries.waterreporter.api.interfaces.data.territory;
 import com.viableindustries.waterreporter.api.models.territory.Territory;
 import com.viableindustries.waterreporter.api.models.territory.TerritoryCollection;
 
-
 import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Header;

@@ -47,7 +47,6 @@ import com.viableindustries.waterreporter.api.models.organization.GroupListHolde
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.organization.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.api.models.post.Report;
-import com.viableindustries.waterreporter.api.models.post.ReportHolder;
 import com.viableindustries.waterreporter.api.models.query.QueryFilter;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;

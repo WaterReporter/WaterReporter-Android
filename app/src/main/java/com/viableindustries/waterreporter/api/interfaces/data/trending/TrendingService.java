@@ -5,7 +5,6 @@ import com.viableindustries.waterreporter.api.models.organization.TrendingGroups
 import com.viableindustries.waterreporter.api.models.territory.TrendingTerritories;
 import com.viableindustries.waterreporter.api.models.user.TrendingPeople;
 
-
 import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Header;

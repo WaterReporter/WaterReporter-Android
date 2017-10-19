@@ -3,7 +3,6 @@ package com.viableindustries.waterreporter.api.interfaces.data.hashtag;
 import com.viableindustries.waterreporter.api.models.hashtag.HashTag;
 import com.viableindustries.waterreporter.api.models.hashtag.HashtagCollection;
 
-
 import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Header;

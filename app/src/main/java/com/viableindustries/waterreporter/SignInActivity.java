@@ -13,14 +13,11 @@ import android.widget.ProgressBar;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.auth.AuthResponse;
 import com.viableindustries.waterreporter.api.models.auth.LogInBody;
-import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.api.models.user.UserBasicResponse;
 import com.viableindustries.waterreporter.utilities.CacheManager;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
-
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

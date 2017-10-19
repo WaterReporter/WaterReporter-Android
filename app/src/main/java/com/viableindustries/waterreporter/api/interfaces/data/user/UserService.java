@@ -6,7 +6,6 @@ import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.api.models.user.UserBasicResponse;
 import com.viableindustries.waterreporter.api.models.user.UserCollection;
 
-
 import java.util.List;
 import java.util.Map;
 

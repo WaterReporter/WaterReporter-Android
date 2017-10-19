@@ -46,7 +46,6 @@ import com.mapbox.services.android.ui.geocoder.GeocoderAutoCompleteView;
 import com.mapbox.services.api.geocoding.v5.GeocodingCriteria;
 import com.mapbox.services.api.geocoding.v5.models.CarmenFeature;
 
-
 import java.text.DateFormat;
 import java.util.Date;
 

@@ -29,7 +29,6 @@ import com.viableindustries.waterreporter.api.models.query.QueryFilter;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
-
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 
 import java.util.ArrayList;

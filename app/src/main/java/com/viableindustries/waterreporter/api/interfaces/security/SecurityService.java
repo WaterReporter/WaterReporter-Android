@@ -5,7 +5,6 @@ import com.viableindustries.waterreporter.api.models.auth.LogInBody;
 import com.viableindustries.waterreporter.api.models.auth.RegistrationBody;
 import com.viableindustries.waterreporter.api.models.auth.RegistrationResponse;
 
-
 import java.util.Map;
 
 import retrofit.Callback;

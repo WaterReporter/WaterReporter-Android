@@ -28,7 +28,6 @@ import com.viableindustries.waterreporter.api.models.hashtag.TrendingTags;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.organization.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.api.models.organization.TrendingGroups;
-import com.viableindustries.waterreporter.api.models.query.BooleanQueryFilter;
 import com.viableindustries.waterreporter.api.models.query.QueryFilter;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
@@ -42,7 +41,6 @@ import com.viableindustries.waterreporter.user_interface.adapters.OrganizationLi
 import com.viableindustries.waterreporter.user_interface.adapters.TagListAdapter;
 import com.viableindustries.waterreporter.user_interface.adapters.TerritoryListAdapter;
 import com.viableindustries.waterreporter.user_interface.adapters.UserListAdapter;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;

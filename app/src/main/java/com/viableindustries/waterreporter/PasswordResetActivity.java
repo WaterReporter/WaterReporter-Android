@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.auth.RegistrationResponse;
 
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;

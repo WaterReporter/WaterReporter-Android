@@ -33,11 +33,9 @@ import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.image.ImageProperties;
 import com.viableindustries.waterreporter.api.models.user.User;
-import com.viableindustries.waterreporter.api.models.user.UserHolder;
 import com.viableindustries.waterreporter.api.models.user.UserProperties;
 import com.viableindustries.waterreporter.user_interface.dialogs.PhotoPickerDialogFragment;
 import com.viableindustries.waterreporter.utilities.CacheManager;
-
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.FileUtils;
 import com.viableindustries.waterreporter.utilities.ModelStorage;

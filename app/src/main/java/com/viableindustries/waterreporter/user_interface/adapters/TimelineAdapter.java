@@ -23,7 +23,6 @@ import com.viableindustries.waterreporter.api.models.favorite.Favorite;
 import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.api.models.post.ReportHolder;
 import com.viableindustries.waterreporter.api.models.user.User;
-import com.viableindustries.waterreporter.api.models.user.UserHolder;
 import com.viableindustries.waterreporter.user_interface.dialogs.ReportActionDialog;
 import com.viableindustries.waterreporter.user_interface.listeners.PostCommentListener;
 import com.viableindustries.waterreporter.user_interface.listeners.PostDetailListener;

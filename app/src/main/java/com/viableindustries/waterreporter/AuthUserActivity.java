@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -27,8 +26,6 @@ import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.FeatureCollection;
 import com.viableindustries.waterreporter.api.models.group.Group;
 import com.viableindustries.waterreporter.api.models.group.GroupFeatureCollection;
-import com.viableindustries.waterreporter.api.models.organization.Organization;
-import com.viableindustries.waterreporter.api.models.organization.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.api.models.post.ReportHolder;
 import com.viableindustries.waterreporter.api.models.query.QueryFilter;
@@ -245,6 +242,13 @@ public class AuthUserActivity extends AppCompatActivity implements
                 mUserProfileHeaderView.startPostButton.setVisibility(View.VISIBLE);
 
                 mUserProfileHeaderView.startPostButton.setText(getString(R.string.share_post_prompt));
+
+                mUserProfileHeaderView.startPostButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startPost();
+                    }
+                });
 
                 mUserProfileHeaderView.promptBlock.setVisibility(View.VISIBLE);
 

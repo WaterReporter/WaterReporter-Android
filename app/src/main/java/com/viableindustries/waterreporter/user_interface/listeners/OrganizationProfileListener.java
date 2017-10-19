@@ -6,7 +6,6 @@ import android.view.View;
 
 import com.viableindustries.waterreporter.OrganizationProfileActivity;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
-import com.viableindustries.waterreporter.api.models.organization.OrganizationHolder;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import static android.content.Context.MODE_PRIVATE;

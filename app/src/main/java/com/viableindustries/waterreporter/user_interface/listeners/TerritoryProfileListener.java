@@ -7,7 +7,6 @@ import android.view.View;
 
 import com.viableindustries.waterreporter.TerritoryActivity;
 import com.viableindustries.waterreporter.api.models.territory.Territory;
-import com.viableindustries.waterreporter.api.models.territory.TerritoryHolder;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import static android.content.Context.MODE_PRIVATE;

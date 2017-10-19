@@ -3,7 +3,6 @@ package com.viableindustries.waterreporter.api.interfaces.data.favorite;
 import com.viableindustries.waterreporter.api.models.favorite.Favorite;
 import com.viableindustries.waterreporter.api.models.favorite.FavoritePostBody;
 
-
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.DELETE;

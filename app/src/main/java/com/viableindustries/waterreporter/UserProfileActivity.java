@@ -20,8 +20,6 @@ import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.FeatureCollection;
 import com.viableindustries.waterreporter.api.models.group.Group;
 import com.viableindustries.waterreporter.api.models.group.GroupFeatureCollection;
-import com.viableindustries.waterreporter.api.models.organization.Organization;
-import com.viableindustries.waterreporter.api.models.organization.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.api.models.post.ReportHolder;
 import com.viableindustries.waterreporter.api.models.query.QueryFilter;

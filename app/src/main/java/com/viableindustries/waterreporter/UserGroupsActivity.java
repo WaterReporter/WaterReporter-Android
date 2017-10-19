@@ -14,10 +14,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.viableindustries.waterreporter.api.models.group.Group;
-import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.user.UserGroupList;
 import com.viableindustries.waterreporter.user_interface.adapters.GroupListAdapter;
-import com.viableindustries.waterreporter.user_interface.adapters.OrganizationListAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;

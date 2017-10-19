@@ -2,7 +2,6 @@ package com.viableindustries.waterreporter.api.models.group;
 
 import com.google.gson.annotations.SerializedName;
 import com.viableindustries.waterreporter.api.models.CollectionProperties;
-import com.viableindustries.waterreporter.api.models.organization.Organization;
 
 import java.util.ArrayList;
 

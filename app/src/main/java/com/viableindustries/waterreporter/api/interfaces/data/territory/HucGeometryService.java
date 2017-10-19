@@ -2,7 +2,6 @@ package com.viableindustries.waterreporter.api.interfaces.data.territory;
 
 import com.viableindustries.waterreporter.api.models.territory.HucGeometryCollection;
 
-
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.http.GET;
