@@ -39,6 +39,7 @@ import com.viableindustries.waterreporter.utilities.CacheManager;
 
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.FileUtils;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -305,22 +306,7 @@ public class ProfileBasicActivity extends AppCompatActivity implements
 
                                                 final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
-                                                coreProfile.edit()
-                                                        //.putBoolean("active", user.properties.active)
-                                                        .putInt("id", user.id)
-                                                        .putString("picture", user.properties.images.get(0).properties.icon_retina)
-                                                        .apply();
-
-                                                // Model strings
-                                                String[] KEYS = {"description", "first_name",
-                                                        "last_name", "organization_name", //"picture",
-                                                        "public_email", "title"};
-
-                                                for (String key : KEYS) {
-
-                                                    coreProfile.edit().putString(key, user.properties.getStringProperties().get(key)).apply();
-
-                                                }
+                                                ModelStorage.storeModel(coreProfile, user, "auth_user");
 
                                                 final Handler handler = new Handler();
 

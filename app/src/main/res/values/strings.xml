@@ -314,7 +314,7 @@
     <!-- Notification settings -->
 
     <string name="can_notify_owner_comment_on_owned_report">Let me know when people comment on my posts.</string>
-    <string name="can_notify_owner_like_on_owned_report">Let me know when someone likes my posts.</string>
+    <string name="can_notify_owner_like_report">Let me know when someone likes my posts.</string>
     <string name="can_notify_owner_admin_closes_owned_report">Let me know when someone takes action on my posts.</string>
     <string name="can_notify_admin_admin_closes_report_in_group">Alert me when another admin takes action on a post linked to my organization.</string>
     <string name="can_notify_admin_admin_closes_report_in_territory">Alert me when another admin takes action on a post in my geographic area of interest.</string>

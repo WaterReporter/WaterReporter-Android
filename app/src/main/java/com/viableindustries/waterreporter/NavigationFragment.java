@@ -167,8 +167,6 @@ public class NavigationFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                Log.d("avatar", coreProfile.getString("picture", ""));
-
                 // If the current activity is the authenticated user's profile, simply refresh the timeline
 
                 if ("AuthUserActivity".equals(activity.getClass().getSimpleName())) {
@@ -182,17 +180,6 @@ public class NavigationFragment extends Fragment {
                     ((AuthUserActivity) activity).fetchPosts(5, 1, QueryBuilder.userQuery(true, coreId, null), true);
 
                 } else {
-
-                    UserProperties userProperties = new UserProperties(coreId, coreProfile.getString("description", ""),
-                            coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
-                            coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
-                            coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null, null);
-
-                    User coreUser = User.createUser(coreId, userProperties);
-
-                    // Place core user data in temporary storage
-
-                    ModelStorage.storeModel(getContext().getSharedPreferences(getContext().getPackageName(), MODE_PRIVATE), coreUser, "stored_user");
 
                     startActivity(new Intent(activity, AuthUserActivity.class));
 

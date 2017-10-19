@@ -92,6 +92,8 @@ public class AuthUserActivity extends AppCompatActivity implements
 
     private SharedPreferences mSharedPreferences;
 
+    private SharedPreferences mCoreProfile;
+
     private User user;
 
     private Resources resources;
@@ -121,11 +123,11 @@ public class AuthUserActivity extends AppCompatActivity implements
 
         mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+        mCoreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
         mAccessToken = mSharedPreferences.getString("access_token", "");
 
-        Log.d("storedavatar", coreProfile.getString("picture", ""));
+        Log.d("storedavatar", mCoreProfile.getString("picture", ""));
 
         resources = getResources();
 
@@ -211,7 +213,7 @@ public class AuthUserActivity extends AppCompatActivity implements
 
     private void retrieveStoredUser() {
 
-        user = ModelStorage.getStoredUser(mSharedPreferences);
+        user = ModelStorage.getStoredUser(mCoreProfile, "auth_user");
 
         try {
 

@@ -11,11 +11,12 @@ import android.widget.TextView;
 
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.notification.NotificationSetting;
-import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.user.User;
+import com.viableindustries.waterreporter.api.models.user.UserProperties;
 import com.viableindustries.waterreporter.user_interface.adapters.NotificationSettingAdapter;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +48,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
     private SharedPreferences coreProfile;
 
-    private SharedPreferences groupPrefs;
+    private SharedPreferences groupMembership;
 
     private SharedPreferences associatedGroups;
 
@@ -66,7 +67,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
         coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
-        groupPrefs = getSharedPreferences(getString(R.string.group_membership_key), 0);
+        groupMembership = getSharedPreferences(getString(R.string.group_membership_key), 0);
 
         associatedGroups = getSharedPreferences(getString(R.string.associated_group_key), 0);
 
@@ -78,7 +79,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
     private void retrieveStoredUser() {
 
-        user = ModelStorage.getStoredUser(mSharedPreferences);
+        user = ModelStorage.getStoredUser(coreProfile, "auth_user");
 
         try {
 
@@ -132,45 +133,9 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
                         final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
-                        coreProfile.edit()
-                                .putInt("id", user.id)
-                                .apply();
+                        ModelStorage.storeModel(coreProfile, user, "auth_user");
 
-                        // Update stored values of user's string type attributes
-
-                        Map<String, String> userStringProperties = user.properties.getStringProperties();
-
-                        for (Map.Entry<String, String> entry : userStringProperties.entrySet()) {
-
-                            coreProfile.edit().putString(entry.getKey(), entry.getValue()).apply();
-
-                        }
-
-                        // Update stored values of user's notification settings
-
-                        Map<String, Boolean> userNotificationSettings = user.properties.getNotificationProperties();
-
-                        for (Map.Entry<String, Boolean> entry : userNotificationSettings.entrySet()) {
-
-                            coreProfile.edit().putBoolean(entry.getKey(), entry.getValue()).apply();
-
-                        }
-
-                        // Update stored values of user's group memberships
-
-                        final SharedPreferences groupPrefs = getSharedPreferences(getString(R.string.group_membership_key), 0);
-
-                        for (Organization organization : user.properties.organizations) {
-
-                            groupPrefs.edit().putInt(organization.properties.name, organization.properties.id).apply();
-
-                        }
-
-                        // Update stored values of user's role designation
-
-                        coreProfile.edit().putString("role", user.properties.roles.get(0).properties.name).apply();
-
-                        configureNotificationSettings();
+                        configureNotificationSettings(user);
 
                     }
 
@@ -184,11 +149,13 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
     }
 
-    private void configureNotificationSettings() {
+    private void configureNotificationSettings(User user) {
 
         String[] notificationFields;
 
-        if ("admin".equals(coreProfile.getString("role", ""))) {
+        Map<String, Boolean> userNotificationSettings = user.properties.getNotificationProperties();
+
+        if ("admin".equals(user.properties.roles.get(0).properties.name)) {
 
             notificationFields = user.properties.getAdminNotificationSettingFields();
 
@@ -207,9 +174,15 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
             String description = getResources().getString(settingId);
 
+//            currentNotificationSettings.add(
+//                    new NotificationSetting(
+//                            field, description, coreProfile.getBoolean(field, false)
+//                    )
+//            );
+
             currentNotificationSettings.add(
                     new NotificationSetting(
-                            field, description, coreProfile.getBoolean(field, false)
+                            field, description, userNotificationSettings.get(field)
                     )
             );
 
@@ -253,7 +226,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
         // Clear stored group memberships
 
-        groupPrefs.edit().clear().apply();
+        groupMembership.edit().clear().apply();
 
         // Clear stored group memberships available to report tagging
 
@@ -311,7 +284,7 @@ public class ProfileSettingsActivity extends AppCompatActivity {
 
         // Retrieve stored User
 
-        retrieveStoredUser();
+        if (user == null) retrieveStoredUser();
 
     }
 

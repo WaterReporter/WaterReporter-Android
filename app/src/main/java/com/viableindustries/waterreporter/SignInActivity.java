@@ -16,6 +16,8 @@ import com.viableindustries.waterreporter.api.models.auth.LogInBody;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.api.models.user.UserBasicResponse;
+import com.viableindustries.waterreporter.utilities.CacheManager;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 
 import java.util.Map;
@@ -162,45 +164,15 @@ public class SignInActivity extends AppCompatActivity {
 
                                                                 mSharedPreferences.edit().putBoolean("clean_slate", true).apply();
 
+                                                                // Clear the app api cache
+
+                                                                CacheManager.deleteCache(getBaseContext());
+
+                                                                // Store authenticated user data
+
                                                                 final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
-                                                                coreProfile.edit()
-                                                                        .putInt("id", user.id)
-                                                                        .apply();
-
-                                                                // Update stored values of user's string type attributes
-
-                                                                Map<String, String> userStringProperties = user.properties.getStringProperties();
-
-                                                                for (Map.Entry<String, String> entry : userStringProperties.entrySet()) {
-
-                                                                    coreProfile.edit().putString(entry.getKey(), entry.getValue()).apply();
-
-                                                                }
-
-                                                                // Update stored values of user's notification settings
-
-                                                                Map<String, Boolean> userNotificationSettings = user.properties.getNotificationProperties();
-
-                                                                for (Map.Entry<String, Boolean> entry : userNotificationSettings.entrySet()) {
-
-                                                                    coreProfile.edit().putBoolean(entry.getKey(), entry.getValue()).apply();
-
-                                                                }
-
-                                                                // Update stored values of user's group memberships
-
-                                                                final SharedPreferences groupPrefs = getSharedPreferences(getString(R.string.group_membership_key), 0);
-
-                                                                for (Organization organization : user.properties.organizations) {
-
-                                                                    groupPrefs.edit().putInt(organization.properties.name, organization.properties.id).apply();
-
-                                                                }
-
-                                                                // Update stored values of user's role designation
-
-                                                                coreProfile.edit().putString("role", user.properties.roles.get(0).properties.name).apply();
+                                                                ModelStorage.storeModel(coreProfile, user, "auth_user");
 
                                                                 startActivity(new Intent(SignInActivity.this, MainActivity.class));
 

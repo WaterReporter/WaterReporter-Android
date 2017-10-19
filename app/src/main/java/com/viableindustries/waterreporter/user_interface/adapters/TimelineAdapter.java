@@ -215,7 +215,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
             // comparing the transient user id stored in the UserHolder class and the `owner_id`
             // field of the current post.
 
-            User user = ModelStorage.getStoredUser(sharedPreferences);
+            User user = ModelStorage.getStoredUser(sharedPreferences, "stored_user");
 
             if (user.properties.id != post.properties.owner_id) {
 

@@ -166,7 +166,7 @@ public class UserProfileActivity extends AppCompatActivity implements
 
     private void retrieveStoredUser() {
 
-        user = ModelStorage.getStoredUser(mSharedPreferences);
+        user = ModelStorage.getStoredUser(mSharedPreferences, "stored_user");
 
         try {
 

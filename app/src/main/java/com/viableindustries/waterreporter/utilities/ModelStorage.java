@@ -27,9 +27,9 @@ public class ModelStorage {
 
     }
 
-    public static User getStoredUser(SharedPreferences sharedPreferences) {
+    public static User getStoredUser(SharedPreferences sharedPreferences, String key) {
 
-        String storedUser = sharedPreferences.getString("stored_user", "");
+        String storedUser = sharedPreferences.getString(key, "");
 
         return new Gson().fromJson(storedUser, User.class);
 

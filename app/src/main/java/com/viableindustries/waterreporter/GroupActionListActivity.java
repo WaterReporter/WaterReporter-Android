@@ -61,6 +61,8 @@ public class GroupActionListActivity extends AppCompatActivity {
 
     private SharedPreferences mSharedPreferences;
 
+    private SharedPreferences mCoreProfile;
+
     private String mAccessToken;
 
     private User user;
@@ -85,6 +87,12 @@ public class GroupActionListActivity extends AppCompatActivity {
             skipAhead.setVisibility(View.VISIBLE);
 
         }
+
+        // Instantiate reference to core profile preferences - -
+        // this is where the app keeps basic information
+        // about the authenticated user.
+
+        mCoreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
         // Retrieve access token
 
@@ -121,7 +129,7 @@ public class GroupActionListActivity extends AppCompatActivity {
 
     private void retrieveStoredUser() {
 
-        user = ModelStorage.getStoredUser(mSharedPreferences);
+        user = ModelStorage.getStoredUser(mCoreProfile, "auth_user");
 
         try {
 

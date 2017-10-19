@@ -31,6 +31,7 @@ import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.api.models.post.ReportHolder;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
+import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.constants.Constants;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
 import com.viableindustries.waterreporter.user_interface.dialogs.ReportActionDialog;
@@ -90,8 +91,6 @@ public class MainActivity extends AppCompatActivity implements
     private static final String TAG = "MainActivity";
 
     private EndlessScrollListener scrollListener;
-
-    private int socialOptions;
 
     // An instance of the status broadcast receiver
     private UploadStateReceiver mUploadStateReceiver;
@@ -198,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 }
 
-                fetchUserGroups();
+                fetchUser();
 
             }
 
@@ -322,7 +321,7 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    private void fetchUserGroups() {
+    private void fetchUser() {
 
         final String mAccessToken = mSharedPreferences.getString("access_token", "");
 
@@ -331,12 +330,10 @@ public class MainActivity extends AppCompatActivity implements
         // We shouldn't need to retrieve this value again, but we'll deal with that issue later
         userId = mSharedPreferences.getInt("user_id", 0);
 
-        RestClient.getUserService().getUserGroups(mAccessToken, "application/json", userId, new Callback<GroupFeatureCollection>() {
+        RestClient.getUserService().getUser(mAccessToken, "application/json", userId, new Callback<User>() {
 
             @Override
-            public void success(GroupFeatureCollection groupFeatureCollection, Response response) {
-
-                ArrayList<Group> groups = groupFeatureCollection.getFeatures();
+            public void success(User user, Response response) {
 
                 // Reset the user's stored group IDs.
 
@@ -344,11 +341,17 @@ public class MainActivity extends AppCompatActivity implements
 
                 groupMembership.edit().clear().apply();
 
-                for (Group group : groups) {
+                for (Group group : user.properties.groups) {
 
                     ModelStorage.storeModel(groupMembership, group, String.format("group_%s", group.properties.organizationId));
 
                 }
+
+                // Store authenticated user data
+
+                final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+                ModelStorage.storeModel(coreProfile, user, "auth_user");
 
             }
 
@@ -638,7 +641,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 verifyPermissions();
 
-                fetchUserGroups();
+                fetchUser();
 
             }
 
