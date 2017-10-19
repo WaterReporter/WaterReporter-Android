@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -181,7 +182,23 @@ public class NavigationFragment extends Fragment {
 
                 } else {
 
-                    startActivity(new Intent(activity, AuthUserActivity.class));
+                    final SharedPreferences coreProfile = getContext().getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+                    User authUser = ModelStorage.getStoredUser(coreProfile, "auth_user");
+
+                    try {
+
+                        SharedPreferences sharedPreferences = getContext().getSharedPreferences(getContext().getPackageName(), MODE_PRIVATE);
+
+                        ModelStorage.storeModel(sharedPreferences, authUser, "stored_user");
+
+                        startActivity(new Intent(activity, AuthUserActivity.class));
+
+                    } catch (NullPointerException e) {
+
+                        startActivity(new Intent(activity, SignInActivity.class));
+
+                    }
 
                 }
 

@@ -238,7 +238,13 @@ public class AuthUserActivity extends AppCompatActivity implements
 
             if (mUserProfileHeaderView.promptBlock != null) {
 
-                mUserProfileHeaderView.startPostButton.setVisibility(View.GONE);
+                // Since this is the authenticated user's profile,
+                // make sure to display the easy button for
+                // starting their first post!
+
+                mUserProfileHeaderView.startPostButton.setVisibility(View.VISIBLE);
+
+                mUserProfileHeaderView.startPostButton.setText(getString(R.string.share_post_prompt));
 
                 mUserProfileHeaderView.promptBlock.setVisibility(View.VISIBLE);
 
@@ -559,12 +565,17 @@ public class AuthUserActivity extends AppCompatActivity implements
 
         timelineAdapter = new TimelineAdapter(AuthUserActivity.this, list, true, false, getSupportFragmentManager());
 
-        // Attach the adapter to a ListView
         if (timeLine != null) {
 
             timeLine.setAdapter(timelineAdapter);
 
-            attachScrollListener();
+            /* IMPORTANT
+            Don't set a scroll listener unless necessary,
+            otherwise it may trigger infinite API requests
+            when empty collection messages overflow the screen.
+            */
+
+            if (list.size() > 1) attachScrollListener();
 
         }
 
