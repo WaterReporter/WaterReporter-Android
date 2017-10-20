@@ -492,7 +492,9 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
 //        mapView = (MapView) header.findViewById(R.id.mapView);
 
-        Space mapOffsetSpace = (Space) header.findViewById(R.id.mapOffsetSpace);
+//        Space mapOffsetSpace = (Space) header.findViewById(R.id.mapOffsetSpace);
+
+        RelativeLayout mapOffsetSpace = (RelativeLayout) header.findViewById(R.id.mapOffsetSpace);
 
         mapOffsetSpace.setOnClickListener(new View.OnClickListener() {
             @Override

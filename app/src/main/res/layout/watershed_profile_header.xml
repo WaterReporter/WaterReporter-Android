@@ -8,40 +8,28 @@
     android:minHeight="320dp"
     android:orientation="vertical">
 
-    <!--<Space-->
+    <!--<android.support.v4.widget.Space-->
     <!--android:id="@+id/mapOffsetSpace"-->
     <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="320dp" />-->
+    <!--android:layout_height="240dp"-->
+    <!--android:clickable="true" />-->
 
-    <android.support.v4.widget.Space
-        android:id="@+id/mapOffsetSpace"
-        android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:clickable="true" />
+    <!--<RelativeLayout-->
+    <!--android:id="@+id/mapOffsetSpace"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="240dp"-->
+    <!--android:clickable="true" />-->
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!--<android.support.v4.widget.Space-->
-        <!--android:id="@+id/mapOffsetSpace"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="240dp"-->
-        <!--android:clickable="true" />-->
-
-        <!--<RelativeLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="320dp"-->
-        <!--android:layout_gravity="top"-->
-        <!--android:minHeight="320dp">-->
-
-        <!--<com.mapbox.mapboxsdk.maps.MapView-->
-        <!--android:id="@+id/mapView"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--mapbox:mapbox_styleUrl="mapbox://styles/mapbox/outdoors-v9" />-->
-
-        <!--</RelativeLayout>-->
+        <RelativeLayout
+            android:id="@+id/mapOffsetSpace"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:layout_gravity="top"
+            android:clickable="true" />
 
         <com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -49,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
-            android:layout_marginTop="0dp"
+            android:layout_marginTop="240dp"
             android:background="@color/white"
             app:alignContent="center"
             app:alignItems="flex_start"
@@ -67,6 +55,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
+                    android:fontFamily="sans-serif"
                     android:gravity="start|center_vertical"
                     android:maxLines="1"
                     android:paddingBottom="0dp"
@@ -81,6 +70,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:alpha="0.8"
+                    android:fontFamily="sans-serif"
                     android:gravity="start|center_vertical"
                     android:paddingBottom="8dp"
                     android:paddingLeft="16dp"
@@ -110,13 +100,6 @@
                         app:layout_flexGrow="0"
                         app:layout_flexShrink="0">
 
-                        <!--<ImageView-->
-                        <!--android:id="@+id/locationIconView"-->
-                        <!--android:layout_width="24dp"-->
-                        <!--android:layout_height="24dp"-->
-                        <!--android:scaleType="fitXY"-->
-                        <!--android:src="@drawable/ic_timeline_black_24dp" />-->
-
                         <TextView
                             android:id="@+id/postCountLabel"
                             android:layout_width="wrap_content"
@@ -144,13 +127,6 @@
                         app:layout_flexGrow="0"
                         app:layout_flexShrink="0">
 
-                        <!--<ImageView-->
-                        <!--android:id="@+id/groupIconView"-->
-                        <!--android:layout_width="24dp"-->
-                        <!--android:layout_height="24dp"-->
-                        <!--android:scaleType="fitXY"-->
-                        <!--android:src="@drawable/ic_group_black_24dp" />-->
-
                         <TextView
                             android:id="@+id/groupCountLabel"
                             android:layout_width="wrap_content"
@@ -171,26 +147,6 @@
 
             </LinearLayout>
 
-            <!--<RelativeLayout-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="match_parent"-->
-            <!--app:layout_flexShrink="0">-->
-
-            <!--<android.support.design.widget.FloatingActionButton-->
-            <!--android:id="@+id/accessMap"-->
-            <!--android:layout_width="56dp"-->
-            <!--android:layout_height="56dp"-->
-            <!--android:layout_centerInParent="true"-->
-            <!--android:clickable="false"-->
-            <!--android:paddingLeft="16dp"-->
-            <!--android:paddingRight="16dp"-->
-            <!--android:src="@drawable/ic_map_white_24dp"-->
-            <!--app:fabSize="normal"-->
-            <!--app:rippleColor="@color/splash_blue_dark"-->
-            <!--app:useCompatPadding="true" />-->
-
-            <!--</RelativeLayout>-->
-
         </com.google.android.flexbox.FlexboxLayout>
 
         <android.support.design.widget.FloatingActionButton
@@ -198,7 +154,7 @@
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_gravity="top|end"
-            android:layout_marginTop="-44dp"
+            android:layout_marginTop="194dp"
             android:clickable="false"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
