@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.Space;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -106,7 +107,8 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
     @Bind(R.id.backArrow)
     RelativeLayout backArrow;
 
-    private MapView mapView;
+    @Bind(R.id.mapView)
+    MapView mapView;
 
     @Bind(R.id.timeline_items)
     ListView timeLine;
@@ -379,7 +381,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
                                 // Move camera to watershed bounds
                                 LatLngBounds latLngBounds = new LatLngBounds.Builder().includes(latLngs).build();
-                                mapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 20), 500);
+                                mapboxMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 100), 500);
 
                             }
 
@@ -465,17 +467,45 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
     }
 
+    private void launchMap() {
+
+        /*
+        Remove any temporary stored post data since the map
+        doesn't need to focus on a particular location. Then
+        store watershed (territory) data for retrieval in the
+        TerritoryMapActivity.
+        */
+
+        ModelStorage.removeModel(mSharedPreferences, "stored_post");
+
+        ModelStorage.storeModel(mSharedPreferences, mTerritory, "stored_territory");
+
+        startActivity(new Intent(TerritoryActivity.this, TerritoryMapActivity.class));
+
+    }
+
     private void addListViewHeader() {
 
         LayoutInflater inflater = getLayoutInflater();
 
         ViewGroup header = (ViewGroup) inflater.inflate(R.layout.watershed_profile_header, timeLine, false);
 
-        mapView = (MapView) header.findViewById(R.id.mapView);
+//        mapView = (MapView) header.findViewById(R.id.mapView);
+
+        Space mapOffsetSpace = (Space) header.findViewById(R.id.mapOffsetSpace);
+
+        mapOffsetSpace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                launchMap();
+
+            }
+        });
 
         FloatingActionButton accessMap = (FloatingActionButton) header.findViewById(R.id.accessMap);
 
-        accessMap.animate().y(mapButtonTopOffset).setDuration(1600).start();
+//        accessMap.animate().y(mapButtonTopOffset).setDuration(1000).start();
 
         accessMap.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.splash_blue)));
 
@@ -483,18 +513,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
             @Override
             public void onClick(View view) {
 
-                /*
-                Remove any temporary stored post data since the map
-                doesn't need to focus on a particular location. Then
-                store watershed (territory) data for retrieval in the
-                TerritoryMapActivity.
-                */
-
-                ModelStorage.removeModel(mSharedPreferences, "stored_post");
-
-                ModelStorage.storeModel(mSharedPreferences, mTerritory, "stored_territory");
-
-                startActivity(new Intent(TerritoryActivity.this, TerritoryMapActivity.class));
+                launchMap();
 
             }
         });
