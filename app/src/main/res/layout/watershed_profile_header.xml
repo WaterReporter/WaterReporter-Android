@@ -13,15 +13,21 @@
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="320dp" />-->
 
+    <android.support.v4.widget.Space
+        android:id="@+id/mapOffsetSpace"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:clickable="true" />
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v4.widget.Space
-            android:id="@+id/mapOffsetSpace"
-            android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:clickable="true" />
+        <!--<android.support.v4.widget.Space-->
+        <!--android:id="@+id/mapOffsetSpace"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="240dp"-->
+        <!--android:clickable="true" />-->
 
         <!--<RelativeLayout-->
         <!--android:layout_width="match_parent"-->
@@ -43,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
-            android:layout_marginTop="240dp"
+            android:layout_marginTop="0dp"
             android:background="@color/white"
             app:alignContent="center"
             app:alignItems="flex_start"
@@ -76,7 +82,7 @@
                     android:layout_height="wrap_content"
                     android:alpha="0.8"
                     android:gravity="start|center_vertical"
-                    android:paddingBottom="16dp"
+                    android:paddingBottom="8dp"
                     android:paddingLeft="16dp"
                     android:paddingRight="0dp"
                     android:paddingTop="4dp"
@@ -100,55 +106,32 @@
                         android:background="@drawable/watershed_gradient_overlay"
                         android:visibility="gone"
                         app:alignItems="center"
-                        app:justifyContent="center"
+                        app:justifyContent="flex_start"
                         app:layout_flexGrow="0"
                         app:layout_flexShrink="0">
 
-                        <ImageView
-                            android:id="@+id/locationIconView"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/ic_timeline_black_24dp" />
+                        <!--<ImageView-->
+                        <!--android:id="@+id/locationIconView"-->
+                        <!--android:layout_width="24dp"-->
+                        <!--android:layout_height="24dp"-->
+                        <!--android:scaleType="fitXY"-->
+                        <!--android:src="@drawable/ic_timeline_black_24dp" />-->
 
                         <TextView
                             android:id="@+id/postCountLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="8dp"
+                            android:paddingBottom="16dp"
+                            android:paddingEnd="16dp"
+                            android:paddingLeft="0dp"
+                            android:paddingRight="16dp"
+                            android:paddingStart="0dp"
+                            android:paddingTop="8dp"
                             android:textColor="@color/black"
-                            android:textSize="16sp" />
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
 
                     </com.google.android.flexbox.FlexboxLayout>
-
-                    <!--<com.google.android.flexbox.FlexboxLayout-->
-                    <!--android:id="@+id/actionCount"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:background="@drawable/watershed_gradient_overlay"-->
-                    <!--android:visibility="gone"-->
-                    <!--app:alignItems="center"-->
-                    <!--app:justifyContent="center"-->
-                    <!--app:layout_flexGrow="0"-->
-                    <!--app:layout_flexShrink="0">-->
-
-                    <!--<ImageView-->
-                    <!--android:id="@+id/actionIconView"-->
-                    <!--android:layout_width="24dp"-->
-                    <!--android:layout_height="24dp"-->
-                    <!--android:scaleType="fitXY"-->
-                    <!--android:src="@drawable/ic_verified_user_black_24dp" />-->
-
-                    <!--<TextView-->
-                    <!--android:id="@+id/actionCountLabel"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:gravity="start|center_vertical"-->
-                    <!--android:padding="8dp"-->
-                    <!--android:textColor="@color/black"-->
-                    <!--android:textSize="16sp" />-->
-
-                    <!--</com.google.android.flexbox.FlexboxLayout>-->
 
                     <com.google.android.flexbox.FlexboxLayout
                         android:id="@+id/groupCount"
@@ -157,24 +140,30 @@
                         android:background="@drawable/watershed_gradient_overlay"
                         android:visibility="gone"
                         app:alignItems="center"
-                        app:justifyContent="center"
+                        app:justifyContent="flex_start"
                         app:layout_flexGrow="0"
                         app:layout_flexShrink="0">
 
-                        <ImageView
-                            android:id="@+id/groupIconView"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/ic_group_black_24dp" />
+                        <!--<ImageView-->
+                        <!--android:id="@+id/groupIconView"-->
+                        <!--android:layout_width="24dp"-->
+                        <!--android:layout_height="24dp"-->
+                        <!--android:scaleType="fitXY"-->
+                        <!--android:src="@drawable/ic_group_black_24dp" />-->
 
                         <TextView
                             android:id="@+id/groupCountLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="8dp"
+                            android:paddingBottom="16dp"
+                            android:paddingEnd="16dp"
+                            android:paddingLeft="0dp"
+                            android:paddingRight="16dp"
+                            android:paddingStart="0dp"
+                            android:paddingTop="8dp"
                             android:textColor="@color/black"
-                            android:textSize="16sp" />
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
 
                     </com.google.android.flexbox.FlexboxLayout>
 
@@ -208,7 +197,8 @@
             android:id="@+id/accessMap"
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:layout_gravity="bottom|end"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="-44dp"
             android:clickable="false"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
