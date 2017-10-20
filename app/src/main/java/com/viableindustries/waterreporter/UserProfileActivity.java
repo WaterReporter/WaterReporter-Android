@@ -161,9 +161,7 @@ public class UserProfileActivity extends AppCompatActivity implements
                         // This method performs the actual api-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
 
-                        countPosts(complexQuery, "state");
-
-                        resetStats();
+                        retrieveStoredUser();
 
                     }
                 }
@@ -222,7 +220,7 @@ public class UserProfileActivity extends AppCompatActivity implements
 
         // Inflate and insert timeline header view
 
-        addListViewHeader(user);
+        if (mUserProfileHeaderView == null) addListViewHeader(user);
 
         // Load user's groups
 
@@ -236,19 +234,15 @@ public class UserProfileActivity extends AppCompatActivity implements
 
         // Retrieve first batch of user's reports
 
-        if (reportCollection.isEmpty()) {
+        Log.d("get--user--posts", userId + " GO!");
 
-            Log.d("get--user--posts", userId + " GO!");
+        timeLineContainer.setRefreshing(true);
 
-            timeLineContainer.setRefreshing(true);
-
-            fetchPosts(5, 1, buildQuery(true, null), false);
-
-        }
+        fetchPosts(5, 1, buildQuery(true, null), true);
 
     }
 
-    private void setGroupStat(List<Group> userGroups){
+    private void setGroupStat(List<Group> userGroups) {
 
         // Update UI elements that display information about
         // the user's group memberships.
@@ -530,11 +524,7 @@ public class UserProfileActivity extends AppCompatActivity implements
 
                 Log.v("list", reports.toString());
 
-                if (reportCount == 99999999) {
-
-                    reportCount = featureCollection.getProperties().num_results;
-
-                }
+                reportCount = featureCollection.getProperties().num_results;
 
                 Log.d("set--user--count", "GET THEM COUNT UI!");
 
@@ -690,6 +680,8 @@ public class UserProfileActivity extends AppCompatActivity implements
         timeLineContainer.setRefreshing(true);
 
         fetchPosts(5, 1, buildQuery(true, null), true);
+
+        fetchUserGroups(mUser.id);
 
     }
 
