@@ -123,9 +123,9 @@ public class PostDetailActivity extends AppCompatActivity {
         listViewLock.setClickable(false);
         listViewLock.setFocusable(false);
 
-        // ATTENTION: This was auto-generated to handle app links.
+        // Inspect intent and handle app link data
+
         Intent appLinkIntent = getIntent();
-        String appLinkAction = appLinkIntent.getAction();
         Uri appLinkData = appLinkIntent.getData();
 
         if (appLinkData != null) {

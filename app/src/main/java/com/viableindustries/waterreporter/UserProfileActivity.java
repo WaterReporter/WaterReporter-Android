@@ -3,6 +3,7 @@ package com.viableindustries.waterreporter;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -69,11 +70,11 @@ public class UserProfileActivity extends AppCompatActivity implements
 
     private boolean actionFocus = false;
 
-    private boolean hasGroups = false;
-
     private SharedPreferences mSharedPreferences;
 
-    private User user;
+    private SharedPreferences mCoreProfile;
+
+    private User mUser;
 
     private Resources resources;
 
@@ -92,15 +93,62 @@ public class UserProfileActivity extends AppCompatActivity implements
 
         mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+        mCoreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
-        Log.d("storedavatar", coreProfile.getString("picture", ""));
+        Log.d("storedavatar", mCoreProfile.getString("picture", ""));
 
         resources = getResources();
 
-        // Retrieve stored User object
+        // Inspect intent and handle app link data
 
-        retrieveStoredUser();
+        Intent appLinkIntent = getIntent();
+        Uri appLinkData = appLinkIntent.getData();
+
+        if (appLinkData != null) {
+
+            List<String> pathSegments = appLinkData.getPathSegments();
+
+            try {
+
+                userId = 0;
+
+                if (pathSegments != null && pathSegments.size() >= 2) {
+
+                    try {
+
+                        userId = Integer.parseInt(pathSegments.get(pathSegments.size() - 1));
+
+                    } catch (NumberFormatException e) {
+
+                        userId = Integer.parseInt(pathSegments.get(pathSegments.size() - 2));
+
+                    }
+
+                }
+
+                Log.d("user--id", userId + "");
+
+                if (userId > 0) {
+
+                    fetchUser(userId);
+
+                }
+
+            } catch (NumberFormatException e) {
+
+                // Retrieve stored user data
+
+                retrieveStoredUser();
+
+            }
+
+        } else {
+
+            // Retrieve stored user data
+
+            retrieveStoredUser();
+
+        }
 
         // Set refresh listener on report feed container
 
@@ -124,20 +172,6 @@ public class UserProfileActivity extends AppCompatActivity implements
         // Set color of swipe refresh arrow animation
 
         timeLineContainer.setColorSchemeResources(R.color.waterreporter_blue);
-
-        // Inflate and insert timeline header view
-
-        addListViewHeader();
-
-        // Count reports with actions
-
-        complexQuery = String.format(getResources().getString(R.string.complex_actions_query), userId, userId);
-
-        countPosts(complexQuery, "state");
-
-        // Retrieve the user's groups
-
-        fetchUserGroups(userId);
 
         scrollListener = new EndlessScrollListener() {
             @Override
@@ -164,21 +198,15 @@ public class UserProfileActivity extends AppCompatActivity implements
 
     private void retrieveStoredUser() {
 
-        user = ModelStorage.getStoredUser(mSharedPreferences, "stored_user");
+        mUser = ModelStorage.getStoredUser(mSharedPreferences, "stored_user");
 
         try {
 
-            userId = user.properties.id;
+            userId = mUser.properties.id;
 
-            // Retrieve first batch of user's reports
+            Log.d("stored--user--id", userId + "");
 
-            if (reportCollection.isEmpty()) {
-
-                timeLineContainer.setRefreshing(true);
-
-                fetchPosts(5, 1, buildQuery(true, null), false);
-
-            }
+            setUserData(mUser);
 
         } catch (NullPointerException _e) {
 
@@ -190,7 +218,57 @@ public class UserProfileActivity extends AppCompatActivity implements
 
     }
 
-    private void addListViewHeader() {
+    private void setUserData(User user) {
+
+        // Inflate and insert timeline header view
+
+        addListViewHeader(user);
+
+        // Load user's groups
+
+        fetchUserGroups(user.id);
+
+        // Count reports with actions
+
+        complexQuery = String.format(getResources().getString(R.string.complex_actions_query), user.id, user.id);
+
+        countPosts(complexQuery, "state");
+
+        // Retrieve first batch of user's reports
+
+        if (reportCollection.isEmpty()) {
+
+            Log.d("get--user--posts", userId + " GO!");
+
+            timeLineContainer.setRefreshing(true);
+
+            fetchPosts(5, 1, buildQuery(true, null), false);
+
+        }
+
+    }
+
+    private void setGroupStat(List<Group> userGroups){
+
+        // Update UI elements that display information about
+        // the user's group memberships.
+
+        if (!userGroups.isEmpty()) {
+
+            int groupCount = userGroups.size();
+
+            mUserProfileHeaderView.groupCounter.setText(String.valueOf(groupCount));
+            mUserProfileHeaderView.groupCountLabel.setText(resources.getQuantityString(R.plurals.group_label, groupCount, groupCount));
+
+            mUserProfileHeaderView.groupStat.setVisibility(View.VISIBLE);
+
+            UserGroupList.setList(userGroups);
+
+        }
+
+    }
+
+    private void addListViewHeader(User user) {
 
         mUserProfileHeaderView = new UserProfileHeaderView();
 
@@ -206,20 +284,23 @@ public class UserProfileActivity extends AppCompatActivity implements
 
     private void setPostCountState(int count) {
 
-        mUserProfileHeaderView.reportCounter.setText(String.valueOf(reportCount));
-        mUserProfileHeaderView.reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
-
         if (count < 1) {
 
             try {
+
+                mUserProfileHeaderView.reportStat.setVisibility(View.GONE);
 
                 mUserProfileHeaderView.startPostButton.setVisibility(View.GONE);
 
                 mUserProfileHeaderView.promptBlock.setVisibility(View.VISIBLE);
 
-                mUserProfileHeaderView.promptMessage.setText(getString(R.string.prompt_no_posts_user, user.properties.first_name));
+                mUserProfileHeaderView.promptMessage.setText(getString(R.string.prompt_no_posts_user, mUser.properties.first_name));
+
+                Log.d("prompt--user--set", userId + " GOT EM!");
 
             } catch (NullPointerException e) {
+
+                Log.d("no--user--header", userId + " OH NO!");
 
                 finish();
 
@@ -227,7 +308,13 @@ public class UserProfileActivity extends AppCompatActivity implements
 
         } else {
 
-            timeLineContainer.setVisibility(View.VISIBLE);
+            mUserProfileHeaderView.reportStat.setVisibility(View.VISIBLE);
+
+            mUserProfileHeaderView.reportCounter.setText(String.valueOf(reportCount));
+
+            mUserProfileHeaderView.reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
+
+            Log.d("prompt--user--set", "HEADER IS GOOD TO GO!");
 
         }
 
@@ -241,6 +328,8 @@ public class UserProfileActivity extends AppCompatActivity implements
 
             @Override
             public void success(FeatureCollection featureCollection, Response response) {
+
+                Log.d("got--user--counts", userId + " GOT EM!");
 
                 int count = featureCollection.getProperties().num_results;
 
@@ -288,6 +377,52 @@ public class UserProfileActivity extends AppCompatActivity implements
 
     }
 
+    private void fetchUser(int userId) {
+
+        final String accessToken = mSharedPreferences.getString("access_token", "");
+
+        RestClient.getUserService().getUser(accessToken, "application/json", userId, new Callback<User>() {
+
+            @Override
+            public void success(User user, Response response) {
+
+                mUser = user;
+
+                Log.v("set--user--data", "GO!");
+
+                ModelStorage.storeModel(mSharedPreferences, mUser, "stored_user");
+
+                setUserData(mUser);
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(UserProfileActivity.this, SignInActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
     private void fetchUserGroups(int userId) {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
@@ -299,20 +434,7 @@ public class UserProfileActivity extends AppCompatActivity implements
 
                 ArrayList<Group> groups = groupFeatureCollection.getFeatures();
 
-                if (!groups.isEmpty()) {
-
-                    int groupCount = groups.size();
-
-                    mUserProfileHeaderView.groupCounter.setText(String.valueOf(groupCount));
-                    mUserProfileHeaderView.groupCountLabel.setText(resources.getQuantityString(R.plurals.group_label, groupCount, groupCount));
-
-                    mUserProfileHeaderView.groupStat.setVisibility(View.VISIBLE);
-
-                    UserGroupList.setList(groups);
-
-                    hasGroups = true;
-
-                }
+                setGroupStat(groups);
 
             }
 
@@ -404,6 +526,8 @@ public class UserProfileActivity extends AppCompatActivity implements
 
                 List<Report> reports = featureCollection.getFeatures();
 
+                Log.d("got--user--posts", userId + " GOT EM!");
+
                 Log.v("list", reports.toString());
 
                 if (reportCount == 99999999) {
@@ -412,25 +536,15 @@ public class UserProfileActivity extends AppCompatActivity implements
 
                 }
 
-                if (reportCount > 0) {
+                Log.d("set--user--count", "GET THEM COUNT UI!");
 
-                    mUserProfileHeaderView.reportStat.setVisibility(View.VISIBLE);
+                setPostCountState(reportCount);
 
-                    mUserProfileHeaderView.reportCounter.setText(String.valueOf(reportCount));
-
-                    mUserProfileHeaderView.reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
-
-                    setPostCountState(reportCount);
-
-                } else {
-
-                    mUserProfileHeaderView.reportStat.setVisibility(View.GONE);
-
-                    setPostCountState(reportCount);
-
-                }
+                Log.d("set--user--count", "ALL DONE WITH COUNT UI!");
 
                 if (refresh || reportCollection.isEmpty()) {
+
+                    Log.d("user--set--posts", "REPLACE POST LIST!");
 
                     reportCollection.clear();
 
@@ -438,15 +552,23 @@ public class UserProfileActivity extends AppCompatActivity implements
 
                     scrollListener.resetState();
 
+                    Log.d("user--set--posts", "REPLACED THAT POST LIST!");
+
                     try {
 
                         timelineAdapter.notifyDataSetChanged();
 
                         timeLine.smoothScrollToPosition(0);
 
+                        Log.d("user--set--posts", "NOTIFIED AND UPDATED LISTVIEW!");
+
                     } catch (NullPointerException e) {
 
+                        Log.d("user--set--posts", "OH NO! LISTVIEW FAILED, START TIMELINE FROM SCRATCH");
+
                         populateTimeline(reportCollection);
+
+                        Log.d("user--set--posts", "AWW YEAH! STARTED TIMELINE FROM SCRATCH");
 
                     }
 
@@ -677,10 +799,6 @@ public class UserProfileActivity extends AppCompatActivity implements
 
         super.onResume();
 
-        // Retrieve stored User object
-
-        if (user == null) retrieveStoredUser();
-
     }
 
     @Override
@@ -698,10 +816,6 @@ public class UserProfileActivity extends AppCompatActivity implements
         ButterKnife.unbind(this);
 
         ModelStorage.removeModel(mSharedPreferences, "stored_user");
-
-        // Cancel all pending network requests
-
-        //Callback.cancelAll();
 
     }
 

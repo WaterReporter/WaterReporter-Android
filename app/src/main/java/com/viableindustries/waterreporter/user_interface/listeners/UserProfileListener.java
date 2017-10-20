@@ -46,8 +46,6 @@ public class UserProfileListener implements View.OnClickListener {
 
         }
 
-//        UserHolder.setUser(user);
-
         // Write model to temporary storage in SharedPreferences
 
         ModelStorage.storeModel(mContext.getSharedPreferences(mContext.getPackageName(), MODE_PRIVATE), user, "stored_user");

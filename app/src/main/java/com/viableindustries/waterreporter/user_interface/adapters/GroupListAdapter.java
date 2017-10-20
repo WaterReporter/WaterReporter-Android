@@ -20,6 +20,7 @@ import com.viableindustries.waterreporter.user_interface.listeners.OrganizationP
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by brendanmcintyre on 10/17/17.
@@ -33,13 +34,13 @@ public class GroupListAdapter extends ArrayAdapter<Group> implements Filterable 
 
     protected int id;
 
-    private final ArrayList<Group> sourceList;
+    private final List<Group> sourceList;
 
-    private ArrayList<Group> filteredList;
+    private List<Group> filteredList;
 
     private GroupFilter mFilter;
 
-    public GroupListAdapter(Context aContext, ArrayList<Group> features) {
+    public GroupListAdapter(Context aContext, List<Group> features) {
 
         super(aContext, 0, features);
 

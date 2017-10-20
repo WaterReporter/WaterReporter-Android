@@ -20,6 +20,7 @@ import com.viableindustries.waterreporter.user_interface.adapters.GroupListAdapt
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -47,7 +48,7 @@ public class UserGroupsActivity extends AppCompatActivity {
 
         generic = getIntent().getExtras().getBoolean("GENERIC_USER", TRUE);
 
-        ArrayList<Group> groups = UserGroupList.getList();
+        List<Group> groups = UserGroupList.getList();
 
         Collections.sort(groups, new Comparator<Group>() {
             @Override
@@ -82,7 +83,7 @@ public class UserGroupsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void populateOrganizations(ArrayList<Group> groups) {
+    private void populateOrganizations(List<Group> groups) {
 
         final GroupListAdapter adapter = new GroupListAdapter(this, groups);
 

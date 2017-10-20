@@ -215,4 +215,16 @@ public class UserProperties {
 
     }
 
+    public boolean isOrganizationMember(int organizationId) {
+
+        for (Group group : this.groups) {
+
+            if (group.properties.organizationId == organizationId) return true;
+
+        }
+
+        return false;
+
+    }
+
 }

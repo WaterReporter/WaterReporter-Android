@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -105,7 +106,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     private String complexQuery;
 
-    private int organizationId;
+    private int mOrganizationId;
 
     private int actionCount;
 
@@ -117,7 +118,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     private Context mContext;
 
-    private Organization organization;
+    private Organization mOrganization;
 
     private SharedPreferences mSharedPreferences;
 
@@ -144,9 +145,57 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         resources = getResources();
 
-        // Retrieve stored Organization
+        // Inspect intent and handle app link data
 
-        retrieveStoredOrganization();
+        Intent appLinkIntent = getIntent();
+        Uri appLinkData = appLinkIntent.getData();
+
+        if (appLinkData != null) {
+
+            List<String> pathSegments = appLinkData.getPathSegments();
+
+            try {
+
+                mOrganizationId = 0;
+
+                if (pathSegments != null && pathSegments.size() >= 2) {
+
+                    try {
+
+                        mOrganizationId = Integer.parseInt(pathSegments.get(pathSegments.size() - 1));
+
+                    } catch (NumberFormatException e) {
+
+                        mOrganizationId = Integer.parseInt(pathSegments.get(pathSegments.size() - 2));
+
+                    }
+
+                }
+
+                Log.d("organization--id", mOrganizationId + "");
+
+                if (mOrganizationId > 0) {
+
+                    Log.v("get-organization--data", "GO!");
+
+                    fetchOrganization(mOrganizationId);
+
+                }
+
+            } catch (NumberFormatException e) {
+
+                // Retrieve stored organization data
+
+                retrieveStoredOrganization();
+            }
+
+        } else {
+
+            // Retrieve stored organization data
+
+            retrieveStoredOrganization();
+
+        }
 
         // Set refresh listener on report feed container
 
@@ -169,26 +218,6 @@ public class OrganizationProfileActivity extends AppCompatActivity {
         // Set color of swipe refresh arrow animation
 
         timeLineContainer.setColorSchemeResources(R.color.waterreporter_blue);
-
-        // Inflate and insert timeline header view
-
-        addListViewHeader();
-
-        // Check group membership
-
-        fetchUserGroups();
-
-        // Count reports with actions
-
-        complexQuery = buildQuery(true, new String[][]{
-                {"state", "eq", "closed"}
-        });
-
-        countPosts(complexQuery, "state");
-
-        // Retrieve the organization's members
-
-        fetchOrganizationMembers(50, 1, organizationId);
 
         scrollListener = new EndlessScrollListener() {
             @Override
@@ -215,19 +244,13 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     private void retrieveStoredOrganization() {
 
-        organization = ModelStorage.getStoredOrganization(mSharedPreferences);
+        mOrganization = ModelStorage.getStoredOrganization(mSharedPreferences);
 
         try {
 
-            organizationId = organization.properties.id;
+            mOrganizationId = mOrganization.properties.id;
 
-            if (reportCollection.isEmpty()) {
-
-                timeLineContainer.setRefreshing(true);
-
-                fetchPosts(5, 1, buildQuery(true, null), false);
-
-            }
+            setOrganizationData(mOrganization);
 
         } catch (NullPointerException _e) {
 
@@ -237,6 +260,38 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         }
 
+    }
+    
+    private void setOrganizationData(Organization organization) {
+
+        // Inflate and insert timeline header view
+
+        addListViewHeader();
+
+        // Check group membership
+
+        fetchAuthUser();
+
+        // Count reports with actions
+
+        complexQuery = buildQuery(true, new String[][]{
+                {"state", "eq", "closed"}
+        });
+
+        countPosts(complexQuery, "state");
+
+        // Retrieve the organization's members
+
+        fetchOrganizationMembers(50, 1, mOrganizationId);
+
+        if (reportCollection.isEmpty() && timeLineContainer != null) {
+
+            timeLineContainer.setRefreshing(true);
+
+            fetchPosts(5, 1, buildQuery(true, null), false);
+
+        }
+        
     }
 
     private void startPost() {
@@ -303,7 +358,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                     for (Group group : user.properties.groups) {
 
-                        ModelStorage.storeModel(groupMembership, group, group.properties.organization.properties.name);
+                        ModelStorage.storeModel(groupMembership, group, String.format("group_%s", group.properties.organizationId));
 
                     }
 
@@ -334,215 +389,181 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     private void addListViewHeader() {
 
-        LayoutInflater inflater = getLayoutInflater();
+        if (timeLine != null) {
 
-        ViewGroup header = (ViewGroup) inflater.inflate(R.layout.organization_profile_header, timeLine, false);
+            LayoutInflater inflater = getLayoutInflater();
 
-        promptBlock = (LinearLayout) header.findViewById(R.id.promptBlock);
-        promptMessage = (TextView) header.findViewById(R.id.prompt);
-        Button startPostButton = (Button) header.findViewById(R.id.startPost);
+            ViewGroup header = (ViewGroup) inflater.inflate(R.layout.organization_profile_header, timeLine, false);
 
-        // Add text and click listener to startPostButton
+            promptBlock = (LinearLayout) header.findViewById(R.id.promptBlock);
+            promptMessage = (TextView) header.findViewById(R.id.prompt);
+            Button startPostButton = (Button) header.findViewById(R.id.startPost);
 
-        startPostButton.setText(getString(R.string.share_post_prompt));
+            // Add text and click listener to startPostButton
 
-        startPostButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startPost();
+            startPostButton.setText(getString(R.string.share_post_prompt));
+
+            startPostButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startPost();
+                }
+            });
+
+            TextView organizationName = (TextView) header.findViewById(R.id.organizationName);
+
+            organizationDescription = (TextView) header.findViewById(R.id.organizationDescription);
+
+            organizationLogo = (ImageView) header.findViewById(R.id.organizationLogo);
+
+            reportCounter = (TextView) header.findViewById(R.id.reportCount);
+
+            actionCounter = (TextView) header.findViewById(R.id.actionCount);
+
+            peopleCounter = (TextView) header.findViewById(R.id.peopleCount);
+
+            reportCountLabel = (TextView) header.findViewById(R.id.reportCountLabel);
+
+            actionCountLabel = (TextView) header.findViewById(R.id.actionCountLabel);
+
+            peopleCountLabel = (TextView) header.findViewById(R.id.peopleCountLabel);
+
+            reportStat = (LinearLayout) header.findViewById(R.id.reportStat);
+
+            actionStat = (LinearLayout) header.findViewById(R.id.actionStat);
+
+            peopleStat = (LinearLayout) header.findViewById(R.id.peopleStat);
+
+            String organizationDescriptionText = mOrganization.properties.description;
+            String organizationNameText = mOrganization.properties.name;
+            String organizationLogoUrl = mOrganization.properties.picture;
+
+            organizationName.setText(organizationNameText);
+
+            Picasso.with(this).load(organizationLogoUrl).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(organizationLogo);
+
+            try {
+
+                organizationDescription.setText(organizationDescriptionText);
+
+                new PatternEditableBuilder().
+                        addPattern(mContext, Pattern.compile("\\#(\\w+)"), ContextCompat.getColor(mContext, R.color.waterreporter_blue),
+                                new PatternEditableBuilder.SpannableClickedListener() {
+                                    @Override
+                                    public void onSpanClicked(String text) {
+
+                                        Intent intent = new Intent(mContext, TagProfileActivity.class);
+                                        intent.putExtra("tag", text);
+                                        mContext.startActivity(intent);
+
+                                    }
+                                }).into(organizationDescription);
+
+                organizationDescription.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        ObjectAnimator animation;
+
+                        int duration;
+
+                        int maxLines = TextViewCompat.getMaxLines(organizationDescription);
+
+                        if (maxLines == 2) {
+
+                            organizationDescription.setEllipsize(null);
+
+                            animation = ObjectAnimator.ofInt(
+                                    organizationDescription,
+                                    "maxLines",
+                                    2,
+                                    1000);
+
+                            duration = 400;
+
+                        } else {
+
+                            organizationDescription.setEllipsize(TextUtils.TruncateAt.END);
+
+                            animation = ObjectAnimator.ofInt(
+                                    organizationDescription,
+                                    "maxLines",
+                                    1000,
+                                    2);
+
+                            duration = 200;
+
+                        }
+
+                        animation.setDuration(duration);
+                        animation.setInterpolator(new LinearOutSlowInInterpolator());
+                        animation.start();
+
+                    }
+                });
+
+            } catch (NullPointerException ne) {
+
+                organizationDescription.setVisibility(View.GONE);
+
             }
-        });
 
-        TextView organizationName = (TextView) header.findViewById(R.id.organizationName);
+            // Attach click listeners to stat elements
 
-        organizationDescription = (TextView) header.findViewById(R.id.organizationDescription);
-
-        organizationLogo = (ImageView) header.findViewById(R.id.organizationLogo);
-
-//        joinOrganization = (ImageButton) header.findViewById(R.id.group_membership_button);
-
-        reportCounter = (TextView) header.findViewById(R.id.reportCount);
-
-        actionCounter = (TextView) header.findViewById(R.id.actionCount);
-
-        peopleCounter = (TextView) header.findViewById(R.id.peopleCount);
-
-        reportCountLabel = (TextView) header.findViewById(R.id.reportCountLabel);
-
-        actionCountLabel = (TextView) header.findViewById(R.id.actionCountLabel);
-
-        peopleCountLabel = (TextView) header.findViewById(R.id.peopleCountLabel);
-
-        reportStat = (LinearLayout) header.findViewById(R.id.reportStat);
-
-        actionStat = (LinearLayout) header.findViewById(R.id.actionStat);
-
-        peopleStat = (LinearLayout) header.findViewById(R.id.peopleStat);
-
-        LinearLayout profileMeta = (LinearLayout) header.findViewById(R.id.profileMeta);
-
-        LinearLayout profileStats = (LinearLayout) header.findViewById(R.id.profileStats);
-
-        try {
-
-            organizationId = organization.id;
-
-        } catch (NullPointerException e) {
-
-            startActivity(new Intent(this, MainActivity.class));
-
-            finish();
-
-        }
-
-//        // Check group membership
-//
-//        int selected = groupMembership.getInt(organization.properties.name, 0);
-//
-//        if (selected == 0) {
-//
-//            joinOrganization.setVisibility(View.VISIBLE);
-//
-//            joinOrganization.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//
-//                    joinOrganization(organization);
-//
-//                }
-//
-//            });
-//
-//        }
-
-        String organizationDescriptionText = organization.properties.description;
-        String organizationNameText = organization.properties.name;
-        String organizationLogoUrl = organization.properties.picture;
-
-        organizationName.setText(organizationNameText);
-
-        Picasso.with(this).load(organizationLogoUrl).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(organizationLogo);
-
-        try {
-
-            organizationDescription.setText(organizationDescriptionText);
-
-            new PatternEditableBuilder().
-                    addPattern(mContext, Pattern.compile("\\#(\\w+)"), ContextCompat.getColor(mContext, R.color.waterreporter_blue),
-                            new PatternEditableBuilder.SpannableClickedListener() {
-                                @Override
-                                public void onSpanClicked(String text) {
-
-                                    Intent intent = new Intent(mContext, TagProfileActivity.class);
-                                    intent.putExtra("tag", text);
-                                    mContext.startActivity(intent);
-
-                                }
-                            }).into(organizationDescription);
-
-            organizationDescription.setOnClickListener(new View.OnClickListener() {
+            reportStat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    ObjectAnimator animation;
-
-                    int duration;
-
-                    int maxLines = TextViewCompat.getMaxLines(organizationDescription);
-
-                    if (maxLines == 2) {
-
-                        organizationDescription.setEllipsize(null);
-
-                        animation = ObjectAnimator.ofInt(
-                                organizationDescription,
-                                "maxLines",
-                                2,
-                                1000);
-
-                        duration = 400;
-
-                    } else {
-
-                        organizationDescription.setEllipsize(TextUtils.TruncateAt.END);
-
-                        animation = ObjectAnimator.ofInt(
-                                organizationDescription,
-                                "maxLines",
-                                1000,
-                                2);
-
-                        duration = 200;
-
-                    }
-
-                    animation.setDuration(duration);
-                    animation.setInterpolator(new LinearOutSlowInInterpolator());
-                    animation.start();
+                    resetStats();
 
                 }
             });
 
-        } catch (NullPointerException ne) {
+            actionStat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-            organizationDescription.setVisibility(View.GONE);
+                    actionFocus = true;
+
+                    actionCounter.setTextColor(ContextCompat.getColor(mContext, R.color.base_blue));
+                    actionCountLabel.setTextColor(ContextCompat.getColor(mContext, R.color.base_blue));
+
+                    reportCounter.setTextColor(ContextCompat.getColor(mContext, R.color.material_blue_grey950));
+                    reportCountLabel.setTextColor(ContextCompat.getColor(mContext, R.color.material_blue_grey950));
+
+                    if (timeLine != null) {
+
+                        timeLine.setSelection(0);
+
+                    }
+
+                    timeLineContainer.setRefreshing(true);
+
+                    fetchPosts(5, 1, complexQuery, true);
+
+                }
+            });
+
+            peopleStat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (hasMembers) {
+
+                        Intent intent = new Intent(mContext, OrganizationMembersActivity.class);
+
+                        startActivity(intent);
+
+                    }
+
+                }
+            });
+
+            // Add populated header view to report timeline
+
+            timeLine.addHeaderView(header, null, false);
 
         }
-
-        // Attach click listeners to stat elements
-
-        reportStat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                resetStats();
-
-            }
-        });
-
-        actionStat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                actionFocus = true;
-
-                actionCounter.setTextColor(ContextCompat.getColor(mContext, R.color.base_blue));
-                actionCountLabel.setTextColor(ContextCompat.getColor(mContext, R.color.base_blue));
-
-                reportCounter.setTextColor(ContextCompat.getColor(mContext, R.color.material_blue_grey950));
-                reportCountLabel.setTextColor(ContextCompat.getColor(mContext, R.color.material_blue_grey950));
-
-                if (timeLine != null) {
-
-                    timeLine.setSelection(0);
-
-                }
-
-                timeLineContainer.setRefreshing(true);
-
-                fetchPosts(5, 1, complexQuery, true);
-
-            }
-        });
-
-        peopleStat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (hasMembers) {
-
-                    Intent intent = new Intent(mContext, OrganizationMembersActivity.class);
-
-                    startActivity(intent);
-
-                }
-
-            }
-        });
-
-        // Add populated header view to report timeline
-
-        timeLine.addHeaderView(header, null, false);
 
     }
 
@@ -580,10 +601,6 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                 finish();
 
             }
-
-        } else {
-
-            timeLineContainer.setVisibility(View.VISIBLE);
 
         }
 
@@ -644,11 +661,11 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     }
 
-    private void fetchOrganizationMembers(int limit, int page, int organizationId) {
+    private void fetchOrganizationMembers(int limit, int page, int mOrganizationId) {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getOrganizationService().getOrganizationMembers(accessToken, "application/json", organizationId, page, limit, null, new Callback<UserCollection>() {
+        RestClient.getOrganizationService().getOrganizationMembers(accessToken, "application/json", mOrganizationId, page, limit, null, new Callback<UserCollection>() {
 
             @Override
             public void success(UserCollection userCollection, Response response) {
@@ -667,6 +684,60 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                     OrganizationMemberList.setList(members);
 
                     hasMembers = true;
+
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(mContext, SignInActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+    private void fetchOrganization(int organizationId) {
+
+        final String accessToken = mSharedPreferences.getString("access_token", "");
+
+        RestClient.getOrganizationService().getOrganization(accessToken, "application/json", organizationId, null, new Callback<Organization>() {
+
+            @Override
+            public void success(Organization organization, Response response) {
+
+                mOrganization = organization;
+
+                Log.v("try-organization--data", mOrganization.properties.name);
+
+                if (timeLineContainer != null) {
+
+                    Log.v("set-organization--data", mOrganization.properties.name);
+
+                    setOrganizationData(mOrganization);
+
+                } else {
+
+                    finish();
 
                 }
 
@@ -725,7 +796,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         List<Object> queryFilters = new ArrayList<>();
 
-        QueryFilter userFilter = new QueryFilter("groups__id", "any", organizationId);
+        QueryFilter userFilter = new QueryFilter("groups__id", "any", mOrganizationId);
 
         queryFilters.add(userFilter);
 
@@ -876,7 +947,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     }
 
-    private void fetchUserGroups() {
+    private void fetchAuthUser() {
 
         final String mAccessToken = mSharedPreferences.getString("access_token", "");
 
@@ -885,26 +956,12 @@ public class OrganizationProfileActivity extends AppCompatActivity {
         // We shouldn't need to retrieve this value again, but we'll deal with that issue later
         int userId = mSharedPreferences.getInt("user_id", 0);
 
-        RestClient.getUserService().getUserGroups(mAccessToken, "application/json", userId, new Callback<GroupFeatureCollection>() {
+        RestClient.getUserService().getUser(mAccessToken, "application/json", userId, new Callback<User>() {
 
             @Override
-            public void success(GroupFeatureCollection groupFeatureCollection, Response response) {
+            public void success(User user, Response response) {
 
-                List<Group> groups = groupFeatureCollection.getFeatures();
-
-                String orgIds = "";
-
-                if (!groups.isEmpty()) {
-
-                    for (Group group : groups) {
-
-                        orgIds += String.format(",%s", group.properties.organizationId);
-
-                    }
-
-                }
-
-                if (!orgIds.contains(String.valueOf(organization.id))) {
+                if (!user.properties.isOrganizationMember(mOrganization.id)) {
 
                     joinOrganization.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.green_1)));
 
@@ -914,7 +971,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
 
-                            joinOrganization(organization);
+                            joinOrganization(mOrganization);
 
                         }
 
@@ -928,7 +985,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                 groupMembership.edit().clear().apply();
 
-                for (Group group : groups) {
+                for (Group group : user.properties.groups) {
 
                     ModelStorage.storeModel(groupMembership, group, String.format("group_%s", group.properties.organizationId));
 
@@ -968,10 +1025,6 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         super.onResume();
 
-        // Retrieve stored Organization
-
-        if (organization == null) retrieveStoredOrganization();
-
     }
 
     @Override
@@ -988,11 +1041,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         ButterKnife.unbind(this);
 
-        ModelStorage.removeModel(mSharedPreferences, "stored_group");
-
-        // Cancel all pending network requests
-
-        //Callback.cancelAll();
+        ModelStorage.removeModel(mSharedPreferences, "stored_organization");
 
     }
 

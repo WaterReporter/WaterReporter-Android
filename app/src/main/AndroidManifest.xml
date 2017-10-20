@@ -176,13 +176,24 @@
         <activity
             android:name=".UserProfileActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_user_profile"
+            android:label="@string/app_name"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.viableindustries.waterreporter.MainActivity" />
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="https"
+                    android:host="www.waterreporter.org"
+                    android:pathPrefix="/community/profiles/" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".UserGroupsActivity"
@@ -198,9 +209,21 @@
         <activity
             android:name=".OrganizationProfileActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_organization_profile"
+            android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="https"
+                    android:host="www.waterreporter.org"
+                    android:pathPrefix="/community/organizations/" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".OrganizationMembersActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
