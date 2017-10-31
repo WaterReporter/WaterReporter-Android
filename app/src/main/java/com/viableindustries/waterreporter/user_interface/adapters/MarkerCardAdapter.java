@@ -94,7 +94,6 @@ public class MarkerCardAdapter extends RecyclerView.Adapter<MarkerCardAdapter.Vi
                     .load(imageUrl)
                     .resize(120, 120)
                     .error(R.drawable.open_graph_placeholder)
-                    .centerCrop()
                     .into(holder.postImage);
 
             holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -115,7 +114,6 @@ public class MarkerCardAdapter extends RecyclerView.Adapter<MarkerCardAdapter.Vi
             Picasso
                     .with(mContext)
                     .load(post.properties.images.get(0).properties.thumbnail_retina)
-                    .fit()
                     .into(holder.postImage);
 
             holder.postImage.setOnClickListener(new PostDetailListener(mContext, post));

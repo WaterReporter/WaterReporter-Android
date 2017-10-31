@@ -163,6 +163,9 @@ public class PhotoMetaActivity extends AppCompatActivity
     @Bind(R.id.progress_bar)
     ProgressBar progressBar;
 
+    @Bind(R.id.openGraphProgress)
+    ProgressBar openGraphProgress;
+
     @Bind(R.id.ogData)
     CardView ogData;
 
@@ -259,6 +262,9 @@ public class PhotoMetaActivity extends AppCompatActivity
         // Set ProgressBar appearance
 
         progressBar.setIndeterminateDrawable(ContextCompat.getDrawable(this, R.drawable.custom_progress_compat));
+
+        openGraphProgress.getIndeterminateDrawable().setColorFilter(
+                ContextCompat.getColor(this, R.color.splash_blue), android.graphics.PorterDuff.Mode.SRC_IN);
 
         // Set FloatingActionButton colors
 
@@ -660,6 +666,8 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         final Map<String, String> ogIdx = new HashMap<>();
 
+        openGraphProgress.setVisibility(View.VISIBLE);
+
         OpenGraphTask openGraphTask = new OpenGraphTask(new OpenGraphResponse() {
 
             @Override
@@ -688,9 +696,13 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                     retrievingOpenGraphData = false;
 
+                    openGraphProgress.setVisibility(View.GONE);
+
                 } catch (NullPointerException e) {
 
                     try {
+
+                        openGraphProgress.setVisibility(View.GONE);
 
                         Snackbar.make(parentLayout, "Unable to read URL.",
                                 Snackbar.LENGTH_SHORT)
@@ -742,7 +754,6 @@ public class PhotoMetaActivity extends AppCompatActivity
                 .load(imageUrl)
                 .placeholder(R.drawable.open_graph_placeholder)
                 .error(R.drawable.open_graph_placeholder)
-                .fit()
                 .into(ogImage);
 
         ogTitle.setText(openGraphProperties.title);

@@ -54,10 +54,8 @@
                     android:id="@+id/territoryName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ellipsize="end"
                     android:fontFamily="sans-serif"
                     android:gravity="start|center_vertical"
-                    android:maxLines="1"
                     android:paddingBottom="0dp"
                     android:paddingLeft="16dp"
                     android:paddingRight="0dp"
@@ -149,19 +147,19 @@
 
         </com.google.android.flexbox.FlexboxLayout>
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/accessMap"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_gravity="top|end"
-            android:layout_marginTop="194dp"
-            android:clickable="false"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:src="@drawable/ic_map_white_24dp"
-            app:fabSize="normal"
-            app:rippleColor="@color/splash_blue_dark"
-            app:useCompatPadding="true" />
+        <!--<android.support.design.widget.FloatingActionButton-->
+            <!--android:id="@+id/accessMap"-->
+            <!--android:layout_width="56dp"-->
+            <!--android:layout_height="56dp"-->
+            <!--android:layout_gravity="top|end"-->
+            <!--android:layout_marginTop="194dp"-->
+            <!--android:clickable="false"-->
+            <!--android:paddingLeft="16dp"-->
+            <!--android:paddingRight="16dp"-->
+            <!--android:src="@drawable/ic_map_white_24dp"-->
+            <!--app:fabSize="normal"-->
+            <!--app:rippleColor="@color/splash_blue_dark"-->
+            <!--app:useCompatPadding="true" />-->
 
     </FrameLayout>
 

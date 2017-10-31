@@ -107,6 +107,9 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
     @Bind(R.id.backArrow)
     RelativeLayout backArrow;
 
+    @Bind(R.id.accessMap)
+    FloatingActionButton accessMap;
+
     @Bind(R.id.mapView)
     MapView mapView;
 
@@ -505,11 +508,9 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
             }
         });
 
-        FloatingActionButton accessMap = (FloatingActionButton) header.findViewById(R.id.accessMap);
+//        FloatingActionButton accessMap = (FloatingActionButton) header.findViewById(R.id.accessMap);
 
-//        accessMap.animate().y(mapButtonTopOffset).setDuration(1000).start();
-
-        accessMap.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.splash_blue)));
+        accessMap.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.white)));
 
         accessMap.setOnClickListener(new View.OnClickListener() {
             @Override

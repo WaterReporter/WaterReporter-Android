@@ -30,24 +30,12 @@
             android:src="@drawable/ic_location_on_white_24dp"
             android:visibility="gone" />
 
-        <!--<View-->
-        <!--android:id="@+id/currentPositionIndicator"-->
-        <!--android:layout_width="8dp"-->
-        <!--android:layout_height="8dp"-->
-        <!--android:layout_gravity="bottom|start"-->
-        <!--android:layout_marginBottom="176dp"-->
-        <!--android:layout_marginEnd="0dp"-->
-        <!--android:layout_marginLeft="64dp"-->
-        <!--android:layout_marginRight="0dp"-->
-        <!--android:layout_marginStart="64dp"-->
-        <!--android:background="@drawable/current_post_position_indicator" />-->
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/postList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_marginBottom="48dp"
+            android:layout_marginBottom="32dp"
             android:background="@android:color/transparent"
             android:clipToPadding="false"
             android:orientation="horizontal"
@@ -56,13 +44,6 @@
             android:paddingRight="240dp"
             android:paddingStart="0dp"
             android:scrollbarStyle="outsideOverlay" />
-
-        <fragment
-            android:id="@+id/navigationFragment"
-            android:name="com.viableindustries.waterreporter.NavigationFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom" />
 
     </FrameLayout>
 

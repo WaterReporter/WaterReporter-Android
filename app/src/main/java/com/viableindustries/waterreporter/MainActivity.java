@@ -397,6 +397,8 @@ public class MainActivity extends AppCompatActivity implements
 
         if (EasyPermissions.hasPermissions(this, permissions)) {
 
+            timeline.setRefreshing(true);
+
             fetchPosts(5, 1, false);
 
         } else {

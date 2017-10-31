@@ -490,7 +490,6 @@ public class TimelineAdapterHelpers {
                     .load(openGraphObject.properties.imageUrl)
                     .placeholder(R.drawable.open_graph_placeholder)
                     .error(R.drawable.open_graph_placeholder)
-                    .fit()
                     .into(imageView);
 
             // Load title, description and URL
@@ -503,7 +502,7 @@ public class TimelineAdapterHelpers {
 
                 url.setText(OpenGraph.getDomainName(openGraphObject.properties.url));
 
-            } catch (URISyntaxException e) {
+            } catch (URISyntaxException | NullPointerException e) {
 
                 url.setText("");
 
