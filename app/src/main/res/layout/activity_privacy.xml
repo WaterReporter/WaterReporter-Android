@@ -120,7 +120,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="16dp"
+                    android:paddingBottom="0dp"
                     android:paddingTop="0dp"
                     android:text="@string/privacy_s1_body_part_four"
                     android:textColor="@color/black" />
@@ -165,7 +165,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="16dp"
+                    android:paddingBottom="0dp"
                     android:paddingTop="0dp"
                     android:text="@string/privacy_s2_body_part_two"
                     android:textColor="@color/black" />
@@ -234,17 +234,9 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="16dp"
+                    android:paddingBottom="0dp"
                     android:paddingTop="0dp"
                     android:text="@string/privacy_s3_body_part_five"
-                    android:textColor="@color/black" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="16dp"
-                    android:paddingTop="0dp"
-                    android:text="@string/privacy_s3_body_part_six"
                     android:textColor="@color/black" />
 
             </LinearLayout>
@@ -280,9 +272,29 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autoLink="email"
-                    android:paddingBottom="16dp"
+                    android:paddingBottom="8dp"
                     android:paddingTop="0dp"
                     android:text="@string/privacy_s4_body_part_one"
+                    android:textColor="@color/black"
+                    android:textColorLink="@color/base_blue" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autoLink="email"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="0dp"
+                    android:text="@string/privacy_s4_body_part_two"
+                    android:textColor="@color/black"
+                    android:textColorLink="@color/base_blue" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autoLink="email"
+                    android:paddingBottom="0dp"
+                    android:paddingTop="0dp"
+                    android:text="@string/privacy_s4_body_part_three"
                     android:textColor="@color/black"
                     android:textColorLink="@color/base_blue" />
 
@@ -319,7 +331,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autoLink="email"
-                    android:paddingBottom="16dp"
+                    android:paddingBottom="0dp"
                     android:paddingTop="0dp"
                     android:text="@string/privacy_s5_body_part_one"
                     android:textColor="@color/black"
@@ -358,7 +370,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autoLink="email"
-                    android:paddingBottom="16dp"
+                    android:paddingBottom="0dp"
                     android:paddingTop="0dp"
                     android:text="@string/privacy_s6_body_part_one"
                     android:textColor="@color/black"
@@ -396,10 +408,12 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="16dp"
+                    android:autoLink="email"
+                    android:paddingBottom="0dp"
                     android:paddingTop="0dp"
                     android:text="@string/privacy_s7_body_part_one"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textColorLink="@color/base_blue" />
 
             </LinearLayout>
 
@@ -433,12 +447,10 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:autoLink="web"
-                    android:paddingBottom="16dp"
+                    android:paddingBottom="0dp"
                     android:paddingTop="0dp"
                     android:text="@string/privacy_s8_body_part_one"
-                    android:textColor="@color/black"
-                    android:textColorLink="@color/base_blue" />
+                    android:textColor="@color/black" />
 
             </LinearLayout>
 
@@ -472,9 +484,19 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="16dp"
+                    android:autoLink="web"
+                    android:paddingBottom="8dp"
                     android:paddingTop="0dp"
                     android:text="@string/privacy_s9_body_part_one"
+                    android:textColor="@color/black"
+                    android:textColorLink="@color/base_blue" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="0dp"
+                    android:paddingTop="0dp"
+                    android:text="@string/privacy_s3_body_part_six"
                     android:textColor="@color/black" />
 
             </LinearLayout>
@@ -509,10 +531,47 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:autoLink="email"
-                    android:paddingBottom="16dp"
+                    android:paddingBottom="0dp"
                     android:paddingTop="0dp"
                     android:text="@string/privacy_s10_body_part_one"
+                    android:textColor="@color/black" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/gray_232" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#F7F7F7"
+                android:padding="16dp"
+                android:text="@string/privacy_subheading_eleven"
+                android:textColor="@color/coal"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/gray_232" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autoLink="email"
+                    android:paddingBottom="0dp"
+                    android:paddingTop="0dp"
+                    android:text="@string/privacy_s11_body_part_one"
                     android:textColor="@color/black"
                     android:textColorLink="@color/base_blue" />
 

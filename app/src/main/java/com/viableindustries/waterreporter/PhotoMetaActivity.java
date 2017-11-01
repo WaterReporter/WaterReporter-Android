@@ -33,6 +33,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.URLUtil;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
@@ -775,20 +776,28 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         // Remove URL from comment text
 
-        if (query != null) {
+        try {
 
-            try {
+            String trimmedInput = query.substring(0, query.indexOf(url)).trim();
 
-                String trimmedInput = query.substring(0, query.indexOf(url)).trim();
+            if (!trimmedInput.isEmpty()) {
 
                 commentInput.setText(trimmedInput);
 
-            } catch (IndexOutOfBoundsException e) {
+            } else {
 
-                openGraphProperties = null;
+                commentInput.setText("");
 
             }
 
+        } catch (IndexOutOfBoundsException | NullPointerException e) {
+
+            commentInput.setText("");
+
+        }
+
+        if (commentInput.requestFocus()) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
 
     }

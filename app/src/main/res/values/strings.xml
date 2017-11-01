@@ -194,6 +194,8 @@
     <string name="terms_intro">By using Water Reporter for Android, you agree to be bound by the following terms and conditions (\"Terms of Service\").</string>
     <string name="basic_terms_title">Basic Terms</string>
     <string name="general_conditions_title">General Conditions</string>
+    <string name="mobile_conditions_title">Mobile Conditions</string>
+    <string name="payment_terms_title">Payments Terms of Service</string>
 
     <string name="term_one">&#8226; You must be 13 years and older to use this app.</string>
     <string name="term_two">&#8226; You are responsible for any activity that occurs under your user account.</string>
@@ -216,6 +218,13 @@
     <string name="condition_seven">&#8226; We may, but have no obligation to, remove content that we determine in our sole discretion are unlawful, offensive, threatening, libelous, defamatory, obscene, invades the privacy of others, or otherwise objectionable or violates any party\'s intellectual property or these Terms of Service.</string>
     <string name="condition_eight">&#8226; We reserve the right to remove any content that we feel may include personally identifiable documentation or scans of documents issued by banks or governments (social security numbers, passport numbers, credit card numbers, drivers licenses, etc.).</string>
     <string name="condition_nine">&#8226; We reserve the right to contact you occasionally via email to share system-wide updates regarding new features, releases, and community news.</string>
+    <string name="condition_ten">&#8226; Any information that you provide to Water Reporter is subject to our Privacy Statement, which governs our collection and use of your information. You understand that through your use of the Services you consent to the collection and use (as set forth in the Privacy Statement) of this information. As part of providing you the Services, we may need to provide you with certain communications, such as service announcements and administrative messages. These communications are considered part of the Services and as such will be delivered without subscription preferences.</string>
+
+    <string name="mobile_conditions">We currently provide our mobile services for free, but please be aware that your carrier\'s normal rates and fees, such as data charges, will still apply.</string>
+
+    <string name="payments_condition_one">Effective Monday, October 30, 2017, subscribers to Water Reporter for Organizations may choose between the standard ($250/year) and premium ($450/year) service plans. The standard plan comprises basic group administrator privileges along with embeddable web maps, post data download, and post moderation with action prioritization. The premium plan includes all of the aforementioned features plus water quality data visualization and limited access to user contact information.</string>
+    <string name="payments_condition_two">All organization subscriptions are valid for one year. Water Reporter staff and software systems will send payment reminders and expiration notices to organization account holders with or without their consent. Organization accounts that are more than 10 days past due will be frozen pending receipt of full payment for an additional year of service. Frozen accounts will remain on and accessible to administrators and general users, however administrators will not be able to exercise their privileges or use any of the organization plan features.</string>
+    <string name="payments_condition_three">Please note that special arrangements may apply to organizations that subscribed before October 30, 2017. However, no such arrangement, contract, or memorandum of understanding should be interpreted as releasing any organization from future fee obligations.</string>
 
     <!-- Privacy -->
 
@@ -237,29 +246,34 @@
     <string name="privacy_s3_body_part_two">We may disclose user-provided and automatically collected information:</string>
     <string name="privacy_s3_body_part_three">&#8226; as required by law, such as to comply with a subpoena, or similar legal process;</string>
     <string name="privacy_s3_body_part_four">&#8226; when we believe in good faith that disclosure is necessary to protect our rights, protect your safety or the safety of others, investigate fraud, or respond to a government request;</string>
-    <string name="privacy_s3_body_part_five">&#8226; with our trusted services providers who work on our behalf, do not have an independent use of the information we disclose to them, and have agreed to adhere to the rules set forth in this privacy statement.</string>
+    <string name="privacy_s3_body_part_five">&#8226; with our trusted services providers who work on our behalf, do not have an independent use of the information we disclose to them, and have agreed to adhere to the rules set forth in this privacy statement (see following section).</string>
     <string name="privacy_s3_body_part_six">If Chesapeake Commons or Viable Industries, LLC is involved in a merger, acquisition, or sale of all or a portion of its assets, you will be notified via email and/or a prominent notice on our website of any change in ownership or uses of this information, as well as any choices you may have regarding this information.</string>
 
-    <string name="privacy_subheading_four">What are my opt-out rights?</string>
-    <string name="privacy_s4_body_part_one">You can stop all collection of information by the Application easily by uninstalling the Application. You may use the standard uninstall processes as may be available as part of your mobile device or via the mobile application marketplace or network. You can also request to opt-out via email, at support@waterreporter.org.</string>
+    <string name="privacy_subheading_four">Which third parties have access to my data?</string>
+    <string name="privacy_s4_body_part_one">In accordance with this Privacy Statement, approved third parties &#8212; specifically our organization-level subscribers &#8212; may access information that you voluntarily provide through your Water Reporter account. This information includes your name, bio, email address, and Water Reporter posts. If you join a Water Reporter group, the administrators of that group will be given access to your contact information. You have full discretion over which groups you join and thereby to whom you provide your contact information through Water Reporter.</string>
+    <string name="privacy_s4_body_part_two">Users with group administrator privileges may only use your personal information to contact you about topics relevant to their activity on Water Reporter. Administrators <strong>may not</strong> add your contact information to external lists without your approval and <strong>must not</strong> attempt to solicit donations or sell you products or services un-related to Water Reporter.</string>
+    <string name="privacy_s4_body_part_three">To opt out of any group-related communications or data collection, simply leave the group using the controls provided in the mobile and web applications. To report abuse or to file a complaint pertaining to any of your group memberships, please contact us at support@waterreporter.org.</string>
 
-    <string name="privacy_subheading_five">Data Retention Policy</string>
-    <string name="privacy_s5_body_part_one">We will retain user-provided information for as long as you use the Application and for a reasonable time thereafter. We will retain automatically-collected information for up to 24 months and thereafter may store it in aggregate. If you\'d like us to delete user-provided information that you have provided via the Application, please contact us at support@waterreporter.org and we will respond as quickly as possible. Please note that some or all of the user-provided information may be required in order for the Application to function properly.</string>
+    <string name="privacy_subheading_five">What are my opt-out rights?</string>
+    <string name="privacy_s5_body_part_one">You can stop all collection of information by the Application easily by uninstalling the Application. You may use the standard uninstall processes as may be available as part of your mobile device or via the mobile application marketplace or network. You can also request to opt-out via email, at support@waterreporter.org.</string>
 
-    <string name="privacy_subheading_six">Children</string>
-    <string name="privacy_s6_body_part_one">We do not use the Application to knowingly solicit data from or market to children under the age of 13. If a parent or guardian becomes aware that his or her child has provided us with information without their consent, he or she should contact us at support@waterreporter.org. We will delete such information from our records as quickly as possible.</string>
+    <string name="privacy_subheading_six">Data Retention Policy</string>
+    <string name="privacy_s6_body_part_one">We will retain user-provided information for as long as you use the Application and for a reasonable time thereafter. We will retain automatically-collected information for up to 24 months and thereafter may store it in aggregate. If you\'d like us to delete user-provided information that you have provided via the Application, please contact us at support@waterreporter.org and we will respond as quickly as possible. Please note that some or all of the user-provided information may be required in order for the Application to function properly.</string>
 
-    <string name="privacy_subheading_seven">Security</string>
-    <string name="privacy_s7_body_part_one">We are concerned about safeguarding the confidentiality of your information. We provide physical, electronic, and procedural safeguards to protect information we process and maintain. For example, we limit access to this information to authorized employees and contractors who need to know that information in order to operate, develop or improve our Application. Please be aware that, although we endeavor to provide reasonable security for information we process and maintain, no security system can prevent all potential security breaches.</string>
+    <string name="privacy_subheading_seven">Children</string>
+    <string name="privacy_s7_body_part_one">We do not use the Application to knowingly solicit data from or market to children under the age of 13. If a parent or guardian becomes aware that his or her child has provided us with information without their consent, he or she should contact us at support@waterreporter.org. We will delete such information from our records as quickly as possible.</string>
 
-    <string name="privacy_subheading_eight">Changes</string>
-    <string name="privacy_s8_body_part_one">This Privacy Statement may be updated from time to time for any reason. We will notify you of any changes to our Privacy Statement by posting the new Privacy Statement at https://www.waterreporter.org/privacy and informing you via email. You are advised to consult this Privacy Statement regularly for any changes, as continued use is deemed approval of all changes.</string>
+    <string name="privacy_subheading_eight">Security</string>
+    <string name="privacy_s8_body_part_one">We are concerned about safeguarding the confidentiality of your information. We provide physical, electronic, and procedural safeguards to protect information we process and maintain. For example, we limit access to this information to authorized employees and contractors who need to know that information in order to operate, develop or improve our Application. Please be aware that, although we endeavor to provide reasonable security for information we process and maintain, no security system can prevent all potential security breaches.</string>
 
-    <string name="privacy_subheading_nine">Your Consent</string>
-    <string name="privacy_s9_body_part_one">By using the Application, you are consenting to our processing of your information as set forth in this Privacy Statement now and as amended by us. \"Processing\" means using cookies on a computer/handheld device or using or touching information in any way, including, but not limited to, collecting, storing, deleting, using, combining and disclosing information, all of which activities will take place in the United States. If you reside outside the United States your information will be transferred, processed, and stored there under United States privacy standards.</string>
+    <string name="privacy_subheading_nine">Changes</string>
+    <string name="privacy_s9_body_part_one">This Privacy Statement may be updated from time to time for any reason. We will notify you of any changes to our Privacy Statement by posting the new Privacy Statement at https://www.waterreporter.org/privacy and informing you via email. You are advised to consult this Privacy Statement regularly for any changes, as continued use is deemed approval of all changes.</string>
 
-    <string name="privacy_subheading_ten">Contact Us</string>
-    <string name="privacy_s10_body_part_one">Questions regarding this Privacy Statement or the Application\'s information practices should be directed to support@waterreporter.org.</string>
+    <string name="privacy_subheading_ten">Your Consent</string>
+    <string name="privacy_s10_body_part_one">By using the Application, you are consenting to our processing of your information as set forth in this Privacy Statement now and as amended by us. \"Processing\" means using cookies on a computer/handheld device or using or touching information in any way, including, but not limited to, collecting, storing, deleting, using, combining and disclosing information, all of which activities will take place in the United States. If you reside outside the United States your information will be transferred, processed, and stored there under United States privacy standards.</string>
+
+    <string name="privacy_subheading_eleven">Contact Us</string>
+    <string name="privacy_s11_body_part_one">Questions regarding this Privacy Statement or the Application\'s information practices should be directed to support@waterreporter.org.</string>
 
     <!-- Profile -->
 
