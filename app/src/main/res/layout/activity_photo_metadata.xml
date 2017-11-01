@@ -151,7 +151,6 @@
                     android:gravity="start|top"
                     android:hint="@string/comment_hint"
                     android:inputType="textMultiLine|textCapSentences"
-                    android:maxLength="500"
                     android:maxLines="5"
                     android:minLines="2"
                     android:paddingBottom="0dp"

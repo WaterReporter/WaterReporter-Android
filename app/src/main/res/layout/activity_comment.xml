@@ -185,7 +185,9 @@
                         android:id="@+id/add_comment_image"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="16dp"
                         android:alpha="0.5"
                         android:src="@drawable/ic_camera_alt_black_24dp" />
 
@@ -193,9 +195,26 @@
                         android:id="@+id/comment_image_preview"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:layout_centerInParent="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="16dp"
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
+                        android:visibility="gone" />
+
+                    <ProgressBar
+                        android:id="@+id/openGraphProgress"
+                        style="@style/Widget.AppCompat.ProgressBar"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginEnd="0dp"
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginRight="0dp"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="0dp"
                         android:visibility="gone" />
 
                 </RelativeLayout>
@@ -223,6 +242,8 @@
                         android:background="#00000000"
                         android:hint="@string/add_comment"
                         android:inputType="textMultiLine|textCapSentences"
+                        android:maxLines="5"
+                        android:minLines="1"
                         android:paddingBottom="16dp"
                         android:paddingEnd="16dp"
                         android:paddingLeft="0dp"

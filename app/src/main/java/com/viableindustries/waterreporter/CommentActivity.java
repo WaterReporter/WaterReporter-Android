@@ -1504,7 +1504,6 @@ public class CommentActivity extends AppCompatActivity implements
                 .load(imageUrl)
                 .placeholder(R.drawable.open_graph_placeholder)
                 .error(R.drawable.open_graph_placeholder)
-                .fit()
                 .into(ogImage);
 
         ogTitle.setText(openGraphProperties.title);
