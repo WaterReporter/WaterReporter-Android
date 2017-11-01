@@ -41,6 +41,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -155,6 +156,9 @@ public class CommentActivity extends AppCompatActivity implements
     @Bind(R.id.tag_results)
     LinearLayout tagResults;
 
+    @Bind(R.id.openGraphProgress)
+    ProgressBar openGraphProgress;
+
     // Open Graph preview
 
     @Bind(R.id.ogData)
@@ -236,6 +240,11 @@ public class CommentActivity extends AppCompatActivity implements
         mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         mCoreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+        // Set ProgressBar appearance
+
+        openGraphProgress.getIndeterminateDrawable().setColorFilter(
+                ContextCompat.getColor(this, R.color.splash_blue), android.graphics.PorterDuff.Mode.SRC_IN);
 
         report = ReportHolder.getReport();
 
@@ -1418,6 +1427,8 @@ public class CommentActivity extends AppCompatActivity implements
 
         final Map<String, String> ogIdx = new HashMap<>();
 
+        openGraphProgress.setVisibility(View.VISIBLE);
+
         OpenGraphTask openGraphTask = new OpenGraphTask(new OpenGraphResponse() {
 
             @Override
@@ -1446,9 +1457,13 @@ public class CommentActivity extends AppCompatActivity implements
 
                     retrievingOpenGraphData = false;
 
+                    openGraphProgress.setVisibility(View.GONE);
+
                 } catch (NullPointerException e) {
 
                     try {
+
+                        openGraphProgress.setVisibility(View.VISIBLE);
 
                         Snackbar.make(parentLayout, "Unable to read URL.",
                                 Snackbar.LENGTH_SHORT)

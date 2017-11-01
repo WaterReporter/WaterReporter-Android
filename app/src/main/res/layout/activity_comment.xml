@@ -4,7 +4,7 @@
     android:id="@+id/activity_user_profile"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FBFBFB"
+    android:background="#FFFFFF"
     android:orientation="vertical"
     tools:context="com.viableindustries.waterreporter.CommentActivity">
 
@@ -160,6 +160,11 @@
 
             </HorizontalScrollView>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/gray_232" />
+
             <LinearLayout
                 android:id="@+id/comment_component"
                 android:layout_width="match_parent"
@@ -175,11 +180,11 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="start|bottom">
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:layout_alignParentTop="true"
-                        android:background="@color/gray_232" />
+                    <!--<View-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0.5dp"-->
+                    <!--android:layout_alignParentTop="true"-->
+                    <!--android:background="@color/gray_232" />-->
 
                     <ImageView
                         android:id="@+id/add_comment_image"
@@ -228,11 +233,11 @@
                     android:layout_marginTop="0dp"
                     android:layout_weight="1">
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:layout_alignParentTop="true"
-                        android:background="@color/gray_232" />
+                    <!--<View-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0.5dp"-->
+                    <!--android:layout_alignParentTop="true"-->
+                    <!--android:background="@color/gray_232" />-->
 
                     <EditText
                         android:id="@+id/comment_input"
@@ -242,7 +247,8 @@
                         android:background="#00000000"
                         android:hint="@string/add_comment"
                         android:inputType="textMultiLine|textCapSentences"
-                        android:maxLines="5"
+                        android:maxLength="1000"
+                        android:maxLines="10"
                         android:minLines="1"
                         android:paddingBottom="16dp"
                         android:paddingEnd="16dp"
@@ -257,22 +263,30 @@
                 <RelativeLayout
                     android:id="@+id/send_button_container"
                     android:layout_width="56dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="bottom|end"
-                    android:background="@color/base_blue">
+                    android:layout_height="wrap_content">
 
-                    <View
+                    <!--<View-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0.5dp"-->
+                    <!--android:layout_alignParentTop="true"-->
+                    <!--android:background="@color/gray_232" />-->
+
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:layout_alignParentTop="true"
-                        android:background="@color/gray_232" />
-
-                    <ImageView
-                        android:id="@+id/send"
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:src="@drawable/ic_send_white_24dp" />
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="15dp"
+                        android:background="@color/white">
+
+                        <ImageView
+                            android:id="@+id/send"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/ic_send_blue_24dp" />
+
+                    </RelativeLayout>
 
                 </RelativeLayout>
 
