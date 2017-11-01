@@ -139,6 +139,8 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
 
         if (!selfContain) viewHolder.postThumb.setOnClickListener(new PostDetailListener(context, post));
 
+        if (!selfContain) viewHolder.postCaption.setOnClickListener(new PostDetailListener(context, post));
+
         viewHolder.commentIcon.setOnClickListener(new PostCommentListener(context, post));
 
         viewHolder.actionBadge.setOnClickListener(new PostCommentListener(context, post));
