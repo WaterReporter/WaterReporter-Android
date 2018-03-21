@@ -1,5 +1,6 @@
 package com.viableindustries.waterreporter.api.interfaces;
 
+import com.viableindustries.waterreporter.api.interfaces.data.campaign.CampaignService;
 import com.viableindustries.waterreporter.api.interfaces.data.comment.CommentService;
 import com.viableindustries.waterreporter.api.interfaces.data.favorite.FavoriteService;
 import com.viableindustries.waterreporter.api.interfaces.data.hashtag.HashTagService;
@@ -37,6 +38,7 @@ public class RestClient {
     private static final TrendingService trendingService = restAdapter.create(TrendingService.class);
     private static final HucGeometryService hucGeometryService = restAdapter.create(HucGeometryService.class);
     private static final TerritoryService territoryService = restAdapter.create(TerritoryService.class);
+    private static final CampaignService campaignService = restAdapter.create(CampaignService.class);
     private static final SecurityService securityService = restAdapter.create(SecurityService.class);
 
     private RestClient() {
@@ -80,6 +82,10 @@ public class RestClient {
 
     public static TerritoryService getTerritoryService() {
         return territoryService;
+    }
+
+    public static CampaignService getCampaignService() {
+        return campaignService;
     }
 
     public static SecurityService getSecurityService() {

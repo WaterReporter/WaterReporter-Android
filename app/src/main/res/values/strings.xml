@@ -383,5 +383,6 @@
     <string name="title_activity_launch">LaunchActivity</string>
     <string name="title_activity_territory_map">TerritoryMapActivity</string>
     <string name="title_activity_post_favorite_list">Liked by</string>
+    <string name="title_activity_explore">Explore</string>
 
 </resources>

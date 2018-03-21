@@ -44,11 +44,13 @@ public class NavigationFragment extends Fragment {
         final int coreId = coreProfile.getInt("id", 0);
 
         LinearLayout timelineTab = (LinearLayout) view.findViewById(R.id.timeline);
+        LinearLayout exploreTab = (LinearLayout) view.findViewById(R.id.explore);
         LinearLayout searchTab = (LinearLayout) view.findViewById(R.id.search);
         LinearLayout submitTab = (LinearLayout) view.findViewById(R.id.submit);
         LinearLayout profileTab = (LinearLayout) view.findViewById(R.id.profile);
 
         final ImageView timelineIcon = (ImageView) view.findViewById(R.id.timeline_icon);
+        final ImageView exploreIcon = (ImageView) view.findViewById(R.id.explore_icon);
         final ImageView searchIcon = (ImageView) view.findViewById(R.id.search_icon);
         final ImageView submitIcon = (ImageView) view.findViewById(R.id.submit_icon);
         final ImageView profileIcon = (ImageView) view.findViewById(R.id.profile_icon);
@@ -56,6 +58,7 @@ public class NavigationFragment extends Fragment {
         if ("AuthUserActivity".equals(activity.getClass().getSimpleName())) {
 
             timelineIcon.setAlpha(Float.valueOf("0.4"));
+            exploreIcon.setAlpha(Float.valueOf("0.4"));
             searchIcon.setAlpha(Float.valueOf("0.4"));
             submitIcon.setAlpha(Float.valueOf("0.4"));
             profileIcon.setAlpha(Float.valueOf("0.8"));
@@ -63,6 +66,7 @@ public class NavigationFragment extends Fragment {
         } else if ("MainActivity".equals(activity.getClass().getSimpleName())) {
 
             timelineIcon.setAlpha(Float.valueOf("0.8"));
+            exploreIcon.setAlpha(Float.valueOf("0.4"));
             searchIcon.setAlpha(Float.valueOf("0.4"));
             submitIcon.setAlpha(Float.valueOf("0.4"));
             profileIcon.setAlpha(Float.valueOf("0.4"));
@@ -98,11 +102,27 @@ public class NavigationFragment extends Fragment {
             }
         });
 
+        exploreTab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                timelineIcon.setAlpha(Float.valueOf("0.4"));
+                exploreIcon.setAlpha(Float.valueOf("0.8"));
+                searchIcon.setAlpha(Float.valueOf("0.4"));
+                submitIcon.setAlpha(Float.valueOf("0.4"));
+                profileIcon.setAlpha(Float.valueOf("0.4"));
+
+                startActivity(new Intent(activity, ExploreActivity.class));
+
+            }
+        });
+
         searchTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 timelineIcon.setAlpha(Float.valueOf("0.4"));
+                exploreIcon.setAlpha(Float.valueOf("0.4"));
                 searchIcon.setAlpha(Float.valueOf("0.8"));
                 submitIcon.setAlpha(Float.valueOf("0.4"));
                 profileIcon.setAlpha(Float.valueOf("0.4"));
@@ -149,6 +169,7 @@ public class NavigationFragment extends Fragment {
                 }
 
                 timelineIcon.setAlpha(Float.valueOf("0.4"));
+                exploreIcon.setAlpha(Float.valueOf("0.4"));
                 searchIcon.setAlpha(Float.valueOf("0.4"));
                 submitIcon.setAlpha(Float.valueOf("0.8"));
                 profileIcon.setAlpha(Float.valueOf("0.4"));

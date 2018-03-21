@@ -36,7 +36,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/search"
+        android:id="@+id/explore"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -51,7 +51,7 @@
             android:background="@color/gray_224" />
 
         <ImageView
-            android:id="@+id/search_icon"
+            android:id="@+id/explore_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_horizontal"
@@ -60,7 +60,7 @@
             android:background="@android:color/transparent"
             android:gravity="center"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_search_black_24dp" />
+            android:src="@drawable/ic_explore_black_24dp" />
 
     </LinearLayout>
 
@@ -90,6 +90,35 @@
             android:gravity="center"
             android:scaleType="fitXY"
             android:src="@drawable/ic_add_circle_outline_black_24dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/search"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingTop="0dp">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray_224" />
+
+        <ImageView
+            android:id="@+id/search_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:alpha="0.4"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_search_black_24dp" />
 
     </LinearLayout>
 

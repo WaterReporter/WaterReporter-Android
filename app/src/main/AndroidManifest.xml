@@ -26,7 +26,6 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
-
         <service
             android:name=".api.services.ImagePostService"
             android:exported="false" />
@@ -62,6 +61,7 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -183,6 +183,7 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.viableindustries.waterreporter.MainActivity" />
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -190,9 +191,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="https"
                     android:host="www.waterreporter.org"
-                    android:pathPrefix="/community/profiles/" />
+                    android:pathPrefix="/community/profiles/"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
         <activity
@@ -219,9 +220,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="https"
                     android:host="www.waterreporter.org"
-                    android:pathPrefix="/community/organizations/" />
+                    android:pathPrefix="/community/organizations/"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
         <activity
@@ -325,6 +326,12 @@
             android:name=".PostFavoriteListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_post_favorite_list"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".ExploreActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_explore"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
