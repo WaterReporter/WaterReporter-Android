@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -30,8 +31,12 @@ import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.api.models.query.QueryFilter;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
+import com.viableindustries.waterreporter.api.models.snapshot.CampaignLeader;
+import com.viableindustries.waterreporter.api.models.snapshot.CampaignLeaderboard;
 import com.viableindustries.waterreporter.api.models.snapshot.CampaignSnapshot;
 import com.viableindustries.waterreporter.api.models.user.User;
+import com.viableindustries.waterreporter.user_interface.adapters.CampaignLeaderListAdapter;
+import com.viableindustries.waterreporter.user_interface.adapters.TagSuggestionAdapter;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
@@ -64,6 +69,10 @@ public class CampaignProfileActivity extends AppCompatActivity {
     private TextView campaignTagline;
 
     private ImageView campaignImage;
+
+    private HorizontalScrollView leaderBoardComponent;
+
+    private LinearLayout leaderBoardItems;
 
     @Bind(R.id.group_membership_button)
     FloatingActionButton joinOrganization;
@@ -100,6 +109,8 @@ public class CampaignProfileActivity extends AppCompatActivity {
     private Context mContext;
 
     private Campaign mCampaign;
+
+    private List<CampaignLeader> campaignLeaders;
 
     private SharedPreferences mSharedPreferences;
 
@@ -251,11 +262,9 @@ public class CampaignProfileActivity extends AppCompatActivity {
 
         addListViewHeader();
 
-        // Count reports with actions
+        // Retrieve leaderboard data
 
-        complexQuery = buildQuery(true, new String[][]{
-                {"state", "eq", "closed"}
-        });
+        fetchLeaderboard(mCampaignId);
 
         // Retrieve campaign snapshot data
 
@@ -293,6 +302,12 @@ public class CampaignProfileActivity extends AppCompatActivity {
             LayoutInflater inflater = getLayoutInflater();
 
             ViewGroup header = (ViewGroup) inflater.inflate(R.layout.campaign_profile_header, timeLine, false);
+
+            // Leaderboard views
+
+            leaderBoardComponent = (HorizontalScrollView) header.findViewById(R.id.leaderBoardComponent);
+
+            leaderBoardItems = (LinearLayout) header.findViewById(R.id.leaderBoardItems);
 
             Button startPostButton = (Button) header.findViewById(R.id.startPost);
 
@@ -418,6 +433,80 @@ public class CampaignProfileActivity extends AppCompatActivity {
             }
 
         }
+
+    }
+
+    private void populateLeaderboard(List<CampaignLeader> campaignLeaders) {
+
+        leaderBoardItems.removeAllViews();
+
+        if (!campaignLeaders.isEmpty()) {
+
+            CampaignLeaderListAdapter campaignLeaderListAdapter = new CampaignLeaderListAdapter(this, campaignLeaders);
+
+            final int adapterCount = campaignLeaderListAdapter.getCount();
+
+            for (int i = 0; i < adapterCount; i++) {
+
+                View item = campaignLeaderListAdapter.getView(i, null, leaderBoardItems);
+
+                leaderBoardItems.addView(item);
+
+            }
+
+        } else {
+
+            leaderBoardComponent.setVisibility(View.GONE);
+
+        }
+
+    }
+
+    private void fetchLeaderboard(int campaignId) {
+
+        final String accessToken = mSharedPreferences.getString("access_token", "");
+
+        RestClient.getSnapshotService().getCampaignLeaderboard(accessToken, "application/json", mCampaignId, new Callback<CampaignLeaderboard>() {
+
+            @Override
+            public void success(CampaignLeaderboard campaignLeaderboard, Response response) {
+
+                campaignLeaders = campaignLeaderboard.getFeatures();
+
+                if (campaignLeaders.size() > 5) {
+
+                    campaignLeaders = campaignLeaderboard.getFeatures().subList(0, 5);
+
+                }
+
+                populateLeaderboard(campaignLeaders);
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(CampaignProfileActivity.this, SignInActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
 
     }
 

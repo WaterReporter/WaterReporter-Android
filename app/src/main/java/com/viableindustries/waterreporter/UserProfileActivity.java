@@ -206,11 +206,19 @@ public class UserProfileActivity extends AppCompatActivity implements
 
             setUserData(mUser);
 
-        } catch (NullPointerException _e) {
+        } catch (NullPointerException e1) {
 
-            startActivity(new Intent(this, MainActivity.class));
+            try {
 
-            finish();
+                fetchUser(mUser.id);
+
+            } catch (NullPointerException e2) {
+
+                startActivity(new Intent(this, MainActivity.class));
+
+                finish();
+
+            }
 
         }
 

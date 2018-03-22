@@ -179,6 +179,28 @@
 
     </FrameLayout>
 
+    <HorizontalScrollView
+        android:id="@+id/leaderBoardComponent"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="#FFFFFF"
+        android:baselineAligned="false">
+
+        <LinearLayout
+            android:id="@+id/leaderBoardItems"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:background="#FFFFFF"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:paddingEnd="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingStart="16dp" />
+
+    </HorizontalScrollView>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"

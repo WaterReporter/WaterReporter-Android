@@ -28,23 +28,23 @@ public class UserProfileListener implements View.OnClickListener {
     @Override
     public void onClick(View view) {
 
-        if (user.properties.picture == null) {
-
-            if (user.properties.images != null) {
-
-                try {
-
-                    user.properties.picture = user.properties.images.get(0).properties.thumbnail_retina;
-
-                } catch (IndexOutOfBoundsException e) {
-
-                    user.properties.picture = null;
-
-                }
-
-            }
-
-        }
+//        if (user.properties.picture == null) {
+//
+//            if (user.properties.images != null) {
+//
+//                try {
+//
+//                    user.properties.picture = user.properties.images.get(0).properties.thumbnail_retina;
+//
+//                } catch (IndexOutOfBoundsException e) {
+//
+//                    user.properties.picture = null;
+//
+//                }
+//
+//            }
+//
+//        }
 
         // Write model to temporary storage in SharedPreferences
 

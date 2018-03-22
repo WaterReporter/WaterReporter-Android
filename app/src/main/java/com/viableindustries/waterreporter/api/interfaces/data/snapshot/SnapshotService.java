@@ -3,6 +3,7 @@ package com.viableindustries.waterreporter.api.interfaces.data.snapshot;
 import com.viableindustries.waterreporter.api.models.favorite.Favorite;
 import com.viableindustries.waterreporter.api.models.favorite.FavoritePostBody;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
+import com.viableindustries.waterreporter.api.models.snapshot.CampaignLeaderboard;
 import com.viableindustries.waterreporter.api.models.snapshot.CampaignSnapshot;
 
 import retrofit.Callback;
@@ -30,7 +31,7 @@ public interface SnapshotService {
     void getCampaignLeaderboard(@Header("Authorization") String authorization,
                      @Header("Content-Type") String contentType,
                      @Path("campaignId") int campaignId,
-                     Callback<CampaignSnapshot> campaignSnapshotCallback);
+                     Callback<CampaignLeaderboard> campaignLeaderboardCallback);
 
     @GET("/data/snapshot/organization/{organizationId}")
     void getOrganization(@Header("Authorization") String authorization,
