@@ -473,11 +473,11 @@ public class CampaignProfileActivity extends AppCompatActivity {
 
                 campaignLeaders = campaignLeaderboard.getFeatures();
 
-                if (campaignLeaders.size() > 5) {
-
-                    campaignLeaders = campaignLeaderboard.getFeatures().subList(0, 5);
-
-                }
+//                if (campaignLeaders.size() > 5) {
+//
+//                    campaignLeaders = campaignLeaderboard.getFeatures().subList(0, 5);
+//
+//                }
 
                 populateLeaderboard(campaignLeaders);
 
