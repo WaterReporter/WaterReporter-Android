@@ -18,7 +18,6 @@
             android:adjustViewBounds="true"
             android:background="@color/gray_224"
             android:contentDescription="Campaign image"
-            android:longClickable="true"
             android:scaleType="fitXY" />
 
         <TextView

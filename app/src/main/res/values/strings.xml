@@ -278,8 +278,8 @@
     <!-- Profile -->
 
     <plurals name="post_label">
-        <item quantity="one">Post</item>
-        <item quantity="other">Posts</item>
+        <item quantity="one">post</item>
+        <item quantity="other">posts</item>
     </plurals>
     <string name="zero_posts">No posts</string>
     <plurals name="post_label_lower">
@@ -287,16 +287,16 @@
         <item quantity="other">posts</item>
     </plurals>
     <plurals name="action_label">
-        <item quantity="one">Action</item>
-        <item quantity="other">Actions</item>
+        <item quantity="one">action</item>
+        <item quantity="other">actions</item>
     </plurals>
     <plurals name="group_label">
-        <item quantity="one">Group</item>
-        <item quantity="other">Groups</item>
+        <item quantity="one">group</item>
+        <item quantity="other">groups</item>
     </plurals>
     <plurals name="member_label">
-        <item quantity="one">Member</item>
-        <item quantity="other">Members</item>
+        <item quantity="one">member</item>
+        <item quantity="other">members</item>
     </plurals>
     <plurals name="comment_label">
         <item quantity="one">%d comment</item>
@@ -384,5 +384,7 @@
     <string name="title_activity_territory_map">TerritoryMapActivity</string>
     <string name="title_activity_post_favorite_list">Liked by</string>
     <string name="title_activity_explore">Explore</string>
+    <string name="title_activity_campaign">CampaignActivity</string>
+    <string name="title_activity_campaign_profile">CampaignProfileActivity</string>
 
 </resources>

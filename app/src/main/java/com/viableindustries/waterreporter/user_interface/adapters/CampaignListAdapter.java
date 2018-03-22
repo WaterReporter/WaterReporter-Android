@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.api.models.campaign.Campaign;
+import com.viableindustries.waterreporter.user_interface.listeners.CampaignProfileListener;
 import com.viableindustries.waterreporter.user_interface.listeners.OrganizationProfileListener;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 
@@ -82,7 +83,7 @@ public class CampaignListAdapter extends ArrayAdapter<Campaign> {
 
         // Add click listeners to layout elements
 
-//        viewHolder.campaignItem.setOnClickListener(new OrganizationProfileListener(mContext, campaign.properties.id));
+        viewHolder.campaignItem.setOnClickListener(new CampaignProfileListener(mContext, campaign));
 
         return convertView;
 
