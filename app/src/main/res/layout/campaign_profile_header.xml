@@ -45,15 +45,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:alpha="0.9"
+                android:alpha="0.8"
                 android:ellipsize="end"
                 android:gravity="center"
                 android:maxLines="2"
                 android:paddingBottom="0dp"
-                android:paddingEnd="32dp"
-                android:paddingLeft="32dp"
-                android:paddingRight="32dp"
-                android:paddingStart="32dp"
+                android:paddingEnd="24dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingStart="24dp"
                 android:paddingTop="0dp"
                 android:text="A description goes here"
                 android:textColor="@color/white"
@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:orientation="vertical"
-                android:paddingBottom="16dp"
+                android:paddingBottom="24dp"
                 android:paddingTop="16dp">
 
                 <Button
@@ -88,16 +88,17 @@
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/profileStats"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:animateLayoutChanges="true"
                 android:baselineAligned="false"
                 android:orientation="horizontal"
                 android:paddingBottom="0dp"
                 android:paddingEnd="0dp"
-                android:paddingLeft="20dp"
+                android:paddingLeft="0dp"
                 android:paddingRight="0dp"
-                android:paddingStart="20dp"
+                android:paddingStart="0dp"
                 android:paddingTop="0dp">
 
                 <RelativeLayout
@@ -105,7 +106,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="start|center_vertical">
+                    android:gravity="end|center_vertical">
 
                     <TextView
                         android:id="@+id/reportCount"
@@ -127,7 +128,11 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="start|center_vertical">
+                    android:gravity="center"
+                    android:paddingEnd="24dp"
+                    android:paddingLeft="24dp"
+                    android:paddingRight="24dp"
+                    android:paddingStart="24dp">
 
                     <TextView
                         android:id="@+id/actionCount"

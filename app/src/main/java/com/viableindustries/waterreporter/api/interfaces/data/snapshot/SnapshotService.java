@@ -26,6 +26,12 @@ public interface SnapshotService {
                          @Path("campaignId") int campaignId,
                          Callback<CampaignSnapshot> campaignSnapshotCallback);
 
+    @GET("/data/snapshot/campaign/{campaignId}/leaderboard")
+    void getCampaignLeaderboard(@Header("Authorization") String authorization,
+                     @Header("Content-Type") String contentType,
+                     @Path("campaignId") int campaignId,
+                     Callback<CampaignSnapshot> campaignSnapshotCallback);
+
     @GET("/data/snapshot/organization/{organizationId}")
     void getOrganization(@Header("Authorization") String authorization,
                  @Header("Content-Type") String contentType,

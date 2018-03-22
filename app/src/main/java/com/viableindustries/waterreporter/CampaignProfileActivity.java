@@ -257,13 +257,9 @@ public class CampaignProfileActivity extends AppCompatActivity {
                 {"state", "eq", "closed"}
         });
 
+        // Retrieve campaign snapshot data
+
         fetchSnapshot(mCampaignId);
-
-//        countPosts(complexQuery, "state");
-
-        // Retrieve the organization's members
-
-//        fetchCampaignMembers(50, 1, mCampaignId);
 
         if (reportCollection.isEmpty() && timeLineContainer != null) {
 
@@ -279,7 +275,7 @@ public class CampaignProfileActivity extends AppCompatActivity {
 
         Intent intent = new Intent(mContext, PhotoMetaActivity.class);
 
-        TextView tagName = (TextView) findViewById(R.id.organizationName);
+        TextView tagName = (TextView) findViewById(R.id.campaignName);
 
         intent.putExtra("autoTag", String.format("\u0023%s", tagName.getText().toString().replaceAll("[^a-zA-Z0-9]+", "")));
 
