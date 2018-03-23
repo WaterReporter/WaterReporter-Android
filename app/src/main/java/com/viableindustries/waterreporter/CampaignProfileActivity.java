@@ -178,14 +178,14 @@ public class CampaignProfileActivity extends AppCompatActivity {
 
                 // Retrieve stored organization data
 
-                retrieveStoredOrganization();
+                retrieveStoredCampaign();
             }
 
         } else {
 
             // Retrieve stored organization data
 
-            retrieveStoredOrganization();
+            retrieveStoredCampaign();
 
         }
 
@@ -236,7 +236,7 @@ public class CampaignProfileActivity extends AppCompatActivity {
 
     }
 
-    private void retrieveStoredOrganization() {
+    private void retrieveStoredCampaign() {
 
         mCampaign = ModelStorage.getStoredCampaign(mSharedPreferences);
 
@@ -284,9 +284,11 @@ public class CampaignProfileActivity extends AppCompatActivity {
 
         Intent intent = new Intent(mContext, PhotoMetaActivity.class);
 
-        TextView tagName = (TextView) findViewById(R.id.campaignName);
+//        TextView tagName = (TextView) findViewById(R.id.campaignName);
 
-        intent.putExtra("autoTag", String.format("\u0023%s", tagName.getText().toString().replaceAll("[^a-zA-Z0-9]+", "")));
+        intent.putExtra("campaignId", mCampaignId);
+
+//        intent.putExtra("autoTag", String.format("\u0023%s", tagName.getText().toString().replaceAll("[^a-zA-Z0-9]+", "")));
 
         startActivity(intent);
 

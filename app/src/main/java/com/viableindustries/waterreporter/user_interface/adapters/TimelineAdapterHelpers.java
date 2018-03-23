@@ -49,6 +49,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 
+import jp.wasabeef.picasso.transformations.BlurTransformation;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -249,6 +250,10 @@ public class TimelineAdapterHelpers {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceDimensionsHelper.getDisplayWidth(context));
 
             imageView.setLayoutParams(layoutParams);
+
+//            Picasso.with(context)
+//                    .load(image.properties.icon)
+//                    .transform(new BlurTransformation(context, 20, 1)).into(imageView);
 
             Picasso.with(context).load(imagePath).fit().into(imageView);
 

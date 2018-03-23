@@ -25,14 +25,18 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v4.text.TextUtilsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.URLUtil;
 import android.widget.EditText;
@@ -50,6 +54,7 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.interfaces.data.post.SendPostCallbacks;
+import com.viableindustries.waterreporter.api.models.campaign.Campaign;
 import com.viableindustries.waterreporter.api.models.geometry.Geometry;
 import com.viableindustries.waterreporter.api.models.geometry.GeometryResponse;
 import com.viableindustries.waterreporter.api.models.group.Group;
@@ -249,6 +254,10 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     private OpenGraphProperties openGraphProperties;
 
+    private int mCampaignId;
+
+    private Campaign mCampaign;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -343,6 +352,14 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                     //
                     Log.d("memory", "too heavy");
+
+                }
+
+                mCampaignId = extras.getInt("campaignId", 0);
+
+                if (mCampaignId > 0) {
+
+                    mCampaign = ModelStorage.getStoredCampaign(mSharedPreferences);
 
                 }
 
@@ -468,7 +485,15 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         // Retrieve the user's group collection
 
-        fetchUserGroups();
+        if (mCampaign != null) {
+
+            setCampaignGroupText();
+
+        } else {
+
+            fetchUserGroups();
+
+        }
 
         // Initialize empty list to hold hashtags
 
@@ -1404,33 +1429,83 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     private ReportPostBody buildPostBody() {
 
+        // Initialize empty lists for group and campaign associations
+
+        List<Map<String, Integer>> campaigns = new ArrayList<>();
+
         List<Map<String, Integer>> groups = new ArrayList<>();
 
-        try {
+        if (mCampaign != null) {
 
-            Map<String, ?> groupKeys = associatedGroups.getAll();
+            // Add campaign id object to relations list
 
-            for (Map.Entry<String, ?> entry : groupKeys.entrySet()) {
+            try {
 
-                Integer value = (Integer) entry.getValue();
+                Map<String, Integer> campaignId = new HashMap<>();
 
-                if (value > 0) {
+                campaignId.put("id", mCampaignId);
+
+                campaigns.add(campaignId);
+
+            } catch (NullPointerException ne) {
+
+                Log.d("NO CAMPAIGN ID FOUND", "No campaigns selected.");
+
+            }
+
+            // Add campaign groups to relations list
+
+            try {
+
+                List<Organization> campaignGroups = mCampaign.properties.organizations;
+
+                for (Organization organization : campaignGroups) {
 
                     Map<String, Integer> groupId = new HashMap<>();
 
-                    groupId.put("id", value);
+                    groupId.put("id", organization.properties.id);
 
                     groups.add(groupId);
 
                 }
 
+            } catch (NullPointerException ne) {
+
+                Log.d("NO CAMPAIGN GROUPS", "No groups selected.");
+
             }
 
-        } catch (NullPointerException ne) {
+        } else {
 
-            Log.d("groups", "No groups selected.");
+            try {
+
+                Map<String, ?> groupKeys = associatedGroups.getAll();
+
+                for (Map.Entry<String, ?> entry : groupKeys.entrySet()) {
+
+                    Integer value = (Integer) entry.getValue();
+
+                    if (value > 0) {
+
+                        Map<String, Integer> groupId = new HashMap<>();
+
+                        groupId.put("id", value);
+
+                        groups.add(groupId);
+
+                    }
+
+                }
+
+            } catch (NullPointerException ne) {
+
+                Log.d("groups", "No groups selected.");
+
+            }
 
         }
+
+        // Add Open Graph object (if any) to request data
 
         List<OpenGraphProperties> social = new ArrayList<>();
 
@@ -1440,7 +1515,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         }
 
-        return new ReportPostBody(geometryResponse, groups,
+        return new ReportPostBody(geometryResponse, campaigns, groups,
                 images, true, dateText, commentsText, reportState, social);
 
     }
@@ -1648,6 +1723,35 @@ public class PhotoMetaActivity extends AppCompatActivity
             }
 
         });
+
+    }
+
+    private void setCampaignGroupText() {
+
+        groupList.setVisibility(View.VISIBLE);
+
+        List<Organization> campaignGroups = mCampaign.properties.organizations;
+
+        List<String> groupNames = new ArrayList<>();
+
+        for (Organization organization : campaignGroups) {
+
+            groupNames.add(organization.properties.name);
+
+        }
+
+        String groupText = String.format("This post will be shared with the following groups: %s.",
+                TextUtils.join(", ", groupNames));
+
+        LayoutInflater inflater = getLayoutInflater();
+
+        ViewGroup header = (ViewGroup) inflater.inflate(R.layout.campaign_auto_group_header, groupList, false);
+
+        TextView groupTextView = (TextView) header.findViewById(R.id.groupText);
+
+        groupTextView.setText(groupText);
+
+        groupList.addView(header);
 
     }
 

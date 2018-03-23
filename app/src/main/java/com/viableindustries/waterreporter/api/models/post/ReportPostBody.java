@@ -16,6 +16,9 @@ public class ReportPostBody implements Serializable {
     @SerializedName("geometry")
     public GeometryResponse geometry;
 
+    @SerializedName("campaigns")
+    public List<Map<String, Integer>> campaigns;
+
     @SerializedName("groups")
     public List<Map<String, Integer>> groups;
 
@@ -37,10 +40,12 @@ public class ReportPostBody implements Serializable {
     @SerializedName("state")
     public String state;
 
-    public ReportPostBody (GeometryResponse aGeometry, List<Map<String, Integer>> aGroups, List<Map<String, Integer>> aImages, boolean aIsPublic, String aReportDate,
+    public ReportPostBody (GeometryResponse aGeometry, List<Map<String, Integer>> aCampaigns, List<Map<String, Integer>> aGroups, List<Map<String, Integer>> aImages, boolean aIsPublic, String aReportDate,
                            String aDescription, String aState, List<OpenGraphProperties> aOpenGraph) {
 
         this.geometry = aGeometry;
+
+        this.campaigns = aCampaigns;
 
         this.groups = aGroups;
 
