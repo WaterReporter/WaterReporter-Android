@@ -55,6 +55,7 @@ import com.viableindustries.waterreporter.utilities.PatternEditableBuilder;
 import com.viableindustries.waterreporter.utilities.UtilityMethods;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +63,7 @@ import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import jp.wasabeef.picasso.transformations.BlurTransformation;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -450,42 +452,78 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
             headerCanvas = (ImageView) header.findViewById(R.id.headerCanvas);
 
-            Target target = new Target() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+//            Target target = new Target() {
+//                @Override
+//                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+//
+////                    int dominantColor = UtilityMethods.getDominantColor(bitmap);
+//
+////                    headerCanvas.setBackgroundColor(dominantColor);
+//
+////                    headerCanvas.setBackgroundColor(ContextCompat.getColor(OrganizationProfileActivity.this, dominantColor));
+//
+//                    Palette palette = Palette.from(bitmap).generate();
+//
+//                    int color = palette.getVibrantColor(ContextCompat.getColor(OrganizationProfileActivity.this, R.color.white));
+//
+//                    headerCanvas.setBackgroundColor(color);
+//
+//                    Picasso.with(OrganizationProfileActivity.this)
+//                            .load(R.drawable.profile_header_background_transparent)
+//                            .into(headerCanvas);
+//
+//                }
+//
+//                @Override
+//                public void onBitmapFailed(Drawable errorDrawable) {
+//
+//                }
+//
+//                @Override
+//                public void onPrepareLoad(Drawable placeHolderDrawable) {
+//
+//                }
+//            };
+//
+//            Picasso.with(this)
+//                    .load(organizationLogoUrl)
+//                    .into(target);
 
-//                    int dominantColor = UtilityMethods.getDominantColor(bitmap);
+            String firstChar = mOrganization.properties.name.substring(0, 1).toLowerCase();
 
-//                    headerCanvas.setBackgroundColor(dominantColor);
+            String[] alphabet = {
+                    "a","b","c","d","e","f",
+                    "g","h","i","j","k","l",
+                    "m","n","o","p","q","r",
+                    "s","t","u","v","w","x",
+                    "y","z"};
 
-//                    headerCanvas.setBackgroundColor(ContextCompat.getColor(OrganizationProfileActivity.this, dominantColor));
+            int charIdx = Arrays.asList(alphabet).indexOf(firstChar);
 
-                    Palette palette = Palette.from(bitmap).generate();
+            String canvasPath = "default.jpg";
 
-                    int color = palette.getVibrantColor(ContextCompat.getColor(OrganizationProfileActivity.this, R.color.white));
+            if (0 <= charIdx && charIdx <= 5) {
 
-                    headerCanvas.setBackgroundColor(color);
+                canvasPath = "a_f.jpg";
 
-                    Picasso.with(OrganizationProfileActivity.this)
-                            .load(R.drawable.profile_header_background_transparent)
-                            .into(headerCanvas);
+            } else if (6 <= charIdx && charIdx <= 11) {
 
-                }
+                canvasPath = "g_l.jpg";
 
-                @Override
-                public void onBitmapFailed(Drawable errorDrawable) {
+            } else if (12 <= charIdx && charIdx <= 17) {
 
-                }
+                canvasPath = "m_r.jpg";
 
-                @Override
-                public void onPrepareLoad(Drawable placeHolderDrawable) {
+            } else if (18 <= charIdx && charIdx <= 25) {
 
-                }
-            };
+                canvasPath = "s_z.jpg";
 
-            Picasso.with(this)
-                    .load(organizationLogoUrl)
-                    .into(target);
+            }
+
+            Picasso.with(OrganizationProfileActivity.this)
+                    .load(String.format("https://media.waterreporter.org/placeholders/profiles/group/%s", canvasPath))
+                    .transform(new BlurTransformation(OrganizationProfileActivity.this, 6, 1))
+                    .into(headerCanvas);
 
             Picasso.with(this).load(organizationLogoUrl).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(organizationLogo);
 
