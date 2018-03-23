@@ -3,6 +3,8 @@ package com.viableindustries.waterreporter.user_interface.view_holders;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.media.Image;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.TextViewCompat;
@@ -48,6 +50,7 @@ public class UserProfileHeaderView {
     public LinearLayout promptBlock;
     public TextView promptMessage;
     public Button startPostButton;
+    public ImageView logoView;
 
     public interface UserProfileHeaderCallback {
 
@@ -79,6 +82,11 @@ public class UserProfileHeaderView {
         reportStat = (RelativeLayout) header.findViewById(R.id.reportStat);
         actionStat = (RelativeLayout) header.findViewById(R.id.actionStat);
         groupStat = (RelativeLayout) header.findViewById(R.id.groupStat);
+        logoView = (ImageView) header.findViewById(R.id.logo);
+
+        // Set up white color filter for reversed Water Reporter logo
+
+        logoView.setColorFilter(ContextCompat.getColor(context, R.color.white), PorterDuff.Mode.SRC_ATOP);
 
         String userTitleText = user.properties.title;
         String userDescriptionText = user.properties.description;
