@@ -30,6 +30,10 @@
     <color name="splash_blue">#06aaf0</color>
     <color name="splash_blue_dark">#0581b7</color>
 
+    <color name="base_cyan">#06cdd8</color>
+
+    <color name="base_purple">#7b58cd</color>
+
     <color name="orange">#f0770a</color>
     <color name="orange_red">#f7551b</color>
     <color name="orange_red_bias_orange">#fb7d0d</color>

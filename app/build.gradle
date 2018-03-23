@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 android {
@@ -52,4 +53,5 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'org.jsoup:jsoup:1.10.3'
     compile 'com.github.rubensousa:gravitysnaphelper:1.2'
+    compile 'jp.wasabeef:picasso-transformations:2.2.1'
 }

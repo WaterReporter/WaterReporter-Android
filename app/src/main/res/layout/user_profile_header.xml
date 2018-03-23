@@ -7,190 +7,214 @@
     android:background="#FBFBFB"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="16dp">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black">
 
         <ImageView
-            android:id="@+id/userAvatar"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:id="@+id/headerCanvas"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center|top"
+            android:adjustViewBounds="true"
+            android:alpha="0.5"
+            android:background="@color/gray_224"
+            android:contentDescription="User profile background"
+            android:scaleType="centerCrop" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:scaleType="fitXY" />
+            android:orientation="vertical">
 
-    </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="16dp">
 
-    <TextView
-        android:id="@+id/userName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"
-        android:text="A name goes here"
-        android:textSize="16sp" />
+                <ImageView
+                    android:id="@+id/userAvatar"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_gravity="center"
+                    android:scaleType="fitXY" />
 
-    <TextView
-        android:id="@+id/userTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center"
-        android:paddingBottom="8dp"
-        android:paddingEnd="40dp"
-        android:paddingLeft="40dp"
-        android:paddingRight="40dp"
-        android:paddingStart="40dp"
-        android:paddingTop="0dp"
-        android:text="Upper Potomac Watershed"
-        android:textColor="@color/gray_186"
-        android:textSize="@dimen/small_text" />
-
-    <TextView
-        android:id="@+id/userDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:ellipsize="end"
-        android:maxLines="2"
-        android:paddingBottom="16dp"
-        android:paddingEnd="24dp"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp"
-        android:paddingStart="24dp"
-        android:paddingTop="0dp"
-        android:text="A description goes here"
-        android:textColor="@color/material_blue_grey950"
-        android:textSize="14sp" />
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/profileStats"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        android:background="#FBFBFB"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:paddingBottom="16dp"
-        android:paddingLeft="0dp"
-        android:paddingRight="0dp"
-        android:paddingTop="0dp">
-
-        <LinearLayout
-            android:id="@+id/reportStat"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:visibility="gone">
+            </RelativeLayout>
 
             <TextView
-                android:id="@+id/reportCount"
-                android:layout_width="match_parent"
+                android:id="@+id/userName"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:gravity="center"
-                android:paddingBottom="0dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp"
+                android:text="A name goes here"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/userTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:alpha="0.8"
+                android:gravity="center"
+                android:paddingBottom="8dp"
+                android:paddingEnd="40dp"
+                android:paddingLeft="40dp"
+                android:paddingRight="40dp"
+                android:paddingStart="40dp"
                 android:paddingTop="0dp"
-                android:textColor="@color/base_blue"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:text="Upper Potomac Watershed"
+                android:textColor="@color/white"
+                android:textSize="@dimen/small_text" />
 
             <TextView
-                android:id="@+id/reportCountLabel"
+                android:id="@+id/userDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:paddingBottom="16dp"
+                android:paddingEnd="24dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingStart="24dp"
+                android:paddingTop="0dp"
+                android:text="A description goes here"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/profileStats"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
+                android:animateLayoutChanges="true"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
                 android:paddingBottom="0dp"
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
-                android:paddingTop="2dp"
-                android:textColor="@color/base_blue"
-                android:textSize="14sp" />
+                android:paddingTop="0dp">
+
+                <RelativeLayout
+                    android:id="@+id/reportStat"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/reportCount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingBottom="0dp"
+                        android:paddingLeft="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingTop="0dp"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/reportCountLabel"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_gravity="center_vertical"-->
+                        <!--android:gravity="center"-->
+                        <!--android:paddingBottom="0dp"-->
+                        <!--android:paddingLeft="0dp"-->
+                        <!--android:paddingRight="0dp"-->
+                        <!--android:paddingTop="2dp"-->
+                        <!--android:textColor="@color/white"-->
+                        <!--android:textSize="14sp" />-->
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/actionStat"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/actionCount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:paddingBottom="0dp"
+                        android:paddingLeft="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingTop="0dp"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/actionCountLabel"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_gravity="center_vertical"-->
+                        <!--android:gravity="center"-->
+                        <!--android:paddingBottom="0dp"-->
+                        <!--android:paddingLeft="0dp"-->
+                        <!--android:paddingRight="0dp"-->
+                        <!--android:paddingTop="2dp"-->
+                        <!--android:textColor="@color/white"-->
+                        <!--android:textSize="14sp" />-->
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/groupStat"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/groupCount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:paddingBottom="0dp"
+                        android:paddingLeft="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingTop="0dp"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/groupCountLabel"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_gravity="center_vertical"-->
+                        <!--android:gravity="center"-->
+                        <!--android:paddingBottom="0dp"-->
+                        <!--android:paddingLeft="0dp"-->
+                        <!--android:paddingRight="0dp"-->
+                        <!--android:paddingTop="2dp"-->
+                        <!--android:textColor="@color/white"-->
+                        <!--android:textSize="14sp" />-->
+
+                </RelativeLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/actionStat"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/actionCount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:paddingBottom="0dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
-                android:paddingTop="0dp"
-                android:textColor="@color/material_blue_grey950"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/actionCountLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:paddingBottom="0dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
-                android:paddingTop="2dp"
-                android:textColor="@color/material_blue_grey950"
-                android:textSize="14sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/groupStat"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/groupCount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:paddingBottom="0dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
-                android:paddingTop="0dp"
-                android:textColor="@color/material_blue_grey950"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/groupCountLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:paddingBottom="0dp"
-                android:paddingLeft="0dp"
-                android:paddingRight="0dp"
-                android:paddingTop="2dp"
-                android:textColor="@color/material_blue_grey950"
-                android:textSize="14sp" />
-
-        </LinearLayout>
-
-    </LinearLayout>
+    </FrameLayout>
 
     <include layout="@layout/prompt_empty_profile" />
 

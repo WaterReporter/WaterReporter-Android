@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -19,6 +20,8 @@ import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.UserGroupsActivity;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
+
+import jp.wasabeef.picasso.transformations.BlurTransformation;
 
 import static java.lang.Boolean.TRUE;
 
@@ -32,15 +35,16 @@ public class UserProfileHeaderView {
     public TextView userTitle;
     public TextView userDescription;
     public ImageView userAvatar;
+    public ImageView headerCanvas;
     public TextView reportCounter;
     public TextView actionCounter;
     public TextView groupCounter;
-    public TextView reportCountLabel;
-    public TextView actionCountLabel;
-    public TextView groupCountLabel;
-    public LinearLayout reportStat;
-    public LinearLayout actionStat;
-    public LinearLayout groupStat;
+//    public TextView reportCountLabel;
+//    public TextView actionCountLabel;
+//    public TextView groupCountLabel;
+    public RelativeLayout reportStat;
+    public RelativeLayout actionStat;
+    public RelativeLayout groupStat;
     public LinearLayout promptBlock;
     public TextView promptMessage;
     public Button startPostButton;
@@ -65,15 +69,16 @@ public class UserProfileHeaderView {
         userTitle = (TextView) header.findViewById(R.id.userTitle);
         userDescription = (TextView) header.findViewById(R.id.userDescription);
         userAvatar = (ImageView) header.findViewById(R.id.userAvatar);
+        headerCanvas = (ImageView) header.findViewById(R.id.headerCanvas);
         reportCounter = (TextView) header.findViewById(R.id.reportCount);
         actionCounter = (TextView) header.findViewById(R.id.actionCount);
         groupCounter = (TextView) header.findViewById(R.id.groupCount);
-        reportCountLabel = (TextView) header.findViewById(R.id.reportCountLabel);
-        actionCountLabel = (TextView) header.findViewById(R.id.actionCountLabel);
-        groupCountLabel = (TextView) header.findViewById(R.id.groupCountLabel);
-        reportStat = (LinearLayout) header.findViewById(R.id.reportStat);
-        actionStat = (LinearLayout) header.findViewById(R.id.actionStat);
-        groupStat = (LinearLayout) header.findViewById(R.id.groupStat);
+//        reportCountLabel = (TextView) header.findViewById(R.id.reportCountLabel);
+//        actionCountLabel = (TextView) header.findViewById(R.id.actionCountLabel);
+//        groupCountLabel = (TextView) header.findViewById(R.id.groupCountLabel);
+        reportStat = (RelativeLayout) header.findViewById(R.id.reportStat);
+        actionStat = (RelativeLayout) header.findViewById(R.id.actionStat);
+        groupStat = (RelativeLayout) header.findViewById(R.id.groupStat);
 
         String userTitleText = user.properties.title;
         String userDescriptionText = user.properties.description;
@@ -83,6 +88,26 @@ public class UserProfileHeaderView {
         // Locate valid avatar field
 
         String userAvatarUrl = user.properties.picture;
+
+        if (userAvatarUrl.contains("b68f1074c0ed485ba0c30cba2632189f")) {
+
+            headerCanvas.setBackgroundColor(ContextCompat.getColor(context, R.color.base_purple));
+
+        } else if (userAvatarUrl.contains("c45aea8bfa7c4196ae24847a9920009c")) {
+
+            headerCanvas.setBackgroundColor(ContextCompat.getColor(context, R.color.splash_blue));
+
+        } else if (userAvatarUrl.contains("36d4719efa3d4c12aeaff27a1aa06521")) {
+
+            headerCanvas.setBackgroundColor(ContextCompat.getColor(context, R.color.base_cyan));
+
+        } else {
+
+            Picasso.with(context)
+                    .load(userAvatarUrl)
+                    .transform(new BlurTransformation(context, 20, 1)).into(headerCanvas);
+
+        }
 
         Picasso.with(context)
                 .load(userAvatarUrl)
@@ -172,11 +197,11 @@ public class UserProfileHeaderView {
             @Override
             public void onClick(View v) {
 
-                reportCounter.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
-                reportCountLabel.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
-
-                actionCounter.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
-                actionCountLabel.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
+//                reportCounter.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
+//                reportCountLabel.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
+//
+//                actionCounter.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
+//                actionCountLabel.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
 
                 resetStats(context, v);
 
@@ -187,11 +212,11 @@ public class UserProfileHeaderView {
             @Override
             public void onClick(View v) {
 
-                actionCounter.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
-                actionCountLabel.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
-
-                reportCounter.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
-                reportCountLabel.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
+//                actionCounter.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
+//                actionCountLabel.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
+//
+//                reportCounter.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
+//                reportCountLabel.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
 
                 showActions(context, v);
 

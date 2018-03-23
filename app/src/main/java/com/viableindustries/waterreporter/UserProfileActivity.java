@@ -26,6 +26,7 @@ import com.viableindustries.waterreporter.api.models.post.ReportHolder;
 import com.viableindustries.waterreporter.api.models.query.QueryFilter;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
+import com.viableindustries.waterreporter.api.models.snapshot.CampaignSnapshot;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.api.models.user.UserGroupList;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
@@ -210,7 +211,11 @@ public class UserProfileActivity extends AppCompatActivity implements
 
             try {
 
-                fetchUser(mUser.id);
+                Log.d("USER ID ONLY", "proceed to load profile data");
+
+                userId = mUser.id;
+
+                fetchUser(userId);
 
             } catch (NullPointerException e2) {
 
@@ -234,11 +239,9 @@ public class UserProfileActivity extends AppCompatActivity implements
 
         fetchUserGroups(user.id);
 
-        // Count reports with actions
+        // Retrieve user snapshot data
 
-        complexQuery = String.format(getResources().getString(R.string.complex_actions_query), user.id, user.id);
-
-        countPosts(complexQuery, "state");
+        fetchSnapshot(userId);
 
         // Retrieve first batch of user's reports
 
@@ -250,25 +253,25 @@ public class UserProfileActivity extends AppCompatActivity implements
 
     }
 
-    private void setGroupStat(List<Group> userGroups) {
-
-        // Update UI elements that display information about
-        // the user's group memberships.
-
-        if (!userGroups.isEmpty()) {
-
-            int groupCount = userGroups.size();
-
-            mUserProfileHeaderView.groupCounter.setText(String.valueOf(groupCount));
-            mUserProfileHeaderView.groupCountLabel.setText(resources.getQuantityString(R.plurals.group_label, groupCount, groupCount));
-
-            mUserProfileHeaderView.groupStat.setVisibility(View.VISIBLE);
-
-            UserGroupList.setList(userGroups);
-
-        }
-
-    }
+//    private void setGroupStat(List<Group> userGroups) {
+//
+//        // Update UI elements that display information about
+//        // the user's group memberships.
+//
+//        if (!userGroups.isEmpty()) {
+//
+//            int groupCount = userGroups.size();
+//
+//            mUserProfileHeaderView.groupCounter.setText(String.valueOf(groupCount));
+//            mUserProfileHeaderView.groupCountLabel.setText(resources.getQuantityString(R.plurals.group_label, groupCount, groupCount));
+//
+//            mUserProfileHeaderView.groupStat.setVisibility(View.VISIBLE);
+//
+//            UserGroupList.setList(userGroups);
+//
+//        }
+//
+//    }
 
     private void addListViewHeader(User user) {
 
@@ -308,76 +311,78 @@ public class UserProfileActivity extends AppCompatActivity implements
 
             }
 
-        } else {
-
-            mUserProfileHeaderView.reportStat.setVisibility(View.VISIBLE);
-
-            mUserProfileHeaderView.reportCounter.setText(String.valueOf(reportCount));
-
-            mUserProfileHeaderView.reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
-
-            Log.d("prompt--user--set", "HEADER IS GOOD TO GO!");
-
         }
 
-    }
-
-    private void countPosts(String query, final String filterName) {
-
-        final String accessToken = mSharedPreferences.getString("access_token", "");
-
-        RestClient.getReportService().getReports(accessToken, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
-
-            @Override
-            public void success(FeatureCollection featureCollection, Response response) {
-
-                Log.d("got--user--counts", userId + " GOT EM!");
-
-                int count = featureCollection.getProperties().num_results;
-
-                switch (filterName) {
-                    case "state":
-                        if (count > 0) {
-                            mUserProfileHeaderView.actionStat.setVisibility(View.VISIBLE);
-                            actionCount = count;
-                            mUserProfileHeaderView.actionCounter.setText(String.valueOf(actionCount));
-                            mUserProfileHeaderView.actionCountLabel.setText(resources.getQuantityString(R.plurals.action_label, actionCount, actionCount));
-                        }
-                        break;
-                    default:
-                        reportCount = count;
-                        setPostCountState(reportCount);
-                        break;
-                }
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-                if (error == null) return;
-
-                Response errorResponse = error.getResponse();
-
-                // If we have a valid response object, check the status code and redirect to log in view if necessary
-
-                if (errorResponse != null) {
-
-                    int status = errorResponse.getStatus();
-
-                    if (status == 403) {
-
-                        startActivity(new Intent(UserProfileActivity.this, SignInActivity.class));
-
-                    }
-
-                }
-
-            }
-
-        });
+//        } else {
+//
+//            mUserProfileHeaderView.reportStat.setVisibility(View.VISIBLE);
+//
+//            mUserProfileHeaderView.reportCounter.setText(String.valueOf(reportCount));
+//
+//            mUserProfileHeaderView.reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
+//
+//            Log.d("prompt--user--set", "HEADER IS GOOD TO GO!");
+//
+//        }
 
     }
+
+//    private void countPosts(String query, final String filterName) {
+//
+//        final String accessToken = mSharedPreferences.getString("access_token", "");
+//
+//        RestClient.getReportService().getReports(accessToken, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
+//
+//            @Override
+//            public void success(FeatureCollection featureCollection, Response response) {
+//
+//                Log.d("got--user--counts", userId + " GOT EM!");
+//
+//                int count = featureCollection.getProperties().num_results;
+//
+//                switch (filterName) {
+//                    case "state":
+//                        if (count > 0) {
+//                            mUserProfileHeaderView.actionStat.setVisibility(View.VISIBLE);
+//                            actionCount = count;
+//                            mUserProfileHeaderView.actionCounter.setText(String.valueOf(actionCount));
+//                            mUserProfileHeaderView.actionCountLabel.setText(resources.getQuantityString(R.plurals.action_label, actionCount, actionCount));
+//                        }
+//                        break;
+//                    default:
+//                        reportCount = count;
+//                        setPostCountState(reportCount);
+//                        break;
+//                }
+//
+//            }
+//
+//            @Override
+//            public void failure(RetrofitError error) {
+//
+//                if (error == null) return;
+//
+//                Response errorResponse = error.getResponse();
+//
+//                // If we have a valid response object, check the status code and redirect to log in view if necessary
+//
+//                if (errorResponse != null) {
+//
+//                    int status = errorResponse.getStatus();
+//
+//                    if (status == 403) {
+//
+//                        startActivity(new Intent(UserProfileActivity.this, SignInActivity.class));
+//
+//                    }
+//
+//                }
+//
+//            }
+//
+//        });
+//
+//    }
 
     private void fetchUser(int userId) {
 
@@ -436,7 +441,7 @@ public class UserProfileActivity extends AppCompatActivity implements
 
                 ArrayList<Group> groups = groupFeatureCollection.getFeatures();
 
-                setGroupStat(groups);
+//                setGroupStat(groups);
 
             }
 
@@ -514,6 +519,56 @@ public class UserProfileActivity extends AppCompatActivity implements
         QueryParams queryParams = new QueryParams(queryFilters, queryOrder);
 
         return new Gson().toJson(queryParams);
+
+    }
+
+    private void fetchSnapshot(int userId) {
+
+        final String accessToken = mSharedPreferences.getString("access_token", "");
+
+        RestClient.getSnapshotService().getUser(accessToken, "application/json", mUser.id, new Callback<CampaignSnapshot>() {
+
+            @Override
+            public void success(CampaignSnapshot campaignSnapshot, Response response) {
+
+                String reportCountText = String.format("%s %s", String.valueOf(campaignSnapshot.posts),
+                        resources.getQuantityString(R.plurals.post_label, campaignSnapshot.posts, campaignSnapshot.posts));
+               mUserProfileHeaderView.reportCounter.setText(reportCountText);
+
+                String actionCountText = String.format("%s %s", String.valueOf(campaignSnapshot.groups),
+                        resources.getQuantityString(R.plurals.action_label, campaignSnapshot.groups, campaignSnapshot.groups));
+                mUserProfileHeaderView.actionCounter.setText(actionCountText);
+
+                String groupCountText = String.format("%s %s", String.valueOf(campaignSnapshot.members),
+                        resources.getQuantityString(R.plurals.group_label, campaignSnapshot.members, campaignSnapshot.members));
+                mUserProfileHeaderView.groupCounter.setText(groupCountText);
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(UserProfileActivity.this, SignInActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
 
     }
 
@@ -677,11 +732,11 @@ public class UserProfileActivity extends AppCompatActivity implements
 
     public void resetStats() {
 
-        mUserProfileHeaderView.reportCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
-        mUserProfileHeaderView.reportCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
-
-        mUserProfileHeaderView.actionCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
-        mUserProfileHeaderView.actionCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
+//        mUserProfileHeaderView.reportCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
+//        mUserProfileHeaderView.reportCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
+//
+//        mUserProfileHeaderView.actionCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
+//        mUserProfileHeaderView.actionCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
 
         actionFocus = false;
 
