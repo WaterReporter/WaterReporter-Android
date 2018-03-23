@@ -93,13 +93,25 @@ public class UserProfileHeaderView {
 
             headerCanvas.setBackgroundColor(ContextCompat.getColor(context, R.color.base_purple));
 
+            Picasso.with(context)
+                    .load(R.drawable.profile_header_background_transparent)
+                    .into(headerCanvas);
+
         } else if (userAvatarUrl.contains("c45aea8bfa7c4196ae24847a9920009c")) {
 
             headerCanvas.setBackgroundColor(ContextCompat.getColor(context, R.color.splash_blue));
 
+            Picasso.with(context)
+                    .load(R.drawable.profile_header_background_transparent)
+                    .into(headerCanvas);
+
         } else if (userAvatarUrl.contains("36d4719efa3d4c12aeaff27a1aa06521")) {
 
             headerCanvas.setBackgroundColor(ContextCompat.getColor(context, R.color.base_cyan));
+
+            Picasso.with(context)
+                    .load(R.drawable.profile_header_background_transparent)
+                    .into(headerCanvas);
 
         } else {
 

@@ -27,6 +27,7 @@ import com.viableindustries.waterreporter.api.models.query.QueryFilter;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
 import com.viableindustries.waterreporter.api.models.snapshot.CampaignSnapshot;
+import com.viableindustries.waterreporter.api.models.snapshot.UserSnapshot;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.api.models.user.UserGroupList;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
@@ -526,21 +527,21 @@ public class UserProfileActivity extends AppCompatActivity implements
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getSnapshotService().getUser(accessToken, "application/json", mUser.id, new Callback<CampaignSnapshot>() {
+        RestClient.getSnapshotService().getUser(accessToken, "application/json", mUser.id, new Callback<UserSnapshot>() {
 
             @Override
-            public void success(CampaignSnapshot campaignSnapshot, Response response) {
+            public void success(UserSnapshot userSnapshot, Response response) {
 
-                String reportCountText = String.format("%s %s", String.valueOf(campaignSnapshot.posts),
-                        resources.getQuantityString(R.plurals.post_label, campaignSnapshot.posts, campaignSnapshot.posts));
+                String reportCountText = String.format("%s %s", String.valueOf(userSnapshot.posts),
+                        resources.getQuantityString(R.plurals.post_label, userSnapshot.posts, userSnapshot.posts));
                mUserProfileHeaderView.reportCounter.setText(reportCountText);
 
-                String actionCountText = String.format("%s %s", String.valueOf(campaignSnapshot.groups),
-                        resources.getQuantityString(R.plurals.action_label, campaignSnapshot.groups, campaignSnapshot.groups));
+                String actionCountText = String.format("%s %s", String.valueOf(userSnapshot.actions),
+                        resources.getQuantityString(R.plurals.action_label, userSnapshot.actions, userSnapshot.actions));
                 mUserProfileHeaderView.actionCounter.setText(actionCountText);
 
-                String groupCountText = String.format("%s %s", String.valueOf(campaignSnapshot.members),
-                        resources.getQuantityString(R.plurals.group_label, campaignSnapshot.members, campaignSnapshot.members));
+                String groupCountText = String.format("%s %s", String.valueOf(userSnapshot.groups),
+                        resources.getQuantityString(R.plurals.group_label, userSnapshot.groups, userSnapshot.groups));
                 mUserProfileHeaderView.groupCounter.setText(groupCountText);
 
             }

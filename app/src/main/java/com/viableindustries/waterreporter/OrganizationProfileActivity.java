@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,6 +18,7 @@ import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.Palette;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,6 +33,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.FeatureCollection;
 import com.viableindustries.waterreporter.api.models.group.Group;
@@ -47,6 +52,7 @@ import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 import com.viableindustries.waterreporter.utilities.PatternEditableBuilder;
+import com.viableindustries.waterreporter.utilities.UtilityMethods;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -83,6 +89,8 @@ public class OrganizationProfileActivity extends AppCompatActivity {
     private TextView organizationDescription;
 
     private ImageView organizationLogo;
+
+    private ImageView headerCanvas;
 
     @Bind(R.id.group_membership_button)
     FloatingActionButton joinOrganization;
@@ -439,6 +447,45 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             String organizationLogoUrl = mOrganization.properties.picture;
 
             organizationName.setText(organizationNameText);
+
+            headerCanvas = (ImageView) header.findViewById(R.id.headerCanvas);
+
+            Target target = new Target() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+
+//                    int dominantColor = UtilityMethods.getDominantColor(bitmap);
+
+//                    headerCanvas.setBackgroundColor(dominantColor);
+
+//                    headerCanvas.setBackgroundColor(ContextCompat.getColor(OrganizationProfileActivity.this, dominantColor));
+
+                    Palette palette = Palette.from(bitmap).generate();
+
+                    int color = palette.getVibrantColor(ContextCompat.getColor(OrganizationProfileActivity.this, R.color.white));
+
+                    headerCanvas.setBackgroundColor(color);
+
+                    Picasso.with(OrganizationProfileActivity.this)
+                            .load(R.drawable.profile_header_background_transparent)
+                            .into(headerCanvas);
+
+                }
+
+                @Override
+                public void onBitmapFailed(Drawable errorDrawable) {
+
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                }
+            };
+
+            Picasso.with(this)
+                    .load(organizationLogoUrl)
+                    .into(target);
 
             Picasso.with(this).load(organizationLogoUrl).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(organizationLogo);
 

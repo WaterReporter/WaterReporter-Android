@@ -31,6 +31,7 @@ import com.viableindustries.waterreporter.api.models.post.ReportHolder;
 import com.viableindustries.waterreporter.api.models.query.QueryFilter;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
+import com.viableindustries.waterreporter.api.models.snapshot.UserSnapshot;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.api.models.user.UserGroupList;
 import com.viableindustries.waterreporter.constants.Constants;
@@ -149,7 +150,9 @@ public class AuthUserActivity extends AppCompatActivity implements
                         // This method performs the actual api-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
 
-                        countReports(complexQuery, "state");
+//                        countReports(complexQuery, "state");
+
+                        fetchSnapshot(userId);
 
                         resetStats();
 
@@ -165,11 +168,9 @@ public class AuthUserActivity extends AppCompatActivity implements
 
         addListViewHeader();
 
-        // Count reports with actions
+        // Retrieve user snapshot data
 
-        complexQuery = String.format(getResources().getString(R.string.complex_actions_query), userId, userId);
-
-        countReports(complexQuery, "state");
+        fetchSnapshot(userId);
 
         // Retrieve the user's groups
 
@@ -228,8 +229,8 @@ public class AuthUserActivity extends AppCompatActivity implements
 
     private void setPostCountState(int count) {
 
-        mUserProfileHeaderView.reportCounter.setText(String.valueOf(reportCount));
-        mUserProfileHeaderView.reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
+//        mUserProfileHeaderView.reportCounter.setText(String.valueOf(reportCount));
+//        mUserProfileHeaderView.reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
 
         if (count < 1) {
 
@@ -289,58 +290,58 @@ public class AuthUserActivity extends AppCompatActivity implements
 
     }
 
-    private void countReports(String query, final String filterName) {
-
-        RestClient.getReportService().getReports(mAccessToken, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
-
-            @Override
-            public void success(FeatureCollection featureCollection, Response response) {
-
-                int count = featureCollection.getProperties().num_results;
-
-                switch (filterName) {
-                    case "state":
-                        if (count > 0) {
-                            mUserProfileHeaderView.actionStat.setVisibility(View.VISIBLE);
-                            actionCount = count;
-                            mUserProfileHeaderView.actionCounter.setText(String.valueOf(actionCount));
-                            mUserProfileHeaderView.actionCountLabel.setText(resources.getQuantityString(R.plurals.action_label, actionCount, actionCount));
-                        }
-                        break;
-                    default:
-                        reportCount = count;
-                        setPostCountState(reportCount);
-                        break;
-                }
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-                if (error == null) return;
-
-                Response errorResponse = error.getResponse();
-
-                // If we have a valid response object, check the status code and redirect to log in view if necessary
-
-                if (errorResponse != null) {
-
-                    int status = errorResponse.getStatus();
-
-                    if (status == 403) {
-
-                        startActivity(new Intent(AuthUserActivity.this, SignInActivity.class));
-
-                    }
-
-                }
-
-            }
-
-        });
-
-    }
+//    private void countReports(String query, final String filterName) {
+//
+//        RestClient.getReportService().getReports(mAccessToken, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
+//
+//            @Override
+//            public void success(FeatureCollection featureCollection, Response response) {
+//
+//                int count = featureCollection.getProperties().num_results;
+//
+//                switch (filterName) {
+//                    case "state":
+//                        if (count > 0) {
+//                            mUserProfileHeaderView.actionStat.setVisibility(View.VISIBLE);
+//                            actionCount = count;
+//                            mUserProfileHeaderView.actionCounter.setText(String.valueOf(actionCount));
+//                            mUserProfileHeaderView.actionCountLabel.setText(resources.getQuantityString(R.plurals.action_label, actionCount, actionCount));
+//                        }
+//                        break;
+//                    default:
+//                        reportCount = count;
+//                        setPostCountState(reportCount);
+//                        break;
+//                }
+//
+//            }
+//
+//            @Override
+//            public void failure(RetrofitError error) {
+//
+//                if (error == null) return;
+//
+//                Response errorResponse = error.getResponse();
+//
+//                // If we have a valid response object, check the status code and redirect to log in view if necessary
+//
+//                if (errorResponse != null) {
+//
+//                    int status = errorResponse.getStatus();
+//
+//                    if (status == 403) {
+//
+//                        startActivity(new Intent(AuthUserActivity.this, SignInActivity.class));
+//
+//                    }
+//
+//                }
+//
+//            }
+//
+//        });
+//
+//    }
 
     private void fetchUserGroups(int userId) {
 
@@ -353,12 +354,12 @@ public class AuthUserActivity extends AppCompatActivity implements
 
                 if (!groups.isEmpty()) {
 
-                    int groupCount = groups.size();
+//                    int groupCount = groups.size();
 
-                    mUserProfileHeaderView.groupCounter.setText(String.valueOf(groupCount));
-                    mUserProfileHeaderView.groupCountLabel.setText(resources.getQuantityString(R.plurals.group_label, groupCount, groupCount));
-
-                    mUserProfileHeaderView.groupStat.setVisibility(View.VISIBLE);
+//                    mUserProfileHeaderView.groupCounter.setText(String.valueOf(groupCount));
+//                    mUserProfileHeaderView.groupCountLabel.setText(resources.getQuantityString(R.plurals.group_label, groupCount, groupCount));
+//
+//                    mUserProfileHeaderView.groupStat.setVisibility(View.VISIBLE);
 
                     UserGroupList.setList(groups);
 
@@ -455,6 +456,56 @@ public class AuthUserActivity extends AppCompatActivity implements
 
     }
 
+    private void fetchSnapshot(int userId) {
+
+        final String accessToken = mSharedPreferences.getString("access_token", "");
+
+        RestClient.getSnapshotService().getUser(accessToken, "application/json", userId, new Callback<UserSnapshot>() {
+
+            @Override
+            public void success(UserSnapshot userSnapshot, Response response) {
+
+                String reportCountText = String.format("%s %s", String.valueOf(userSnapshot.posts),
+                        resources.getQuantityString(R.plurals.post_label, userSnapshot.posts, userSnapshot.posts));
+                mUserProfileHeaderView.reportCounter.setText(reportCountText);
+
+                String actionCountText = String.format("%s %s", String.valueOf(userSnapshot.actions),
+                        resources.getQuantityString(R.plurals.action_label, userSnapshot.actions, userSnapshot.actions));
+                mUserProfileHeaderView.actionCounter.setText(actionCountText);
+
+                String groupCountText = String.format("%s %s", String.valueOf(userSnapshot.groups),
+                        resources.getQuantityString(R.plurals.group_label, userSnapshot.groups, userSnapshot.groups));
+                mUserProfileHeaderView.groupCounter.setText(groupCountText);
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(AuthUserActivity.this, SignInActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
     public void fetchPosts(int limit, final int page, String query, final boolean refresh) {
 
         RestClient.getReportService().getReports(mAccessToken, "application/json", page, limit, query, new Callback<FeatureCollection>() {
@@ -472,9 +523,9 @@ public class AuthUserActivity extends AppCompatActivity implements
 
                     mUserProfileHeaderView.reportStat.setVisibility(View.VISIBLE);
 
-                    mUserProfileHeaderView.reportCounter.setText(String.valueOf(reportCount));
-
-                    mUserProfileHeaderView.reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
+//                    mUserProfileHeaderView.reportCounter.setText(String.valueOf(reportCount));
+//
+//                    mUserProfileHeaderView.reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
 
                 } else {
 
