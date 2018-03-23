@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.Uri;
@@ -93,6 +94,8 @@ public class OrganizationProfileActivity extends AppCompatActivity {
     private ImageView organizationLogo;
 
     private ImageView headerCanvas;
+
+    private ImageView logoView;
 
     @Bind(R.id.group_membership_button)
     FloatingActionButton joinOrganization;
@@ -404,6 +407,10 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             LayoutInflater inflater = getLayoutInflater();
 
             ViewGroup header = (ViewGroup) inflater.inflate(R.layout.organization_profile_header, timeLine, false);
+
+            logoView = (ImageView) header.findViewById(R.id.logo);
+
+            logoView.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
 
             promptBlock = (LinearLayout) header.findViewById(R.id.promptBlock);
             promptMessage = (TextView) header.findViewById(R.id.prompt);
