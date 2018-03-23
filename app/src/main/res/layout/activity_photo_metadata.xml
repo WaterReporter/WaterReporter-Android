@@ -379,6 +379,7 @@
             android:visibility="gone">
 
             <TextView
+                android:id="@+id/groupShareLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="16dp"

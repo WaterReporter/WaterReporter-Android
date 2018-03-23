@@ -64,6 +64,8 @@ public class ImagePostService extends IntentService {
 
         String mimeType = fileNameMap.getContentTypeFor(filePath);
 
+//        if (mimeType == null) mimeType = "image/png";
+
         TypedFile typedPhoto = new TypedFile(mimeType, photo);
 
         ImageProperties imageProperties = RestClient.getImageService().postImage(accessToken, typedPhoto);

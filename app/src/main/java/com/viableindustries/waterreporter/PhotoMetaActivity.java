@@ -325,6 +325,14 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             } else {
 
+                mCampaignId = extras.getInt("campaignId", 0);
+
+                if (mCampaignId > 0) {
+
+                    mCampaign = ModelStorage.getStoredCampaign(mSharedPreferences);
+
+                }
+
                 editMode = extras.getBoolean("EDIT_MODE", false);
 
                 mTempImagePath = extras.getString("image_path", "");
@@ -339,27 +347,23 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                 Log.d("image_id", mImageId + "");
 
-                try {
+                if (mTempImagePath.length() > 0) {
 
-                    Picasso.with(this)
-                            .load(new File(mTempImagePath))
-                            .placeholder(R.drawable.square_placeholder)
-                            .into(mImageView);
+                    try {
 
-                    mImageView.setVisibility(View.VISIBLE);
+                        Picasso.with(this)
+                                .load(new File(mTempImagePath))
+                                .placeholder(R.drawable.square_placeholder)
+                                .into(mImageView);
 
-                } catch (OutOfMemoryError om) {
+                        mImageView.setVisibility(View.VISIBLE);
 
-                    //
-                    Log.d("memory", "too heavy");
+                    } catch (OutOfMemoryError om) {
 
-                }
+                        //
+                        Log.d("memory", "too heavy");
 
-                mCampaignId = extras.getInt("campaignId", 0);
-
-                if (mCampaignId > 0) {
-
-                    mCampaign = ModelStorage.getStoredCampaign(mSharedPreferences);
+                    }
 
                 }
 
@@ -1391,13 +1395,13 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         }
 
-        if (filePath == null) {
+        if (filePath == null || filePath.length() < 1) {
 
             filePath = FileUtils.getPathFromUri(this, imageUri);
 
         }
 
-        if (filePath != null) {
+        if (filePath != null && filePath.length() > 0) {
 
             ReportPostBody reportPostBody = buildPostBody();
 
@@ -1727,6 +1731,14 @@ public class PhotoMetaActivity extends AppCompatActivity
     }
 
     private void setCampaignGroupText() {
+
+        // Hide standard section label
+
+        TextView groupShareLabel = (TextView) findViewById(R.id.groupShareLabel);
+
+        groupShareLabel.setVisibility(View.GONE);
+
+        // Show group list container
 
         groupList.setVisibility(View.VISIBLE);
 
