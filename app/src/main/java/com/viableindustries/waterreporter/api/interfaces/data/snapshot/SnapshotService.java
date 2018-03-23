@@ -5,6 +5,7 @@ import com.viableindustries.waterreporter.api.models.favorite.FavoritePostBody;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.snapshot.CampaignLeaderboard;
 import com.viableindustries.waterreporter.api.models.snapshot.CampaignSnapshot;
+import com.viableindustries.waterreporter.api.models.snapshot.OrganizationSnapshot;
 import com.viableindustries.waterreporter.api.models.snapshot.UserSnapshot;
 
 import retrofit.Callback;
@@ -38,7 +39,7 @@ public interface SnapshotService {
     void getOrganization(@Header("Authorization") String authorization,
                  @Header("Content-Type") String contentType,
                  @Path("organizationId") int organizationId,
-                 Callback<Organization> organizationCallback);
+                 Callback<OrganizationSnapshot> organizationSnapshotCallback);
 
     @GET("/data/snapshot/user/{userId}")
     void getUser(@Header("Authorization") String authorization,

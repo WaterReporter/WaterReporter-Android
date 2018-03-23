@@ -33,6 +33,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -48,6 +49,8 @@ import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.api.models.query.QueryFilter;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
+import com.viableindustries.waterreporter.api.models.snapshot.OrganizationSnapshot;
+import com.viableindustries.waterreporter.api.models.snapshot.UserSnapshot;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.api.models.user.UserCollection;
 import com.viableindustries.waterreporter.api.models.user.UserMembershipPatch;
@@ -74,23 +77,17 @@ import retrofit.client.Response;
 
 public class OrganizationProfileActivity extends AppCompatActivity {
 
-    private LinearLayout reportStat;
+    private RelativeLayout reportStat;
 
     private TextView reportCounter;
 
-    private TextView reportCountLabel;
-
-    private LinearLayout actionStat;
+    private RelativeLayout actionStat;
 
     private TextView actionCounter;
 
-    private TextView actionCountLabel;
-
-    private LinearLayout peopleStat;
+    private RelativeLayout peopleStat;
 
     private TextView peopleCounter;
-
-    private TextView peopleCountLabel;
 
     private TextView organizationDescription;
 
@@ -157,15 +154,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//
-//            getWindow().setStatusBarColor(Color.TRANSPARENT);
-//
-//        } else {
-
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-//        }
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
         mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
@@ -237,7 +226,9 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                         // This method performs the actual api-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
 
-                        countPosts(complexQuery, "state");
+//                        countPosts(complexQuery, "state");
+
+                        fetchSnapshot(mOrganizationId);
 
                         resetStats();
 
@@ -302,17 +293,13 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         fetchAuthUser();
 
-        // Count reports with actions
+        // Retrieve organization snapshot data
 
-        complexQuery = buildQuery(true, new String[][]{
-                {"state", "eq", "closed"}
-        });
-
-        countPosts(complexQuery, "state");
+        fetchSnapshot(mOrganizationId);
 
         // Retrieve the organization's members
 
-        fetchOrganizationMembers(50, 1, mOrganizationId);
+//        fetchOrganizationMembers(50, 1, mOrganizationId);
 
         if (reportCollection.isEmpty() && timeLineContainer != null) {
 
@@ -458,17 +445,11 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
             peopleCounter = (TextView) header.findViewById(R.id.peopleCount);
 
-            reportCountLabel = (TextView) header.findViewById(R.id.reportCountLabel);
+            reportStat = (RelativeLayout) header.findViewById(R.id.reportStat);
 
-            actionCountLabel = (TextView) header.findViewById(R.id.actionCountLabel);
+            actionStat = (RelativeLayout) header.findViewById(R.id.actionStat);
 
-            peopleCountLabel = (TextView) header.findViewById(R.id.peopleCountLabel);
-
-            reportStat = (LinearLayout) header.findViewById(R.id.reportStat);
-
-            actionStat = (LinearLayout) header.findViewById(R.id.actionStat);
-
-            peopleStat = (LinearLayout) header.findViewById(R.id.peopleStat);
+            peopleStat = (RelativeLayout) header.findViewById(R.id.peopleStat);
 
             String organizationDescriptionText = mOrganization.properties.description;
             String organizationNameText = mOrganization.properties.name;
@@ -636,11 +617,11 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                     actionFocus = true;
 
-                    actionCounter.setTextColor(ContextCompat.getColor(mContext, R.color.base_blue));
-                    actionCountLabel.setTextColor(ContextCompat.getColor(mContext, R.color.base_blue));
-
-                    reportCounter.setTextColor(ContextCompat.getColor(mContext, R.color.material_blue_grey950));
-                    reportCountLabel.setTextColor(ContextCompat.getColor(mContext, R.color.material_blue_grey950));
+//                    actionCounter.setTextColor(ContextCompat.getColor(mContext, R.color.base_blue));
+//                    actionCountLabel.setTextColor(ContextCompat.getColor(mContext, R.color.base_blue));
+//
+//                    reportCounter.setTextColor(ContextCompat.getColor(mContext, R.color.material_blue_grey950));
+//                    reportCountLabel.setTextColor(ContextCompat.getColor(mContext, R.color.material_blue_grey950));
 
                     if (timeLine != null) {
 
@@ -680,11 +661,11 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     private void resetStats() {
 
-        reportCounter.setTextColor(ContextCompat.getColor(OrganizationProfileActivity.this, R.color.base_blue));
-        reportCountLabel.setTextColor(ContextCompat.getColor(OrganizationProfileActivity.this, R.color.base_blue));
-
-        actionCounter.setTextColor(ContextCompat.getColor(OrganizationProfileActivity.this, R.color.material_blue_grey950));
-        actionCountLabel.setTextColor(ContextCompat.getColor(OrganizationProfileActivity.this, R.color.material_blue_grey950));
+//        reportCounter.setTextColor(ContextCompat.getColor(OrganizationProfileActivity.this, R.color.base_blue));
+//        reportCountLabel.setTextColor(ContextCompat.getColor(OrganizationProfileActivity.this, R.color.base_blue));
+//
+//        actionCounter.setTextColor(ContextCompat.getColor(OrganizationProfileActivity.this, R.color.material_blue_grey950));
+//        actionCountLabel.setTextColor(ContextCompat.getColor(OrganizationProfileActivity.this, R.color.material_blue_grey950));
 
         actionFocus = false;
 
@@ -696,8 +677,8 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     private void setPostCountState(int count) {
 
-        reportCounter.setText(String.valueOf(reportCount));
-        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
+//        reportCounter.setText(String.valueOf(reportCount));
+//        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
 
         if (count < 1) {
 
@@ -717,31 +698,136 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     }
 
-    private void countPosts(String query, final String filterName) {
+//    private void countPosts(String query, final String filterName) {
+//
+//        final String accessToken = mSharedPreferences.getString("access_token", "");
+//
+//        RestClient.getReportService().getReports(accessToken, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
+//
+//            @Override
+//            public void success(FeatureCollection featureCollection, Response response) {
+//
+//                int count = featureCollection.getProperties().num_results;
+//
+//                switch (filterName) {
+//                    case "state":
+//                        if (count > 0) {
+//                            actionStat.setVisibility(View.VISIBLE);
+//                            actionCount = count;
+//                            actionCounter.setText(String.valueOf(actionCount));
+//                            actionCountLabel.setText(resources.getQuantityString(R.plurals.action_label, actionCount, actionCount));
+//                        }
+//                        break;
+//                    default:
+//                        reportCount = count;
+//                        setPostCountState(reportCount);
+//                        break;
+//                }
+//
+//            }
+//
+//            @Override
+//            public void failure(RetrofitError error) {
+//
+//                if (error == null) return;
+//
+//                Response errorResponse = error.getResponse();
+//
+//                // If we have a valid response object, check the status code and redirect to log in view if necessary
+//
+//                if (errorResponse != null) {
+//
+//                    int status = errorResponse.getStatus();
+//
+//                    if (status == 403) {
+//
+//                        startActivity(new Intent(OrganizationProfileActivity.this, SignInActivity.class));
+//
+//                    }
+//
+//                }
+//
+//            }
+//
+//        });
+//
+//    }
+
+//    private void fetchOrganizationMembers(int limit, int page, int mOrganizationId) {
+//
+//        final String accessToken = mSharedPreferences.getString("access_token", "");
+//
+//        RestClient.getOrganizationService().getOrganizationMembers(accessToken, "application/json", mOrganizationId, page, limit, null, new Callback<UserCollection>() {
+//
+//            @Override
+//            public void success(UserCollection userCollection, Response response) {
+//
+//                ArrayList<User> members = userCollection.getFeatures();
+//
+//                if (!members.isEmpty()) {
+//
+//                    int memberCount = userCollection.getProperties().num_results;
+//
+//                    peopleCounter.setText(String.valueOf(memberCount));
+//                    peopleCountLabel.setText(resources.getQuantityString(R.plurals.member_label, memberCount, memberCount));
+//
+//                    peopleStat.setVisibility(View.VISIBLE);
+//
+//                    OrganizationMemberList.setList(members);
+//
+//                    hasMembers = true;
+//
+//                }
+//
+//            }
+//
+//            @Override
+//            public void failure(RetrofitError error) {
+//
+//                if (error == null) return;
+//
+//                Response errorResponse = error.getResponse();
+//
+//                // If we have a valid response object, check the status code and redirect to log in view if necessary
+//
+//                if (errorResponse != null) {
+//
+//                    int status = errorResponse.getStatus();
+//
+//                    if (status == 403) {
+//
+//                        startActivity(new Intent(mContext, SignInActivity.class));
+//
+//                    }
+//
+//                }
+//
+//            }
+//
+//        });
+//
+//    }
+
+    private void fetchSnapshot(int organizationId) {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getReportService().getReports(accessToken, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
+        RestClient.getSnapshotService().getOrganization(accessToken, "application/json", mOrganizationId, new Callback<OrganizationSnapshot>() {
 
             @Override
-            public void success(FeatureCollection featureCollection, Response response) {
+            public void success(OrganizationSnapshot organizationSnapshot, Response response) {
 
-                int count = featureCollection.getProperties().num_results;
+                String reportCountText = String.format("%s %s", String.valueOf(organizationSnapshot.posts),
+                        resources.getQuantityString(R.plurals.post_label, organizationSnapshot.posts, organizationSnapshot.posts));
+                reportCounter.setText(reportCountText);
 
-                switch (filterName) {
-                    case "state":
-                        if (count > 0) {
-                            actionStat.setVisibility(View.VISIBLE);
-                            actionCount = count;
-                            actionCounter.setText(String.valueOf(actionCount));
-                            actionCountLabel.setText(resources.getQuantityString(R.plurals.action_label, actionCount, actionCount));
-                        }
-                        break;
-                    default:
-                        reportCount = count;
-                        setPostCountState(reportCount);
-                        break;
-                }
+                String actionCountText = String.format("%s %s", String.valueOf(organizationSnapshot.actions),
+                        resources.getQuantityString(R.plurals.action_label, organizationSnapshot.actions, organizationSnapshot.actions));
+                actionCounter.setText(actionCountText);
+
+                String memberCountText = String.format("%s %s", String.valueOf(organizationSnapshot.members),
+                        resources.getQuantityString(R.plurals.group_label, organizationSnapshot.members, organizationSnapshot.members));
+                peopleCounter.setText(memberCountText);
 
             }
 
@@ -761,61 +847,6 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                     if (status == 403) {
 
                         startActivity(new Intent(OrganizationProfileActivity.this, SignInActivity.class));
-
-                    }
-
-                }
-
-            }
-
-        });
-
-    }
-
-    private void fetchOrganizationMembers(int limit, int page, int mOrganizationId) {
-
-        final String accessToken = mSharedPreferences.getString("access_token", "");
-
-        RestClient.getOrganizationService().getOrganizationMembers(accessToken, "application/json", mOrganizationId, page, limit, null, new Callback<UserCollection>() {
-
-            @Override
-            public void success(UserCollection userCollection, Response response) {
-
-                ArrayList<User> members = userCollection.getFeatures();
-
-                if (!members.isEmpty()) {
-
-                    int memberCount = userCollection.getProperties().num_results;
-
-                    peopleCounter.setText(String.valueOf(memberCount));
-                    peopleCountLabel.setText(resources.getQuantityString(R.plurals.member_label, memberCount, memberCount));
-
-                    peopleStat.setVisibility(View.VISIBLE);
-
-                    OrganizationMemberList.setList(members);
-
-                    hasMembers = true;
-
-                }
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-                if (error == null) return;
-
-                Response errorResponse = error.getResponse();
-
-                // If we have a valid response object, check the status code and redirect to log in view if necessary
-
-                if (errorResponse != null) {
-
-                    int status = errorResponse.getStatus();
-
-                    if (status == 403) {
-
-                        startActivity(new Intent(mContext, SignInActivity.class));
 
                     }
 
@@ -954,9 +985,9 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                     reportStat.setVisibility(View.VISIBLE);
 
-                    reportCounter.setText(String.valueOf(reportCount));
-
-                    reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
+//                    reportCounter.setText(String.valueOf(reportCount));
+//
+//                    reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
 
                     setPostCountState(reportCount);
 

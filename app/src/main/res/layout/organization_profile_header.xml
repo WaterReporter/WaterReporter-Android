@@ -135,13 +135,11 @@
                 android:paddingRight="0dp"
                 android:paddingTop="0dp">
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/reportStat"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:visibility="gone">
+                    android:layout_weight="1">
 
                     <TextView
                         android:id="@+id/reportCount"
@@ -153,31 +151,16 @@
                         android:paddingRight="0dp"
                         android:paddingTop="0dp"
                         android:textColor="@color/white"
-                        android:textSize="20sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/reportCountLabel"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:gravity="center"
-                        android:paddingBottom="0dp"
-                        android:paddingLeft="0dp"
-                        android:paddingRight="0dp"
-                        android:paddingTop="2dp"
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
+                </RelativeLayout>
 
-                </LinearLayout>
-
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/actionStat"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:visibility="gone">
+                    android:layout_weight="1">
 
                     <TextView
                         android:id="@+id/actionCount"
@@ -190,31 +173,16 @@
                         android:paddingRight="0dp"
                         android:paddingTop="0dp"
                         android:textColor="@color/white"
-                        android:textSize="20sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/actionCountLabel"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:gravity="center"
-                        android:paddingBottom="0dp"
-                        android:paddingLeft="0dp"
-                        android:paddingRight="0dp"
-                        android:paddingTop="2dp"
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
+                </RelativeLayout>
 
-                </LinearLayout>
-
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/peopleStat"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:visibility="gone">
+                    android:layout_weight="1">
 
                     <TextView
                         android:id="@+id/peopleCount"
@@ -227,23 +195,10 @@
                         android:paddingRight="0dp"
                         android:paddingTop="0dp"
                         android:textColor="@color/white"
-                        android:textSize="20sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/peopleCountLabel"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:gravity="center"
-                        android:paddingBottom="0dp"
-                        android:paddingLeft="0dp"
-                        android:paddingRight="0dp"
-                        android:paddingTop="2dp"
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
-
-                </LinearLayout>
+                </RelativeLayout>
 
             </LinearLayout>
 
