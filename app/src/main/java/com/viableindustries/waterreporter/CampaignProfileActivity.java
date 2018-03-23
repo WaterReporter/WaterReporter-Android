@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -69,6 +71,8 @@ public class CampaignProfileActivity extends AppCompatActivity {
     private TextView campaignTagline;
 
     private ImageView campaignImage;
+
+    private ImageView logoView;
 
     private HorizontalScrollView leaderBoardComponent;
 
@@ -304,6 +308,12 @@ public class CampaignProfileActivity extends AppCompatActivity {
             LayoutInflater inflater = getLayoutInflater();
 
             ViewGroup header = (ViewGroup) inflater.inflate(R.layout.campaign_profile_header, timeLine, false);
+
+            // Set up white color filter for reversed Water Reporter logo
+
+            logoView = (ImageView) header.findViewById(R.id.logo);
+
+            logoView.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
 
             // Leaderboard views
 

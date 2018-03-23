@@ -7,10 +7,12 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -25,6 +27,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -149,6 +152,20 @@ public class OrganizationProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_organization_profile);
 
         ButterKnife.bind(this);
+
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//
+//            getWindow().setStatusBarColor(Color.TRANSPARENT);
+//
+//        } else {
+
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+//        }
 
         mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
@@ -407,6 +424,8 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             LayoutInflater inflater = getLayoutInflater();
 
             ViewGroup header = (ViewGroup) inflater.inflate(R.layout.organization_profile_header, timeLine, false);
+
+            // Set up white color filter for reversed Water Reporter logo
 
             logoView = (ImageView) header.findViewById(R.id.logo);
 

@@ -4,6 +4,8 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="@style/Theme.AppCompat.Light">
 
+        <!--<item name="android:statusBarColor">@android:color/transparent</item>-->
+
         <!--<item name="android:homeAsUpIndicator">@drawable/ic_arrow_back_white</item>-->
 
         <!--<item name="actionModeShareDrawable">@drawable/ic_share_white_24dp</item>-->
@@ -12,19 +14,19 @@
 
         <item name="android:colorBackground">@color/white</item>
 
-        <item name="colorPrimary">@color/gray_247</item>
+        <!--<item name="colorPrimary">@color/gray_247</item>-->
 
-        <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <!--<item name="android:actionBarStyle">@style/MyActionBar</item>-->
 
         <!--<item name="android:actionBarTabTextStyle">@style/TabTextStyle</item>-->
 
         <!--<item name="android:actionMenuTextColor">@color/white</item>-->
 
-        <item name="colorPrimaryDark">@color/gray_186</item>
+        <!--<item name="colorPrimaryDark">@color/gray_186</item>-->
 
         <!-- Support library compatibility -->
 
-        <item name="actionBarStyle">@style/MyActionBar</item>
+        <!--<item name="actionBarStyle">@style/MyActionBar</item>-->
 
         <!--<item name="actionBarTabTextStyle">@style/TabTextStyle</item>-->
 

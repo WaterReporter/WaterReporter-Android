@@ -21,42 +21,64 @@
             android:contentDescription="Organization profile background"
             android:scaleType="centerCrop" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_gravity="center|top"
-            android:background="#00FFFFFF">
+        <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="56dp"-->
+            <!--android:layout_gravity="center|top"-->
+            <!--android:background="#00FFFFFF">-->
 
-            <ImageView
-                android:id="@+id/logo"
-                android:layout_width="88dp"
-                android:layout_height="24dp"
-                android:layout_centerInParent="true"
-                android:scaleType="fitXY"
-                android:src="@drawable/logo_horizontal_lockup" />
+            <!--<ImageView-->
+                <!--android:id="@+id/logo"-->
+                <!--android:layout_width="88dp"-->
+                <!--android:layout_height="24dp"-->
+                <!--android:layout_centerInParent="true"-->
+                <!--android:scaleType="fitXY"-->
+                <!--android:src="@drawable/logo_horizontal_lockup" />-->
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_alignParentBottom="true"
-                android:background="#66FFFFFF" />
+            <!--<View-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="0.5dp"-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:background="#66FFFFFF" />-->
 
-        </RelativeLayout>
+        <!--</RelativeLayout>-->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="center|top"
             android:layout_marginBottom="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="25dp"
             android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_gravity="center|top"
+                android:background="#00FFFFFF">
+
+                <ImageView
+                    android:id="@+id/logo"
+                    android:layout_width="88dp"
+                    android:layout_height="24dp"
+                    android:layout_centerInParent="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/logo_horizontal_lockup" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="#66FFFFFF" />
+
+            </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="8dp"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="42dp">
 
                 <ImageView
                     android:id="@+id/organizationLogo"
