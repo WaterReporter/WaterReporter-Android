@@ -47,6 +47,27 @@ public class ExploreActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        // Set color of swipe refresh arrow animation
+
+        campaignListContainer.setColorSchemeResources(R.color.waterreporter_blue);
+
+        // Set refresh listener on report feed container
+
+        campaignListContainer.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
+
+                        // This method performs the actual api-refresh operation.
+                        // The method calls setRefreshing(false) when it's finished.
+
+                        fetchCampaigns(1, 10, true);
+
+                    }
+                }
+        );
+
         fetchCampaigns(1, 10, true);
 
     }

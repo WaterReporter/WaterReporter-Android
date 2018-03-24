@@ -1,13 +1,16 @@
 package com.viableindustries.waterreporter.user_interface.adapters;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -47,6 +50,8 @@ public class CampaignListAdapter extends ArrayAdapter<Campaign> {
         ImageView campaignImage;
         TextView campaignName;
         LinearLayout campaignItem;
+        RelativeLayout extraActions;
+        ImageView extraActionsIconView;
     }
 
     @Override
@@ -64,6 +69,8 @@ public class CampaignListAdapter extends ArrayAdapter<Campaign> {
             viewHolder.campaignImage = (ImageView) convertView.findViewById(R.id.campaignImage);
             viewHolder.campaignName = (TextView) convertView.findViewById(R.id.campaignName);
             viewHolder.campaignItem = (LinearLayout) convertView.findViewById(R.id.campaignItem);
+            viewHolder.extraActions = (RelativeLayout) convertView.findViewById(R.id.extraActions);
+            viewHolder.extraActionsIconView = (ImageView) convertView.findViewById(R.id.extraActionsIconView);
 
             convertView.setTag(viewHolder);
 
@@ -76,6 +83,8 @@ public class CampaignListAdapter extends ArrayAdapter<Campaign> {
         final Campaign campaign = sourceList.get(position);
 
         // Populate layout elements
+
+        viewHolder.extraActionsIconView.setColorFilter(ContextCompat.getColor(mContext, R.color.white), PorterDuff.Mode.SRC_ATOP);
 
         viewHolder.campaignName.setText(campaign.properties.name);
 

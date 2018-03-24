@@ -49,6 +49,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import jp.wasabeef.picasso.transformations.BlurTransformation;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -74,6 +75,8 @@ public class CampaignProfileActivity extends AppCompatActivity {
     private ImageView campaignImage;
 
     private ImageView logoView;
+
+    private ImageView extraActionsIconView;
 
     private HorizontalScrollView leaderBoardComponent;
 
@@ -317,10 +320,15 @@ public class CampaignProfileActivity extends AppCompatActivity {
             ViewGroup header = (ViewGroup) inflater.inflate(R.layout.campaign_profile_header, timeLine, false);
 
             // Set up white color filter for reversed Water Reporter logo
+            // and extra actions ellipsis
 
             logoView = (ImageView) header.findViewById(R.id.logo);
 
             logoView.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
+
+            extraActionsIconView = (ImageView) header.findViewById(R.id.extraActionsIconView);
+
+            extraActionsIconView.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
 
             // Leaderboard views
 
@@ -366,7 +374,10 @@ public class CampaignProfileActivity extends AppCompatActivity {
             campaignName.setText(campaignNameText);
             campaignTagline.setText(campaignTaglineText);
 
-            Picasso.with(this).load(campaignImageUrl).into(campaignImage);
+            Picasso.with(this)
+                    .load(campaignImageUrl)
+                    .transform(new BlurTransformation(this, 4, 1))
+                    .into(campaignImage);
 
             // Attach click listeners to stat elements
 

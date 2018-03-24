@@ -5,7 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#FFFFFF"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingEnd="8dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:paddingStart="8dp"
+    android:paddingTop="8dp">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -30,6 +35,24 @@
             android:maxLines="1"
             android:textColor="@color/white"
             android:textSize="@dimen/large_text" />
+
+        <RelativeLayout
+            android:id="@+id/extraActions"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="top|end"
+            android:layout_marginEnd="0dp"
+            android:layout_marginStart="0dp">
+
+            <ImageView
+                android:id="@+id/extraActionsIconView"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerInParent="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_more_horiz_black_24dp" />
+
+        </RelativeLayout>
 
     </FrameLayout>
 
