@@ -2,11 +2,12 @@ package com.viableindustries.waterreporter.user_interface.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,13 +15,12 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.api.models.campaign.CampaignGroup;
-import com.viableindustries.waterreporter.api.models.snapshot.CampaignLeader;
-import com.viableindustries.waterreporter.api.models.user.User;
-import com.viableindustries.waterreporter.user_interface.listeners.UserProfileListener;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.UtilityMethods;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by brendanmcintyre on 3/26/18.
@@ -94,6 +94,16 @@ public class CampaignGroupListAdapter extends ArrayAdapter<CampaignGroup> {
                 campaignGroup.posts, campaignGroup.last_active);
 
         viewHolder.postCount.setText(subText);
+
+        long timeDelta = UtilityMethods.timeDelta(
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US),
+                campaignGroup.last_active);
+
+        if (timeDelta < 0 && timeDelta < (DateUtils.DAY_IN_MILLIS * 30)) {
+
+            viewHolder.postCount.setTextColor(ContextCompat.getColor(mContext, R.color.post_count_orange));
+
+        }
 
         // Add click listeners to layout elements
 

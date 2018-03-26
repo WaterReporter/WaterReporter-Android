@@ -5,8 +5,10 @@ import android.graphics.Bitmap;
 
 import com.viableindustries.waterreporter.R;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -93,6 +95,32 @@ public class UtilityMethods {
                 dateLastSeen);
 
         return String.format("%s · Last seen %s", postCountText, dateString);
+
+    }
+
+    public static long timeDelta(SimpleDateFormat dateFormatter, String dateString) {
+
+        long delta = 0;
+
+        long currentTime = new Date().getTime();
+
+        try {
+
+            // Parse the string into Date object
+
+            long originTime = dateFormatter.parse(dateString).getTime();
+
+            delta = currentTime - originTime;
+
+            return delta;
+
+        } catch (ParseException pe) {
+
+            System.out.println("Parse Exception : " + pe);
+
+        }
+
+        return delta;
 
     }
 

@@ -34,6 +34,7 @@
 
     <color name="base_purple">#7b58cd</color>
 
+    <color name="post_count_orange">#f77803</color>
     <color name="orange">#f0770a</color>
     <color name="orange_red">#f7551b</color>
     <color name="orange_red_bias_orange">#fb7d0d</color>

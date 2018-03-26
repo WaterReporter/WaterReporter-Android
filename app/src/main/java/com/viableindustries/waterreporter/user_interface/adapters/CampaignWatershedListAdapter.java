@@ -2,6 +2,8 @@ package com.viableindustries.waterreporter.user_interface.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +16,9 @@ import com.viableindustries.waterreporter.api.models.campaign.CampaignWatershed;
 import com.viableindustries.waterreporter.constants.HucStates;
 import com.viableindustries.waterreporter.utilities.UtilityMethods;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by brendanmcintyre on 3/26/18.
@@ -84,6 +88,16 @@ public class CampaignWatershedListAdapter extends ArrayAdapter<CampaignWatershed
                 campaignWatershed.posts, campaignWatershed.last_active);
 
         viewHolder.postCount.setText(subText);
+
+        long timeDelta = UtilityMethods.timeDelta(
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US),
+                campaignWatershed.last_active);
+
+        if (timeDelta < 0 && timeDelta < (DateUtils.DAY_IN_MILLIS * 30)) {
+
+            viewHolder.postCount.setTextColor(ContextCompat.getColor(mContext, R.color.post_count_orange));
+
+        }
 
         // Add click listeners to layout elements
 

@@ -1,6 +1,7 @@
 package com.viableindustries.waterreporter.utilities;
 
 import android.content.res.Resources;
+import android.text.format.DateUtils;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -131,7 +132,14 @@ public class AttributeTransformUtility {
 
             // The value of delta is greater than or equal to 1 day (86400000 milliseconds)
 
-            if (delta >= 86400000) {
+            if (DateUtils.YEAR_IN_MILLIS <= delta) {
+
+                SimpleDateFormat baseDateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.US);
+
+                //parse the date into another format
+                dateString = baseDateFormat.format(dateFormatter.parse(dateString));
+
+            } else if (86400000 <= delta && delta < DateUtils.YEAR_IN_MILLIS) {
 
                 SimpleDateFormat baseDateFormat = new SimpleDateFormat("MMM d", Locale.US);
 
