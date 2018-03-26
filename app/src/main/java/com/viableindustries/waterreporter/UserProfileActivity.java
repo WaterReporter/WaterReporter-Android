@@ -291,7 +291,7 @@ public class UserProfileActivity extends AppCompatActivity implements
 
         ViewGroup header = (ViewGroup) inflater.inflate(R.layout.user_profile_header, timeLine, false);
 
-        mUserProfileHeaderView.buildHeader(this, mSharedPreferences, header, user);
+        mUserProfileHeaderView.buildHeader(this, mSharedPreferences, getSupportFragmentManager(), header, user);
 
         timeLine.addHeaderView(header, null, false);
 

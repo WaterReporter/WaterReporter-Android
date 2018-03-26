@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.TextViewCompat;
@@ -21,6 +22,7 @@ import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.UserGroupsActivity;
 import com.viableindustries.waterreporter.api.models.user.User;
+import com.viableindustries.waterreporter.user_interface.dialogs.UserExtrasBottomSheetDialogFragment;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
@@ -42,9 +44,6 @@ public class UserProfileHeaderView {
     public TextView reportCounter;
     public TextView actionCounter;
     public TextView groupCounter;
-    //    public TextView reportCountLabel;
-//    public TextView actionCountLabel;
-//    public TextView groupCountLabel;
     public RelativeLayout reportStat;
     public RelativeLayout actionStat;
     public RelativeLayout groupStat;
@@ -68,6 +67,7 @@ public class UserProfileHeaderView {
 
     public void buildHeader(final Context context,
                             final SharedPreferences sharedPreferences,
+                            final FragmentManager fragmentManager,
                             ViewGroup header, final User user) {
 
         promptBlock = (LinearLayout) header.findViewById(R.id.promptBlock);
@@ -174,48 +174,48 @@ public class UserProfileHeaderView {
 
         }
 
-        userDescription.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                ObjectAnimator animation;
-
-                int duration;
-
-                int maxLines = TextViewCompat.getMaxLines(userDescription);
-
-                if (maxLines == 2) {
-
-                    userDescription.setEllipsize(null);
-
-                    animation = ObjectAnimator.ofInt(
-                            userDescription,
-                            "maxLines",
-                            2,
-                            1000);
-
-                    duration = 400;
-
-                } else {
-
-                    userDescription.setEllipsize(TextUtils.TruncateAt.END);
-
-                    animation = ObjectAnimator.ofInt(
-                            userDescription,
-                            "maxLines",
-                            1000,
-                            2);
-
-                    duration = 200;
-
-                }
-
-                animation.setDuration(duration);
-                animation.setInterpolator(new LinearOutSlowInInterpolator());
-                animation.start();
-
-            }
-        });
+//        userDescription.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                ObjectAnimator animation;
+//
+//                int duration;
+//
+//                int maxLines = TextViewCompat.getMaxLines(userDescription);
+//
+//                if (maxLines == 2) {
+//
+//                    userDescription.setEllipsize(null);
+//
+//                    animation = ObjectAnimator.ofInt(
+//                            userDescription,
+//                            "maxLines",
+//                            2,
+//                            1000);
+//
+//                    duration = 400;
+//
+//                } else {
+//
+//                    userDescription.setEllipsize(TextUtils.TruncateAt.END);
+//
+//                    animation = ObjectAnimator.ofInt(
+//                            userDescription,
+//                            "maxLines",
+//                            1000,
+//                            2);
+//
+//                    duration = 200;
+//
+//                }
+//
+//                animation.setDuration(duration);
+//                animation.setInterpolator(new LinearOutSlowInInterpolator());
+//                animation.start();
+//
+//            }
+//        });
 
         // Attach click listeners to stat elements
 
@@ -260,10 +260,10 @@ public class UserProfileHeaderView {
 
                 ModelStorage.storeModel(sharedPreferences, user, "stored_user");
 
-//                CampaignExtrasBottomSheetDialogFragment campaignExtrasBottomSheetDialogFragment =
-//                        new CampaignExtrasBottomSheetDialogFragment();
-//
-//                campaignExtrasBottomSheetDialogFragment.show(getSupportFragmentManager(), "campaign-extras-dialog");
+                UserExtrasBottomSheetDialogFragment userExtrasBottomSheetDialogFragment =
+                        new UserExtrasBottomSheetDialogFragment();
+
+                userExtrasBottomSheetDialogFragment.show(fragmentManager, "user-extras-dialog");
 
             }
 

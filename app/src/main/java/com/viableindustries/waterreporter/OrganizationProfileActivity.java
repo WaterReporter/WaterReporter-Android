@@ -56,6 +56,7 @@ import com.viableindustries.waterreporter.api.models.user.UserCollection;
 import com.viableindustries.waterreporter.api.models.user.UserMembershipPatch;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
 import com.viableindustries.waterreporter.user_interface.dialogs.CampaignExtrasBottomSheetDialogFragment;
+import com.viableindustries.waterreporter.user_interface.dialogs.OrganizationExtrasBottomSheetDialogFragment;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
@@ -231,8 +232,6 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                         // This method performs the actual api-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
 
-//                        countPosts(complexQuery, "state");
-
                         fetchSnapshot(mOrganizationId);
 
                         resetStats();
@@ -303,10 +302,6 @@ public class OrganizationProfileActivity extends AppCompatActivity {
         // Retrieve organization snapshot data
 
         fetchSnapshot(mOrganizationId);
-
-        // Retrieve the organization's members
-
-//        fetchOrganizationMembers(50, 1, mOrganizationId);
 
         if (reportCollection.isEmpty() && timeLineContainer != null) {
 
@@ -470,43 +465,6 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
             headerCanvas = (ImageView) header.findViewById(R.id.headerCanvas);
 
-//            Target target = new Target() {
-//                @Override
-//                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-//
-////                    int dominantColor = UtilityMethods.getDominantColor(bitmap);
-//
-////                    headerCanvas.setBackgroundColor(dominantColor);
-//
-////                    headerCanvas.setBackgroundColor(ContextCompat.getColor(OrganizationProfileActivity.this, dominantColor));
-//
-//                    Palette palette = Palette.from(bitmap).generate();
-//
-//                    int color = palette.getVibrantColor(ContextCompat.getColor(OrganizationProfileActivity.this, R.color.white));
-//
-//                    headerCanvas.setBackgroundColor(color);
-//
-//                    Picasso.with(OrganizationProfileActivity.this)
-//                            .load(R.drawable.profile_header_background_transparent)
-//                            .into(headerCanvas);
-//
-//                }
-//
-//                @Override
-//                public void onBitmapFailed(Drawable errorDrawable) {
-//
-//                }
-//
-//                @Override
-//                public void onPrepareLoad(Drawable placeHolderDrawable) {
-//
-//                }
-//            };
-//
-//            Picasso.with(this)
-//                    .load(organizationLogoUrl)
-//                    .into(target);
-
             String firstChar = mOrganization.properties.name.substring(0, 1).toLowerCase();
 
             String[] alphabet = {
@@ -562,48 +520,48 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                                     }
                                 }).into(organizationDescription);
 
-                organizationDescription.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        ObjectAnimator animation;
-
-                        int duration;
-
-                        int maxLines = TextViewCompat.getMaxLines(organizationDescription);
-
-                        if (maxLines == 2) {
-
-                            organizationDescription.setEllipsize(null);
-
-                            animation = ObjectAnimator.ofInt(
-                                    organizationDescription,
-                                    "maxLines",
-                                    2,
-                                    1000);
-
-                            duration = 400;
-
-                        } else {
-
-                            organizationDescription.setEllipsize(TextUtils.TruncateAt.END);
-
-                            animation = ObjectAnimator.ofInt(
-                                    organizationDescription,
-                                    "maxLines",
-                                    1000,
-                                    2);
-
-                            duration = 200;
-
-                        }
-
-                        animation.setDuration(duration);
-                        animation.setInterpolator(new LinearOutSlowInInterpolator());
-                        animation.start();
-
-                    }
-                });
+//                organizationDescription.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//
+//                        ObjectAnimator animation;
+//
+//                        int duration;
+//
+//                        int maxLines = TextViewCompat.getMaxLines(organizationDescription);
+//
+//                        if (maxLines == 2) {
+//
+//                            organizationDescription.setEllipsize(null);
+//
+//                            animation = ObjectAnimator.ofInt(
+//                                    organizationDescription,
+//                                    "maxLines",
+//                                    2,
+//                                    1000);
+//
+//                            duration = 400;
+//
+//                        } else {
+//
+//                            organizationDescription.setEllipsize(TextUtils.TruncateAt.END);
+//
+//                            animation = ObjectAnimator.ofInt(
+//                                    organizationDescription,
+//                                    "maxLines",
+//                                    1000,
+//                                    2);
+//
+//                            duration = 200;
+//
+//                        }
+//
+//                        animation.setDuration(duration);
+//                        animation.setInterpolator(new LinearOutSlowInInterpolator());
+//                        animation.start();
+//
+//                    }
+//                });
 
             } catch (NullPointerException ne) {
 
@@ -627,12 +585,6 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                 public void onClick(View v) {
 
                     actionFocus = true;
-
-//                    actionCounter.setTextColor(ContextCompat.getColor(mContext, R.color.base_blue));
-//                    actionCountLabel.setTextColor(ContextCompat.getColor(mContext, R.color.base_blue));
-//
-//                    reportCounter.setTextColor(ContextCompat.getColor(mContext, R.color.material_blue_grey950));
-//                    reportCountLabel.setTextColor(ContextCompat.getColor(mContext, R.color.material_blue_grey950));
 
                     if (timeLine != null) {
 
@@ -673,10 +625,10 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                     ModelStorage.storeModel(mSharedPreferences, mOrganization, "stored_organization");
 
-//                    CampaignExtrasBottomSheetDialogFragment campaignExtrasBottomSheetDialogFragment =
-//                            new CampaignExtrasBottomSheetDialogFragment();
-//
-//                    campaignExtrasBottomSheetDialogFragment.show(getSupportFragmentManager(), "campaign-extras-dialog");
+                    OrganizationExtrasBottomSheetDialogFragment organizationExtrasBottomSheetDialogFragment =
+                            new OrganizationExtrasBottomSheetDialogFragment();
+
+                    organizationExtrasBottomSheetDialogFragment.show(getSupportFragmentManager(), "organization-extras-dialog");
 
                 }
 
@@ -692,12 +644,6 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     private void resetStats() {
 
-//        reportCounter.setTextColor(ContextCompat.getColor(OrganizationProfileActivity.this, R.color.base_blue));
-//        reportCountLabel.setTextColor(ContextCompat.getColor(OrganizationProfileActivity.this, R.color.base_blue));
-//
-//        actionCounter.setTextColor(ContextCompat.getColor(OrganizationProfileActivity.this, R.color.material_blue_grey950));
-//        actionCountLabel.setTextColor(ContextCompat.getColor(OrganizationProfileActivity.this, R.color.material_blue_grey950));
-
         actionFocus = false;
 
         timeLineContainer.setRefreshing(true);
@@ -707,9 +653,6 @@ public class OrganizationProfileActivity extends AppCompatActivity {
     }
 
     private void setPostCountState(int count) {
-
-//        reportCounter.setText(String.valueOf(reportCount));
-//        reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
 
         if (count < 1) {
 
@@ -1015,10 +958,6 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                 if (reportCount > 0) {
 
                     reportStat.setVisibility(View.VISIBLE);
-
-//                    reportCounter.setText(String.valueOf(reportCount));
-//
-//                    reportCountLabel.setText(resources.getQuantityString(R.plurals.post_label, reportCount, reportCount));
 
                     setPostCountState(reportCount);
 

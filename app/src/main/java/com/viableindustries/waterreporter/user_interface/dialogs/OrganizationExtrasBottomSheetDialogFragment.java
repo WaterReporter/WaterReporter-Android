@@ -50,7 +50,7 @@ public class OrganizationExtrasBottomSheetDialogFragment extends BottomSheetDial
 
         dialog.setContentView(R.layout.organization_extras_bottom_sheet);
 
-        LinearLayout viewFullProfile = (LinearLayout) dialog.findViewById(R.id.viewGroups);
+        LinearLayout viewFullProfile = (LinearLayout) dialog.findViewById(R.id.viewFullProfile);
 
         if (viewFullProfile != null) {
 
