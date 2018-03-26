@@ -302,9 +302,9 @@ public class OrganizationProfileCardActivity extends AppCompatActivity {
                 mResources.getQuantityString(R.plurals.action_label, organizationSnapshot.actions, organizationSnapshot.actions));
         actionCounter.setText(actionCountText);
 
-        String groupCountText = String.format("%s %s", String.valueOf(organizationSnapshot.members),
-                mResources.getQuantityString(R.plurals.group_label, organizationSnapshot.members, organizationSnapshot.members));
-        peopleCounter.setText(groupCountText);
+        String peopleCountText = String.format("%s %s", String.valueOf(organizationSnapshot.members),
+                mResources.getQuantityString(R.plurals.member_label, organizationSnapshot.members, organizationSnapshot.members));
+        peopleCounter.setText(peopleCountText);
 
     }
 

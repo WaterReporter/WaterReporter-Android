@@ -799,9 +799,9 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                         resources.getQuantityString(R.plurals.action_label, organizationSnapshot.actions, organizationSnapshot.actions));
                 actionCounter.setText(actionCountText);
 
-                String memberCountText = String.format("%s %s", String.valueOf(organizationSnapshot.members),
-                        resources.getQuantityString(R.plurals.group_label, organizationSnapshot.members, organizationSnapshot.members));
-                peopleCounter.setText(memberCountText);
+                String peopleCountText = String.format("%s %s", String.valueOf(organizationSnapshot.members),
+                        resources.getQuantityString(R.plurals.member_label, organizationSnapshot.members, organizationSnapshot.members));
+                peopleCounter.setText(peopleCountText);
 
                 ModelStorage.storeSnapshot(mSharedPreferences, organizationSnapshot, "stored_organization_snapshot");
 
