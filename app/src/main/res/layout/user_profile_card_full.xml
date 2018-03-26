@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/userProfileHeader"
+    android:id="@+id/userProfileCardHeader"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="8dp"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="24dp">
 
                 <ImageView
                     android:id="@+id/userAvatar"
@@ -116,23 +116,6 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/small_text" />
 
-            <TextView
-                android:id="@+id/userDescription"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:paddingBottom="16dp"
-                android:paddingEnd="24dp"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp"
-                android:paddingStart="24dp"
-                android:paddingTop="0dp"
-                android:text="A description goes here"
-                android:textColor="@color/white"
-                android:textSize="14sp" />
-
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/profileStats"
                 android:layout_width="match_parent"
@@ -140,10 +123,10 @@
                 android:animateLayoutChanges="true"
                 android:baselineAligned="false"
                 android:orientation="horizontal"
-                android:paddingBottom="0dp"
+                android:paddingBottom="24dp"
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
-                android:paddingTop="0dp">
+                android:paddingTop="24dp">
 
                 <RelativeLayout
                     android:id="@+id/reportStat"
@@ -212,15 +195,28 @@
 
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#66FFFFFF" />
+
+            <TextView
+                android:id="@+id/userDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:paddingBottom="24dp"
+                android:paddingEnd="24dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingStart="24dp"
+                android:paddingTop="24dp"
+                android:text="A description goes here"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
         </LinearLayout>
 
     </FrameLayout>
-
-    <include layout="@layout/prompt_empty_profile" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/gray_232" />
 
 </LinearLayout>

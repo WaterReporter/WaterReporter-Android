@@ -10,18 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ScrollView;
 
 import com.squareup.picasso.Picasso;
-import com.viableindustries.waterreporter.api.models.post.Report;
+import com.viableindustries.waterreporter.api.models.snapshot.UserSnapshot;
 import com.viableindustries.waterreporter.api.models.user.User;
-import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
 import com.viableindustries.waterreporter.user_interface.view_holders.UserProfileHeaderView;
-import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class UserProfileCardActivity extends AppCompatActivity {
@@ -34,7 +31,14 @@ public class UserProfileCardActivity extends AppCompatActivity {
 
     private User mUser;
 
+    private UserSnapshot mUserSnapshot;
+
     private UserProfileHeaderView mUserProfileHeaderView;
+
+    private Resources mResources;
+
+    @Bind(R.id.scrollView)
+    ScrollView scrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +58,9 @@ public class UserProfileCardActivity extends AppCompatActivity {
 
         mCoreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
-        retrieveStoredUser();
+        mResources = getResources();
 
-        retrieveStoredSnapshot();
+        retrieveStoredUser();
 
     }
 
@@ -70,25 +74,15 @@ public class UserProfileCardActivity extends AppCompatActivity {
 
             Log.d("stored--user--id", userId + "");
 
-            setUserData(mUser);
+            addListViewHeader(mUser);
+
+            retrieveStoredSnapshot();
 
         } catch (NullPointerException e1) {
 
-            try {
+            startActivity(new Intent(this, MainActivity.class));
 
-                Log.d("USER ID ONLY", "proceed to load profile data");
-
-                userId = mUser.id;
-
-                fetchUser(userId);
-
-            } catch (NullPointerException e2) {
-
-                startActivity(new Intent(this, MainActivity.class));
-
-                finish();
-
-            }
+            finish();
 
         }
 
@@ -96,15 +90,15 @@ public class UserProfileCardActivity extends AppCompatActivity {
 
     private void retrieveStoredSnapshot() {
 
-        mUser = ModelStorage.getStoredUser(mSharedPreferences, "stored_user");
+        mUserSnapshot = ModelStorage.getStoredUserSnapshot(mSharedPreferences);
 
         try {
 
-            userId = mUser.properties.id;
+            int postCount = mUserSnapshot.posts;
 
-            Log.d("stored--user--id", userId + "");
+            Log.d("stored--user--posts", postCount + "");
 
-            setUserData(mUser);
+            setSnapshotData(mUserSnapshot);
 
         } catch (NullPointerException e1) {
 
@@ -122,11 +116,27 @@ public class UserProfileCardActivity extends AppCompatActivity {
 
         LayoutInflater inflater = getLayoutInflater();
 
-        ViewGroup header = (ViewGroup) inflater.inflate(R.layout.user_profile_header, timeLine, false);
+        ViewGroup header = (ViewGroup) inflater.inflate(R.layout.user_profile_card_full, scrollView, false);
 
         mUserProfileHeaderView.buildHeader(this, mSharedPreferences, getSupportFragmentManager(), header, user);
 
-        timeLine.addHeaderView(header, null, false);
+        scrollView.addView(header);
+
+    }
+
+    private void setSnapshotData(UserSnapshot userSnapshot) {
+
+        String reportCountText = String.format("%s %s", String.valueOf(userSnapshot.posts),
+                mResources.getQuantityString(R.plurals.post_label, userSnapshot.posts, userSnapshot.posts));
+        mUserProfileHeaderView.reportCounter.setText(reportCountText);
+
+        String actionCountText = String.format("%s %s", String.valueOf(userSnapshot.actions),
+                mResources.getQuantityString(R.plurals.action_label, userSnapshot.actions, userSnapshot.actions));
+        mUserProfileHeaderView.actionCounter.setText(actionCountText);
+
+        String groupCountText = String.format("%s %s", String.valueOf(userSnapshot.groups),
+                mResources.getQuantityString(R.plurals.group_label, userSnapshot.groups, userSnapshot.groups));
+        mUserProfileHeaderView.groupCounter.setText(groupCountText);
 
     }
 
@@ -147,11 +157,11 @@ public class UserProfileCardActivity extends AppCompatActivity {
 
         super.onDestroy();
 
+        Picasso.with(this).cancelRequest(mUserProfileHeaderView.headerCanvas);
+
         Picasso.with(this).cancelRequest(mUserProfileHeaderView.userAvatar);
 
         ButterKnife.unbind(this);
-
-//        ModelStorage.removeModel(mSharedPreferences, "stored_user");
 
     }
 
