@@ -112,7 +112,7 @@ public class AttributeTransformUtility {
 
     }
 
-    public static CharSequence relativeTime(String dateString) {
+    public static CharSequence relativeTime(SimpleDateFormat dateFormatter, String dateString) {
 
         long delta;
 
@@ -121,11 +121,11 @@ public class AttributeTransformUtility {
         try {
 
             //create SimpleDateFormat object with source string date format
-            SimpleDateFormat sdfSource = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.US);
+//            SimpleDateFormat sdfSource = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.US);
 
             //parse the string into Date object
 
-            long originTime = sdfSource.parse(dateString).getTime();
+            long originTime = dateFormatter.parse(dateString).getTime();
 
             delta = currentTime - originTime;
 
@@ -136,7 +136,7 @@ public class AttributeTransformUtility {
                 SimpleDateFormat baseDateFormat = new SimpleDateFormat("MMM d", Locale.US);
 
                 //parse the date into another format
-                dateString = baseDateFormat.format(sdfSource.parse(dateString));
+                dateString = baseDateFormat.format(dateFormatter.parse(dateString));
 
             } else if (3600000 <= delta && delta < 86400000) {
 

@@ -29,7 +29,9 @@ import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.PatternEditableBuilder;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import retrofit.RetrofitError;
@@ -142,7 +144,9 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
 
         }
 
-        String creationDate = (String) AttributeTransformUtility.relativeTime(feature != null ? feature.properties.created : null);
+        String creationDate = (String) AttributeTransformUtility.relativeTime(
+                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.US),
+                feature.properties.created);
 
         Integer featureId = feature.id;
 

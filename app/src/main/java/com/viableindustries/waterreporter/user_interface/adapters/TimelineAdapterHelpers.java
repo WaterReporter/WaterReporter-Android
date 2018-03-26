@@ -45,8 +45,10 @@ import com.viableindustries.waterreporter.utilities.OpenGraph;
 import com.viableindustries.waterreporter.utilities.PatternEditableBuilder;
 
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import jp.wasabeef.picasso.transformations.BlurTransformation;
@@ -280,7 +282,9 @@ public class TimelineAdapterHelpers {
 
     public static void setDate(final Report post, TextView textView) {
 
-        String creationDate = (String) AttributeTransformUtility.relativeTime(post.properties.created);
+        String creationDate = (String) AttributeTransformUtility.relativeTime(
+                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.US),
+                post.properties.created);
 
         textView.setText(creationDate);
 

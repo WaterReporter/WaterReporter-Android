@@ -1,8 +1,13 @@
 package com.viableindustries.waterreporter.utilities;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 
+import com.viableindustries.waterreporter.R;
+
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Created by Ryan Hamley on 10/28/14.
@@ -12,19 +17,19 @@ public class UtilityMethods {
 
     private final Calendar c = Calendar.getInstance();
 
-    public int getCurrentMonth(){
+    public int getCurrentMonth() {
         return c.get(Calendar.MONTH);
     }
 
-    public int getCurrentDay(){
+    public int getCurrentDay() {
         return c.get(Calendar.DAY_OF_MONTH);
     }
 
-    public int getCurrentYear(){
+    public int getCurrentYear() {
         return c.get(Calendar.YEAR);
     }
 
-    public String getDateString(int aMonth, int aDay, int aYear){
+    public String getDateString(int aMonth, int aDay, int aYear) {
         String month = "";
         String day = String.valueOf(aDay);
         String year = String.valueOf(aYear);
@@ -76,6 +81,19 @@ public class UtilityMethods {
         final int color = newBitmap.getPixel(0, 0);
         newBitmap.recycle();
         return color;
+    }
+
+    public static String makeSecondaryListPostCountText(Resources resources, int postCount, String dateLastSeen) {
+
+        String postCountText = String.format("%s %s", String.valueOf(postCount),
+                resources.getQuantityString(R.plurals.post_label, postCount, postCount));
+
+        String dateString = (String) AttributeTransformUtility.relativeTime(
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US),
+                dateLastSeen);
+
+        return String.format("%s · Last seen %s", postCountText, dateString);
+
     }
 
 }

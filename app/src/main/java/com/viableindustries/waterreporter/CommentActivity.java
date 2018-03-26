@@ -93,10 +93,12 @@ import java.io.InputStream;
 import java.net.FileNameMap;
 import java.net.URISyntaxException;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -696,7 +698,9 @@ public class CommentActivity extends AppCompatActivity implements
 
         ImageView actionBanner = (ImageView) header.findViewById(R.id.action_banner);
 
-        String creationDate = (String) AttributeTransformUtility.relativeTime(report.properties.created);
+        String creationDate = (String) AttributeTransformUtility.relativeTime(
+                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.US),
+                report.properties.created);
 
         reportDate.setText(creationDate);
 

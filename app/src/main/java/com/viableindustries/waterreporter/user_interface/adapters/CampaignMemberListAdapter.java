@@ -14,6 +14,7 @@ import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.api.models.campaign.CampaignMember;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
+import com.viableindustries.waterreporter.utilities.UtilityMethods;
 
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class CampaignMemberListAdapter extends ArrayAdapter<CampaignMember> {
     private static class ViewHolder {
         ImageView featureIcon;
         TextView featureName;
-        //        TextView postCount;
+        TextView postCount;
         LinearLayout campaignMemberItem;
     }
 
@@ -62,6 +63,7 @@ public class CampaignMemberListAdapter extends ArrayAdapter<CampaignMember> {
 
             viewHolder.featureIcon = (ImageView) convertView.findViewById(R.id.featureIcon);
             viewHolder.featureName = (TextView) convertView.findViewById(R.id.featureName);
+            viewHolder.postCount = (TextView) convertView.findViewById(R.id.postCount);
             viewHolder.campaignMemberItem = (LinearLayout) convertView.findViewById(R.id.campaignMemberItem);
 
             convertView.setTag(viewHolder);
@@ -85,6 +87,11 @@ public class CampaignMemberListAdapter extends ArrayAdapter<CampaignMember> {
                 .placeholder(R.drawable.user_avatar_placeholder)
                 .transform(new CircleTransform())
                 .into(viewHolder.featureIcon);
+
+        String subText = UtilityMethods.makeSecondaryListPostCountText(mContext.getResources(),
+                campaignMember.posts, campaignMember.last_active);
+
+        viewHolder.postCount.setText(subText);
 
         // Add click listeners to layout elements
 
