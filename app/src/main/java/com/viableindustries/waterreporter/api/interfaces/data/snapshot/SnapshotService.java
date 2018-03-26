@@ -35,6 +35,24 @@ public interface SnapshotService {
                      @Path("campaignId") int campaignId,
                      Callback<CampaignLeaderboard> campaignLeaderboardCallback);
 
+    @GET("/data/snapshot/campaign/{campaignId}/users")
+    void getCampaignUsers(@Header("Authorization") String authorization,
+                                @Header("Content-Type") String contentType,
+                                @Path("campaignId") int campaignId,
+                                Callback<CampaignLeaderboard> campaignLeaderboardCallback);
+
+    @GET("/data/snapshot/campaign/{campaignId}/groups")
+    void getCampaignGroups(@Header("Authorization") String authorization,
+                                @Header("Content-Type") String contentType,
+                                @Path("campaignId") int campaignId,
+                                Callback<CampaignLeaderboard> campaignLeaderboardCallback);
+
+    @GET("/data/snapshot/campaign/{campaignId}/watersheds")
+    void getCampaignWatersheds(@Header("Authorization") String authorization,
+                                @Header("Content-Type") String contentType,
+                                @Path("campaignId") int campaignId,
+                                Callback<CampaignLeaderboard> campaignLeaderboardCallback);
+
     @GET("/data/snapshot/organization/{organizationId}")
     void getOrganization(@Header("Authorization") String authorization,
                  @Header("Content-Type") String contentType,
