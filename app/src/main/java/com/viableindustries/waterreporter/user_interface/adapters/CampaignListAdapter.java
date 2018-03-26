@@ -1,8 +1,10 @@
 package com.viableindustries.waterreporter.user_interface.adapters;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +18,9 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.api.models.campaign.Campaign;
+import com.viableindustries.waterreporter.user_interface.dialogs.CampaignExtrasBottomSheetDialogFragment;
 import com.viableindustries.waterreporter.user_interface.listeners.CampaignProfileListener;
-import com.viableindustries.waterreporter.user_interface.listeners.OrganizationProfileListener;
-import com.viableindustries.waterreporter.utilities.CircleTransform;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import java.util.List;
 
@@ -28,6 +30,10 @@ import java.util.List;
 
 public class CampaignListAdapter extends ArrayAdapter<Campaign> {
 
+    private final SharedPreferences mSharedPreferences;
+
+    final private FragmentManager mFragmentManager;
+
     private final Context mContext;
 
     protected String name;
@@ -36,13 +42,18 @@ public class CampaignListAdapter extends ArrayAdapter<Campaign> {
 
     private final List<Campaign> sourceList;
 
-    public CampaignListAdapter(Context aContext, List<Campaign> features) {
+    public CampaignListAdapter(Context aContext, List<Campaign> features,
+                               FragmentManager fragmentManager) {
 
         super(aContext, 0, features);
 
         this.sourceList = features;
 
         this.mContext = aContext;
+
+        this.mSharedPreferences = mContext.getSharedPreferences(mContext.getPackageName(), 0);
+
+        this.mFragmentManager = fragmentManager;
 
     }
 
@@ -93,6 +104,22 @@ public class CampaignListAdapter extends ArrayAdapter<Campaign> {
         // Add click listeners to layout elements
 
         viewHolder.campaignItem.setOnClickListener(new CampaignProfileListener(mContext, campaign));
+
+        viewHolder.extraActions.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                ModelStorage.storeModel(mSharedPreferences, campaign, "stored_campaign");
+
+                CampaignExtrasBottomSheetDialogFragment campaignExtrasBottomSheetDialogFragment =
+                        new CampaignExtrasBottomSheetDialogFragment();
+
+                campaignExtrasBottomSheetDialogFragment.show(mFragmentManager, "campaign-extras-dialog");
+
+            }
+
+        });
 
         return convertView;
 

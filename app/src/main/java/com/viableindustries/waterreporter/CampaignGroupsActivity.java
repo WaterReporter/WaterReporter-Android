@@ -81,8 +81,6 @@ public class CampaignGroupsActivity extends AppCompatActivity {
 
         listViewContainer.setColorSchemeResources(R.color.waterreporter_blue);
 
-//        populateList(groupList);
-
     }
 
     private void retrieveStoredCampaign() {

@@ -202,7 +202,7 @@ public class ExploreActivity extends AppCompatActivity {
 
     private void populateList(ArrayList<Campaign> campaigns) {
 
-        adapter = new CampaignListAdapter(this, campaigns);
+        adapter = new CampaignListAdapter(this, campaigns, getSupportFragmentManager());
 
         try {
 

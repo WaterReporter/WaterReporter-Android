@@ -82,6 +82,12 @@
     <string name="post_received">Great! Your report was successfully broadcast on Water Reporter.</string>
     <string name="sending_post">Sending post&#8230;</string>
 
+    <!-- Extra actions -->
+    <string name="view_members">View members</string>
+    <string name="view_groups">View groups</string>
+    <string name="view_watersheds">View watersheds</string>
+    <string name="view_campaigns">View campaigns</string>
+
     <!-- Post actions -->
     <string name="action_edit_post">Edit post</string>
     <string name="action_delete_post">Delete post</string>

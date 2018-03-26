@@ -33,7 +33,7 @@ public interface SnapshotService {
                                 Callback<CampaignLeaderboard> campaignLeaderboardCallback);
 
     @GET("/data/snapshot/campaign/{campaignId}/users")
-    void getCampaignUsers(@Header("Authorization") String authorization,
+    void getCampaignMembers(@Header("Authorization") String authorization,
                           @Header("Content-Type") String contentType,
                           @Query("page") int page,
                           @Path("campaignId") int campaignId,
