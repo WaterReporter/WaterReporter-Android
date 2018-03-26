@@ -39,8 +39,8 @@ import com.viableindustries.waterreporter.api.models.snapshot.CampaignLeaderboar
 import com.viableindustries.waterreporter.api.models.snapshot.CampaignSnapshot;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.user_interface.adapters.CampaignLeaderListAdapter;
-import com.viableindustries.waterreporter.user_interface.adapters.TagSuggestionAdapter;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
+import com.viableindustries.waterreporter.user_interface.dialogs.CampaignExtrasBottomSheetDialogFragment;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
@@ -75,6 +75,8 @@ public class CampaignProfileActivity extends AppCompatActivity {
     private ImageView campaignImage;
 
     private ImageView logoView;
+
+    private RelativeLayout extraActions;
 
     private ImageView extraActionsIconView;
 
@@ -394,17 +396,7 @@ public class CampaignProfileActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                    actionFocus = true;
-
-                    if (timeLine != null) {
-
-                        timeLine.setSelection(0);
-
-                    }
-
-                    timeLineContainer.setRefreshing(true);
-
-                    fetchPosts(5, 1, complexQuery, true);
+                    startActivity(new Intent(CampaignProfileActivity.this, CampaignGroupsActivity.class));
 
                 }
             });
@@ -413,15 +405,29 @@ public class CampaignProfileActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                    if (hasMembers) {
-
-                        Intent intent = new Intent(mContext, OrganizationMembersActivity.class);
-
-                        startActivity(intent);
-
-                    }
+                    startActivity(new Intent(CampaignProfileActivity.this, CampaignMembersActivity.class));
 
                 }
+            });
+
+            // Present extra actions dialog (bottom sheet)
+
+            extraActions = (RelativeLayout) header.findViewById(R.id.extraActions);
+
+            extraActions.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+
+                    ModelStorage.storeModel(mSharedPreferences, mCampaign, "stored_campaign");
+
+                    CampaignExtrasBottomSheetDialogFragment campaignExtrasBottomSheetDialogFragment =
+                            new CampaignExtrasBottomSheetDialogFragment();
+
+                    campaignExtrasBottomSheetDialogFragment.show(getSupportFragmentManager(), "campaign-extras-dialog");
+
+                }
+
             });
 
             // Add populated header view to report timeline
