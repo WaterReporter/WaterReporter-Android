@@ -803,6 +803,8 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                         resources.getQuantityString(R.plurals.group_label, organizationSnapshot.members, organizationSnapshot.members));
                 peopleCounter.setText(memberCountText);
 
+                ModelStorage.storeSnapshot(mSharedPreferences, organizationSnapshot, "stored_organization_snapshot");
+
             }
 
             @Override

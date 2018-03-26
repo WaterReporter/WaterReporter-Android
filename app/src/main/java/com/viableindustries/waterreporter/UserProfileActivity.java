@@ -553,6 +553,8 @@ public class UserProfileActivity extends AppCompatActivity implements
                         resources.getQuantityString(R.plurals.group_label, userSnapshot.groups, userSnapshot.groups));
                 mUserProfileHeaderView.groupCounter.setText(groupCountText);
 
+                ModelStorage.storeSnapshot(mSharedPreferences, userSnapshot, "stored_user_snapshot");
+
             }
 
             @Override
@@ -741,12 +743,6 @@ public class UserProfileActivity extends AppCompatActivity implements
     }
 
     public void resetStats() {
-
-//        mUserProfileHeaderView.reportCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
-//        mUserProfileHeaderView.reportCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.base_blue));
-//
-//        mUserProfileHeaderView.actionCounter.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
-//        mUserProfileHeaderView.actionCountLabel.setTextColor(ContextCompat.getColor(UserProfileActivity.this, R.color.material_blue_grey950));
 
         actionFocus = false;
 

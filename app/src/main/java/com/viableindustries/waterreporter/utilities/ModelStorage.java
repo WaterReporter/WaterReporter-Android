@@ -8,6 +8,8 @@ import com.viableindustries.waterreporter.api.models.group.Group;
 import com.viableindustries.waterreporter.api.models.hashtag.HashTag;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.post.Report;
+import com.viableindustries.waterreporter.api.models.snapshot.OrganizationSnapshot;
+import com.viableindustries.waterreporter.api.models.snapshot.UserSnapshot;
 import com.viableindustries.waterreporter.api.models.territory.Territory;
 import com.viableindustries.waterreporter.api.models.user.User;
 
@@ -36,11 +38,27 @@ public class ModelStorage {
 
     }
 
+    public static UserSnapshot getStoredUserSnapshot(SharedPreferences sharedPreferences) {
+
+        String storedUserSnapshot = sharedPreferences.getString("stored_user_snapshot", "");
+
+        return new Gson().fromJson(storedUserSnapshot, UserSnapshot.class);
+
+    }
+
     public static Organization getStoredOrganization(SharedPreferences sharedPreferences) {
 
         String storedOrganization = sharedPreferences.getString("stored_organization", "");
 
         return new Gson().fromJson(storedOrganization, Organization.class);
+
+    }
+
+    public static OrganizationSnapshot getStoredOrganizationSnapshot(SharedPreferences sharedPreferences) {
+
+        String storedOrganizationSnapshot = sharedPreferences.getString("stored_organization_snapshot", "");
+
+        return new Gson().fromJson(storedOrganizationSnapshot, OrganizationSnapshot.class);
 
     }
 
@@ -79,6 +97,12 @@ public class ModelStorage {
     public static void storeModel(SharedPreferences sharedPreferences, Object model, String key) {
 
         sharedPreferences.edit().putString(key, new Gson().toJson(model)).apply();
+
+    }
+
+    public static void storeSnapshot(SharedPreferences sharedPreferences, Object snapshot, String key) {
+
+        sharedPreferences.edit().putString(key, new Gson().toJson(snapshot)).apply();
 
     }
 
