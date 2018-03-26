@@ -215,8 +215,6 @@ public class CampaignProfileActivity extends AppCompatActivity {
                         // This method performs the actual api-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
 
-//                        countPosts(complexQuery, "state");
-
                         fetchSnapshot(mCampaignId);
 
                         resetStats();
@@ -225,9 +223,11 @@ public class CampaignProfileActivity extends AppCompatActivity {
                 }
         );
 
-        // Set color of swipe refresh arrow animation
+        // Set color and offset of swipe refresh arrow animation
 
         timeLineContainer.setColorSchemeResources(R.color.waterreporter_blue);
+
+        timeLineContainer.setProgressViewOffset(false, 0, 100);
 
         scrollListener = new EndlessScrollListener() {
             @Override
@@ -300,11 +300,7 @@ public class CampaignProfileActivity extends AppCompatActivity {
 
         Intent intent = new Intent(mContext, PhotoMetaActivity.class);
 
-//        TextView tagName = (TextView) findViewById(R.id.campaignName);
-
         intent.putExtra("campaignId", mCampaignId);
-
-//        intent.putExtra("autoTag", String.format("\u0023%s", tagName.getText().toString().replaceAll("[^a-zA-Z0-9]+", "")));
 
         startActivity(intent);
 

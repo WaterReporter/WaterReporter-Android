@@ -176,9 +176,11 @@ public class UserProfileActivity extends AppCompatActivity implements
                 }
         );
 
-        // Set color of swipe refresh arrow animation
+        // Set color and offset of swipe refresh arrow animation
 
         timeLineContainer.setColorSchemeResources(R.color.waterreporter_blue);
+
+        timeLineContainer.setProgressViewOffset(false, 0, 100);
 
         scrollListener = new EndlessScrollListener() {
             @Override
@@ -289,7 +291,7 @@ public class UserProfileActivity extends AppCompatActivity implements
 
         ViewGroup header = (ViewGroup) inflater.inflate(R.layout.user_profile_header, timeLine, false);
 
-        mUserProfileHeaderView.buildHeader(this, header, user);
+        mUserProfileHeaderView.buildHeader(this, mSharedPreferences, header, user);
 
         timeLine.addHeaderView(header, null, false);
 

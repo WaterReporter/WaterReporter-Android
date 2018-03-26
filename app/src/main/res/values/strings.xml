@@ -395,5 +395,7 @@
     <string name="title_activity_campaign_groups">CampaignGroupsActivity</string>
     <string name="title_activity_campaign_members">CampaignMembersActivity</string>
     <string name="title_activity_campaign_watersheds">CampaignWatershedsActivity</string>
+    <string name="title_activity_user_profile_card">UserProfileCardActivity</string>
+    <string name="title_activity_organization_profile_card">OrganizationProfileCardActivity</string>
 
 </resources>

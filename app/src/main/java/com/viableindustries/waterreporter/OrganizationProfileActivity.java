@@ -55,6 +55,7 @@ import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.api.models.user.UserCollection;
 import com.viableindustries.waterreporter.api.models.user.UserMembershipPatch;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
+import com.viableindustries.waterreporter.user_interface.dialogs.CampaignExtrasBottomSheetDialogFragment;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
@@ -96,6 +97,10 @@ public class OrganizationProfileActivity extends AppCompatActivity {
     private ImageView headerCanvas;
 
     private ImageView logoView;
+
+    private RelativeLayout extraActions;
+
+    private ImageView extraActionsIconView;
 
     @Bind(R.id.group_membership_button)
     FloatingActionButton joinOrganization;
@@ -236,9 +241,11 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                 }
         );
 
-        // Set color of swipe refresh arrow animation
+        // Set color and offset of swipe refresh arrow animation
 
         timeLineContainer.setColorSchemeResources(R.color.waterreporter_blue);
+
+        timeLineContainer.setProgressViewOffset(false, 0, 100);
 
         scrollListener = new EndlessScrollListener() {
             @Override
@@ -417,6 +424,10 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             logoView = (ImageView) header.findViewById(R.id.logo);
 
             logoView.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
+
+            extraActionsIconView = (ImageView) header.findViewById(R.id.extraActionsIconView);
+
+            extraActionsIconView.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
 
             promptBlock = (LinearLayout) header.findViewById(R.id.promptBlock);
             promptMessage = (TextView) header.findViewById(R.id.prompt);
@@ -649,6 +660,26 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                     }
 
                 }
+            });
+
+            // Present extra actions dialog (bottom sheet)
+
+            extraActions = (RelativeLayout) header.findViewById(R.id.extraActions);
+
+            extraActions.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+
+                    ModelStorage.storeModel(mSharedPreferences, mOrganization, "stored_organization");
+
+//                    CampaignExtrasBottomSheetDialogFragment campaignExtrasBottomSheetDialogFragment =
+//                            new CampaignExtrasBottomSheetDialogFragment();
+//
+//                    campaignExtrasBottomSheetDialogFragment.show(getSupportFragmentManager(), "campaign-extras-dialog");
+
+                }
+
             });
 
             // Add populated header view to report timeline

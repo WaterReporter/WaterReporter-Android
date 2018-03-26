@@ -3,8 +3,8 @@ package com.viableindustries.waterreporter.user_interface.view_holders;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
-import android.media.Image;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.TextViewCompat;
@@ -22,6 +22,7 @@ import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.UserGroupsActivity;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import jp.wasabeef.picasso.transformations.BlurTransformation;
 
@@ -41,7 +42,7 @@ public class UserProfileHeaderView {
     public TextView reportCounter;
     public TextView actionCounter;
     public TextView groupCounter;
-//    public TextView reportCountLabel;
+    //    public TextView reportCountLabel;
 //    public TextView actionCountLabel;
 //    public TextView groupCountLabel;
     public RelativeLayout reportStat;
@@ -51,6 +52,8 @@ public class UserProfileHeaderView {
     public TextView promptMessage;
     public Button startPostButton;
     public ImageView logoView;
+    public RelativeLayout extraActions;
+    public ImageView extraActionsIconView;
 
     public interface UserProfileHeaderCallback {
 
@@ -63,7 +66,9 @@ public class UserProfileHeaderView {
     public UserProfileHeaderView() {
     }
 
-    public void buildHeader(final Context context, ViewGroup header, User user) {
+    public void buildHeader(final Context context,
+                            final SharedPreferences sharedPreferences,
+                            ViewGroup header, final User user) {
 
         promptBlock = (LinearLayout) header.findViewById(R.id.promptBlock);
         promptMessage = (TextView) header.findViewById(R.id.prompt);
@@ -76,17 +81,18 @@ public class UserProfileHeaderView {
         reportCounter = (TextView) header.findViewById(R.id.reportCount);
         actionCounter = (TextView) header.findViewById(R.id.actionCount);
         groupCounter = (TextView) header.findViewById(R.id.groupCount);
-//        reportCountLabel = (TextView) header.findViewById(R.id.reportCountLabel);
-//        actionCountLabel = (TextView) header.findViewById(R.id.actionCountLabel);
-//        groupCountLabel = (TextView) header.findViewById(R.id.groupCountLabel);
         reportStat = (RelativeLayout) header.findViewById(R.id.reportStat);
         actionStat = (RelativeLayout) header.findViewById(R.id.actionStat);
         groupStat = (RelativeLayout) header.findViewById(R.id.groupStat);
         logoView = (ImageView) header.findViewById(R.id.logo);
+        extraActions = (RelativeLayout) header.findViewById(R.id.extraActions);
+        extraActionsIconView = (ImageView) header.findViewById(R.id.extraActionsIconView);
 
         // Set up white color filter for reversed Water Reporter logo
 
         logoView.setColorFilter(ContextCompat.getColor(context, R.color.white), PorterDuff.Mode.SRC_ATOP);
+
+        extraActionsIconView.setColorFilter(ContextCompat.getColor(context, R.color.white), PorterDuff.Mode.SRC_ATOP);
 
         String userTitleText = user.properties.title;
         String userDescriptionText = user.properties.description;
@@ -217,12 +223,6 @@ public class UserProfileHeaderView {
             @Override
             public void onClick(View v) {
 
-//                reportCounter.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
-//                reportCountLabel.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
-//
-//                actionCounter.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
-//                actionCountLabel.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
-
                 resetStats(context, v);
 
             }
@@ -231,12 +231,6 @@ public class UserProfileHeaderView {
         actionStat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-//                actionCounter.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
-//                actionCountLabel.setTextColor(ContextCompat.getColor(context, R.color.base_blue));
-//
-//                reportCounter.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
-//                reportCountLabel.setTextColor(ContextCompat.getColor(context, R.color.material_blue_grey950));
 
                 showActions(context, v);
 
@@ -252,6 +246,24 @@ public class UserProfileHeaderView {
                 intent.putExtra("GENERIC_USER", TRUE);
 
                 context.startActivity(intent);
+
+            }
+
+        });
+
+        // Present extra actions dialog (bottom sheet)
+
+        extraActions.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                ModelStorage.storeModel(sharedPreferences, user, "stored_user");
+
+//                CampaignExtrasBottomSheetDialogFragment campaignExtrasBottomSheetDialogFragment =
+//                        new CampaignExtrasBottomSheetDialogFragment();
+//
+//                campaignExtrasBottomSheetDialogFragment.show(getSupportFragmentManager(), "campaign-extras-dialog");
 
             }
 
