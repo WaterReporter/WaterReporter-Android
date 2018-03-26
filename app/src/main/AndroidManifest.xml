@@ -339,6 +339,15 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".CampaignGroupsActivity"
+            android:label="@string/title_activity_campaign_groups" />
+        <activity
+            android:name=".CampaignMembersActivity"
+            android:label="@string/title_activity_campaign_members" />
+        <activity
+            android:name=".CampaignWatershedsActivity"
+            android:label="@string/title_activity_campaign_watersheds"></activity>
     </application>
 
 </manifest>

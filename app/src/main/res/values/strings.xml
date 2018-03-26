@@ -386,5 +386,8 @@
     <string name="title_activity_explore">Explore</string>
     <string name="title_activity_campaign">CampaignActivity</string>
     <string name="title_activity_campaign_profile">CampaignProfileActivity</string>
+    <string name="title_activity_campaign_groups">CampaignGroupsActivity</string>
+    <string name="title_activity_campaign_members">CampaignMembersActivity</string>
+    <string name="title_activity_campaign_watersheds">CampaignWatershedsActivity</string>
 
 </resources>
