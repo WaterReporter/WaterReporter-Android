@@ -11,22 +11,15 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ListView;
 
-import com.google.gson.Gson;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
-import com.viableindustries.waterreporter.api.models.organization.Organization;
-import com.viableindustries.waterreporter.api.models.organization.OrganizationMemberList;
-import com.viableindustries.waterreporter.api.models.query.QueryFilter;
-import com.viableindustries.waterreporter.api.models.query.QueryParams;
-import com.viableindustries.waterreporter.api.models.query.QuerySort;
-import com.viableindustries.waterreporter.api.models.user.User;
-import com.viableindustries.waterreporter.api.models.user.UserCollection;
-import com.viableindustries.waterreporter.user_interface.adapters.UserListAdapter;
+import com.viableindustries.waterreporter.api.models.campaign.Campaign;
+import com.viableindustries.waterreporter.api.models.campaign.CampaignGroup;
+import com.viableindustries.waterreporter.api.models.snapshot.CampaignGroupList;
+import com.viableindustries.waterreporter.user_interface.adapters.CampaignGroupListAdapter;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import butterknife.Bind;
@@ -37,17 +30,17 @@ import retrofit.client.Response;
 
 public class CampaignGroupsActivity extends AppCompatActivity {
 
-    @Bind(R.id.memberListContainer)
-    SwipeRefreshLayout memberListContainer;
+    @Bind(R.id.listViewContainer)
+    SwipeRefreshLayout listViewContainer;
 
-    @Bind(R.id.memberList)
-    ListView memberList;
+    @Bind(R.id.listView)
+    ListView listView;
 
-    private Organization organization;
+    private Campaign mCampaign;
 
-    private List<User> memberCollection = new ArrayList<>();
+    private List<CampaignGroup> groupList = new ArrayList<>();
 
-    private UserListAdapter userListAdapter;
+    private CampaignGroupListAdapter mCampaignGroupListAdapter;
 
     private SharedPreferences mSharedPreferences;
 
@@ -58,7 +51,7 @@ public class CampaignGroupsActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_organization_members);
+        setContentView(R.layout.activity_campaign_groups);
 
         ButterKnife.bind(this);
 
@@ -66,51 +59,41 @@ public class CampaignGroupsActivity extends AppCompatActivity {
 
         mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        // Retrieve stored Organization
+        // Retrieve stored Campaign
 
-        retrieveStoredOrganization();
-
-        memberCollection = OrganizationMemberList.getList();
-
-        Collections.sort(memberCollection, new Comparator<User>() {
-            @Override
-            public int compare(User user1, User user2) {
-                return user1.properties.last_name.compareTo(user2.properties.last_name);
-            }
-        });
+        retrieveStoredCampaign();
 
         // Set refresh listener on report feed container
 
-        memberListContainer.setOnRefreshListener(
+        listViewContainer.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
                         Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
                         // This method performs the actual api-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
-                        fetchOrganizationMembers(50, 1, organization.id, null, true);
+                        fetchCampaignGroups(1, mCampaign.id, true);
                     }
                 }
         );
 
         // Set color of swipe refresh arrow animation
 
-        memberListContainer.setColorSchemeResources(R.color.waterreporter_blue);
+        listViewContainer.setColorSchemeResources(R.color.waterreporter_blue);
 
-        populateUsers(memberCollection);
-
+//        populateList(groupList);
 
     }
 
-    private void retrieveStoredOrganization() {
+    private void retrieveStoredCampaign() {
 
-        organization = ModelStorage.getStoredOrganization(mSharedPreferences);
-
-        fetchOrganizationMembers(50, 1, organization.id, null, true);
+        mCampaign = ModelStorage.getStoredCampaign(mSharedPreferences);
 
         try {
 
-            int orgId = organization.properties.id;
+            int campaignId = mCampaign.properties.id;
+
+            fetchCampaignGroups(1, campaignId, true);
 
         } catch (NullPointerException _e) {
 
@@ -133,11 +116,11 @@ public class CampaignGroupsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void populateUsers(List<User> users) {
+    private void populateList(List<CampaignGroup> campaignGroups) {
 
-        userListAdapter = new UserListAdapter(this, users);
+        mCampaignGroupListAdapter = new CampaignGroupListAdapter(this, campaignGroups);
 
-        memberList.setAdapter(userListAdapter);
+        listView.setAdapter(mCampaignGroupListAdapter);
 
         attachScrollListener();
 
@@ -145,14 +128,14 @@ public class CampaignGroupsActivity extends AppCompatActivity {
 
     private void attachScrollListener() {
 
-        memberList.setOnScrollListener(new EndlessScrollListener() {
+        listView.setOnScrollListener(new EndlessScrollListener() {
 
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
 
                 // Triggered only when new api needs to be appended to the list
 
-                fetchOrganizationMembers(50, page, organization.id, null, false);
+                fetchCampaignGroups(page, mCampaign.id, false);
 
                 return true; // ONLY if more api is actually being loaded; false otherwise.
 
@@ -162,88 +145,44 @@ public class CampaignGroupsActivity extends AppCompatActivity {
 
     }
 
-    private String buildQuery() {
-
-        // Create order_by list and add a sort parameter
-
-        List<QuerySort> queryOrder = new ArrayList<>();
-
-        QuerySort querySort = new QuerySort("last_name", "asc");
-
-        queryOrder.add(querySort);
-
-        // Create filter list and add a filter parameter
-
-        List<Object> queryFilters = new ArrayList<>();
-
-        QueryFilter complexVal = new QueryFilter("id", "eq", organization.id);
-
-        QueryFilter userFilter = new QueryFilter("organization", "any", complexVal);
-
-        queryFilters.add(userFilter);
-
-        // Create query string from new QueryParams
-
-        QueryParams queryParams = new QueryParams(queryFilters, queryOrder);
-
-        return new Gson().toJson(queryParams);
-
-    }
-
-    private void fetchOrganizationMembers(int limit, int page, int organizationId, final String query, final boolean refresh) {
+    private void fetchCampaignGroups(int page, int mCampaignId, final boolean refresh) {
 
         final SharedPreferences mSharedPreferences =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getOrganizationService().getOrganizationMembers(accessToken, "application/json", organizationId, page, limit, query, new Callback<UserCollection>() {
+        RestClient.getSnapshotService().getCampaignGroups(accessToken, "application/json", page, mCampaignId, new Callback<CampaignGroupList>() {
 
             @Override
-            public void success(UserCollection userCollection, Response response) {
+            public void success(CampaignGroupList campaignGroupList, Response response) {
 
-                ArrayList<User> members = userCollection.getFeatures();
+                List<CampaignGroup> groups = campaignGroupList.groups;
 
-                if (!members.isEmpty()) {
+                if (!groups.isEmpty()) {
 
-                    memberCollection.addAll(members);
+                    groupList.addAll(groups);
 
-                    Collections.sort(memberCollection, new Comparator<User>() {
-                        @Override
-                        public int compare(User user1, User user2) {
-                            return user1.properties.last_name.compareTo(user2.properties.last_name);
-                        }
-                    });
-
-                    userListAdapter.notifyDataSetChanged();
+                    mCampaignGroupListAdapter.notifyDataSetChanged();
 
                 }
 
                 if (refresh) {
 
-                    OrganizationMemberList.setList(members);
+                    groupList = groups;
 
-                    memberCollection = members;
-
-                    Collections.sort(memberCollection, new Comparator<User>() {
-                        @Override
-                        public int compare(User user1, User user2) {
-                            return user1.properties.last_name.compareTo(user2.properties.last_name);
-                        }
-                    });
-
-                    populateUsers(memberCollection);
+                    populateList(groupList);
 
                 }
 
-                memberListContainer.setRefreshing(false);
+                listViewContainer.setRefreshing(false);
 
             }
 
             @Override
             public void failure(RetrofitError error) {
 
-                memberListContainer.setRefreshing(false);
+                listViewContainer.setRefreshing(false);
 
                 if (error == null) return;
 
@@ -276,7 +215,7 @@ public class CampaignGroupsActivity extends AppCompatActivity {
 
         // Retrieve stored Organization
 
-        retrieveStoredOrganization();
+        retrieveStoredCampaign();
 
     }
 
