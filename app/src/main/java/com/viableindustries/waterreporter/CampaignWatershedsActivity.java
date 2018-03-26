@@ -157,19 +157,17 @@ public class CampaignWatershedsActivity extends AppCompatActivity {
 
                 List<CampaignWatershed> groups = campaignWatershedList.watersheds;
 
-                if (!groups.isEmpty()) {
-
-                    watershedList.addAll(groups);
-
-                    mCampaignWatershedListAdapter.notifyDataSetChanged();
-
-                }
-
                 if (refresh) {
 
                     watershedList = groups;
 
                     populateList(watershedList);
+
+                } else {
+
+                    watershedList.addAll(groups);
+
+                    mCampaignWatershedListAdapter.notifyDataSetChanged();
 
                 }
 

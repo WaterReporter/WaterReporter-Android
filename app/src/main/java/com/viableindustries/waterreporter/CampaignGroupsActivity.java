@@ -157,19 +157,17 @@ public class CampaignGroupsActivity extends AppCompatActivity {
 
                 List<CampaignGroup> groups = campaignGroupList.groups;
 
-                if (!groups.isEmpty()) {
-
-                    groupList.addAll(groups);
-
-                    mCampaignGroupListAdapter.notifyDataSetChanged();
-
-                }
-
                 if (refresh) {
 
                     groupList = groups;
 
                     populateList(groupList);
+
+                } else {
+
+                    groupList.addAll(groups);
+
+                    mCampaignGroupListAdapter.notifyDataSetChanged();
 
                 }
 
