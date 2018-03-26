@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.api.models.campaign.CampaignWatershed;
+import com.viableindustries.waterreporter.constants.HucStates;
+import com.viableindustries.waterreporter.utilities.UtilityMethods;
 
 import java.util.List;
 
@@ -40,7 +42,8 @@ public class CampaignWatershedListAdapter extends ArrayAdapter<CampaignWatershed
 
     private static class ViewHolder {
         TextView featureName;
-        //        TextView postCount;
+        TextView postCount;
+        TextView stateList;
         LinearLayout campaignWatershedItem;
     }
 
@@ -57,6 +60,8 @@ public class CampaignWatershedListAdapter extends ArrayAdapter<CampaignWatershed
             viewHolder = new CampaignWatershedListAdapter.ViewHolder();
 
             viewHolder.featureName = (TextView) convertView.findViewById(R.id.featureName);
+            viewHolder.postCount = (TextView) convertView.findViewById(R.id.postCount);
+            viewHolder.stateList = (TextView) convertView.findViewById(R.id.stateList);
             viewHolder.campaignWatershedItem = (LinearLayout) convertView.findViewById(R.id.campaignWatershedItem);
 
             convertView.setTag(viewHolder);
@@ -71,9 +76,14 @@ public class CampaignWatershedListAdapter extends ArrayAdapter<CampaignWatershed
 
         // Populate layout elements
 
-//        viewHolder.postCount.setText(String.valueOf(campaignLeader.posts));
-
         viewHolder.featureName.setText(campaignWatershed.name);
+
+        viewHolder.stateList.setText(HucStates.STATES.get(campaignWatershed.code));
+
+        String subText = UtilityMethods.makeSecondaryListPostCountText(mContext.getResources(),
+                campaignWatershed.posts, campaignWatershed.last_active);
+
+        viewHolder.postCount.setText(subText);
 
         // Add click listeners to layout elements
 

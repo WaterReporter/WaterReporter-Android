@@ -18,6 +18,7 @@ import com.viableindustries.waterreporter.api.models.snapshot.CampaignLeader;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.user_interface.listeners.UserProfileListener;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
+import com.viableindustries.waterreporter.utilities.UtilityMethods;
 
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class CampaignGroupListAdapter extends ArrayAdapter<CampaignGroup> {
     private static class ViewHolder {
         ImageView featureIcon;
         TextView featureName;
-//        TextView postCount;
+        TextView postCount;
         LinearLayout campaignGroupItem;
     }
 
@@ -66,6 +67,7 @@ public class CampaignGroupListAdapter extends ArrayAdapter<CampaignGroup> {
 
             viewHolder.featureIcon = (ImageView) convertView.findViewById(R.id.featureIcon);
             viewHolder.featureName = (TextView) convertView.findViewById(R.id.featureName);
+            viewHolder.postCount = (TextView) convertView.findViewById(R.id.postCount);
             viewHolder.campaignGroupItem = (LinearLayout) convertView.findViewById(R.id.campaignGroupItem);
 
             convertView.setTag(viewHolder);
@@ -80,8 +82,6 @@ public class CampaignGroupListAdapter extends ArrayAdapter<CampaignGroup> {
 
         // Populate layout elements
 
-//        viewHolder.postCount.setText(String.valueOf(campaignLeader.posts));
-
         viewHolder.featureName.setText(campaignGroup.name);
 
         Picasso.with(mContext)
@@ -89,6 +89,11 @@ public class CampaignGroupListAdapter extends ArrayAdapter<CampaignGroup> {
                 .placeholder(R.drawable.user_avatar_placeholder)
                 .transform(new CircleTransform())
                 .into(viewHolder.featureIcon);
+
+        String subText = UtilityMethods.makeSecondaryListPostCountText(mContext.getResources(),
+                campaignGroup.posts, campaignGroup.last_active);
+
+        viewHolder.postCount.setText(subText);
 
         // Add click listeners to layout elements
 

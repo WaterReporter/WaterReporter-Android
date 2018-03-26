@@ -25,6 +25,8 @@
         android:background="@color/white"
         android:orientation="vertical"
         android:paddingEnd="0dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingStart="16dp">
@@ -40,15 +42,26 @@
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/featureStates"
+            android:id="@+id/stateList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:alpha="0.6"
-            android:gravity="center_vertical"
             android:paddingBottom="0dp"
-            android:paddingTop="2dp"
+            android:paddingEnd="0dp"
+            android:paddingStart="0dp"
+            android:paddingTop="0dp"
             android:textColor="@color/black"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/postCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:paddingBottom="0dp"
+            android:paddingEnd="0dp"
+            android:paddingStart="16dp"
+            android:paddingTop="0dp"
             android:textSize="12sp" />
 
     </LinearLayout>
