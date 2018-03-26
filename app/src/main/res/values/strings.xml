@@ -87,6 +87,7 @@
     <string name="view_groups">View groups</string>
     <string name="view_watersheds">View watersheds</string>
     <string name="view_campaigns">View campaigns</string>
+    <string name="view_full_profile">View full profile</string>
 
     <!-- Post actions -->
     <string name="action_edit_post">Edit post</string>
