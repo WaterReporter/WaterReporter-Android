@@ -101,7 +101,7 @@ public class CampaignMemberListAdapter extends ArrayAdapter<CampaignMember> {
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US),
                 campaignMember.last_active);
 
-        if (timeDelta < 0 && timeDelta < (DateUtils.DAY_IN_MILLIS * 30)) {
+        if (timeDelta > 0 && timeDelta < (DateUtils.DAY_IN_MILLIS * 30)) {
 
             viewHolder.postCount.setTextColor(ContextCompat.getColor(mContext, R.color.post_count_orange));
 

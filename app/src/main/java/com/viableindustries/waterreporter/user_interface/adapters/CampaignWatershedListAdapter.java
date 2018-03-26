@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,7 +94,9 @@ public class CampaignWatershedListAdapter extends ArrayAdapter<CampaignWatershed
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US),
                 campaignWatershed.last_active);
 
-        if (timeDelta < 0 && timeDelta < (DateUtils.DAY_IN_MILLIS * 30)) {
+        Log.v("time-delta", timeDelta + "");
+
+        if (timeDelta > 0 && timeDelta < (DateUtils.DAY_IN_MILLIS * 30)) {
 
             viewHolder.postCount.setTextColor(ContextCompat.getColor(mContext, R.color.post_count_orange));
 
