@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -71,8 +72,8 @@ public class AuthUserActivity extends AppCompatActivity implements
     @Bind(R.id.listTabs)
     FrameLayout listTabs;
 
-    @Bind(R.id.log_out)
-    ImageButton logOutButton;
+//    @Bind(R.id.log_out)
+//    ImageButton logOutButton;
 
     private TimelineAdapter timelineAdapter;
 
@@ -116,6 +117,12 @@ public class AuthUserActivity extends AppCompatActivity implements
 
         ButterKnife.bind(this);
 
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
         uploadProgressBar.getIndeterminateDrawable().setColorFilter(
                 ContextCompat.getColor(this, R.color.splash_blue), android.graphics.PorterDuff.Mode.SRC_IN);
 
@@ -133,11 +140,11 @@ public class AuthUserActivity extends AppCompatActivity implements
 
         retrieveStoredUser();
 
-        if (mSharedPreferences.getInt("user_id", 0) == userId) {
-
-            logOutButton.setVisibility(View.VISIBLE);
-
-        }
+//        if (mSharedPreferences.getInt("user_id", 0) == userId) {
+//
+//            logOutButton.setVisibility(View.VISIBLE);
+//
+//        }
 
         // Set refresh listener on report feed container
 
@@ -282,7 +289,7 @@ public class AuthUserActivity extends AppCompatActivity implements
 
         LayoutInflater inflater = getLayoutInflater();
 
-        ViewGroup header = (ViewGroup) inflater.inflate(R.layout.user_profile_header, timeLine, false);
+        ViewGroup header = (ViewGroup) inflater.inflate(R.layout.auth_user_profile_header, timeLine, false);
 
         mUserProfileHeaderView.buildHeader(this, mSharedPreferences, getSupportFragmentManager(), header, user);
 

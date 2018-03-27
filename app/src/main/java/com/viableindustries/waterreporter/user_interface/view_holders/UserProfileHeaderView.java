@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.viableindustries.waterreporter.ProfileSettingsActivity;
 import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.UserGroupsActivity;
 import com.viableindustries.waterreporter.api.models.user.User;
@@ -53,6 +54,8 @@ public class UserProfileHeaderView {
     public ImageView logoView;
     public RelativeLayout extraActions;
     public ImageView extraActionsIconView;
+    public RelativeLayout accountSettings;
+    public ImageView accountSettingsIcon;
 
     public interface UserProfileHeaderCallback {
 
@@ -87,12 +90,20 @@ public class UserProfileHeaderView {
         logoView = (ImageView) header.findViewById(R.id.logo);
         extraActions = (RelativeLayout) header.findViewById(R.id.extraActions);
         extraActionsIconView = (ImageView) header.findViewById(R.id.extraActionsIconView);
+        accountSettings = (RelativeLayout) header.findViewById(R.id.accountSettings);
+        accountSettingsIcon = (ImageView) header.findViewById(R.id.accountSettingsIcon);
 
         // Set up white color filter for reversed Water Reporter logo
 
         logoView.setColorFilter(ContextCompat.getColor(context, R.color.white), PorterDuff.Mode.SRC_ATOP);
 
         extraActionsIconView.setColorFilter(ContextCompat.getColor(context, R.color.white), PorterDuff.Mode.SRC_ATOP);
+
+        if (accountSettingsIcon != null) {
+
+            accountSettingsIcon.setColorFilter(ContextCompat.getColor(context, R.color.white), PorterDuff.Mode.SRC_ATOP);
+
+        }
 
         String userTitleText = user.properties.title;
         String userDescriptionText = user.properties.description;
@@ -268,6 +279,23 @@ public class UserProfileHeaderView {
             }
 
         });
+
+        // Add click listener to account settings element if present
+
+        if (accountSettings != null) {
+
+            accountSettings.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+
+                    context.startActivity(new Intent(context, ProfileSettingsActivity.class));
+
+                }
+
+            });
+
+        }
 
         header.setTag(this);
 
