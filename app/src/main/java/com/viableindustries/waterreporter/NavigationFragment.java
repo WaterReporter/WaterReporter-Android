@@ -60,7 +60,7 @@ public class NavigationFragment extends Fragment {
             timelineIcon.setAlpha(Float.valueOf("0.4"));
             exploreIcon.setAlpha(Float.valueOf("0.4"));
             searchIcon.setAlpha(Float.valueOf("0.4"));
-            submitIcon.setAlpha(Float.valueOf("0.4"));
+//            submitIcon.setAlpha(Float.valueOf("0.4"));
             profileIcon.setAlpha(Float.valueOf("0.8"));
 
         } else if ("MainActivity".equals(activity.getClass().getSimpleName())) {
@@ -68,7 +68,7 @@ public class NavigationFragment extends Fragment {
             timelineIcon.setAlpha(Float.valueOf("0.8"));
             exploreIcon.setAlpha(Float.valueOf("0.4"));
             searchIcon.setAlpha(Float.valueOf("0.4"));
-            submitIcon.setAlpha(Float.valueOf("0.4"));
+//            submitIcon.setAlpha(Float.valueOf("0.4"));
             profileIcon.setAlpha(Float.valueOf("0.4"));
 
         }
@@ -109,7 +109,7 @@ public class NavigationFragment extends Fragment {
                 timelineIcon.setAlpha(Float.valueOf("0.4"));
                 exploreIcon.setAlpha(Float.valueOf("0.8"));
                 searchIcon.setAlpha(Float.valueOf("0.4"));
-                submitIcon.setAlpha(Float.valueOf("0.4"));
+//                submitIcon.setAlpha(Float.valueOf("0.4"));
                 profileIcon.setAlpha(Float.valueOf("0.4"));
 
                 startActivity(new Intent(activity, ExploreActivity.class));
@@ -124,7 +124,7 @@ public class NavigationFragment extends Fragment {
                 timelineIcon.setAlpha(Float.valueOf("0.4"));
                 exploreIcon.setAlpha(Float.valueOf("0.4"));
                 searchIcon.setAlpha(Float.valueOf("0.8"));
-                submitIcon.setAlpha(Float.valueOf("0.4"));
+//                submitIcon.setAlpha(Float.valueOf("0.4"));
                 profileIcon.setAlpha(Float.valueOf("0.4"));
 
                 startActivity(new Intent(activity, SearchActivity.class));
@@ -171,7 +171,7 @@ public class NavigationFragment extends Fragment {
                 timelineIcon.setAlpha(Float.valueOf("0.4"));
                 exploreIcon.setAlpha(Float.valueOf("0.4"));
                 searchIcon.setAlpha(Float.valueOf("0.4"));
-                submitIcon.setAlpha(Float.valueOf("0.8"));
+//                submitIcon.setAlpha(Float.valueOf("0.8"));
                 profileIcon.setAlpha(Float.valueOf("0.4"));
 
                 startActivity(intent);

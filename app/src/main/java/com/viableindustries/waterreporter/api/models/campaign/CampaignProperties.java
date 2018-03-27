@@ -20,7 +20,10 @@ public class CampaignProperties {
     public String description;
 
     @SerializedName("expiration_date")
-    public String email;
+    public String expiration_date;
+
+    @SerializedName("form")
+    public CampaignForm form;
 
     @SerializedName("has_expiration")
     public Boolean has_expiration;

@@ -18,15 +18,16 @@ import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.UserProfileCardActivity;
 
 /**
- * Created by brendanmcintyre on 3/26/18.
+ * Created by brendanmcintyre on 3/27/18.
  */
 
-public class UserExtrasBottomSheetDialogFragment extends BottomSheetDialogFragment implements View.OnClickListener {
+public class CampaignFormPromptBottomSheetDialogFragment extends BottomSheetDialogFragment implements View.OnClickListener {
 
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback = new BottomSheetBehavior.BottomSheetCallback() {
 
         @Override
         public void onStateChanged(@NonNull View bottomSheet, int newState) {
+
             if (newState == BottomSheetBehavior.STATE_HIDDEN) {
                 dismiss();
             }

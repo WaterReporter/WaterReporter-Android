@@ -43,9 +43,12 @@ import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapte
 import com.viableindustries.waterreporter.user_interface.dialogs.CampaignExtrasBottomSheetDialogFragment;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
+import com.viableindustries.waterreporter.utilities.UtilityMethods;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -195,6 +198,7 @@ public class CampaignProfileActivity extends AppCompatActivity {
                 // Retrieve stored organization data
 
                 retrieveStoredCampaign();
+
             }
 
         } else {
@@ -263,6 +267,8 @@ public class CampaignProfileActivity extends AppCompatActivity {
             setCampaignData(mCampaign);
 
         } catch (NullPointerException _e) {
+
+            Log.v("NO-STORED-CAMPAIGN", _e.toString());
 
             startActivity(new Intent(this, MainActivity.class));
 
@@ -334,18 +340,31 @@ public class CampaignProfileActivity extends AppCompatActivity {
 
             leaderBoardItems = (LinearLayout) header.findViewById(R.id.leaderBoardItems);
 
+            // If campaign is still active, add text and click listener to startPostButton
+
+            boolean campaignIsExpired = UtilityMethods.dateExpired(
+                    new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US),
+                    mCampaign.properties.expiration_date
+            );
+
             Button startPostButton = (Button) header.findViewById(R.id.startPost);
 
-            // Add text and click listener to startPostButton
+            if (!campaignIsExpired) {
 
-            startPostButton.setText(getString(R.string.share_post_prompt));
+                startPostButton.setText(getString(R.string.share_post_prompt));
 
-            startPostButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startPost();
-                }
-            });
+                startPostButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startPost();
+                    }
+                });
+
+            } else {
+
+                startPostButton.setVisibility(View.GONE);
+
+            }
 
             campaignName = (TextView) header.findViewById(R.id.campaignName);
 

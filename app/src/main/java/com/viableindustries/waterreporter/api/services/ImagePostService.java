@@ -113,7 +113,7 @@ public class ImagePostService extends IntentService {
                 .setContentTitle("Water Reporter")
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
                 .setContentText(msg)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_sync_white_24dp))
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.app_icon))
                 .setSmallIcon(R.drawable.ic_sync_white_24dp);
 
         b.setContentIntent(contentIntent);

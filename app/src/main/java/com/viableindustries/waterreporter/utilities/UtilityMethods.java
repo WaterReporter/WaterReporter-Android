@@ -2,6 +2,7 @@ package com.viableindustries.waterreporter.utilities;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 
 import com.viableindustries.waterreporter.R;
 
@@ -112,8 +113,6 @@ public class UtilityMethods {
 
             delta = currentTime - originTime;
 
-            return delta;
-
         } catch (ParseException pe) {
 
             System.out.println("Parse Exception : " + pe);
@@ -121,6 +120,40 @@ public class UtilityMethods {
         }
 
         return delta;
+
+    }
+
+    public static boolean dateExpired(SimpleDateFormat dateFormatter, String dateString) {
+
+        boolean isExpired = false;
+
+        long currentTime = new Date().getTime();
+
+        if (dateString != null) {
+
+            try {
+
+                // Parse the string into Date object
+
+                long originTime = dateFormatter.parse(dateString).getTime();
+
+                // Determine if current time is greater than expiration time
+
+                if (originTime < currentTime) {
+
+                    isExpired = true;
+
+                }
+
+            } catch (ParseException pe) {
+
+                System.out.println("Parse Exception : " + pe);
+
+            }
+
+        }
+
+        return isExpired;
 
     }
 
