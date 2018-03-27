@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
-        android:layout_marginBottom="-16dp"
+        android:layout_marginBottom="-12dp"
         android:background="@drawable/submit_button_border"
         android:focusable="true"
         android:orientation="vertical"
@@ -23,7 +23,7 @@
             android:padding="4dp">
 
             <RelativeLayout
-                android:layout_width="64dp"
+                android:layout_width="72dp"
                 android:layout_height="64dp"
                 android:layout_gravity="center"
                 android:layout_marginBottom="0dp"
@@ -197,6 +197,47 @@
 
 
         </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="-12dp"
+        android:background="@android:color/transparent"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:padding="1dp">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/marker_icon_border"
+            android:padding="4dp">
+
+            <RelativeLayout
+                android:layout_width="72dp"
+                android:layout_height="64dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="0dp"
+                android:layout_marginTop="0dp"
+                android:background="@android:color/transparent">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_add_white_24dp" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
 
     </LinearLayout>
 
