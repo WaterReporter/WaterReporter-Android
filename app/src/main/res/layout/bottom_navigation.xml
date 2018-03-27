@@ -195,7 +195,6 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/ic_account_circle_black_24dp" />
 
-
         </LinearLayout>
 
     </LinearLayout>
