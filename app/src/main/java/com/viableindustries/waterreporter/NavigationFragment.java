@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
-import com.viableindustries.waterreporter.utilities.QueryBuilder;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -52,7 +51,6 @@ public class NavigationFragment extends Fragment {
         final ImageView timelineIcon = (ImageView) view.findViewById(R.id.timeline_icon);
         final ImageView exploreIcon = (ImageView) view.findViewById(R.id.explore_icon);
         final ImageView searchIcon = (ImageView) view.findViewById(R.id.search_icon);
-        final ImageView submitIcon = (ImageView) view.findViewById(R.id.submit_icon);
         final ImageView profileIcon = (ImageView) view.findViewById(R.id.profile_icon);
 
         if ("AuthUserActivity".equals(activity.getClass().getSimpleName())) {
@@ -60,7 +58,6 @@ public class NavigationFragment extends Fragment {
             timelineIcon.setAlpha(Float.valueOf("0.4"));
             exploreIcon.setAlpha(Float.valueOf("0.4"));
             searchIcon.setAlpha(Float.valueOf("0.4"));
-//            submitIcon.setAlpha(Float.valueOf("0.4"));
             profileIcon.setAlpha(Float.valueOf("0.8"));
 
         } else if ("MainActivity".equals(activity.getClass().getSimpleName())) {
@@ -68,7 +65,20 @@ public class NavigationFragment extends Fragment {
             timelineIcon.setAlpha(Float.valueOf("0.8"));
             exploreIcon.setAlpha(Float.valueOf("0.4"));
             searchIcon.setAlpha(Float.valueOf("0.4"));
-//            submitIcon.setAlpha(Float.valueOf("0.4"));
+            profileIcon.setAlpha(Float.valueOf("0.4"));
+
+        } else if ("SearchActivity".equals(activity.getClass().getSimpleName())) {
+
+            timelineIcon.setAlpha(Float.valueOf("0.4"));
+            exploreIcon.setAlpha(Float.valueOf("0.4"));
+            searchIcon.setAlpha(Float.valueOf("0.8"));
+            profileIcon.setAlpha(Float.valueOf("0.4"));
+
+        } else if ("ExploreActivity".equals(activity.getClass().getSimpleName())) {
+
+            timelineIcon.setAlpha(Float.valueOf("0.4"));
+            exploreIcon.setAlpha(Float.valueOf("0.8"));
+            searchIcon.setAlpha(Float.valueOf("0.4"));
             profileIcon.setAlpha(Float.valueOf("0.4"));
 
         }
@@ -106,13 +116,16 @@ public class NavigationFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                timelineIcon.setAlpha(Float.valueOf("0.4"));
-                exploreIcon.setAlpha(Float.valueOf("0.8"));
-                searchIcon.setAlpha(Float.valueOf("0.4"));
-//                submitIcon.setAlpha(Float.valueOf("0.4"));
-                profileIcon.setAlpha(Float.valueOf("0.4"));
+                if (!"ExploreActivity".equals(activity.getClass().getSimpleName())) {
 
-                startActivity(new Intent(activity, ExploreActivity.class));
+                    timelineIcon.setAlpha(Float.valueOf("0.4"));
+                    exploreIcon.setAlpha(Float.valueOf("0.8"));
+                    searchIcon.setAlpha(Float.valueOf("0.4"));
+                    profileIcon.setAlpha(Float.valueOf("0.4"));
+
+                    startActivity(new Intent(activity, ExploreActivity.class));
+
+                }
 
             }
         });
@@ -121,13 +134,16 @@ public class NavigationFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                timelineIcon.setAlpha(Float.valueOf("0.4"));
-                exploreIcon.setAlpha(Float.valueOf("0.4"));
-                searchIcon.setAlpha(Float.valueOf("0.8"));
-//                submitIcon.setAlpha(Float.valueOf("0.4"));
-                profileIcon.setAlpha(Float.valueOf("0.4"));
+                if (!"SearchActivity".equals(activity.getClass().getSimpleName())) {
 
-                startActivity(new Intent(activity, SearchActivity.class));
+                    timelineIcon.setAlpha(Float.valueOf("0.4"));
+                    exploreIcon.setAlpha(Float.valueOf("0.4"));
+                    searchIcon.setAlpha(Float.valueOf("0.8"));
+                    profileIcon.setAlpha(Float.valueOf("0.4"));
+
+                    startActivity(new Intent(activity, SearchActivity.class));
+
+                }
 
             }
         });
@@ -168,12 +184,6 @@ public class NavigationFragment extends Fragment {
 
                 }
 
-                timelineIcon.setAlpha(Float.valueOf("0.4"));
-                exploreIcon.setAlpha(Float.valueOf("0.4"));
-                searchIcon.setAlpha(Float.valueOf("0.4"));
-//                submitIcon.setAlpha(Float.valueOf("0.8"));
-                profileIcon.setAlpha(Float.valueOf("0.4"));
-
                 startActivity(intent);
 
                 activity.overridePendingTransition(R.anim.animation_enter_right,
@@ -186,19 +196,14 @@ public class NavigationFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+                timelineIcon.setAlpha(Float.valueOf("0.4"));
+                exploreIcon.setAlpha(Float.valueOf("0.4"));
+                searchIcon.setAlpha(Float.valueOf("0.4"));
+                profileIcon.setAlpha(Float.valueOf("0.8"));
+
                 // If the current activity is the authenticated user's profile, simply refresh the timeline
 
-                if ("AuthUserActivity".equals(activity.getClass().getSimpleName())) {
-
-                    Log.d("activity", activity.getClass().getSimpleName());
-
-                    final SwipeRefreshLayout timeline = (SwipeRefreshLayout) activity.findViewById(R.id.timeline);
-
-                    timeline.setRefreshing(true);
-
-                    ((AuthUserActivity) activity).fetchPosts(5, 1, QueryBuilder.userQuery(true, coreId, null), true);
-
-                } else {
+                if (!"AuthUserActivity".equals(activity.getClass().getSimpleName())) {
 
                     final SharedPreferences coreProfile = getContext().getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
