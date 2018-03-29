@@ -330,14 +330,6 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             } else {
 
-                mCampaignId = extras.getInt("campaignId", 0);
-
-                if (mCampaignId > 0) {
-
-                    mCampaign = ModelStorage.getStoredCampaign(mSharedPreferences);
-
-                }
-
                 editMode = extras.getBoolean("EDIT_MODE", false);
 
                 mTempImagePath = extras.getString("image_path", "");
@@ -491,18 +483,6 @@ public class PhotoMetaActivity extends AppCompatActivity
                 updateLocation(view);
             }
         });
-
-        // Retrieve the user's group collection
-
-        if (mCampaign != null) {
-
-            setCampaignGroupText();
-
-        } else {
-
-            fetchUserGroups();
-
-        }
 
         // Initialize empty list to hold hashtags
 
@@ -683,6 +663,34 @@ public class PhotoMetaActivity extends AppCompatActivity
             }
 
         });
+
+        //
+        // Check for campaign context
+        //
+
+        retrieveStoredCampaign();
+
+    }
+
+    private void retrieveStoredCampaign() {
+
+        mCampaign = ModelStorage.getStoredCampaign(mSharedPreferences);
+
+        try {
+
+            // Auto-populate group affiliation(s)
+
+            setCampaignGroupText();
+
+        } catch (NullPointerException _e) {
+
+            Log.v("NO-STORED-CAMPAIGN", _e.toString());
+
+            // Retrieve the user's group collection
+
+            fetchUserGroups();
+
+        }
 
     }
 
@@ -1226,39 +1234,41 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             campaignFormPromptBottomSheetDialogFragment.show(getSupportFragmentManager(), "campaign-form-prompt");
 
+        } else {
+
+            final Handler handler = new Handler();
+
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+                    int coreId = coreProfile.getInt("id", 0);
+
+                    UserProperties userProperties = new UserProperties(coreId, coreProfile.getString("description", ""),
+                            coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
+                            coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
+                            coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null, null);
+
+                    User coreUser = User.createUser(coreId, userProperties);
+
+                    ModelStorage.storeModel(mSharedPreferences, coreUser, "stored_user");
+
+                    // Re-direct user to main activity feed, which has the effect of preventing
+                    // unwanted access to the history stack
+
+                    Intent intent = new Intent(PhotoMetaActivity.this, MainActivity.class);
+
+                    startActivity(intent);
+
+                    finish();
+
+                }
+
+            }, 2000);
+
         }
-
-        final Handler handler = new Handler();
-
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-                final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
-
-                int coreId = coreProfile.getInt("id", 0);
-
-                UserProperties userProperties = new UserProperties(coreId, coreProfile.getString("description", ""),
-                        coreProfile.getString("first_name", ""), coreProfile.getString("last_name", ""),
-                        coreProfile.getString("organization_name", ""), coreProfile.getString("picture", null),
-                        coreProfile.getString("public_email", ""), coreProfile.getString("title", ""), null, null, null, null);
-
-                User coreUser = User.createUser(coreId, userProperties);
-
-                ModelStorage.storeModel(mSharedPreferences, coreUser, "stored_user");
-
-                // Re-direct user to main activity feed, which has the effect of preventing
-                // unwanted access to the history stack
-
-                Intent intent = new Intent(PhotoMetaActivity.this, MainActivity.class);
-
-                startActivity(intent);
-
-                finish();
-
-            }
-
-        }, 2000);
 
     }
 

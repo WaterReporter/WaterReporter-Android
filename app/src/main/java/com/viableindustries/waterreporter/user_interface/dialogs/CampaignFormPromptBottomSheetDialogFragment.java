@@ -50,7 +50,7 @@ public class CampaignFormPromptBottomSheetDialogFragment extends BottomSheetDial
         BottomSheetDialog dialog =
                 new BottomSheetDialog(getActivity());
 
-        dialog.setContentView(R.layout.campaign_extras_bottom_sheet);
+        dialog.setContentView(R.layout.campaign_form_prompt_bottom_sheet);
 
         Button declineForm = (Button) dialog.findViewById(R.id.declineForm);
         Button acceptForm = (Button) dialog.findViewById(R.id.acceptForm);

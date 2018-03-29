@@ -238,7 +238,7 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
                 // This is a slightly different condition from the above because the id comparison must be against
                 // the id of the authenticated user.
 
-                if (sharedPreferences.getInt("user_id", 0) == post.properties.owner_id) {
+                if (sharedPreferences.getInt("user_id", 0) == post.properties.owner.properties.id) {
 
                     layoutType = 1;
 

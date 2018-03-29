@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import com.viableindustries.waterreporter.CampaignGroupsActivity;
 import com.viableindustries.waterreporter.CampaignMembersActivity;
 import com.viableindustries.waterreporter.CampaignWatershedsActivity;
+import com.viableindustries.waterreporter.PhotoMetaActivity;
 import com.viableindustries.waterreporter.R;
 
 /**
@@ -52,14 +53,17 @@ public class CampaignExtrasBottomSheetDialogFragment extends BottomSheetDialogFr
 
         dialog.setContentView(R.layout.campaign_extras_bottom_sheet);
 
+        LinearLayout startPost = (LinearLayout) dialog.findViewById(R.id.startCampaignPost);
         LinearLayout viewGroups = (LinearLayout) dialog.findViewById(R.id.viewGroups);
         LinearLayout viewMembers = (LinearLayout) dialog.findViewById(R.id.viewMembers);
         LinearLayout viewWatersheds = (LinearLayout) dialog.findViewById(R.id.viewWatersheds);
 
-        if (viewGroups != null &&
+        if (startPost != null &&
+                viewGroups != null &&
                 viewMembers != null &&
                 viewWatersheds != null) {
 
+            startPost.setOnClickListener(this);
             viewGroups.setOnClickListener(this);
             viewMembers.setOnClickListener(this);
             viewWatersheds.setOnClickListener(this);
@@ -94,6 +98,14 @@ public class CampaignExtrasBottomSheetDialogFragment extends BottomSheetDialogFr
         Log.d("dialog-view-id", "" + view.getId());
 
         switch (view.getId()) {
+
+            case R.id.startCampaignPost:
+
+                context.startActivity(new Intent(context, PhotoMetaActivity.class));
+
+                dismiss();
+
+                break;
 
             case R.id.viewMembers:
 
