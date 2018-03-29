@@ -666,6 +666,8 @@ public class AuthUserActivity extends AppCompatActivity implements
 
     private void afterPostSend() {
 
+        ModelStorage.removeModel(mSharedPreferences, "stored_campaign");
+
         ApiDispatcher.setTransmissionActive(mSharedPreferences, false);
         mSharedPreferences.edit().putInt("PENDING_IMAGE_ID", 0).apply();
         uploadProgress.setVisibility(View.GONE);
@@ -736,9 +738,9 @@ public class AuthUserActivity extends AppCompatActivity implements
 
         // Cancel all pending network requests
 
-        //Callback.cancelAll();
-
         Picasso.with(this).cancelRequest(mUserProfileHeaderView.userAvatar);
+
+        Picasso.with(this).cancelRequest(mUserProfileHeaderView.headerCanvas);
 
         // If the DownloadStateReceiver still exists, unregister it
         if (mUploadStateReceiver != null) {
@@ -754,9 +756,9 @@ public class AuthUserActivity extends AppCompatActivity implements
 
         // Cancel all pending network requests
 
-        //Callback.cancelAll();
-
         Picasso.with(this).cancelRequest(mUserProfileHeaderView.userAvatar);
+
+        Picasso.with(this).cancelRequest(mUserProfileHeaderView.headerCanvas);
 
     }
 
@@ -767,9 +769,9 @@ public class AuthUserActivity extends AppCompatActivity implements
 
         // Cancel all pending network requests
 
-        //Callback.cancelAll();
-
         Picasso.with(this).cancelRequest(mUserProfileHeaderView.userAvatar);
+
+        Picasso.with(this).cancelRequest(mUserProfileHeaderView.headerCanvas);
 
         ButterKnife.unbind(this);
 

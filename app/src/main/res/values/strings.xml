@@ -115,6 +115,11 @@
     <string name="form_field_label">Form field label</string>
     <string name="form_field_instructions">Form field instructions</string>
 
+    <!-- Form prompt -->
+    <string name="form_prompt_text">%s is collecting more information as part of this campaign. Would you like to contribute?</string>
+    <string name="decline_form">Not now</string>
+    <string name="accept_form">Yes</string>
+
     <!-- Camera -->
     <string name="picture">Picture</string>
     <string name="description_info">Info</string>

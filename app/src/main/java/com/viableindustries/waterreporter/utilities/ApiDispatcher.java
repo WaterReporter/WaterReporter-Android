@@ -5,13 +5,16 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.interfaces.data.image.SaveImageCallbacks;
 import com.viableindustries.waterreporter.api.interfaces.data.post.SendPostCallbacks;
+import com.viableindustries.waterreporter.api.models.image.ImageProperties;
 import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.api.models.post.ReportPostBody;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.mime.TypedFile;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -52,6 +55,30 @@ public class ApiDispatcher {
                     public void success(Report post, Response response) {
 
                         callbacks.onSuccess(post);
+
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+
+                        callbacks.onError(error);
+
+                    }
+
+                });
+
+
+    }
+
+    public static void saveImage(String accessToken, TypedFile typedFile, @NonNull final SaveImageCallbacks callbacks) {
+
+        RestClient.getImageService().postImageAsync(accessToken, typedFile,
+                new Callback<ImageProperties>() {
+
+                    @Override
+                    public void success(ImageProperties imageProperties, Response response) {
+
+                        callbacks.onSuccess(imageProperties);
 
                     }
 

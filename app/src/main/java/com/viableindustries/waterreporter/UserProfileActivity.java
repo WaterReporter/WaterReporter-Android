@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -27,10 +26,8 @@ import com.viableindustries.waterreporter.api.models.post.ReportHolder;
 import com.viableindustries.waterreporter.api.models.query.QueryFilter;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
-import com.viableindustries.waterreporter.api.models.snapshot.CampaignSnapshot;
 import com.viableindustries.waterreporter.api.models.snapshot.UserSnapshot;
 import com.viableindustries.waterreporter.api.models.user.User;
-import com.viableindustries.waterreporter.api.models.user.UserGroupList;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
 import com.viableindustries.waterreporter.user_interface.dialogs.ReportActionDialogListener;
 import com.viableindustries.waterreporter.user_interface.view_holders.UserProfileHeaderView;
@@ -873,6 +870,8 @@ public class UserProfileActivity extends AppCompatActivity implements
         super.onDestroy();
 
         Picasso.with(this).cancelRequest(mUserProfileHeaderView.userAvatar);
+
+        Picasso.with(this).cancelRequest(mUserProfileHeaderView.headerCanvas);
 
         ButterKnife.unbind(this);
 

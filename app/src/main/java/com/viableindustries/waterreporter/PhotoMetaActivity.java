@@ -25,7 +25,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
-import android.support.v4.text.TextUtilsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
@@ -53,6 +52,7 @@ import com.google.gson.Gson;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
+import com.viableindustries.waterreporter.api.interfaces.data.image.SaveImageCallbacks;
 import com.viableindustries.waterreporter.api.interfaces.data.post.SendPostCallbacks;
 import com.viableindustries.waterreporter.api.models.campaign.Campaign;
 import com.viableindustries.waterreporter.api.models.geometry.Geometry;
@@ -62,6 +62,7 @@ import com.viableindustries.waterreporter.api.models.group.GroupFeatureCollectio
 import com.viableindustries.waterreporter.api.models.hashtag.HashTag;
 import com.viableindustries.waterreporter.api.models.hashtag.HashtagCollection;
 import com.viableindustries.waterreporter.api.models.hashtag.TagHolder;
+import com.viableindustries.waterreporter.api.models.image.ImageProperties;
 import com.viableindustries.waterreporter.api.models.open_graph.OpenGraphProperties;
 import com.viableindustries.waterreporter.api.models.open_graph.OpenGraphResponse;
 import com.viableindustries.waterreporter.api.models.organization.AbbreviatedOrganization;
@@ -78,6 +79,7 @@ import com.viableindustries.waterreporter.api.models.user.UserProperties;
 import com.viableindustries.waterreporter.api.services.ImagePostService;
 import com.viableindustries.waterreporter.user_interface.adapters.OrganizationCheckListAdapter;
 import com.viableindustries.waterreporter.user_interface.adapters.TagSuggestionAdapter;
+import com.viableindustries.waterreporter.user_interface.dialogs.CampaignFormPromptBottomSheetDialogFragment;
 import com.viableindustries.waterreporter.user_interface.dialogs.PhotoPickerDialogFragment;
 import com.viableindustries.waterreporter.utilities.ApiDispatcher;
 import com.viableindustries.waterreporter.utilities.CacheManager;
@@ -95,7 +97,9 @@ import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.FileNameMap;
 import java.net.URISyntaxException;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -113,6 +117,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.mime.TypedFile;
 
 public class PhotoMetaActivity extends AppCompatActivity
         implements PhotoPickerDialogFragment.PhotoPickerDialogListener,
@@ -1205,6 +1210,24 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         associatedGroups.edit().clear().apply();
 
+        if (mCampaign != null &&
+                mCampaign.properties.form != null) {
+
+            CampaignFormPromptBottomSheetDialogFragment campaignFormPromptBottomSheetDialogFragment =
+                    new CampaignFormPromptBottomSheetDialogFragment();
+
+            Bundle args = new Bundle();
+
+            String organizationName = mCampaign.properties.organizations.get(0).properties.name;
+
+            args.putString("organization", getString(R.string.form_prompt_text, organizationName));
+
+            campaignFormPromptBottomSheetDialogFragment.setArguments(args);
+
+            campaignFormPromptBottomSheetDialogFragment.show(getSupportFragmentManager(), "campaign-form-prompt");
+
+        }
+
         final Handler handler = new Handler();
 
         handler.postDelayed(new Runnable() {
@@ -1383,13 +1406,15 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         if (imageUri == null) {
 
-            Map<String, Integer> defaultImage = new HashMap<>();
+            // THIS IS NOT NEEDED ANYMORE NOW THAT iOS IS PATCHED
 
-            defaultImage.put("id", 6763);
+//            Map<String, Integer> defaultImage = new HashMap<>();
+//
+//            defaultImage.put("id", 6763);
+//
+//            images.add(defaultImage);
 
-            images.add(defaultImage);
-
-            sendFullPost(buildPostBody());
+            sendTextOnlyPost(buildPostBody());
 
             return;
 
@@ -1403,29 +1428,38 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         if (filePath != null && filePath.length() > 0) {
 
-            ReportPostBody reportPostBody = buildPostBody();
+            if (mCampaign != null &&
+                    mCampaign.properties.form != null) {
 
-            String storedPost = new Gson().toJson(reportPostBody);
+                sendImage(filePath);
 
-            String storedPostKey = String.format("stored_post_%s", UUID.randomUUID().toString().replaceAll("-", ""));
+            } else {
 
-            mSharedPreferences.edit().putString(storedPostKey, storedPost).apply();
+                ReportPostBody reportPostBody = buildPostBody();
 
-            mSharedPreferences.edit().putString("PENDING_POST_BODY", storedPost).apply();
+                String storedPost = new Gson().toJson(reportPostBody);
 
-            Intent postImageIntent = new Intent(mContext, ImagePostService.class);
-            postImageIntent.putExtra("file_path", filePath);
-            postImageIntent.putExtra("access_token", accessToken);
+                String storedPostKey = String.format("stored_post_%s", UUID.randomUUID().toString().replaceAll("-", ""));
 
-            // Send the serialized post body with the intent
+                mSharedPreferences.edit().putString(storedPostKey, storedPost).apply();
 
-            postImageIntent.putExtra("stored_post", storedPost);
+                mSharedPreferences.edit().putString("PENDING_POST_BODY", storedPost).apply();
 
-            mContext.startService(postImageIntent);
+                Intent postImageIntent = new Intent(mContext, ImagePostService.class);
+                postImageIntent.putExtra("file_path", filePath);
+                postImageIntent.putExtra("access_token", accessToken);
 
-            ApiDispatcher.setTransmissionActive(mSharedPreferences, true);
+                // Send the serialized post body with the intent
 
-            onPostSuccess();
+                postImageIntent.putExtra("stored_post", storedPost);
+
+                mContext.startService(postImageIntent);
+
+                ApiDispatcher.setTransmissionActive(mSharedPreferences, true);
+
+                onPostSuccess();
+
+            }
 
         }
 
@@ -1524,14 +1558,50 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
-    // POST report api
+    // Send POST request without image
 
-    private void sendFullPost(ReportPostBody reportPostBody) {
+    private void sendTextOnlyPost(ReportPostBody reportPostBody) {
 
         ApiDispatcher.sendFullPost(accessToken, reportPostBody, new SendPostCallbacks() {
             @Override
             public void onSuccess(@NonNull Report post) {
                 onPostSuccess();
+            }
+
+            @Override
+            public void onError(@NonNull RetrofitError error) {
+                onPostError();
+            }
+        });
+
+    }
+
+    // Send POST request with image storage
+
+    private void sendImage(String filePath) {
+
+        progressBar.setVisibility(View.VISIBLE);
+
+        final File photo = new File(filePath);
+
+        FileNameMap fileNameMap = URLConnection.getFileNameMap();
+
+        String mimeType = fileNameMap.getContentTypeFor(filePath);
+
+        TypedFile typedPhoto = new TypedFile(mimeType, photo);
+
+        ApiDispatcher.saveImage(accessToken, typedPhoto, new SaveImageCallbacks() {
+            @Override
+            public void onSuccess(@NonNull ImageProperties imageProperties) {
+
+                Map<String, Integer> imageRef = new HashMap<>();
+
+                imageRef.put("id", imageProperties.id);
+
+                images.add(imageRef);
+
+                sendTextOnlyPost(buildPostBody());
+
             }
 
             @Override
@@ -2022,7 +2092,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         super.onResume();
 
-        // Check for a api connection!
+        // Check for a network connection!
 
         if (!ConnectionUtility.connectionActive(this)) {
 
@@ -2058,28 +2128,17 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         ButterKnife.unbind(this);
 
-        // Cancel all pending network requests
-
-        //Callback.cancelAll();
+//        ModelStorage.removeModel(mSharedPreferences, "stored_campaign");
 
     }
 
     @Override
     public void onBackPressed() {
 
-        // Cancel all pending network requests
-
-        //Callback.cancelAll();
-
         finish();
 
         this.overridePendingTransition(R.anim.animation_enter_left,
                 R.anim.animation_exit_right);
-
-//        Intent a = new Intent(Intent.ACTION_MAIN);
-//        a.addCategory(Intent.CATEGORY_HOME);
-//        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        startActivity(a);
 
     }
 

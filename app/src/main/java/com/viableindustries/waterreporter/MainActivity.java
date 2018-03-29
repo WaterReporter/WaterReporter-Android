@@ -519,6 +519,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private void afterPostSend() {
 
+        ModelStorage.removeModel(mSharedPreferences, "stored_campaign");
+
         ApiDispatcher.setTransmissionActive(mSharedPreferences, false);
 //        mSharedPreferences.edit().putInt("POST", 0).apply();
         mSharedPreferences.edit().remove("POST_SAVED_VIA_SERVICE").apply();

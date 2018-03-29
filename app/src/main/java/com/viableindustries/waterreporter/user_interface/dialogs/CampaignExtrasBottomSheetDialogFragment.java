@@ -11,12 +11,12 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import com.viableindustries.waterreporter.CampaignGroupsActivity;
-import com.viableindustries.waterreporter.CampaignMembersActivity;
-import com.viableindustries.waterreporter.CampaignWatershedsActivity;
+import com.viableindustries.waterreporter.CampaignFormActivity;
+import com.viableindustries.waterreporter.MainActivity;
 import com.viableindustries.waterreporter.R;
 
 /**
@@ -52,17 +52,19 @@ public class CampaignExtrasBottomSheetDialogFragment extends BottomSheetDialogFr
 
         dialog.setContentView(R.layout.campaign_extras_bottom_sheet);
 
-        LinearLayout viewGroups = (LinearLayout) dialog.findViewById(R.id.viewGroups);
-        LinearLayout viewMembers = (LinearLayout) dialog.findViewById(R.id.viewMembers);
-        LinearLayout viewWatersheds = (LinearLayout) dialog.findViewById(R.id.viewWatersheds);
+        Button declineForm = (Button) dialog.findViewById(R.id.declineForm);
+        Button acceptForm = (Button) dialog.findViewById(R.id.acceptForm);
+        TextView formPrompt = (TextView) dialog.findViewById(R.id.formPromptText);
 
-        if (viewGroups != null &&
-                viewMembers != null &&
-                viewWatersheds != null) {
+        if (declineForm != null &&
+                acceptForm != null &&
+                formPrompt != null) {
 
-            viewGroups.setOnClickListener(this);
-            viewMembers.setOnClickListener(this);
-            viewWatersheds.setOnClickListener(this);
+            declineForm.setOnClickListener(this);
+            acceptForm.setOnClickListener(this);
+
+            String organizationName = getArguments().getString("organization");
+            formPrompt.setText(organizationName);
 
         } else {
 
@@ -95,25 +97,17 @@ public class CampaignExtrasBottomSheetDialogFragment extends BottomSheetDialogFr
 
         switch (view.getId()) {
 
-            case R.id.viewMembers:
+            case R.id.acceptForm:
 
-                context.startActivity(new Intent(context, CampaignMembersActivity.class));
-
-                dismiss();
-
-                break;
-
-            case R.id.viewGroups:
-
-                context.startActivity(new Intent(context, CampaignGroupsActivity.class));
+                context.startActivity(new Intent(context, CampaignFormActivity.class));
 
                 dismiss();
 
                 break;
 
-            case R.id.viewWatersheds:
+            case R.id.declineForm:
 
-                context.startActivity(new Intent(context, CampaignWatershedsActivity.class));
+                context.startActivity(new Intent(context, MainActivity.class));
 
                 dismiss();
 
