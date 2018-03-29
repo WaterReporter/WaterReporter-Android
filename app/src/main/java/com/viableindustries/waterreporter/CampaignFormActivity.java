@@ -43,6 +43,8 @@ public class CampaignFormActivity extends AppCompatActivity {
 
     private SharedPreferences mSharedPreferences;
 
+    private SharedPreferences mFieldBookEntries;
+
     private Context mContext;
 
     @Override
@@ -57,6 +59,8 @@ public class CampaignFormActivity extends AppCompatActivity {
         mContext = this;
 
         mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+
+        mFieldBookEntries = getSharedPreferences(getString(R.string.field_book_entries_key), 0);
 
         // Retrieve stored Campaign
 
@@ -79,6 +83,16 @@ public class CampaignFormActivity extends AppCompatActivity {
         // Set color of swipe refresh arrow animation
 
         listViewContainer.setColorSchemeResources(R.color.waterreporter_blue);
+
+        // Clear any stored field book values
+
+        resetFieldBookStorage();
+
+    }
+
+    private void resetFieldBookStorage() {
+
+        mFieldBookEntries.edit().clear().apply();
 
     }
 
@@ -213,6 +227,17 @@ public class CampaignFormActivity extends AppCompatActivity {
         super.onDestroy();
 
         ButterKnife.unbind(this);
+
+        resetFieldBookStorage();
+
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        resetFieldBookStorage();
+
+        startActivity(new Intent(this, MainActivity.class));
 
     }
 

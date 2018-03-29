@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/campaignFormField"
+    android:id="@+id/campaignFormFieldItem"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -10,6 +10,7 @@
         android:id="@+id/formFieldLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:labelFor="@+id/formFieldValue"
         android:padding="0dp"
         android:text="@string/form_field_label"
         android:textSize="@dimen/base_text"
@@ -20,26 +21,54 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:labelFor="@+id/formFieldValue"
         android:padding="0dp"
         android:text="@string/form_field_instructions"
         android:textSize="14sp" />
 
-    <EditText
-        android:id="@+id/formFieldValue"
+    <!--<AutoCompleteTextView xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:id="@+id/autoCompleteTextView"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginBottom="0dp"-->
+    <!--android:layout_marginEnd="0dp"-->
+    <!--android:layout_marginStart="0dp"-->
+    <!--android:layout_marginTop="12dp"-->
+    <!--android:background="@color/gray_f5f7f9"-->
+    <!--android:completionThreshold="1"-->
+    <!--android:padding="16dp"-->
+    <!--android:scrollbars="none"-->
+    <!--android:textSize="16sp" />-->
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="0dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="12dp"
-        android:background="@color/gray_f5f7f9"
-        android:gravity="start|top"
-        android:inputType="textMultiLine|textCapSentences"
-        android:maxLength="1000"
-        android:maxLines="10"
-        android:padding="16dp"
-        android:scrollbars="none"
-        android:textSize="16sp" />
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/formFieldValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="12dp"
+            android:background="@color/gray_f5f7f9"
+            android:gravity="start|top"
+            android:inputType="textMultiLine|textCapSentences"
+            android:maxLength="1000"
+            android:maxLines="10"
+            android:padding="14dp"
+            android:scrollbars="none"
+            android:textSize="16sp" />
+
+        <Spinner
+            android:id="@+id/formFieldSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:alpha="0"
+            android:background="@color/gray_f5f7f9"
+            android:spinnerMode="dialog" />
+
+    </FrameLayout>
 
 </LinearLayout>

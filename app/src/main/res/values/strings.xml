@@ -168,6 +168,10 @@
 
     <string name="group_membership_key">com.viableindustries.waterreporter.GROUP_MEMBERSHIP</string>
 
+    <!-- Shared preference key for campaign form field (field book) entries -->
+
+    <string name="field_book_entries_key">com.viableindustries.waterreporter.FIELD_BOOK</string>
+
     <string name="title_activity_map_detail">MapDetailActivity</string>
     <string name="title_activity_marker_detail">MarkerDetailActivity</string>
     <string name="title_activity_user_profile">UserProfileActivity</string>

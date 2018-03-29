@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.viableindustries.waterreporter.CampaignFormActivity;
 import com.viableindustries.waterreporter.CampaignGroupsActivity;
 import com.viableindustries.waterreporter.CampaignMembersActivity;
 import com.viableindustries.waterreporter.CampaignWatershedsActivity;
@@ -101,7 +102,7 @@ public class CampaignExtrasBottomSheetDialogFragment extends BottomSheetDialogFr
 
             case R.id.startCampaignPost:
 
-                context.startActivity(new Intent(context, PhotoMetaActivity.class));
+                context.startActivity(new Intent(context, CampaignFormActivity.class));
 
                 dismiss();
 
