@@ -51,7 +51,7 @@ public class CampaignMembersActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_campaign_groups);
+        setContentView(R.layout.activity_campaign_members);
 
         ButterKnife.bind(this);
 

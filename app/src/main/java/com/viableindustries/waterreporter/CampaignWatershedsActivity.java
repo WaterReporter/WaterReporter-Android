@@ -51,7 +51,7 @@ public class CampaignWatershedsActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_campaign_groups);
+        setContentView(R.layout.activity_campaign_watersheds);
 
         ButterKnife.bind(this);
 

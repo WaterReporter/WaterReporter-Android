@@ -50,7 +50,7 @@ public class CampaignFormActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_campaign_groups);
+        setContentView(R.layout.activity_campaign_form);
 
         ButterKnife.bind(this);
 
