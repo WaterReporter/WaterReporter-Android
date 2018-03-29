@@ -5,11 +5,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.ListView;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.campaign.Campaign;
@@ -29,11 +29,14 @@ import retrofit.client.Response;
 
 public class CampaignFormActivity extends AppCompatActivity {
 
-    @Bind(R.id.listViewContainer)
-    SwipeRefreshLayout listViewContainer;
+    @Bind(R.id.formFieldContainer)
+    LinearLayout formFieldContainer;
 
-    @Bind(R.id.listView)
-    ListView listView;
+//    @Bind(R.id.listViewContainer)
+//    SwipeRefreshLayout listViewContainer;
+
+//    @Bind(R.id.listView)
+//    ListView listView;
 
     private Campaign mCampaign;
 
@@ -62,31 +65,31 @@ public class CampaignFormActivity extends AppCompatActivity {
 
         mFieldBookEntries = getSharedPreferences(getString(R.string.field_book_entries_key), 0);
 
+        // Clear any stored field book values
+
+        resetFieldBookStorage();
+
         // Retrieve stored Campaign
 
         retrieveStoredCampaign();
 
         // Set refresh listener on report feed container
 
-        listViewContainer.setOnRefreshListener(
-                new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
-                        // This method performs the actual api-refresh operation.
-                        // The method calls setRefreshing(false) when it's finished.
-                        fetchCampaignFormFields(1, mCampaign.id, true);
-                    }
-                }
-        );
-
-        // Set color of swipe refresh arrow animation
-
-        listViewContainer.setColorSchemeResources(R.color.waterreporter_blue);
-
-        // Clear any stored field book values
-
-        resetFieldBookStorage();
+//        listViewContainer.setOnRefreshListener(
+//                new SwipeRefreshLayout.OnRefreshListener() {
+//                    @Override
+//                    public void onRefresh() {
+//                        Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
+//                        // This method performs the actual api-refresh operation.
+//                        // The method calls setRefreshing(false) when it's finished.
+//                        fetchCampaignFormFields(1, mCampaign.id, true);
+//                    }
+//                }
+//        );
+//
+//        // Set color of swipe refresh arrow animation
+//
+//        listViewContainer.setColorSchemeResources(R.color.waterreporter_blue);
 
     }
 
@@ -127,11 +130,33 @@ public class CampaignFormActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void populateFields(List<CampaignFormField> campaignFormFields) {
+
+//        listViewContainer.setVisibility(View.VISIBLE);
+
+        // Populating a LinearLayout here rather than a ListView
+
+        mCampaignFormFieldListAdapter = new CampaignFormFieldListAdapter(this, campaignFormFields);
+
+        final int adapterCount = mCampaignFormFieldListAdapter.getCount();
+
+        Log.v("FIELD_COUNT", adapterCount + "");
+
+        for (int i = 0; i < adapterCount; i++) {
+
+            View item = mCampaignFormFieldListAdapter.getView(i, null, formFieldContainer);
+
+            formFieldContainer.addView(item);
+
+        }
+
+    }
+
     private void populateList(List<CampaignFormField> campaignMembers) {
 
         mCampaignFormFieldListAdapter = new CampaignFormFieldListAdapter(this, campaignMembers);
 
-        listView.setAdapter(mCampaignFormFieldListAdapter);
+//        listView.setAdapter(mCampaignFormFieldListAdapter);
 
 //        attachScrollListener();
 
@@ -170,16 +195,18 @@ public class CampaignFormActivity extends AppCompatActivity {
 
                 fieldList = campaignFormResponse.properties.fields;
 
-                populateList(fieldList);
+                populateFields(fieldList);
 
-                listViewContainer.setRefreshing(false);
+//                populateList(fieldList);
+
+//                listViewContainer.setRefreshing(false);
 
             }
 
             @Override
             public void failure(RetrofitError error) {
 
-                listViewContainer.setRefreshing(false);
+//                listViewContainer.setRefreshing(false);
 
                 if (error == null) return;
 
@@ -212,7 +239,11 @@ public class CampaignFormActivity extends AppCompatActivity {
 
         // Retrieve stored Organization
 
-        retrieveStoredCampaign();
+        if (mCampaign == null) {
+
+            retrieveStoredCampaign();
+
+        }
 
     }
 

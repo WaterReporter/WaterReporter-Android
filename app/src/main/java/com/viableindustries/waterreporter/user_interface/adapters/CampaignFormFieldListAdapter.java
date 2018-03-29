@@ -170,7 +170,7 @@ public class CampaignFormFieldListAdapter extends ArrayAdapter<CampaignFormField
 
         viewHolder.formFieldValue.setText("");
 
-        String storedValue = mFieldBookEntries.getString(campaignFormField.name, "");
+        final String storedValue = mFieldBookEntries.getString(campaignFormField.name, "");
 
         viewHolder.formFieldValue.setText(storedValue);
 
@@ -204,10 +204,21 @@ public class CampaignFormFieldListAdapter extends ArrayAdapter<CampaignFormField
 //                        InputType.TYPE_CLASS_DATETIME|InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE|InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
 //                );
 
-                ArrayAdapter<String> adapter =
+                final ArrayAdapter<String> adapter =
                         new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_1, campaignFormField.options);
 
                 viewHolder.formFieldSpinner.setAdapter(adapter);
+
+                if (!storedValue.isEmpty()) {
+
+                    viewHolder.formFieldSpinner.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            viewHolder.formFieldSpinner.setSelection(adapter.getPosition(storedValue));
+                        }
+                    });
+
+                }
 
                 break;
 
@@ -268,7 +279,17 @@ public class CampaignFormFieldListAdapter extends ArrayAdapter<CampaignFormField
 
 //                setValue(viewHolder.formFieldValue, campaignFormField);
 
-                mFieldBookEntries.edit().putString(campaignFormField.name, viewHolder.formFieldValue.getText().toString()).apply();
+//                Log.v("FB-VAL", "storing value for " + campaignFormField.name);
+
+                String inputText = viewHolder.formFieldValue.getText().toString();
+
+                if (!inputText.isEmpty()) {
+
+                    Log.v("FB-VAL", "storing value for " + campaignFormField.name + ": " + inputText);
+
+                    mFieldBookEntries.edit().putString(campaignFormField.name, viewHolder.formFieldValue.getText().toString()).apply();
+
+                }
 
             }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_user_profile"
+    android:id="@+id/campaignFormContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FBFBFB"
@@ -11,56 +11,64 @@
     android:scrollbars="none"
     tools:context="com.viableindustries.waterreporter.CampaignFormActivity">
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/formFieldContainer"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="#FFFFFF">
-
-        <ImageView
-            android:id="@+id/logo"
-            android:layout_width="88dp"
-            android:layout_height="24dp"
-            android:layout_centerInParent="true"
-            android:scaleType="fitXY"
-            android:src="@drawable/logo_horizontal_lockup" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/saveFieldBook"
-            android:layout_width="56dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="0dp"
-            android:layout_marginStart="0dp">
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="#FFFFFF">
 
             <ImageView
-                android:id="@+id/saveFieldBookIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/logo"
+                android:layout_width="88dp"
+                android:layout_height="24dp"
                 android:layout_centerInParent="true"
                 android:scaleType="fitXY"
-                android:src="@drawable/ic_done_black_24dp" />
+                android:src="@drawable/logo_horizontal_lockup" />
+
+            <RelativeLayout
+                android:id="@+id/saveFieldBook"
+                android:layout_width="56dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="0dp"
+                android:layout_marginStart="0dp">
+
+                <ImageView
+                    android:id="@+id/saveFieldBookIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_done_black_24dp" />
+
+            </RelativeLayout>
 
         </RelativeLayout>
 
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/gray_224" />
-
-    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/listViewContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ListView
-            android:id="@+id/listView"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none" />
+            android:layout_height="1dp"
+            android:background="@color/gray_224" />
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+        <!--<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--android:id="@+id/listViewContainer"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent" />-->
 
-</LinearLayout>
+    </LinearLayout>
+
+    <!--<ListView-->
+    <!--android:id="@+id/listView"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:scrollbars="none" />-->
+
+    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
+
+</ScrollView>
