@@ -11,11 +11,13 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.viableindustries.waterreporter.CampaignFormActivity;
+import com.viableindustries.waterreporter.MainActivity;
 import com.viableindustries.waterreporter.R;
-import com.viableindustries.waterreporter.UserProfileCardActivity;
 
 /**
  * Created by brendanmcintyre on 3/27/18.
@@ -27,7 +29,6 @@ public class CampaignFormPromptBottomSheetDialogFragment extends BottomSheetDial
 
         @Override
         public void onStateChanged(@NonNull View bottomSheet, int newState) {
-
             if (newState == BottomSheetBehavior.STATE_HIDDEN) {
                 dismiss();
             }
@@ -49,13 +50,21 @@ public class CampaignFormPromptBottomSheetDialogFragment extends BottomSheetDial
         BottomSheetDialog dialog =
                 new BottomSheetDialog(getActivity());
 
-        dialog.setContentView(R.layout.user_extras_bottom_sheet);
+        dialog.setContentView(R.layout.campaign_extras_bottom_sheet);
 
-        LinearLayout viewFullProfile = (LinearLayout) dialog.findViewById(R.id.viewFullProfile);
+        Button declineForm = (Button) dialog.findViewById(R.id.declineForm);
+        Button acceptForm = (Button) dialog.findViewById(R.id.acceptForm);
+        TextView formPrompt = (TextView) dialog.findViewById(R.id.formPromptText);
 
-        if (viewFullProfile != null) {
+        if (declineForm != null &&
+                acceptForm != null &&
+                formPrompt != null) {
 
-            viewFullProfile.setOnClickListener(this);
+            declineForm.setOnClickListener(this);
+            acceptForm.setOnClickListener(this);
+
+            String organizationName = getArguments().getString("organization");
+            formPrompt.setText(organizationName);
 
         } else {
 
@@ -88,9 +97,17 @@ public class CampaignFormPromptBottomSheetDialogFragment extends BottomSheetDial
 
         switch (view.getId()) {
 
-            case R.id.viewFullProfile:
+            case R.id.acceptForm:
 
-                context.startActivity(new Intent(context, UserProfileCardActivity.class));
+                context.startActivity(new Intent(context, CampaignFormActivity.class));
+
+                dismiss();
+
+                break;
+
+            case R.id.declineForm:
+
+                context.startActivity(new Intent(context, MainActivity.class));
 
                 dismiss();
 
