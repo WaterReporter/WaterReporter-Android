@@ -2,6 +2,7 @@ package com.viableindustries.waterreporter.api.interfaces.data.campaign;
 
 import com.viableindustries.waterreporter.api.models.campaign.Campaign;
 import com.viableindustries.waterreporter.api.models.campaign.CampaignCollection;
+import com.viableindustries.waterreporter.api.models.campaign.CampaignFormResponse;
 
 import retrofit.Callback;
 import retrofit.http.GET;
@@ -25,8 +26,14 @@ public interface CampaignService {
 
     @GET("/data/campaign/{campaignId}")
     void getSingle(@Header("Authorization") String authorization,
-                         @Header("Content-Type") String contentType,
-                         @Path("campaignId") int campaignId,
-                         Callback<Campaign> campaignCallback);
+                   @Header("Content-Type") String contentType,
+                   @Path("campaignId") int campaignId,
+                   Callback<Campaign> campaignCallback);
+
+    @GET("/data/campaign/{campaignId}/form")
+    void getCampaignForm(@Header("Authorization") String authorization,
+                   @Header("Content-Type") String contentType,
+                   @Path("campaignId") int campaignId,
+                   Callback<CampaignFormResponse> campaignFormResponseCallback);
 
 }

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/campaignFormField"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/formFieldLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="0dp"
+        android:text="@string/form_field_label"
+        android:textSize="@dimen/base_text"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/formFieldInstructions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:labelFor="@+id/formFieldValue"
+        android:padding="0dp"
+        android:text="@string/form_field_instructions"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/formFieldValue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/gray_f5f7f9"
+        android:gravity="start|top"
+        android:inputType="textMultiLine|textCapSentences"
+        android:maxLength="1000"
+        android:maxLines="10"
+        android:minLines="2"
+        android:padding="16dp"
+        android:scrollbars="none"
+        android:textSize="16sp" />
+
+</LinearLayout>

@@ -73,7 +73,6 @@
     <string name="reset_error">We couldn\'t find you in Water Reporter. Please double-check the email that you entered and make sure that it\'s the same one you used to register.</string>
 
     <!-- Report -->
-
     <string name="post_instruction">To get started, tap on the camera and add a photo or paste a link into the comment box.</string>
     <string name="comment_hint">Write a few words&#8230;</string>
     <string name="post_location_prompt">Confirm location</string>
@@ -111,6 +110,10 @@
 
     <!-- Location -->
     <string name="find_location">Find an address.</string>
+
+    <!-- Form field -->
+    <string name="form_field_label">Form field label</string>
+    <string name="form_field_instructions">Form field instructions</string>
 
     <!-- Camera -->
     <string name="picture">Picture</string>

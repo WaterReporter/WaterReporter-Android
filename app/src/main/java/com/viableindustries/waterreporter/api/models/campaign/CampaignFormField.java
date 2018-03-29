@@ -26,4 +26,20 @@ public class CampaignFormField {
     @SerializedName("value")
     public Object value;
 
+    public CampaignFormField(String aInstructions,
+                             String aLabel,
+                             String aName,
+                             String[] aOptions,
+                             String aType,
+                             Object aValue) {
+
+        this.instructions = aInstructions;
+        this.label = aLabel;
+        this.name = aName;
+        this.options = aOptions;
+        this.type = aType;
+        this.value = aValue;
+
+    }
+
 }
