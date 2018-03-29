@@ -4,17 +4,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.campaign.Campaign;
 import com.viableindustries.waterreporter.api.models.campaign.CampaignFormField;
 import com.viableindustries.waterreporter.api.models.campaign.CampaignFormResponse;
+import com.viableindustries.waterreporter.api.models.field_book.FieldBook;
+import com.viableindustries.waterreporter.api.models.field_book.FieldBookPostBody;
+import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.user_interface.adapters.CampaignFormFieldListAdapter;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
@@ -38,7 +43,12 @@ public class CampaignFormActivity extends AppCompatActivity {
 //    @Bind(R.id.listView)
 //    ListView listView;
 
+    @Bind(R.id.saveFieldBook)
+    RelativeLayout saveFieldBook;
+
     private Campaign mCampaign;
+
+    private Report mPost;
 
     private List<CampaignFormField> fieldList = new ArrayList<>();
 
@@ -73,6 +83,10 @@ public class CampaignFormActivity extends AppCompatActivity {
 
         retrieveStoredCampaign();
 
+        // Retrieve stored Report
+
+        retrieveStoredPost();
+
         // Set refresh listener on report feed container
 
 //        listViewContainer.setOnRefreshListener(
@@ -91,11 +105,36 @@ public class CampaignFormActivity extends AppCompatActivity {
 //
 //        listViewContainer.setColorSchemeResources(R.color.waterreporter_blue);
 
+        saveFieldBook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                stageFieldBookData();
+            }
+        });
+
     }
 
     private void resetFieldBookStorage() {
 
         mFieldBookEntries.edit().clear().apply();
+
+    }
+
+    private void retrieveStoredPost() {
+
+        mPost = ModelStorage.getStoredPost(mSharedPreferences);
+
+        try {
+
+            String postProperties = mPost.properties.toString();
+
+        } catch (NullPointerException _e) {
+
+            startActivity(new Intent(this, MainActivity.class));
+
+            finish();
+
+        }
 
     }
 
@@ -229,6 +268,74 @@ public class CampaignFormActivity extends AppCompatActivity {
             }
 
         });
+
+    }
+
+    private void stageFieldBookData() {
+
+        FieldBookPostBody fieldBookPostBody = new FieldBookPostBody();
+
+        fieldBookPostBody.report_id = mPost.properties.id;
+
+        for (CampaignFormField campaignFormField : fieldList) {
+
+            String storedValue = mFieldBookEntries.getString(campaignFormField.name, "");
+
+            if (!storedValue.isEmpty()) {
+
+                campaignFormField.value = storedValue;
+
+            } else {
+
+                campaignFormField.value = storedValue;
+
+            }
+
+        }
+
+        fieldBookPostBody.data = fieldList;
+
+        saveFieldBookEntry(fieldBookPostBody);
+
+    }
+
+    private void saveFieldBookEntry(FieldBookPostBody fieldBookPostBody) {
+
+        String accessToken = mSharedPreferences.getString("access_token", "");
+
+        RestClient.getFieldBookService().postFieldBook(accessToken, "application/json", fieldBookPostBody,
+                new Callback<Response>() {
+                    @Override
+                    public void success(Response result, Response response) {
+
+                        // Re-direct user to main activity feed, which has the effect of preventing
+                        // unwanted access to the history stack
+
+                        Intent intent = new Intent(CampaignFormActivity.this, MainActivity.class);
+
+                        startActivity(intent);
+
+                        finish();
+
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        onPostError();
+                    }
+
+                });
+
+    }
+
+    private void onPostError() {
+
+        CharSequence text =
+                "Error posting field book data. Please try again later.";
+
+        Snackbar.make(formFieldContainer, text,
+                Snackbar.LENGTH_SHORT)
+                .show();
 
     }
 

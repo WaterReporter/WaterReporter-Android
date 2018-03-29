@@ -3,6 +3,7 @@ package com.viableindustries.waterreporter.api.interfaces;
 import com.viableindustries.waterreporter.api.interfaces.data.campaign.CampaignService;
 import com.viableindustries.waterreporter.api.interfaces.data.comment.CommentService;
 import com.viableindustries.waterreporter.api.interfaces.data.favorite.FavoriteService;
+import com.viableindustries.waterreporter.api.interfaces.data.field_book.FieldBookService;
 import com.viableindustries.waterreporter.api.interfaces.data.hashtag.HashTagService;
 import com.viableindustries.waterreporter.api.interfaces.data.image.ImageService;
 import com.viableindustries.waterreporter.api.interfaces.data.organization.OrganizationService;
@@ -41,6 +42,7 @@ public class RestClient {
     private static final TerritoryService territoryService = restAdapter.create(TerritoryService.class);
     private static final CampaignService campaignService = restAdapter.create(CampaignService.class);
     private static final SnapshotService snapshotService = restAdapter.create(SnapshotService.class);
+    private static final FieldBookService fieldBookService = restAdapter.create(FieldBookService.class);
     private static final SecurityService securityService = restAdapter.create(SecurityService.class);
 
     private RestClient() {
@@ -88,6 +90,10 @@ public class RestClient {
 
     public static CampaignService getCampaignService() {
         return campaignService;
+    }
+
+    public static FieldBookService getFieldBookService() {
+        return fieldBookService;
     }
 
     public static SnapshotService getSnapshotService() {

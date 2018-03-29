@@ -1575,13 +1575,18 @@ public class PhotoMetaActivity extends AppCompatActivity
         ApiDispatcher.sendFullPost(accessToken, reportPostBody, new SendPostCallbacks() {
             @Override
             public void onSuccess(@NonNull Report post) {
+
+                ModelStorage.storeModel(mSharedPreferences, post, "stored_post");
+
                 onPostSuccess();
+
             }
 
             @Override
             public void onError(@NonNull RetrofitError error) {
                 onPostError();
             }
+
         });
 
     }

@@ -102,7 +102,7 @@ public class CampaignExtrasBottomSheetDialogFragment extends BottomSheetDialogFr
 
             case R.id.startCampaignPost:
 
-                context.startActivity(new Intent(context, CampaignFormActivity.class));
+                context.startActivity(new Intent(context, PhotoMetaActivity.class));
 
                 dismiss();
 
