@@ -1,6 +1,5 @@
 package com.viableindustries.waterreporter;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -45,13 +44,11 @@ public class FieldBookActivity extends AppCompatActivity {
 
     private List<CampaignFormField> fieldList = new ArrayList<>();
 
-    private CampaignFormFieldListAdapter mCampaignFormFieldListAdapter;
-
     private SharedPreferences mSharedPreferences;
 
     private SharedPreferences mFieldBookEntries;
 
-    private Context mContext;
+    private SharedPreferences mCoreProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +59,11 @@ public class FieldBookActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        mContext = this;
-
         mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         mFieldBookEntries = getSharedPreferences(getString(R.string.field_book_entries_key), 0);
+
+        mCoreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
         // Clear any stored field book values
 
@@ -76,14 +73,24 @@ public class FieldBookActivity extends AppCompatActivity {
 
         retrieveStoredPost();
 
-        // Set click listeners
+    }
 
-        saveFieldBook.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                stageFieldBookData();
-            }
-        });
+    private void checkOwnership() {
+
+        int authId = mCoreProfile.getInt("id", 0);
+
+        if (authId == mFieldBook.owner_id) {
+
+            saveFieldBook.setVisibility(View.VISIBLE);
+
+            saveFieldBook.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    stageFieldBookData();
+                }
+            });
+
+        }
 
     }
 
@@ -124,7 +131,7 @@ public class FieldBookActivity extends AppCompatActivity {
 
         // Populating a LinearLayout here rather than a ListView
 
-        mCampaignFormFieldListAdapter = new CampaignFormFieldListAdapter(this, campaignFormFields);
+        CampaignFormFieldListAdapter mCampaignFormFieldListAdapter = new CampaignFormFieldListAdapter(this, campaignFormFields);
 
         final int adapterCount = mCampaignFormFieldListAdapter.getCount();
 
@@ -135,6 +142,27 @@ public class FieldBookActivity extends AppCompatActivity {
             View item = mCampaignFormFieldListAdapter.getView(i, null, formFieldContainer);
 
             formFieldContainer.addView(item);
+
+        }
+
+    }
+
+    private void storeExistingValues(List<CampaignFormField> campaignFormFields) {
+
+        for (CampaignFormField campaignFormField : campaignFormFields) {
+
+            if (campaignFormField.value != null &&
+                    !campaignFormField.value.toString().isEmpty()) {
+
+                mFieldBookEntries
+                        .edit()
+                        .putString(
+                                campaignFormField.name,
+                                campaignFormField.value.toString()
+                        )
+                        .apply();
+
+            }
 
         }
 
@@ -165,9 +193,27 @@ public class FieldBookActivity extends AppCompatActivity {
             @Override
             public void success(FieldBookListResponse fieldBookListResponse, Response response) {
 
-                fieldList = fieldBookListResponse.features.get(0).data;
+                // Set value of mFieldBook variable
+
+                mFieldBook = fieldBookListResponse.features.get(0);
+
+                // Set value of form field list
+
+                fieldList = mFieldBook.data;
+
+                // Loop through form fields and place existing values
+                // in temporary storage.
+
+                storeExistingValues(fieldList);
+                
+                // Render form UI elements
 
                 populateFields(fieldList);
+
+                // Check field book feature ownership against the
+                // authenticated user to determine write permission.
+
+                checkOwnership();
 
             }
 
