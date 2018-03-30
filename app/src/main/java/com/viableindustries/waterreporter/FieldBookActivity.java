@@ -2,13 +2,16 @@ package com.viableindustries.waterreporter;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -18,6 +21,7 @@ import com.viableindustries.waterreporter.api.models.field_book.FieldBook;
 import com.viableindustries.waterreporter.api.models.field_book.FieldBookListResponse;
 import com.viableindustries.waterreporter.api.models.field_book.FieldBookPatchBody;
 import com.viableindustries.waterreporter.api.models.post.Report;
+import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.user_interface.adapters.CampaignFormFieldListAdapter;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
@@ -38,6 +42,9 @@ public class FieldBookActivity extends AppCompatActivity {
     @Bind(R.id.saveFieldBook)
     RelativeLayout saveFieldBook;
 
+    @Bind(R.id.saveFieldBookIcon)
+    ImageView saveFieldBookIcon;
+
     private FieldBook mFieldBook;
 
     private Report mPost;
@@ -55,7 +62,7 @@ public class FieldBookActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_campaign_form);
+        setContentView(R.layout.activity_field_book);
 
         ButterKnife.bind(this);
 
@@ -73,13 +80,21 @@ public class FieldBookActivity extends AppCompatActivity {
 
         retrieveStoredPost();
 
+        // Set color filter on save icon
+
+        saveFieldBookIcon.setColorFilter(ContextCompat.getColor(this, R.color.splash_blue), PorterDuff.Mode.SRC_ATOP);
+
     }
 
     private void checkOwnership() {
 
-        int authId = mCoreProfile.getInt("id", 0);
+        User authUser = ModelStorage.getStoredUser(mCoreProfile, "auth_user");
 
-        if (authId == mFieldBook.owner_id) {
+        Log.v("AUTH_USER", authUser.id + "");
+
+        Log.v("AUTH_USER_COMPARE", mFieldBook.owner.properties.id + "");
+
+        if (authUser.id == mFieldBook.owner.properties.id) {
 
             saveFieldBook.setVisibility(View.VISIBLE);
 

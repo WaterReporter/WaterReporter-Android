@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.viableindustries.waterreporter.CampaignFormActivity;
 import com.viableindustries.waterreporter.MainActivity;
 import com.viableindustries.waterreporter.R;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 /**
  * Created by brendanmcintyre on 3/27/18.
@@ -51,6 +52,8 @@ public class CampaignFormPromptBottomSheetDialogFragment extends BottomSheetDial
                 new BottomSheetDialog(getActivity());
 
         dialog.setContentView(R.layout.campaign_form_prompt_bottom_sheet);
+
+        dialog.setCanceledOnTouchOutside(false);
 
         Button declineForm = (Button) dialog.findViewById(R.id.declineForm);
         Button acceptForm = (Button) dialog.findViewById(R.id.acceptForm);

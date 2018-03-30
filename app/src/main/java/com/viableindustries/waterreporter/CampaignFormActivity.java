@@ -3,9 +3,11 @@ package com.viableindustries.waterreporter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -45,6 +47,9 @@ public class CampaignFormActivity extends AppCompatActivity {
 
     @Bind(R.id.saveFieldBook)
     RelativeLayout saveFieldBook;
+
+    @Bind(R.id.saveFieldBookIcon)
+    ImageView saveFieldBookIcon;
 
     @Bind(R.id.formSuccessMessage)
     RelativeLayout formSuccessMessage;
@@ -117,6 +122,10 @@ public class CampaignFormActivity extends AppCompatActivity {
                 returnToTimeline();
             }
         });
+
+        // Set color filter on save icon
+
+        saveFieldBookIcon.setColorFilter(ContextCompat.getColor(this, R.color.splash_blue), PorterDuff.Mode.SRC_ATOP);
 
     }
 

@@ -125,7 +125,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:padding="16dp"
+            android:layout_margin="16dp"
+            android:background="@drawable/field_book_indicator_canvas"
+            android:padding="4dp"
             android:visibility="gone">
 
             <ImageView

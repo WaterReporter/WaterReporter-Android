@@ -2,6 +2,7 @@ package com.viableindustries.waterreporter.api.models.field_book;
 
 import com.google.gson.annotations.SerializedName;
 import com.viableindustries.waterreporter.api.models.campaign.CampaignFormField;
+import com.viableindustries.waterreporter.api.models.user.User;
 
 import java.util.List;
 
@@ -19,6 +20,9 @@ public class FieldBook {
 
     @SerializedName("id")
     public int id;
+
+    @SerializedName("owner")
+    public User owner;
 
     @SerializedName("owner_id")
     public int owner_id;
