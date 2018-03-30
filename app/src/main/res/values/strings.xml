@@ -415,5 +415,6 @@
     <string name="title_activity_user_profile_card">UserProfileCardActivity</string>
     <string name="title_activity_organization_profile_card">OrganizationProfileCardActivity</string>
     <string name="title_activity_campaign_form">CampaignFormActivity</string>
+    <string name="title_activity_field_book">FieldBookActivity</string>
 
 </resources>
