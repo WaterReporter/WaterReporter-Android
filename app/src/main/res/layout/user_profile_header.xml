@@ -91,7 +91,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|end"
                     android:scaleType="fitXY"
-                    android:src="@drawable/ic_verified_user_black_24dp"
+                    android:src="@drawable/ic_verified_user_mod_24dp"
                     android:visibility="gone" />
 
             </FrameLayout>

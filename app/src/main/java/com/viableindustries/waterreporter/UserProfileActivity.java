@@ -571,7 +571,7 @@ public class UserProfileActivity extends AppCompatActivity implements
 
                     mUserProfileHeaderView.proBadge.setVisibility(View.VISIBLE);
 
-                    mUserProfileHeaderView.proBadge.setColorFilter(ContextCompat.getColor(mContext, R.color.splash_blue), PorterDuff.Mode.SRC_ATOP);
+//                    mUserProfileHeaderView.proBadge.setColorFilter(ContextCompat.getColor(mContext, R.color.splash_blue), PorterDuff.Mode.SRC_ATOP);
 
                 }
 
