@@ -89,10 +89,24 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:gravity="center"
-                    android:paddingBottom="24dp"
+                    android:paddingBottom="8dp"
                     android:paddingTop="16dp"
                     android:textSize="16sp"
                     android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/organizationName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:alpha="0.8"
+                    android:gravity="center"
+                    android:paddingBottom="24dp"
+                    android:paddingEnd="40dp"
+                    android:paddingLeft="40dp"
+                    android:paddingRight="40dp"
+                    android:paddingStart="40dp"
+                    android:paddingTop="0dp"
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/thankYouMessage"

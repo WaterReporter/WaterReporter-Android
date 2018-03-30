@@ -60,6 +60,9 @@ public class CampaignFormActivity extends AppCompatActivity {
     @Bind(R.id.userName)
     TextView userName;
 
+    @Bind(R.id.organizationName)
+    TextView organizationName;
+
     @Bind(R.id.thankYouMessage)
     TextView thankYouMessage;
 
@@ -133,7 +136,7 @@ public class CampaignFormActivity extends AppCompatActivity {
 
         Random randomizer = new Random();
 
-        List<User> organizers =  mCampaign.properties.organizers;
+        List<User> organizers = mCampaign.properties.organizers;
 
         User organizer = organizers.get(randomizer.nextInt(organizers.size()));
 
@@ -151,6 +154,12 @@ public class CampaignFormActivity extends AppCompatActivity {
                 organizer.properties.last_name);
 
         userName.setText(userNameText);
+
+        // Set organization name
+
+        String organizationNameText = mCampaign.properties.organizations.get(0).properties.name;
+
+        organizationName.setText(organizationNameText);
 
         // Set thank you text
 
