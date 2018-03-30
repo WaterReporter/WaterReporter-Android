@@ -228,6 +228,10 @@ public class CampaignFormActivity extends AppCompatActivity {
 
     private void presentThankYou() {
 
+        formFieldContainer.removeAllViews();
+
+        formSuccessMessage.requestLayout();
+
         formSuccessMessage.setVisibility(View.VISIBLE);
 
     }
