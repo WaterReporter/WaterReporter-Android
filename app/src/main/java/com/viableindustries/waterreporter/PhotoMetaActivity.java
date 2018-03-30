@@ -680,7 +680,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
             // Auto-populate group affiliation(s)
 
-            setCampaignGroupText();
+            setCampaignGroupText(mCampaign.properties.organizations);
 
         } catch (NullPointerException _e) {
 
@@ -1759,7 +1759,7 @@ public class PhotoMetaActivity extends AppCompatActivity
                 // If editing an existing report, we need to iterate the array of organizations
                 // associated with the report and persist references in preferences
 
-                if (editMode) {
+                if (editMode && report.properties.campaigns.isEmpty()) {
 
                     for (Organization organization : report.properties.groups) {
 
@@ -1784,7 +1784,15 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                 Log.d("associated groups", associatedGroups.getAll().toString());
 
-                populateOrganizations(abbreviatedOrganizations);
+                if (editMode && report.properties.campaigns.isEmpty()) {
+
+                    populateOrganizations(abbreviatedOrganizations);
+
+                } else {
+
+                    setCampaignGroupText(report.properties.groups);
+
+                }
 
             }
 
@@ -1815,7 +1823,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     }
 
-    private void setCampaignGroupText() {
+    private void setCampaignGroupText(List<Organization> campaignGroups) {
 
         // Hide standard section label
 
@@ -1826,8 +1834,6 @@ public class PhotoMetaActivity extends AppCompatActivity
         // Show group list container
 
         groupList.setVisibility(View.VISIBLE);
-
-        List<Organization> campaignGroups = mCampaign.properties.organizations;
 
         List<String> groupNames = new ArrayList<>();
 

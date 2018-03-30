@@ -165,9 +165,9 @@ public class CampaignFormActivity extends AppCompatActivity {
 
         final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
-        String authUserName = coreProfile.getString("first_name", "");
+        User authUser = ModelStorage.getStoredUser(coreProfile, "auth_user");
 
-        thankYouMessage.setText(getString(R.string.default_form_thank_you_message, authUserName.trim()));
+        thankYouMessage.setText(getString(R.string.default_form_thank_you_message, authUser.properties.first_name.trim()));
 
     }
 

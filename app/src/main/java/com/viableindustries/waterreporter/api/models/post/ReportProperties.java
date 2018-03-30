@@ -1,6 +1,7 @@
 package com.viableindustries.waterreporter.api.models.post;
 
 import com.google.gson.annotations.SerializedName;
+import com.viableindustries.waterreporter.api.models.campaign.Campaign;
 import com.viableindustries.waterreporter.api.models.comment.Comment;
 import com.viableindustries.waterreporter.api.models.favorite.Favorite;
 import com.viableindustries.waterreporter.api.models.field_book.FieldBook;
@@ -21,6 +22,9 @@ import java.util.Locale;
  * Created by brendanmcintyre on 8/26/15.
  */
 public class ReportProperties {
+
+    @SerializedName("campaigns")
+    public List<Campaign> campaigns;
 
     @SerializedName("closed_by")
     public User closed_by;
