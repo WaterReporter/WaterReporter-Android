@@ -1748,6 +1748,26 @@ public class PhotoMetaActivity extends AppCompatActivity
             @Override
             public void success(GroupFeatureCollection groupFeatureCollection, Response response) {
 
+                // Clear any stale group references
+
+                associatedGroups.edit().clear().apply();
+
+                List<String> postGroupNames = new ArrayList<>();
+
+                for (Organization organization : report.properties.groups) {
+
+                    postGroupNames.add(organization.properties.name);
+
+                }
+
+                List<Integer> postGroupIds = new ArrayList<>();
+
+                for (Organization organization : report.properties.groups) {
+
+                    postGroupIds.add(organization.properties.id);
+
+                }
+
                 ArrayList<Group> groups = groupFeatureCollection.getFeatures();
 
                 for (Group group : groups) {
@@ -1761,20 +1781,20 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                 if (editMode && report.properties.campaigns.isEmpty()) {
 
-                    for (Organization organization : report.properties.groups) {
+                    for (AbbreviatedOrganization abbreviatedOrganization : abbreviatedOrganizations) {
 
-                        for (AbbreviatedOrganization abbreviatedOrganization : abbreviatedOrganizations) {
+                        if (postGroupIds.contains(abbreviatedOrganization.id)) {
 
-                            if (abbreviatedOrganization.id != organization.properties.id) {
+                            // Track entry in associated groups preference.
+                            // IMPORTANT: This is NOT the preference that records group memberships!
 
-                                abbreviatedOrganizations.add(new AbbreviatedOrganization(organization.properties.id, organization.properties.name));
-
-                                // Track entry in associated groups preference.
-                                // IMPORTANT: This is NOT the preference that records group memberships!
-
-                                associatedGroups.edit().putInt(organization.properties.name, organization.properties.id).apply();
-
-                            }
+                            associatedGroups
+                                    .edit()
+                                    .putInt(
+                                            postGroupNames.get(postGroupNames.indexOf(abbreviatedOrganization.name)),
+                                            abbreviatedOrganization.id
+                                    )
+                                    .apply();
 
                         }
 
