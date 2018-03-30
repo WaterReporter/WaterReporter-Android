@@ -3,6 +3,7 @@ package com.viableindustries.waterreporter.user_interface.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
@@ -113,6 +114,10 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
         // Set action badge state
 
         TimelineAdapterHelpers.setActionBadge(post, viewHolder.actionBadge);
+
+        // Set field book indicator state
+
+        TimelineAdapterHelpers.setFieldBookState(context, post, viewHolder.fieldBookIndicator, viewHolder.fieldBookIcon);
 
         // Set favorite state
 
@@ -313,6 +318,11 @@ public class TimelineAdapter extends ArrayAdapter<Report> {
             viewHolder.ogTitle = (TextView) convertView.findViewById(R.id.ogTitle);
             viewHolder.ogDescription = (TextView) convertView.findViewById(R.id.ogDescription);
             viewHolder.ogUrl = (TextView) convertView.findViewById(R.id.ogUrl);
+
+            // Field book
+
+            viewHolder.fieldBookIndicator = (RelativeLayout) convertView.findViewById(R.id.fieldBookIndicator);
+            viewHolder.fieldBookIcon = (ImageView) convertView.findViewById(R.id.fieldBookIcon);
 
             convertView.setTag(viewHolder);
 

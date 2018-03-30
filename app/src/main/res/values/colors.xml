@@ -17,11 +17,13 @@
     <color name="base_red">#e01445</color>
     <color name="red_canvas">#fce3e9</color>
 
+    <color name="moderate_cyan_line_green">#58cd7b</color>
+
     <color name="base_green">#14e049</color>
 
     <color name="blue_green">#14d36f</color>
 
-    <color name="green_1">#0ad570</color>
+    <color name="strong_cyan_lime_green">#0ad570</color>
     <color name="green_canvas">#e0feef</color>
 
     <color name="base_blue">#14ABE0</color>

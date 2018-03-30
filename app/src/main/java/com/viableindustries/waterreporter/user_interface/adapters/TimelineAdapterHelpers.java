@@ -37,6 +37,8 @@ import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.api.models.post.ReportPhoto;
 import com.viableindustries.waterreporter.user_interface.listeners.OrganizationProfileListener;
+import com.viableindustries.waterreporter.user_interface.listeners.PostCommentListener;
+import com.viableindustries.waterreporter.user_interface.listeners.PostFieldBookListener;
 import com.viableindustries.waterreporter.user_interface.listeners.TerritoryProfileListener;
 import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
@@ -347,6 +349,28 @@ public class TimelineAdapterHelpers {
         if ("closed".equals(post.properties.state)) {
 
             relativeLayout.setVisibility(View.VISIBLE);
+
+        }
+
+    }
+
+    public static void setFieldBookState(final Context context,
+                                         final Report post,
+                                         RelativeLayout relativeLayout,
+                                         ImageView imageView) {
+
+        relativeLayout.setVisibility(View.GONE);
+
+        relativeLayout.setOnClickListener(null);
+
+        if (post.properties.field_book != null &&
+                post.properties.field_book.size() > 0) {
+
+            relativeLayout.setVisibility(View.VISIBLE);
+
+            relativeLayout.setOnClickListener(new PostFieldBookListener(context, post));
+
+            imageView.setColorFilter(ContextCompat.getColor(context, R.color.strong_cyan_lime_green), PorterDuff.Mode.SRC_ATOP);
 
         }
 

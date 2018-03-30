@@ -52,4 +52,9 @@ public class TimelineItemViewHolder {
     public TextView ogDescription;
     public TextView ogUrl;
 
+    // Field book
+
+    public RelativeLayout fieldBookIndicator;
+    public ImageView fieldBookIcon;
+
 }

@@ -66,7 +66,7 @@
             android:src="@drawable/ic_group_add_white_24dp"
             android:visibility="gone"
             app:fabSize="normal"
-            app:rippleColor="@color/green_1"
+            app:rippleColor="@color/strong_cyan_lime_green"
             app:useCompatPadding="true" />
 
         <fragment

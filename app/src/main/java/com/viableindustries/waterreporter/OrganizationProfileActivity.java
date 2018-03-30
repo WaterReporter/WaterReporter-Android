@@ -1077,7 +1077,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                 if (!user.properties.isOrganizationMember(mOrganization.id)) {
 
-                    joinOrganization.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.green_1)));
+                    joinOrganization.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.strong_cyan_lime_green)));
 
                     joinOrganization.setVisibility(View.VISIBLE);
 

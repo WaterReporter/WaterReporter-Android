@@ -3,6 +3,7 @@ package com.viableindustries.waterreporter.api.models.post;
 import com.google.gson.annotations.SerializedName;
 import com.viableindustries.waterreporter.api.models.comment.Comment;
 import com.viableindustries.waterreporter.api.models.favorite.Favorite;
+import com.viableindustries.waterreporter.api.models.field_book.FieldBook;
 import com.viableindustries.waterreporter.api.models.hashtag.HashTag;
 import com.viableindustries.waterreporter.api.models.open_graph.OpenGraphObject;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
@@ -32,6 +33,9 @@ public class ReportProperties {
 
     @SerializedName("created")
     public String created;
+
+    @SerializedName("field_book")
+    public List<FieldBook> field_book;
 
     @SerializedName("groups")
     public ArrayList<Organization> groups;

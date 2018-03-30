@@ -205,7 +205,7 @@ public class FieldBookActivity extends AppCompatActivity {
                 // in temporary storage.
 
                 storeExistingValues(fieldList);
-                
+
                 // Render form UI elements
 
                 populateFields(fieldList);

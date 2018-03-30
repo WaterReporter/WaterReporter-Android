@@ -572,6 +572,8 @@ public class MainActivity extends AppCompatActivity implements
 
         super.onResume();
 
+        ModelStorage.removeModel(mSharedPreferences, "stored_campaign");
+
         // Check for a api connection!
 
         connectionStatus();
@@ -615,9 +617,8 @@ public class MainActivity extends AppCompatActivity implements
 
         ButterKnife.unbind(this);
 
-        // Cancel all pending network requests
-
-        //Callback.cancelAll();
+        ModelStorage.removeModel(mSharedPreferences, "stored_post");
+        ModelStorage.removeModel(mSharedPreferences, "stored_campaign");
 
         // If the DownloadStateReceiver still exists, unregister it and set it to null
         if (mUploadStateReceiver != null) {
@@ -655,9 +656,8 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onBackPressed() {
 
-        // Cancel all pending network requests
-
-        //Callback.cancelAll();
+        ModelStorage.removeModel(mSharedPreferences, "stored_post");
+        ModelStorage.removeModel(mSharedPreferences, "stored_campaign");
 
         Intent a = new Intent(Intent.ACTION_MAIN);
         a.addCategory(Intent.CATEGORY_HOME);

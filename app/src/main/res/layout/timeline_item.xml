@@ -120,6 +120,24 @@
 
         </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/fieldBookIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:padding="16dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/fieldBookIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_assignment_black_24dp" />
+
+        </RelativeLayout>
+
     </FrameLayout>
 
     <TextView
