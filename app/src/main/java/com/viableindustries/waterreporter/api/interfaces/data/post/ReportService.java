@@ -3,6 +3,7 @@ package com.viableindustries.waterreporter.api.interfaces.data.post;
 import com.viableindustries.waterreporter.api.models.FeatureCollection;
 import com.viableindustries.waterreporter.api.models.comment.CommentCollection;
 import com.viableindustries.waterreporter.api.models.favorite.FavoriteCollection;
+import com.viableindustries.waterreporter.api.models.field_book.FieldBookListResponse;
 import com.viableindustries.waterreporter.api.models.organization.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.api.models.post.ReportPatchBody;
@@ -40,6 +41,12 @@ public interface ReportService {
     void getSingleReport(@Header("Content-Type") String contentType,
                          @Path("report") int reportId,
                          Callback<Report> report);
+
+    @GET("/data/report/{report}/field_book")
+    void getFieldBookData(@Header("Authorization") String authorization,
+                          @Header("Content-Type") String contentType,
+                          @Path("report") int reportId,
+                          Callback<FieldBookListResponse> fieldBookListResponseCallback);
 
     @PATCH("/data/report/{report}")
     void setReportState(@Header("Authorization") String authorization,
