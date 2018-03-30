@@ -11,64 +11,118 @@
     android:scrollbars="none"
     tools:context="com.viableindustries.waterreporter.CampaignFormActivity">
 
-    <LinearLayout
-        android:id="@+id/formFieldContainer"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <RelativeLayout
+        <LinearLayout
+            android:id="@+id/formFieldContainer"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="#FFFFFF">
-
-            <ImageView
-                android:id="@+id/logo"
-                android:layout_width="88dp"
-                android:layout_height="24dp"
-                android:layout_centerInParent="true"
-                android:scaleType="fitXY"
-                android:src="@drawable/logo_horizontal_lockup" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <RelativeLayout
-                android:id="@+id/saveFieldBook"
-                android:layout_width="56dp"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="0dp"
-                android:layout_marginStart="0dp">
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="#FFFFFF">
 
                 <ImageView
-                    android:id="@+id/saveFieldBookIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/logo"
+                    android:layout_width="88dp"
+                    android:layout_height="24dp"
                     android:layout_centerInParent="true"
                     android:scaleType="fitXY"
-                    android:src="@drawable/ic_done_black_24dp" />
+                    android:src="@drawable/logo_horizontal_lockup" />
+
+                <RelativeLayout
+                    android:id="@+id/saveFieldBook"
+                    android:layout_width="56dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="0dp"
+                    android:layout_marginStart="0dp">
+
+                    <ImageView
+                        android:id="@+id/saveFieldBookIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_done_black_24dp" />
+
+                </RelativeLayout>
 
             </RelativeLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray_224" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/formSuccessMessage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="color/white"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/userAvatar"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_gravity="center"
+                    android:scaleType="fitXY" />
+
+                <TextView
+                    android:id="@+id/userName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+                    android:paddingBottom="24dp"
+                    android:paddingTop="16dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/thankYouMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingBottom="0dp"
+                    android:paddingEnd="40dp"
+                    android:paddingLeft="40dp"
+                    android:paddingRight="40dp"
+                    android:paddingStart="40dp"
+                    android:paddingTop="0dp"
+                    android:textSize="@dimen/base_text" />
+
+                <Button
+                    android:id="@+id/dismissMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="0dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@drawable/rounded_blue_button"
+                    android:text="@string/dismiss_form_thank_you_message"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/base_text" />
+
+            </LinearLayout>
+
         </RelativeLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/gray_224" />
-
-        <!--<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--android:id="@+id/listViewContainer"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent" />-->
-
-    </LinearLayout>
-
-    <!--<ListView-->
-    <!--android:id="@+id/listView"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:scrollbars="none" />-->
-
-    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
+    </FrameLayout>
 
 </ScrollView>

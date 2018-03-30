@@ -120,6 +120,10 @@
     <string name="decline_form">Not now</string>
     <string name="accept_form">Yes</string>
 
+    <!-- Form thank you message -->
+    <string name="default_form_thank_you_message">Thanks for pitching in %s! We really appreciate your help.</string>
+    <string name="dismiss_form_thank_you_message">OK, got it!</string>
+
     <!-- Camera -->
     <string name="picture">Picture</string>
     <string name="description_info">Info</string>

@@ -10,21 +10,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.campaign.Campaign;
 import com.viableindustries.waterreporter.api.models.campaign.CampaignFormField;
 import com.viableindustries.waterreporter.api.models.campaign.CampaignFormResponse;
-import com.viableindustries.waterreporter.api.models.field_book.FieldBook;
 import com.viableindustries.waterreporter.api.models.field_book.FieldBookPostBody;
 import com.viableindustries.waterreporter.api.models.post.Report;
+import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.user_interface.adapters.CampaignFormFieldListAdapter;
+import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -37,14 +43,23 @@ public class CampaignFormActivity extends AppCompatActivity {
     @Bind(R.id.formFieldContainer)
     LinearLayout formFieldContainer;
 
-//    @Bind(R.id.listViewContainer)
-//    SwipeRefreshLayout listViewContainer;
-
-//    @Bind(R.id.listView)
-//    ListView listView;
-
     @Bind(R.id.saveFieldBook)
     RelativeLayout saveFieldBook;
+
+    @Bind(R.id.formSuccessMessage)
+    RelativeLayout formSuccessMessage;
+
+    @Bind(R.id.userAvatar)
+    ImageView userAvatar;
+
+    @Bind(R.id.userName)
+    TextView userName;
+
+    @Bind(R.id.thankYouMessage)
+    TextView thankYouMessage;
+
+    @Bind(R.id.dismissMessage)
+    Button dismissMessage;
 
     private Campaign mCampaign;
 
@@ -87,23 +102,7 @@ public class CampaignFormActivity extends AppCompatActivity {
 
         retrieveStoredPost();
 
-        // Set refresh listener on report feed container
-
-//        listViewContainer.setOnRefreshListener(
-//                new SwipeRefreshLayout.OnRefreshListener() {
-//                    @Override
-//                    public void onRefresh() {
-//                        Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
-//                        // This method performs the actual api-refresh operation.
-//                        // The method calls setRefreshing(false) when it's finished.
-//                        fetchCampaignFormFields(1, mCampaign.id, true);
-//                    }
-//                }
-//        );
-//
-//        // Set color of swipe refresh arrow animation
-//
-//        listViewContainer.setColorSchemeResources(R.color.waterreporter_blue);
+        // Set click listeners
 
         saveFieldBook.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,6 +110,46 @@ public class CampaignFormActivity extends AppCompatActivity {
                 stageFieldBookData();
             }
         });
+
+        dismissMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                returnToTimeline();
+            }
+        });
+
+    }
+
+    private void populateThankYouMessage() {
+
+        Random randomizer = new Random();
+
+        List<User> organizers =  mCampaign.properties.organizers;
+
+        User organizer = organizers.get(randomizer.nextInt(organizers.size()));
+
+        // Load group leader image
+
+        Picasso.with(this)
+                .load(organizer.properties.picture)
+                .placeholder(R.drawable.user_avatar_placeholder_003)
+                .transform(new CircleTransform()).into(userAvatar);
+
+        // Set group leader name
+
+        String userNameText = String.format("%s %s",
+                organizer.properties.first_name,
+                organizer.properties.last_name);
+
+        userName.setText(userNameText);
+
+        // Set thank you text
+
+        final SharedPreferences coreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
+
+        String authUserName = coreProfile.getString("first_name", "");
+
+        thankYouMessage.setText(getString(R.string.default_form_thank_you_message, authUserName.trim()));
 
     }
 
@@ -130,9 +169,7 @@ public class CampaignFormActivity extends AppCompatActivity {
 
         } catch (NullPointerException _e) {
 
-            startActivity(new Intent(this, MainActivity.class));
-
-            finish();
+            returnToTimeline();
 
         }
 
@@ -146,13 +183,13 @@ public class CampaignFormActivity extends AppCompatActivity {
 
             int campaignId = mCampaign.properties.id;
 
+            populateThankYouMessage();
+
             fetchCampaignFormFields(1, campaignId, true);
 
         } catch (NullPointerException _e) {
 
-            startActivity(new Intent(this, MainActivity.class));
-
-            finish();
+            returnToTimeline();
 
         }
 
@@ -170,8 +207,6 @@ public class CampaignFormActivity extends AppCompatActivity {
     }
 
     private void populateFields(List<CampaignFormField> campaignFormFields) {
-
-//        listViewContainer.setVisibility(View.VISIBLE);
 
         // Populating a LinearLayout here rather than a ListView
 
@@ -191,34 +226,24 @@ public class CampaignFormActivity extends AppCompatActivity {
 
     }
 
-    private void populateList(List<CampaignFormField> campaignMembers) {
+    private void presentThankYou() {
 
-        mCampaignFormFieldListAdapter = new CampaignFormFieldListAdapter(this, campaignMembers);
-
-//        listView.setAdapter(mCampaignFormFieldListAdapter);
-
-//        attachScrollListener();
+        formSuccessMessage.setVisibility(View.VISIBLE);
 
     }
 
-//    private void attachScrollListener() {
-//
-//        listView.setOnScrollListener(new EndlessScrollListener() {
-//
-//            @Override
-//            public boolean onLoadMore(int page, int totalItemsCount) {
-//
-//                // Triggered only when new api needs to be appended to the list
-//
-//                fetchCampaignFormFields(page, mCampaign.id, false);
-//
-//                return true; // ONLY if more api is actually being loaded; false otherwise.
-//
-//            }
-//
-//        });
-//
-//    }
+    private void returnToTimeline() {
+
+        // Re-direct user to main activity feed, which has the effect of preventing
+        // unwanted access to the history stack
+
+        Intent intent = new Intent(CampaignFormActivity.this, MainActivity.class);
+
+        startActivity(intent);
+
+        finish();
+
+    }
 
     private void fetchCampaignFormFields(int page, int mCampaignId, final boolean refresh) {
 
@@ -236,16 +261,10 @@ public class CampaignFormActivity extends AppCompatActivity {
 
                 populateFields(fieldList);
 
-//                populateList(fieldList);
-
-//                listViewContainer.setRefreshing(false);
-
             }
 
             @Override
             public void failure(RetrofitError error) {
-
-//                listViewContainer.setRefreshing(false);
 
                 if (error == null) return;
 
@@ -308,14 +327,7 @@ public class CampaignFormActivity extends AppCompatActivity {
                     @Override
                     public void success(Response result, Response response) {
 
-                        // Re-direct user to main activity feed, which has the effect of preventing
-                        // unwanted access to the history stack
-
-                        Intent intent = new Intent(CampaignFormActivity.this, MainActivity.class);
-
-                        startActivity(intent);
-
-                        finish();
+                        presentThankYou();
 
                     }
 
