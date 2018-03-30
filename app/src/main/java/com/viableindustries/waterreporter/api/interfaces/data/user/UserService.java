@@ -2,6 +2,7 @@ package com.viableindustries.waterreporter.api.interfaces.data.user;
 
 import com.viableindustries.waterreporter.api.models.group.GroupFeatureCollection;
 import com.viableindustries.waterreporter.api.models.organization.OrganizationFeatureCollection;
+import com.viableindustries.waterreporter.api.models.role.RoleListResponse;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.api.models.user.UserBasicResponse;
 import com.viableindustries.waterreporter.api.models.user.UserCollection;
@@ -48,6 +49,12 @@ public interface UserService {
                  @Header("Content-Type") String contentType,
                  @Path("user") int user_id,
                  Callback<User> userResponseCallback);
+
+    @GET("/data/user/{user}/roles")
+    void getUserRoles(@Header("Authorization") String authorization,
+                 @Header("Content-Type") String contentType,
+                 @Path("user") int user_id,
+                 Callback<RoleListResponse> roleListResponseCallback);
 
     @PATCH("/data/user/{user}")
     void updateUser(@Header("Authorization") String authorization,

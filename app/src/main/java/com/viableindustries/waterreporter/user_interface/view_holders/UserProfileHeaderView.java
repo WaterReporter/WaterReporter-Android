@@ -56,6 +56,7 @@ public class UserProfileHeaderView {
     public ImageView extraActionsIconView;
     public RelativeLayout accountSettings;
     public ImageView accountSettingsIcon;
+    public ImageView proBadge;
 
     public interface UserProfileHeaderCallback {
 
@@ -92,6 +93,7 @@ public class UserProfileHeaderView {
         extraActionsIconView = (ImageView) header.findViewById(R.id.extraActionsIconView);
         accountSettings = (RelativeLayout) header.findViewById(R.id.accountSettings);
         accountSettingsIcon = (ImageView) header.findViewById(R.id.accountSettingsIcon);
+        proBadge = (ImageView) header.findViewById(R.id.proBadge);
 
         // Set up white color filter for reversed Water Reporter logo
 

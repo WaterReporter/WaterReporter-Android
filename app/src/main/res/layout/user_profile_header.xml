@@ -71,7 +71,7 @@
 
             </RelativeLayout>
 
-            <RelativeLayout
+            <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -85,7 +85,16 @@
                     android:layout_gravity="center"
                     android:scaleType="fitXY" />
 
-            </RelativeLayout>
+                <ImageView
+                    android:id="@+id/proBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|end"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_verified_user_black_24dp"
+                    android:visibility="gone" />
+
+            </FrameLayout>
 
             <TextView
                 android:id="@+id/userName"

@@ -1,10 +1,13 @@
 package com.viableindustries.waterreporter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -26,6 +29,8 @@ import com.viableindustries.waterreporter.api.models.post.ReportHolder;
 import com.viableindustries.waterreporter.api.models.query.QueryFilter;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
+import com.viableindustries.waterreporter.api.models.role.Role;
+import com.viableindustries.waterreporter.api.models.role.RoleListResponse;
 import com.viableindustries.waterreporter.api.models.snapshot.UserSnapshot;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
@@ -70,6 +75,8 @@ public class UserProfileActivity extends AppCompatActivity implements
 
     private boolean actionFocus = false;
 
+    private Context mContext;
+
     private SharedPreferences mSharedPreferences;
 
     private SharedPreferences mCoreProfile;
@@ -90,6 +97,8 @@ public class UserProfileActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_user_profile);
 
         ButterKnife.bind(this);
+
+        mContext = this;
 
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -249,6 +258,10 @@ public class UserProfileActivity extends AppCompatActivity implements
         // Retrieve user snapshot data
 
         fetchSnapshot(userId);
+
+        // Retrieve user roles
+
+        fetchRoles(userId);
 
         // Retrieve first batch of user's reports
 
@@ -529,6 +542,68 @@ public class UserProfileActivity extends AppCompatActivity implements
 
     }
 
+    private boolean isProMember(List<Role> roles) {
+
+        for (Role role : roles) {
+
+            if (role.properties.name.equals("admin")) {
+
+                return true;
+
+            }
+
+        }
+
+        return false;
+
+    }
+
+    private void fetchRoles(int userId) {
+
+        final String accessToken = mSharedPreferences.getString("access_token", "");
+
+        RestClient.getUserService().getUserRoles(accessToken, "application/json", mUser.id, new Callback<RoleListResponse>() {
+
+            @Override
+            public void success(RoleListResponse roleListResponse, Response response) {
+
+                if (isProMember(roleListResponse.features)) {
+
+                    mUserProfileHeaderView.proBadge.setVisibility(View.VISIBLE);
+
+                    mUserProfileHeaderView.proBadge.setColorFilter(ContextCompat.getColor(mContext, R.color.splash_blue), PorterDuff.Mode.SRC_ATOP);
+
+                }
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                if (error == null) return;
+
+                Response errorResponse = error.getResponse();
+
+                // If we have a valid response object, check the status code and redirect to log in view if necessary
+
+                if (errorResponse != null) {
+
+                    int status = errorResponse.getStatus();
+
+                    if (status == 403) {
+
+                        startActivity(new Intent(UserProfileActivity.this, SignInActivity.class));
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
     private void fetchSnapshot(int userId) {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
@@ -540,7 +615,7 @@ public class UserProfileActivity extends AppCompatActivity implements
 
                 String reportCountText = String.format("%s %s", String.valueOf(userSnapshot.posts),
                         resources.getQuantityString(R.plurals.post_label, userSnapshot.posts, userSnapshot.posts));
-               mUserProfileHeaderView.reportCounter.setText(reportCountText);
+                mUserProfileHeaderView.reportCounter.setText(reportCountText);
 
                 String actionCountText = String.format("%s %s", String.valueOf(userSnapshot.actions),
                         resources.getQuantityString(R.plurals.action_label, userSnapshot.actions, userSnapshot.actions));
