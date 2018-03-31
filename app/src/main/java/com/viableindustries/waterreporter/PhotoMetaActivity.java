@@ -259,8 +259,6 @@ public class PhotoMetaActivity extends AppCompatActivity
 
     private OpenGraphProperties openGraphProperties;
 
-    private int mCampaignId;
-
     private Campaign mCampaign;
 
     @Override
@@ -1491,7 +1489,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                 Map<String, Integer> campaignId = new HashMap<>();
 
-                campaignId.put("id", mCampaignId);
+                campaignId.put("id", mCampaign.properties.id);
 
                 campaigns.add(campaignId);
 
@@ -1752,22 +1750,6 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                 associatedGroups.edit().clear().apply();
 
-                List<String> postGroupNames = new ArrayList<>();
-
-                for (Organization organization : report.properties.groups) {
-
-                    postGroupNames.add(organization.properties.name);
-
-                }
-
-                List<Integer> postGroupIds = new ArrayList<>();
-
-                for (Organization organization : report.properties.groups) {
-
-                    postGroupIds.add(organization.properties.id);
-
-                }
-
                 ArrayList<Group> groups = groupFeatureCollection.getFeatures();
 
                 for (Group group : groups) {
@@ -1780,6 +1762,22 @@ public class PhotoMetaActivity extends AppCompatActivity
                 // associated with the report and persist references in preferences
 
                 if (editMode && report.properties.campaigns.isEmpty()) {
+
+                    List<String> postGroupNames = new ArrayList<>();
+
+                    for (Organization organization : report.properties.groups) {
+
+                        postGroupNames.add(organization.properties.name);
+
+                    }
+
+                    List<Integer> postGroupIds = new ArrayList<>();
+
+                    for (Organization organization : report.properties.groups) {
+
+                        postGroupIds.add(organization.properties.id);
+
+                    }
 
                     for (AbbreviatedOrganization abbreviatedOrganization : abbreviatedOrganizations) {
 
@@ -1804,13 +1802,21 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                 Log.d("associated groups", associatedGroups.getAll().toString());
 
-                if (editMode && report.properties.campaigns.isEmpty()) {
+                if (editMode) {
 
-                    populateOrganizations(abbreviatedOrganizations);
+                    if (report.properties.campaigns.isEmpty()) {
+
+                        populateOrganizations(abbreviatedOrganizations);
+
+                    } else {
+
+                        setCampaignGroupText(report.properties.groups);
+
+                    }
 
                 } else {
 
-                    setCampaignGroupText(report.properties.groups);
+                    populateOrganizations(abbreviatedOrganizations);
 
                 }
 
