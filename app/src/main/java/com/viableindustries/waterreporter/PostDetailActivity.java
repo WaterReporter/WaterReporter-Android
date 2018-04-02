@@ -55,6 +55,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.ButterKnife;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -164,7 +165,11 @@ public class PostDetailActivity extends AppCompatActivity {
 
         } catch (NullPointerException e) {
 
+            e.printStackTrace();
+
             Log.v("NO-STORED-POST", e.getMessage());
+
+//            Log.v("NO-STORED-POST", e.printStackTrace());
 
             Log.v("NO-STORED-POST", "Unable to render list header.");
 
@@ -388,6 +393,11 @@ public class PostDetailActivity extends AppCompatActivity {
         viewHolder.shareIconView = (ImageView) postContainer.findViewById(R.id.shareIconView);
         viewHolder.commentIconView = (ImageView) postContainer.findViewById(R.id.commentIconView);
         viewHolder.favoriteIconView = (ImageView) postContainer.findViewById(R.id.favoriteIconView);
+
+        // Field book
+
+        viewHolder.fieldBookIndicator = (RelativeLayout) postContainer.findViewById(R.id.fieldBookIndicator);
+        viewHolder.fieldBookIcon = (ImageView) postContainer.findViewById(R.id.fieldBookIcon);
 
         // Set dimensions of post image container
 
@@ -623,38 +633,44 @@ public class PostDetailActivity extends AppCompatActivity {
 
         mapView.onResume();
 
-        // Retrieve stored Post
+        // Retrieve stored post
 
-//        retrieveStoredPost();
+        if (mPost == null) {
+
+            retrieveStoredPost();
+
+        }
 
     }
 
     @Override
     public void onPause() {
+
         super.onPause();
+
         mapView.onPause();
+
     }
 
     @Override
     public void onStop() {
+
         super.onStop();
+
         mapView.onStop();
 
-        // Cancel all pending network requests
+        // Clear model from temporary storage
 
-        //Callback.cancelAll();
+        ModelStorage.removeModel(mSharedPreferences, "stored_post");
 
     }
 
     @Override
     protected void onDestroy() {
+
         super.onDestroy();
+
         mapView.onDestroy();
-//        ButterKnife.unbind(this);
-
-        // Cancel all pending network requests
-
-        //Callback.cancelAll();
 
         // Clear model from temporary storage
 
@@ -666,6 +682,17 @@ public class PostDetailActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        // Clear model from temporary storage
+
+        ModelStorage.removeModel(mSharedPreferences, "stored_post");
+
+        finish();
+
     }
 
 }

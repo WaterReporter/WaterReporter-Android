@@ -79,6 +79,17 @@ public class MarkerCardAdapter extends RecyclerView.Adapter<MarkerCardAdapter.Vi
 
         TimelineAdapterHelpers.setActionBadge(post, holder.actionBadge);
 
+        //
+        // Clear click listeners
+        //
+
+        holder.postImage.setOnClickListener(null);
+//        holder.cardView.setOnClickListener(null);
+
+        //
+        // Check for Open Graph data
+        //
+
         if (post.properties.open_graph.size() > 0) {
 
             Log.v("open--graph", "post has OG data");
@@ -92,18 +103,24 @@ public class MarkerCardAdapter extends RecyclerView.Adapter<MarkerCardAdapter.Vi
             Picasso
                     .with(mContext)
                     .load(imageUrl)
-                    .resize(120, 120)
+//                    .resize(120, 120)
                     .error(R.drawable.open_graph_placeholder)
                     .into(holder.postImage);
 
-            holder.cardView.setOnClickListener(new View.OnClickListener() {
+            holder.postImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
                     Uri webpage = Uri.parse(openGraphProperties.url);
+
                     Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+
                     if (intent.resolveActivity(mContext.getPackageManager()) != null) {
+
                         mContext.startActivity(intent);
+
                     }
+
                 }
             });
 

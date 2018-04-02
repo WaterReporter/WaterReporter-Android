@@ -88,7 +88,7 @@ public class SnapshotWatershedListAdapter extends ArrayAdapter<SnapshotShallowWa
         String subText = UtilityMethods.makeSecondaryListPostCountText(mContext.getResources(),
                 campaignWatershed.posts, campaignWatershed.last_active);
 
-        viewHolder.postCount.setTextColor(ContextCompat.getColor(mContext, R.color.black_87));
+        viewHolder.postCount.setTextColor(ContextCompat.getColor(mContext, R.color.black_54));
 
         viewHolder.postCount.setText(subText);
 
