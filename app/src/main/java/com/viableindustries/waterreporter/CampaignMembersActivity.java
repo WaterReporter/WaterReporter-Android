@@ -13,9 +13,9 @@ import android.widget.ListView;
 
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.campaign.Campaign;
-import com.viableindustries.waterreporter.api.models.campaign.CampaignMember;
-import com.viableindustries.waterreporter.api.models.snapshot.CampaignMemberList;
-import com.viableindustries.waterreporter.user_interface.adapters.CampaignMemberListAdapter;
+import com.viableindustries.waterreporter.api.models.snapshot.SnapshotShallowUser;
+import com.viableindustries.waterreporter.api.models.snapshot.SnapshotMemberList;
+import com.viableindustries.waterreporter.user_interface.adapters.SnapshotMemberListAdapter;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
@@ -38,9 +38,9 @@ public class CampaignMembersActivity extends AppCompatActivity {
 
     private Campaign mCampaign;
 
-    private List<CampaignMember> memberList = new ArrayList<>();
+    private List<SnapshotShallowUser> memberList = new ArrayList<>();
 
-    private CampaignMemberListAdapter mCampaignMemberListAdapter;
+    private SnapshotMemberListAdapter mCampaignMemberListAdapter;
 
     private SharedPreferences mSharedPreferences;
 
@@ -114,9 +114,9 @@ public class CampaignMembersActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void populateList(List<CampaignMember> campaignMembers) {
+    private void populateList(List<SnapshotShallowUser> campaignMembers) {
 
-        mCampaignMemberListAdapter = new CampaignMemberListAdapter(this, campaignMembers);
+        mCampaignMemberListAdapter = new SnapshotMemberListAdapter(this, campaignMembers);
 
         listView.setAdapter(mCampaignMemberListAdapter);
 
@@ -150,12 +150,12 @@ public class CampaignMembersActivity extends AppCompatActivity {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getSnapshotService().getCampaignMembers(accessToken, "application/json", page, mCampaignId, new Callback<CampaignMemberList>() {
+        RestClient.getSnapshotService().getCampaignMembers(accessToken, "application/json", page, mCampaignId, new Callback<SnapshotMemberList>() {
 
             @Override
-            public void success(CampaignMemberList campaignMemberList, Response response) {
+            public void success(SnapshotMemberList campaignMemberList, Response response) {
 
-                List<CampaignMember> groups = campaignMemberList.members;
+                List<SnapshotShallowUser> groups = campaignMemberList.members;
 
                 if (refresh) {
 

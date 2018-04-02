@@ -13,9 +13,9 @@ import android.widget.ListView;
 
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.campaign.Campaign;
-import com.viableindustries.waterreporter.api.models.campaign.CampaignGroup;
-import com.viableindustries.waterreporter.api.models.snapshot.CampaignGroupList;
-import com.viableindustries.waterreporter.user_interface.adapters.CampaignGroupListAdapter;
+import com.viableindustries.waterreporter.api.models.snapshot.SnapshotShallowGroup;
+import com.viableindustries.waterreporter.api.models.snapshot.SnapshotGroupList;
+import com.viableindustries.waterreporter.user_interface.adapters.SnapshotGroupListAdapter;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
@@ -38,9 +38,9 @@ public class CampaignGroupsActivity extends AppCompatActivity {
 
     private Campaign mCampaign;
 
-    private List<CampaignGroup> groupList = new ArrayList<>();
+    private List<SnapshotShallowGroup> groupList = new ArrayList<>();
 
-    private CampaignGroupListAdapter mCampaignGroupListAdapter;
+    private SnapshotGroupListAdapter mCampaignGroupListAdapter;
 
     private SharedPreferences mSharedPreferences;
 
@@ -114,9 +114,9 @@ public class CampaignGroupsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void populateList(List<CampaignGroup> campaignGroups) {
+    private void populateList(List<SnapshotShallowGroup> campaignGroups) {
 
-        mCampaignGroupListAdapter = new CampaignGroupListAdapter(this, campaignGroups);
+        mCampaignGroupListAdapter = new SnapshotGroupListAdapter(this, campaignGroups);
 
         listView.setAdapter(mCampaignGroupListAdapter);
 
@@ -150,12 +150,12 @@ public class CampaignGroupsActivity extends AppCompatActivity {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getSnapshotService().getCampaignGroups(accessToken, "application/json", page, mCampaignId, new Callback<CampaignGroupList>() {
+        RestClient.getSnapshotService().getCampaignGroups(accessToken, "application/json", page, mCampaignId, new Callback<SnapshotGroupList>() {
 
             @Override
-            public void success(CampaignGroupList campaignGroupList, Response response) {
+            public void success(SnapshotGroupList campaignGroupList, Response response) {
 
-                List<CampaignGroup> groups = campaignGroupList.groups;
+                List<SnapshotShallowGroup> groups = campaignGroupList.groups;
 
                 if (refresh) {
 

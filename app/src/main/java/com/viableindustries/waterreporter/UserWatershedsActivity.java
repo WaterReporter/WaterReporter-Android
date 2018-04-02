@@ -12,10 +12,10 @@ import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
-import com.viableindustries.waterreporter.api.models.snapshot.SnapshotGroupList;
-import com.viableindustries.waterreporter.api.models.snapshot.SnapshotShallowGroup;
+import com.viableindustries.waterreporter.api.models.snapshot.SnapshotShallowWatershed;
+import com.viableindustries.waterreporter.api.models.snapshot.SnapshotWatershedList;
 import com.viableindustries.waterreporter.api.models.user.User;
-import com.viableindustries.waterreporter.user_interface.adapters.SnapshotGroupListAdapter;
+import com.viableindustries.waterreporter.user_interface.adapters.SnapshotWatershedListAdapter;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
@@ -28,7 +28,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class UserGroupsActivity extends AppCompatActivity {
+public class UserWatershedsActivity extends AppCompatActivity {
 
     @Bind(R.id.listViewContainer)
     SwipeRefreshLayout listViewContainer;
@@ -38,9 +38,9 @@ public class UserGroupsActivity extends AppCompatActivity {
 
     private User mUser;
 
-    private List<SnapshotShallowGroup> groupList = new ArrayList<>();
+    private List<SnapshotShallowWatershed> watershedList = new ArrayList<>();
 
-    private SnapshotGroupListAdapter mUserGroupListAdapter;
+    private SnapshotWatershedListAdapter mUserWatershedListAdapter;
 
     private SharedPreferences mSharedPreferences;
 
@@ -51,7 +51,7 @@ public class UserGroupsActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_user_groups);
+        setContentView(R.layout.activity_user_watersheds);
 
         ButterKnife.bind(this);
 
@@ -72,7 +72,7 @@ public class UserGroupsActivity extends AppCompatActivity {
                         Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
                         // This method performs the actual api-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
-                        fetchUserGroups(1, mUser.id, true);
+                        fetchUserWatersheds(1, mUser.id, true);
                     }
                 }
         );
@@ -91,7 +91,7 @@ public class UserGroupsActivity extends AppCompatActivity {
 
             int campaignId = mUser.properties.id;
 
-            fetchUserGroups(1, campaignId, true);
+            fetchUserWatersheds(1, campaignId, true);
 
         } catch (NullPointerException _e) {
 
@@ -114,11 +114,11 @@ public class UserGroupsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void populateList(List<SnapshotShallowGroup> campaignGroups) {
+    private void populateList(List<SnapshotShallowWatershed> campaignWatersheds) {
 
-        mUserGroupListAdapter = new SnapshotGroupListAdapter(this, campaignGroups);
+        mUserWatershedListAdapter = new SnapshotWatershedListAdapter(this, campaignWatersheds);
 
-        listView.setAdapter(mUserGroupListAdapter);
+        listView.setAdapter(mUserWatershedListAdapter);
 
         attachScrollListener();
 
@@ -133,7 +133,7 @@ public class UserGroupsActivity extends AppCompatActivity {
 
                 // Triggered only when new api needs to be appended to the list
 
-                fetchUserGroups(page, mUser.id, false);
+                fetchUserWatersheds(page, mUser.id, false);
 
                 return true; // ONLY if more api is actually being loaded; false otherwise.
 
@@ -143,31 +143,31 @@ public class UserGroupsActivity extends AppCompatActivity {
 
     }
 
-    private void fetchUserGroups(int page, int mUserId, final boolean refresh) {
+    private void fetchUserWatersheds(int page, int mUserId, final boolean refresh) {
 
         final SharedPreferences mSharedPreferences =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getSnapshotService().getUserGroups(accessToken, "application/json", page, mUserId, new Callback<SnapshotGroupList>() {
+        RestClient.getSnapshotService().getUserWatersheds(accessToken, "application/json", page, mUserId, new Callback<SnapshotWatershedList>() {
 
             @Override
-            public void success(SnapshotGroupList campaignGroupList, Response response) {
+            public void success(SnapshotWatershedList campaignWatershedList, Response response) {
 
-                List<SnapshotShallowGroup> groups = campaignGroupList.groups;
+                List<SnapshotShallowWatershed> groups = campaignWatershedList.watersheds;
 
                 if (refresh) {
 
-                    groupList = groups;
+                    watershedList = groups;
 
-                    populateList(groupList);
+                    populateList(watershedList);
 
                 } else {
 
-                    groupList.addAll(groups);
+                    watershedList.addAll(groups);
 
-                    mUserGroupListAdapter.notifyDataSetChanged();
+                    mUserWatershedListAdapter.notifyDataSetChanged();
 
                 }
 

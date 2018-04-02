@@ -13,9 +13,9 @@ import android.widget.ListView;
 
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.campaign.Campaign;
-import com.viableindustries.waterreporter.api.models.campaign.CampaignWatershed;
-import com.viableindustries.waterreporter.api.models.snapshot.CampaignWatershedList;
-import com.viableindustries.waterreporter.user_interface.adapters.CampaignWatershedListAdapter;
+import com.viableindustries.waterreporter.api.models.snapshot.SnapshotShallowWatershed;
+import com.viableindustries.waterreporter.api.models.snapshot.SnapshotWatershedList;
+import com.viableindustries.waterreporter.user_interface.adapters.SnapshotWatershedListAdapter;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
@@ -38,9 +38,9 @@ public class CampaignWatershedsActivity extends AppCompatActivity {
 
     private Campaign mCampaign;
 
-    private List<CampaignWatershed> watershedList = new ArrayList<>();
+    private List<SnapshotShallowWatershed> watershedList = new ArrayList<>();
 
-    private CampaignWatershedListAdapter mCampaignWatershedListAdapter;
+    private SnapshotWatershedListAdapter mCampaignWatershedListAdapter;
 
     private SharedPreferences mSharedPreferences;
 
@@ -114,9 +114,9 @@ public class CampaignWatershedsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void populateList(List<CampaignWatershed> campaignWatersheds) {
+    private void populateList(List<SnapshotShallowWatershed> campaignWatersheds) {
 
-        mCampaignWatershedListAdapter = new CampaignWatershedListAdapter(this, campaignWatersheds);
+        mCampaignWatershedListAdapter = new SnapshotWatershedListAdapter(this, campaignWatersheds);
 
         listView.setAdapter(mCampaignWatershedListAdapter);
 
@@ -150,12 +150,12 @@ public class CampaignWatershedsActivity extends AppCompatActivity {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getSnapshotService().getCampaignWatersheds(accessToken, "application/json", page, mCampaignId, new Callback<CampaignWatershedList>() {
+        RestClient.getSnapshotService().getCampaignWatersheds(accessToken, "application/json", page, mCampaignId, new Callback<SnapshotWatershedList>() {
 
             @Override
-            public void success(CampaignWatershedList campaignWatershedList, Response response) {
+            public void success(SnapshotWatershedList campaignWatershedList, Response response) {
 
-                List<CampaignWatershed> groups = campaignWatershedList.watersheds;
+                List<SnapshotShallowWatershed> groups = campaignWatershedList.watersheds;
 
                 if (refresh) {
 

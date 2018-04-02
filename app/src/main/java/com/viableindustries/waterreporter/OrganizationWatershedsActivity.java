@@ -12,10 +12,10 @@ import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
-import com.viableindustries.waterreporter.api.models.snapshot.SnapshotGroupList;
-import com.viableindustries.waterreporter.api.models.snapshot.SnapshotShallowGroup;
-import com.viableindustries.waterreporter.api.models.user.User;
-import com.viableindustries.waterreporter.user_interface.adapters.SnapshotGroupListAdapter;
+import com.viableindustries.waterreporter.api.models.organization.Organization;
+import com.viableindustries.waterreporter.api.models.snapshot.SnapshotShallowWatershed;
+import com.viableindustries.waterreporter.api.models.snapshot.SnapshotWatershedList;
+import com.viableindustries.waterreporter.user_interface.adapters.SnapshotWatershedListAdapter;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
@@ -28,7 +28,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class UserGroupsActivity extends AppCompatActivity {
+public class OrganizationWatershedsActivity extends AppCompatActivity {
 
     @Bind(R.id.listViewContainer)
     SwipeRefreshLayout listViewContainer;
@@ -36,11 +36,11 @@ public class UserGroupsActivity extends AppCompatActivity {
     @Bind(R.id.listView)
     ListView listView;
 
-    private User mUser;
+    private Organization mOrganization;
 
-    private List<SnapshotShallowGroup> groupList = new ArrayList<>();
+    private List<SnapshotShallowWatershed> watershedList = new ArrayList<>();
 
-    private SnapshotGroupListAdapter mUserGroupListAdapter;
+    private SnapshotWatershedListAdapter mOrganizationWatershedListAdapter;
 
     private SharedPreferences mSharedPreferences;
 
@@ -51,7 +51,7 @@ public class UserGroupsActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_user_groups);
+        setContentView(R.layout.activity_organization_watersheds);
 
         ButterKnife.bind(this);
 
@@ -59,9 +59,9 @@ public class UserGroupsActivity extends AppCompatActivity {
 
         mSharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        // Retrieve stored User
+        // Retrieve stored Organization
 
-        retrieveStoredUser();
+        retrieveStoredOrganization();
 
         // Set refresh listener on report feed container
 
@@ -72,7 +72,7 @@ public class UserGroupsActivity extends AppCompatActivity {
                         Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
                         // This method performs the actual api-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
-                        fetchUserGroups(1, mUser.id, true);
+                        fetchOrganizationWatersheds(1, mOrganization.id, true);
                     }
                 }
         );
@@ -83,15 +83,15 @@ public class UserGroupsActivity extends AppCompatActivity {
 
     }
 
-    private void retrieveStoredUser() {
+    private void retrieveStoredOrganization() {
 
-        mUser = ModelStorage.getStoredUser(mSharedPreferences, "stored_user");
+        mOrganization = ModelStorage.getStoredOrganization(mSharedPreferences);
 
         try {
 
-            int campaignId = mUser.properties.id;
+            int organizationId = mOrganization.properties.id;
 
-            fetchUserGroups(1, campaignId, true);
+            fetchOrganizationWatersheds(1, organizationId, true);
 
         } catch (NullPointerException _e) {
 
@@ -114,11 +114,11 @@ public class UserGroupsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void populateList(List<SnapshotShallowGroup> campaignGroups) {
+    private void populateList(List<SnapshotShallowWatershed> organizationWatersheds) {
 
-        mUserGroupListAdapter = new SnapshotGroupListAdapter(this, campaignGroups);
+        mOrganizationWatershedListAdapter = new SnapshotWatershedListAdapter(this, organizationWatersheds);
 
-        listView.setAdapter(mUserGroupListAdapter);
+        listView.setAdapter(mOrganizationWatershedListAdapter);
 
         attachScrollListener();
 
@@ -133,7 +133,7 @@ public class UserGroupsActivity extends AppCompatActivity {
 
                 // Triggered only when new api needs to be appended to the list
 
-                fetchUserGroups(page, mUser.id, false);
+                fetchOrganizationWatersheds(page, mOrganization.id, false);
 
                 return true; // ONLY if more api is actually being loaded; false otherwise.
 
@@ -143,31 +143,31 @@ public class UserGroupsActivity extends AppCompatActivity {
 
     }
 
-    private void fetchUserGroups(int page, int mUserId, final boolean refresh) {
+    private void fetchOrganizationWatersheds(int page, int mOrganizationId, final boolean refresh) {
 
         final SharedPreferences mSharedPreferences =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getSnapshotService().getUserGroups(accessToken, "application/json", page, mUserId, new Callback<SnapshotGroupList>() {
+        RestClient.getSnapshotService().getOrganizationWatersheds(accessToken, "application/json", page, mOrganizationId, new Callback<SnapshotWatershedList>() {
 
             @Override
-            public void success(SnapshotGroupList campaignGroupList, Response response) {
+            public void success(SnapshotWatershedList organizationWatershedList, Response response) {
 
-                List<SnapshotShallowGroup> groups = campaignGroupList.groups;
+                List<SnapshotShallowWatershed> groups = organizationWatershedList.watersheds;
 
                 if (refresh) {
 
-                    groupList = groups;
+                    watershedList = groups;
 
-                    populateList(groupList);
+                    populateList(watershedList);
 
                 } else {
 
-                    groupList.addAll(groups);
+                    watershedList.addAll(groups);
 
-                    mUserGroupListAdapter.notifyDataSetChanged();
+                    mOrganizationWatershedListAdapter.notifyDataSetChanged();
 
                 }
 
@@ -211,7 +211,7 @@ public class UserGroupsActivity extends AppCompatActivity {
 
         // Retrieve stored Organization
 
-        retrieveStoredUser();
+        retrieveStoredOrganization();
 
     }
 

@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.R;
-import com.viableindustries.waterreporter.api.models.campaign.CampaignGroup;
+import com.viableindustries.waterreporter.api.models.snapshot.SnapshotShallowUser;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.UtilityMethods;
 
@@ -26,7 +26,7 @@ import java.util.Locale;
  * Created by brendanmcintyre on 3/26/18.
  */
 
-public class CampaignGroupListAdapter extends ArrayAdapter<CampaignGroup> {
+public class SnapshotMemberListAdapter extends ArrayAdapter<SnapshotShallowUser> {
 
     private final Context mContext;
 
@@ -34,9 +34,9 @@ public class CampaignGroupListAdapter extends ArrayAdapter<CampaignGroup> {
 
     protected int id;
 
-    private final List<CampaignGroup> sourceList;
+    private final List<SnapshotShallowUser> sourceList;
 
-    public CampaignGroupListAdapter(Context aContext, List<CampaignGroup> features) {
+    public SnapshotMemberListAdapter(Context aContext, List<SnapshotShallowUser> features) {
 
         super(aContext, 0, features);
 
@@ -50,54 +50,56 @@ public class CampaignGroupListAdapter extends ArrayAdapter<CampaignGroup> {
         ImageView featureIcon;
         TextView featureName;
         TextView postCount;
-        LinearLayout campaignGroupItem;
+        LinearLayout campaignMemberItem;
     }
 
     @Override
     @NonNull
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
-        CampaignGroupListAdapter.ViewHolder viewHolder;
+        SnapshotMemberListAdapter.ViewHolder viewHolder;
 
         if (convertView == null) {
 
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.campaign_group_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.campaign_member_item, parent, false);
 
-            viewHolder = new CampaignGroupListAdapter.ViewHolder();
+            viewHolder = new SnapshotMemberListAdapter.ViewHolder();
 
             viewHolder.featureIcon = (ImageView) convertView.findViewById(R.id.featureIcon);
             viewHolder.featureName = (TextView) convertView.findViewById(R.id.featureName);
             viewHolder.postCount = (TextView) convertView.findViewById(R.id.postCount);
-            viewHolder.campaignGroupItem = (LinearLayout) convertView.findViewById(R.id.campaignGroupItem);
+            viewHolder.campaignMemberItem = (LinearLayout) convertView.findViewById(R.id.campaignMemberItem);
 
             convertView.setTag(viewHolder);
 
         } else {
 
-            viewHolder = (CampaignGroupListAdapter.ViewHolder) convertView.getTag();
+            viewHolder = (SnapshotMemberListAdapter.ViewHolder) convertView.getTag();
 
         }
 
-        final CampaignGroup campaignGroup = sourceList.get(position);
+        final SnapshotShallowUser campaignMember = sourceList.get(position);
 
         // Populate layout elements
 
-        viewHolder.featureName.setText(campaignGroup.name);
+//        viewHolder.postCount.setText(String.valueOf(campaignLeader.posts));
+
+        viewHolder.featureName.setText(campaignMember.name);
 
         Picasso.with(mContext)
-                .load(campaignGroup.picture)
+                .load(campaignMember.picture)
                 .placeholder(R.drawable.user_avatar_placeholder)
                 .transform(new CircleTransform())
                 .into(viewHolder.featureIcon);
 
         String subText = UtilityMethods.makeSecondaryListPostCountText(mContext.getResources(),
-                campaignGroup.posts, campaignGroup.last_active);
+                campaignMember.posts, campaignMember.last_active);
 
         viewHolder.postCount.setText(subText);
 
         long timeDelta = UtilityMethods.timeDelta(
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US),
-                campaignGroup.last_active);
+                campaignMember.last_active);
 
         if (timeDelta > 0 && timeDelta < (DateUtils.DAY_IN_MILLIS * 30)) {
 

@@ -1,17 +1,12 @@
-package com.viableindustries.waterreporter.api.models.campaign;
+package com.viableindustries.waterreporter.api.models.snapshot;
 
 import com.google.gson.annotations.SerializedName;
-import com.viableindustries.waterreporter.api.models.organization.Organization;
-import com.viableindustries.waterreporter.api.models.post.ReportPhoto;
-import com.viableindustries.waterreporter.api.models.user.User;
-
-import java.util.List;
 
 /**
- * Created by brendanmcintyre on 3/26/18.
+ * Created by brendanmcintyre on 4/2/18.
  */
 
-public class CampaignGroup {
+public class SnapshotShallowCampaign {
 
     @SerializedName("description")
     public String description;

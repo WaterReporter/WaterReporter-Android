@@ -11,22 +11,15 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ListView;
 
-import com.google.gson.Gson;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
-import com.viableindustries.waterreporter.api.models.organization.OrganizationMemberList;
-import com.viableindustries.waterreporter.api.models.query.QueryFilter;
-import com.viableindustries.waterreporter.api.models.query.QueryParams;
-import com.viableindustries.waterreporter.api.models.query.QuerySort;
-import com.viableindustries.waterreporter.api.models.user.User;
-import com.viableindustries.waterreporter.api.models.user.UserCollection;
-import com.viableindustries.waterreporter.user_interface.adapters.UserListAdapter;
+import com.viableindustries.waterreporter.api.models.snapshot.SnapshotMemberList;
+import com.viableindustries.waterreporter.api.models.snapshot.SnapshotShallowUser;
+import com.viableindustries.waterreporter.user_interface.adapters.SnapshotMemberListAdapter;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import butterknife.Bind;
@@ -37,17 +30,17 @@ import retrofit.client.Response;
 
 public class OrganizationMembersActivity extends AppCompatActivity {
 
-    @Bind(R.id.memberListContainer)
-    SwipeRefreshLayout memberListContainer;
+    @Bind(R.id.listViewContainer)
+    SwipeRefreshLayout listViewContainer;
 
-    @Bind(R.id.memberList)
-    ListView memberList;
+    @Bind(R.id.listView)
+    ListView listView;
 
-    private Organization organization;
+    private Organization mOrganization;
 
-    private List<User> memberCollection = new ArrayList<>();
+    private List<SnapshotShallowUser> memberList = new ArrayList<>();
 
-    private UserListAdapter userListAdapter;
+    private SnapshotMemberListAdapter mSnapshotShallowUserListAdapter;
 
     private SharedPreferences mSharedPreferences;
 
@@ -70,47 +63,35 @@ public class OrganizationMembersActivity extends AppCompatActivity {
 
         retrieveStoredOrganization();
 
-        memberCollection = OrganizationMemberList.getList();
-
-        Collections.sort(memberCollection, new Comparator<User>() {
-            @Override
-            public int compare(User user1, User user2) {
-                return user1.properties.last_name.compareTo(user2.properties.last_name);
-            }
-        });
-
         // Set refresh listener on report feed container
 
-        memberListContainer.setOnRefreshListener(
+        listViewContainer.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
                         Log.i("fresh", "onRefresh called from SwipeRefreshLayout");
                         // This method performs the actual api-refresh operation.
                         // The method calls setRefreshing(false) when it's finished.
-                        fetchOrganizationMembers(50, 1, organization.id, null, true);
+                        fetchOrganizationUsers(1, mOrganization.id, true);
                     }
                 }
         );
 
         // Set color of swipe refresh arrow animation
 
-        memberListContainer.setColorSchemeResources(R.color.waterreporter_blue);
-
-        populateUsers(memberCollection);
-
+        listViewContainer.setColorSchemeResources(R.color.waterreporter_blue);
 
     }
 
     private void retrieveStoredOrganization() {
 
-        organization = ModelStorage.getStoredOrganization(mSharedPreferences);
-
-        fetchOrganizationMembers(50, 1, organization.id, null, true);
+        mOrganization = ModelStorage.getStoredOrganization(mSharedPreferences);
 
         try {
 
-            int orgId = organization.properties.id;
+            int organizationId = mOrganization.properties.id;
+
+            fetchOrganizationUsers(1, organizationId, true);
 
         } catch (NullPointerException _e) {
 
@@ -133,11 +114,11 @@ public class OrganizationMembersActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void populateUsers(List<User> users) {
+    private void populateList(List<SnapshotShallowUser> organizationMembers) {
 
-        userListAdapter = new UserListAdapter(this, users);
+        mSnapshotShallowUserListAdapter = new SnapshotMemberListAdapter(this, organizationMembers);
 
-        memberList.setAdapter(userListAdapter);
+        listView.setAdapter(mSnapshotShallowUserListAdapter);
 
         attachScrollListener();
 
@@ -145,14 +126,14 @@ public class OrganizationMembersActivity extends AppCompatActivity {
 
     private void attachScrollListener() {
 
-        memberList.setOnScrollListener(new EndlessScrollListener() {
+        listView.setOnScrollListener(new EndlessScrollListener() {
 
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
 
                 // Triggered only when new api needs to be appended to the list
 
-                fetchOrganizationMembers(50, page, organization.id, null, false);
+                fetchOrganizationUsers(page, mOrganization.id, false);
 
                 return true; // ONLY if more api is actually being loaded; false otherwise.
 
@@ -162,88 +143,42 @@ public class OrganizationMembersActivity extends AppCompatActivity {
 
     }
 
-    private String buildQuery() {
-
-        // Create order_by list and add a sort parameter
-
-        List<QuerySort> queryOrder = new ArrayList<>();
-
-        QuerySort querySort = new QuerySort("last_name", "asc");
-
-        queryOrder.add(querySort);
-
-        // Create filter list and add a filter parameter
-
-        List<Object> queryFilters = new ArrayList<>();
-
-        QueryFilter complexVal = new QueryFilter("id", "eq", organization.id);
-
-        QueryFilter userFilter = new QueryFilter("organization", "any", complexVal);
-
-        queryFilters.add(userFilter);
-
-        // Create query string from new QueryParams
-
-        QueryParams queryParams = new QueryParams(queryFilters, queryOrder);
-
-        return new Gson().toJson(queryParams);
-
-    }
-
-    private void fetchOrganizationMembers(int limit, int page, int organizationId, final String query, final boolean refresh) {
+    private void fetchOrganizationUsers(int page, int mOrganizationId, final boolean refresh) {
 
         final SharedPreferences mSharedPreferences =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getOrganizationService().getOrganizationMembers(accessToken, "application/json", organizationId, page, limit, query, new Callback<UserCollection>() {
+        RestClient.getSnapshotService().getOrganizationUsers(accessToken, "application/json", page, mOrganizationId, new Callback<SnapshotMemberList>() {
 
             @Override
-            public void success(UserCollection userCollection, Response response) {
+            public void success(SnapshotMemberList organizationMemberList, Response response) {
 
-                ArrayList<User> members = userCollection.getFeatures();
-
-                if (!members.isEmpty()) {
-
-                    memberCollection.addAll(members);
-
-                    Collections.sort(memberCollection, new Comparator<User>() {
-                        @Override
-                        public int compare(User user1, User user2) {
-                            return user1.properties.last_name.compareTo(user2.properties.last_name);
-                        }
-                    });
-
-                    userListAdapter.notifyDataSetChanged();
-
-                }
+                List<SnapshotShallowUser> groups = organizationMemberList.members;
 
                 if (refresh) {
 
-                    OrganizationMemberList.setList(members);
+                    memberList = groups;
 
-                    memberCollection = members;
+                    populateList(memberList);
 
-                    Collections.sort(memberCollection, new Comparator<User>() {
-                        @Override
-                        public int compare(User user1, User user2) {
-                            return user1.properties.last_name.compareTo(user2.properties.last_name);
-                        }
-                    });
+                } else {
 
-                    populateUsers(memberCollection);
+                    memberList.addAll(groups);
+
+                    mSnapshotShallowUserListAdapter.notifyDataSetChanged();
 
                 }
 
-                memberListContainer.setRefreshing(false);
+                listViewContainer.setRefreshing(false);
 
             }
 
             @Override
             public void failure(RetrofitError error) {
 
-                memberListContainer.setRefreshing(false);
+                listViewContainer.setRefreshing(false);
 
                 if (error == null) return;
 
@@ -257,7 +192,7 @@ public class OrganizationMembersActivity extends AppCompatActivity {
 
                     if (status == 403) {
 
-                        startActivity(new Intent(OrganizationMembersActivity.this, SignInActivity.class));
+                        startActivity(new Intent(mContext, SignInActivity.class));
 
                     }
 
@@ -291,10 +226,6 @@ public class OrganizationMembersActivity extends AppCompatActivity {
         super.onDestroy();
 
         ButterKnife.unbind(this);
-
-        // Cancel all pending network requests
-
-        //Callback.cancelAll();
 
     }
 

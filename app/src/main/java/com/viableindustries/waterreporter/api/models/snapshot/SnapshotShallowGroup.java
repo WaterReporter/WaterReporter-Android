@@ -1,4 +1,4 @@
-package com.viableindustries.waterreporter.api.models.campaign;
+package com.viableindustries.waterreporter.api.models.snapshot;
 
 import com.google.gson.annotations.SerializedName;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
@@ -11,10 +11,13 @@ import java.util.List;
  * Created by brendanmcintyre on 3/26/18.
  */
 
-public class CampaignWatershed {
+public class SnapshotShallowGroup {
 
-    @SerializedName("code")
-    public int code;
+    @SerializedName("description")
+    public String description;
+
+    @SerializedName("id")
+    public int id;
 
     @SerializedName("last_active")
     public String last_active;
@@ -22,8 +25,10 @@ public class CampaignWatershed {
     @SerializedName("name")
     public String name;
 
+    @SerializedName("picture")
+    public String picture;
+
     @SerializedName("posts")
     public int posts;
 
 }
-

@@ -4,17 +4,18 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.R;
-import com.viableindustries.waterreporter.api.models.campaign.CampaignWatershed;
-import com.viableindustries.waterreporter.constants.HucStates;
+import com.viableindustries.waterreporter.api.models.snapshot.SnapshotShallowGroup;
+import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.UtilityMethods;
 
 import java.text.SimpleDateFormat;
@@ -25,7 +26,7 @@ import java.util.Locale;
  * Created by brendanmcintyre on 3/26/18.
  */
 
-public class CampaignWatershedListAdapter extends ArrayAdapter<CampaignWatershed> {
+public class SnapshotGroupListAdapter extends ArrayAdapter<SnapshotShallowGroup> {
 
     private final Context mContext;
 
@@ -33,9 +34,9 @@ public class CampaignWatershedListAdapter extends ArrayAdapter<CampaignWatershed
 
     protected int id;
 
-    private final List<CampaignWatershed> sourceList;
+    private final List<SnapshotShallowGroup> sourceList;
 
-    public CampaignWatershedListAdapter(Context aContext, List<CampaignWatershed> features) {
+    public SnapshotGroupListAdapter(Context aContext, List<SnapshotShallowGroup> features) {
 
         super(aContext, 0, features);
 
@@ -46,55 +47,57 @@ public class CampaignWatershedListAdapter extends ArrayAdapter<CampaignWatershed
     }
 
     private static class ViewHolder {
+        ImageView featureIcon;
         TextView featureName;
         TextView postCount;
-        TextView stateList;
-        LinearLayout campaignWatershedItem;
+        LinearLayout campaignGroupItem;
     }
 
     @Override
     @NonNull
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
-        CampaignWatershedListAdapter.ViewHolder viewHolder;
+        SnapshotGroupListAdapter.ViewHolder viewHolder;
 
         if (convertView == null) {
 
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.campaign_watershed_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.campaign_group_item, parent, false);
 
-            viewHolder = new CampaignWatershedListAdapter.ViewHolder();
+            viewHolder = new SnapshotGroupListAdapter.ViewHolder();
 
+            viewHolder.featureIcon = (ImageView) convertView.findViewById(R.id.featureIcon);
             viewHolder.featureName = (TextView) convertView.findViewById(R.id.featureName);
             viewHolder.postCount = (TextView) convertView.findViewById(R.id.postCount);
-            viewHolder.stateList = (TextView) convertView.findViewById(R.id.stateList);
-            viewHolder.campaignWatershedItem = (LinearLayout) convertView.findViewById(R.id.campaignWatershedItem);
+            viewHolder.campaignGroupItem = (LinearLayout) convertView.findViewById(R.id.campaignGroupItem);
 
             convertView.setTag(viewHolder);
 
         } else {
 
-            viewHolder = (CampaignWatershedListAdapter.ViewHolder) convertView.getTag();
+            viewHolder = (SnapshotGroupListAdapter.ViewHolder) convertView.getTag();
 
         }
 
-        final CampaignWatershed campaignWatershed = sourceList.get(position);
+        final SnapshotShallowGroup campaignGroup = sourceList.get(position);
 
         // Populate layout elements
 
-        viewHolder.featureName.setText(campaignWatershed.name);
+        viewHolder.featureName.setText(campaignGroup.name);
 
-        viewHolder.stateList.setText(HucStates.STATES.get(campaignWatershed.code));
+        Picasso.with(mContext)
+                .load(campaignGroup.picture)
+                .placeholder(R.drawable.user_avatar_placeholder)
+                .transform(new CircleTransform())
+                .into(viewHolder.featureIcon);
 
         String subText = UtilityMethods.makeSecondaryListPostCountText(mContext.getResources(),
-                campaignWatershed.posts, campaignWatershed.last_active);
+                campaignGroup.posts, campaignGroup.last_active);
 
         viewHolder.postCount.setText(subText);
 
         long timeDelta = UtilityMethods.timeDelta(
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US),
-                campaignWatershed.last_active);
-
-        Log.v("time-delta", timeDelta + "");
+                campaignGroup.last_active);
 
         if (timeDelta > 0 && timeDelta < (DateUtils.DAY_IN_MILLIS * 30)) {
 
