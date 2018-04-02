@@ -266,13 +266,23 @@ public class CampaignProfileActivity extends AppCompatActivity {
 
             setCampaignData(mCampaign);
 
-        } catch (NullPointerException _e) {
+        } catch (NullPointerException e1) {
 
-            Log.v("NO-STORED-CAMPAIGN", _e.toString());
+            try {
 
-            startActivity(new Intent(this, MainActivity.class));
+                mCampaignId = mCampaign.id;
 
-            finish();
+                fetchCampaign(mCampaignId);
+
+            } catch (NullPointerException e2) {
+
+                Log.v("NO-STORED-CAMPAIGN", e2.toString());
+
+                startActivity(new Intent(this, MainActivity.class));
+
+                finish();
+
+            }
 
         }
 

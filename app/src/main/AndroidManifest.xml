@@ -384,6 +384,12 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".UserCampaignsActivity"
+            android:label="@string/title_activity_user_campaigns" />
+        <activity
+            android:name=".OrganizationCampaignsActivity"
+            android:label="@string/title_activity_organization_campaigns"></activity>
     </application>
 
 </manifest>

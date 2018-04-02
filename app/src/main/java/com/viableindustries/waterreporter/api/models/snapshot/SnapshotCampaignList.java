@@ -11,6 +11,6 @@ import java.util.List;
 public class SnapshotCampaignList {
 
     @SerializedName("results")
-    public List<SnapshotShallowGroup> campaigns;
+    public List<SnapshotShallowCampaign> campaigns;
 
 }

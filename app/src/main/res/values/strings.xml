@@ -418,5 +418,7 @@
     <string name="title_activity_field_book">FieldBookActivity</string>
     <string name="title_activity_user_watersheds">UserWatershedsActivity</string>
     <string name="title_activity_organization_watersheds">OrganizationWatershedsActivity</string>
+    <string name="title_activity_user_campaigns">UserCampaignsActivity</string>
+    <string name="title_activity_organization_campaigns">OrganizationCampaignsActivity</string>
 
 </resources>
