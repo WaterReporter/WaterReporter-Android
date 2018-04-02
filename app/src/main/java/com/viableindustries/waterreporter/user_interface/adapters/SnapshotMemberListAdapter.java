@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.api.models.snapshot.SnapshotShallowUser;
+import com.viableindustries.waterreporter.api.models.user.User;
+import com.viableindustries.waterreporter.user_interface.listeners.UserProfileListener;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.UtilityMethods;
 
@@ -111,19 +113,9 @@ public class SnapshotMemberListAdapter extends ArrayAdapter<SnapshotShallowUser>
 
         // Add click listeners to layout elements
 
-//        viewHolder.leaderBoardItem.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                Intent intent = new Intent(mContext, UserProfileActivity.class);
-//
-//                mContext.startActivity(intent);
-//            }
-//        });
+        User user = User.createUser(campaignMember.id, null);
 
-//        User user = User.createUser(campaignLeader.id, null);
-
-//        viewHolder.leaderBoardItem.setOnClickListener(new UserProfileListener(mContext, user));
+        viewHolder.campaignMemberItem.setOnClickListener(new UserProfileListener(mContext, user));
 
         return convertView;
 

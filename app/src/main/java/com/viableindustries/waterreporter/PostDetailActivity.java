@@ -160,15 +160,45 @@ public class PostDetailActivity extends AppCompatActivity {
 
         try {
 
-            int postId = mPost.properties.id;
-
             addListViewHeader(mPost);
 
+        } catch (NullPointerException e) {
+
+            Log.v("NO-STORED-POST", e.getMessage());
+
+            Log.v("NO-STORED-POST", "Unable to render list header.");
+
+            startActivity(new Intent(this, MainActivity.class));
+
+            finish();
+
+        }
+
+        try {
+
             fetchGeometry(mPost);
+
+        } catch (NullPointerException e) {
+
+            Log.v("NO-STORED-POST", e.getMessage());
+
+            Log.v("NO-STORED-POST", "Unable to load watershed geometry.");
+
+            startActivity(new Intent(this, MainActivity.class));
+
+            finish();
+
+        }
+
+        try {
 
             fetchComments(50, 1);
 
         } catch (NullPointerException e) {
+
+            Log.v("NO-STORED-POST", e.getMessage());
+
+            Log.v("NO-STORED-POST", "Unable to load post comments.");
 
             startActivity(new Intent(this, MainActivity.class));
 

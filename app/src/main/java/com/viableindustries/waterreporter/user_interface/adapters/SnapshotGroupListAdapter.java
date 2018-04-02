@@ -14,7 +14,9 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.R;
+import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.snapshot.SnapshotShallowGroup;
+import com.viableindustries.waterreporter.user_interface.listeners.OrganizationProfileListener;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.UtilityMethods;
 
@@ -107,19 +109,11 @@ public class SnapshotGroupListAdapter extends ArrayAdapter<SnapshotShallowGroup>
 
         // Add click listeners to layout elements
 
-//        viewHolder.leaderBoardItem.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                Intent intent = new Intent(mContext, UserProfileActivity.class);
-//
-//                mContext.startActivity(intent);
-//            }
-//        });
+        Organization organization = new Organization();
 
-//        User user = User.createUser(campaignLeader.id, null);
+        organization.id = campaignGroup.id;
 
-//        viewHolder.leaderBoardItem.setOnClickListener(new UserProfileListener(mContext, user));
+        viewHolder.campaignGroupItem.setOnClickListener(new OrganizationProfileListener(mContext, organization));
 
         return convertView;
 

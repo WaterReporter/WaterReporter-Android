@@ -235,6 +235,8 @@ public class UserProfileActivity extends AppCompatActivity implements
 
             } catch (NullPointerException e2) {
 
+                Log.v("NO-STORED-USER", e2.toString());
+
                 startActivity(new Intent(this, MainActivity.class));
 
                 finish();

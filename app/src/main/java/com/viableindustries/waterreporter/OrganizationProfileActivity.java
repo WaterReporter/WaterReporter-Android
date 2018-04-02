@@ -262,11 +262,23 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
             setOrganizationData(mOrganization);
 
-        } catch (NullPointerException _e) {
+        } catch (NullPointerException e1) {
 
-            startActivity(new Intent(this, MainActivity.class));
+            try {
 
-            finish();
+                mOrganizationId = mOrganization.id;
+
+                fetchOrganization(mOrganizationId);
+
+            } catch (NullPointerException e2) {
+
+                Log.v("NO-STORED-GROUP", e2.toString());
+
+                startActivity(new Intent(this, MainActivity.class));
+
+                finish();
+
+            }
 
         }
 
