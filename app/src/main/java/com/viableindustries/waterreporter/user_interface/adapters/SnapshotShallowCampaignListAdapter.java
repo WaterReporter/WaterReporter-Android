@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -39,7 +40,7 @@ public class SnapshotShallowCampaignListAdapter extends ArrayAdapter<SnapshotSha
     private final List<SnapshotShallowCampaign> sourceList;
 
     public SnapshotShallowCampaignListAdapter(Context aContext, List<SnapshotShallowCampaign> features,
-                               FragmentManager fragmentManager) {
+                                              FragmentManager fragmentManager) {
 
         super(aContext, 0, features);
 
@@ -57,6 +58,7 @@ public class SnapshotShallowCampaignListAdapter extends ArrayAdapter<SnapshotSha
         ImageView campaignImage;
         TextView campaignName;
         LinearLayout campaignItem;
+        RelativeLayout extraActions;
     }
 
     @Override
@@ -74,6 +76,9 @@ public class SnapshotShallowCampaignListAdapter extends ArrayAdapter<SnapshotSha
             viewHolder.campaignImage = (ImageView) convertView.findViewById(R.id.campaignImage);
             viewHolder.campaignName = (TextView) convertView.findViewById(R.id.campaignName);
             viewHolder.campaignItem = (LinearLayout) convertView.findViewById(R.id.campaignItem);
+            viewHolder.extraActions = (RelativeLayout) convertView.findViewById(R.id.extraActions);
+
+            viewHolder.extraActions.setVisibility(View.GONE);
 
             convertView.setTag(viewHolder);
 

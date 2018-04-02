@@ -24,12 +24,12 @@
         android:layout_gravity="center_vertical"
         android:background="@color/white"
         android:orientation="vertical"
-        android:paddingEnd="0dp"
-        android:paddingTop="16dp"
         android:paddingBottom="16dp"
+        android:paddingEnd="0dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:paddingStart="16dp">
+        android:paddingStart="16dp"
+        android:paddingTop="16dp">
 
         <TextView
             android:id="@+id/featureName"
@@ -39,6 +39,7 @@
             android:gravity="center_vertical"
             android:paddingBottom="0dp"
             android:paddingTop="0dp"
+            android:textColor="@color/black_87"
             android:textSize="16sp" />
 
         <TextView
@@ -49,7 +50,7 @@
             android:paddingBottom="2dp"
             android:paddingEnd="0dp"
             android:paddingStart="0dp"
-            android:paddingTop="2dp"
+            android:paddingTop="0dp"
             android:textSize="14sp" />
 
         <TextView

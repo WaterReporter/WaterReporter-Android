@@ -89,7 +89,7 @@ public class AuthUserActivity extends AppCompatActivity implements
 
     private SharedPreferences mCoreProfile;
 
-    private User user;
+    private User mUser;
 
     private Resources resources;
 
@@ -208,11 +208,11 @@ public class AuthUserActivity extends AppCompatActivity implements
 
     private void retrieveStoredUser() {
 
-        user = ModelStorage.getStoredUser(mCoreProfile, "auth_user");
+        mUser = ModelStorage.getStoredUser(mCoreProfile, "auth_user");
 
         try {
 
-            userId = user.properties.id;
+            userId = mUser.properties.id;
 
         } catch (NullPointerException _e) {
 
@@ -278,7 +278,7 @@ public class AuthUserActivity extends AppCompatActivity implements
 
         ViewGroup header = (ViewGroup) inflater.inflate(R.layout.auth_user_profile_header, timeLine, false);
 
-        mUserProfileHeaderView.buildHeader(this, mSharedPreferences, getSupportFragmentManager(), header, user);
+        mUserProfileHeaderView.buildHeader(this, mSharedPreferences, getSupportFragmentManager(), header, mUser);
 
         timeLine.addHeaderView(header, null, false);
 
@@ -567,6 +567,11 @@ public class AuthUserActivity extends AppCompatActivity implements
     }
 
     public void showActions() {
+
+        complexQuery = String.format(
+                getResources().getString(R.string.complex_actions_query),
+                mUser.id,
+                mUser.id);
 
         actionFocus = true;
 

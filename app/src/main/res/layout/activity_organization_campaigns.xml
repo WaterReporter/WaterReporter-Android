@@ -8,6 +8,7 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
+    android:paddingBottom="8dp"
     tools:context="com.viableindustries.waterreporter.OrganizationCampaignsActivity">
 
     <RelativeLayout
