@@ -110,17 +110,29 @@ public class OrganizationProfileCardActivity extends AppCompatActivity {
 
             organizationId = mOrganization.properties.id;
 
-            Log.d("stored--user--id", organizationId + "");
-
             addListViewHeader();
 
             retrieveStoredSnapshot();
 
         } catch (NullPointerException e1) {
 
-            startActivity(new Intent(this, MainActivity.class));
+            try {
 
-            finish();
+                organizationId = mOrganization.id;
+
+                addListViewHeader();
+
+                retrieveStoredSnapshot();
+
+            } catch (NullPointerException e2) {
+
+                Log.v("NO-STORED-GROUP", e2.toString());
+
+                startActivity(new Intent(this, MainActivity.class));
+
+                finish();
+
+            }
 
         }
 

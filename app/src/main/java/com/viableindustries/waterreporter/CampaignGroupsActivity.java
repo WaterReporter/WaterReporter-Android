@@ -116,7 +116,7 @@ public class CampaignGroupsActivity extends AppCompatActivity {
 
     private void populateList(List<SnapshotShallowGroup> campaignGroups) {
 
-        mCampaignGroupListAdapter = new SnapshotGroupListAdapter(this, campaignGroups);
+        mCampaignGroupListAdapter = new SnapshotGroupListAdapter(this, campaignGroups, getSupportFragmentManager());
 
         listView.setAdapter(mCampaignGroupListAdapter);
 

@@ -46,6 +46,8 @@ public class OrganizationMembersActivity extends AppCompatActivity {
 
     private Context mContext;
 
+    private int mOrganizationId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -89,15 +91,27 @@ public class OrganizationMembersActivity extends AppCompatActivity {
 
         try {
 
-            int organizationId = mOrganization.properties.id;
+            mOrganizationId = mOrganization.properties.id;
 
-            fetchOrganizationUsers(1, organizationId, true);
+            fetchOrganizationUsers(1, mOrganizationId, true);
 
-        } catch (NullPointerException _e) {
+        } catch (NullPointerException e1) {
 
-            startActivity(new Intent(this, MainActivity.class));
+            try {
 
-            finish();
+                mOrganizationId = mOrganization.id;
+
+                fetchOrganizationUsers(1, mOrganizationId, true);
+
+            } catch (NullPointerException e2) {
+
+                Log.v("NO-STORED-GROUP", e2.toString());
+
+                startActivity(new Intent(this, MainActivity.class));
+
+                finish();
+
+            }
 
         }
 
@@ -116,7 +130,7 @@ public class OrganizationMembersActivity extends AppCompatActivity {
 
     private void populateList(List<SnapshotShallowUser> organizationMembers) {
 
-        mSnapshotShallowUserListAdapter = new SnapshotMemberListAdapter(this, organizationMembers);
+        mSnapshotShallowUserListAdapter = new SnapshotMemberListAdapter(this, organizationMembers, getSupportFragmentManager());
 
         listView.setAdapter(mSnapshotShallowUserListAdapter);
 

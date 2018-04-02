@@ -46,6 +46,8 @@ public class OrganizationWatershedsActivity extends AppCompatActivity {
 
     private Context mContext;
 
+    private int mOrganizationId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -89,15 +91,27 @@ public class OrganizationWatershedsActivity extends AppCompatActivity {
 
         try {
 
-            int organizationId = mOrganization.properties.id;
+            mOrganizationId = mOrganization.properties.id;
 
-            fetchOrganizationWatersheds(1, organizationId, true);
+            fetchOrganizationWatersheds(1, mOrganizationId, true);
 
-        } catch (NullPointerException _e) {
+        } catch (NullPointerException e1) {
 
-            startActivity(new Intent(this, MainActivity.class));
+            try {
 
-            finish();
+                mOrganizationId = mOrganization.id;
+
+                fetchOrganizationWatersheds(1, mOrganizationId, true);
+
+            } catch (NullPointerException e2) {
+
+                Log.v("NO-STORED-GROUP", e2.toString());
+
+                startActivity(new Intent(this, MainActivity.class));
+
+                finish();
+
+            }
 
         }
 

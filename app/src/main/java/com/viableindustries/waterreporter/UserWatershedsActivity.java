@@ -38,6 +38,8 @@ public class UserWatershedsActivity extends AppCompatActivity {
 
     private User mUser;
 
+    private int mUserId;
+
     private List<SnapshotShallowWatershed> watershedList = new ArrayList<>();
 
     private SnapshotWatershedListAdapter mUserWatershedListAdapter;
@@ -89,15 +91,29 @@ public class UserWatershedsActivity extends AppCompatActivity {
 
         try {
 
-            int campaignId = mUser.properties.id;
+            mUserId = mUser.properties.id;
 
-            fetchUserWatersheds(1, campaignId, true);
+            fetchUserWatersheds(1, mUserId, true);
 
-        } catch (NullPointerException _e) {
+        } catch (NullPointerException e1) {
 
-            startActivity(new Intent(this, MainActivity.class));
+            try {
 
-            finish();
+                Log.d("USER ID ONLY", "proceed to load profile data");
+
+                mUserId = mUser.id;
+
+                fetchUserWatersheds(1, mUserId, true);
+
+            } catch (NullPointerException e2) {
+
+                Log.v("NO-STORED-USER", e2.toString());
+
+                startActivity(new Intent(this, MainActivity.class));
+
+                finish();
+
+            }
 
         }
 

@@ -46,6 +46,8 @@ public class OrganizationCampaignsActivity extends AppCompatActivity {
 
     private Context mContext;
 
+    private int mOrganizationId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -89,15 +91,27 @@ public class OrganizationCampaignsActivity extends AppCompatActivity {
 
         try {
 
-            int campaignId = mOrganization.properties.id;
+            mOrganizationId = mOrganization.properties.id;
 
-            fetchOrganizationCampaigns(1, campaignId, true);
+            fetchOrganizationCampaigns(1, mOrganizationId, true);
 
-        } catch (NullPointerException _e) {
+        } catch (NullPointerException e1) {
 
-            startActivity(new Intent(this, MainActivity.class));
+            try {
 
-            finish();
+                mOrganizationId = mOrganization.id;
+
+                fetchOrganizationCampaigns(1, mOrganizationId, true);
+
+            } catch (NullPointerException e2) {
+
+                Log.v("NO-STORED-GROUP", e2.toString());
+
+                startActivity(new Intent(this, MainActivity.class));
+
+                finish();
+
+            }
 
         }
 

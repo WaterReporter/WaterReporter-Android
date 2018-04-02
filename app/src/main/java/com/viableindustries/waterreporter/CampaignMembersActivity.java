@@ -116,7 +116,7 @@ public class CampaignMembersActivity extends AppCompatActivity {
 
     private void populateList(List<SnapshotShallowUser> campaignMembers) {
 
-        mCampaignMemberListAdapter = new SnapshotMemberListAdapter(this, campaignMembers);
+        mCampaignMemberListAdapter = new SnapshotMemberListAdapter(this, campaignMembers, getSupportFragmentManager());
 
         listView.setAdapter(mCampaignMemberListAdapter);
 

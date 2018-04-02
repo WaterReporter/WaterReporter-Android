@@ -38,6 +38,8 @@ public class UserGroupsActivity extends AppCompatActivity {
 
     private User mUser;
 
+    private int mUserId;
+
     private List<SnapshotShallowGroup> groupList = new ArrayList<>();
 
     private SnapshotGroupListAdapter mUserGroupListAdapter;
@@ -89,15 +91,29 @@ public class UserGroupsActivity extends AppCompatActivity {
 
         try {
 
-            int campaignId = mUser.properties.id;
+            mUserId = mUser.properties.id;
 
-            fetchUserGroups(1, campaignId, true);
+            fetchUserGroups(1, mUserId, true);
 
-        } catch (NullPointerException _e) {
+        } catch (NullPointerException e1) {
 
-            startActivity(new Intent(this, MainActivity.class));
+            try {
 
-            finish();
+                Log.d("USER ID ONLY", "proceed to load profile data");
+
+                mUserId = mUser.id;
+
+                fetchUserGroups(1, mUserId, true);
+
+            } catch (NullPointerException e2) {
+
+                Log.v("NO-STORED-USER", e2.toString());
+
+                startActivity(new Intent(this, MainActivity.class));
+
+                finish();
+
+            }
 
         }
 
@@ -116,7 +132,7 @@ public class UserGroupsActivity extends AppCompatActivity {
 
     private void populateList(List<SnapshotShallowGroup> campaignGroups) {
 
-        mUserGroupListAdapter = new SnapshotGroupListAdapter(this, campaignGroups);
+        mUserGroupListAdapter = new SnapshotGroupListAdapter(this, campaignGroups, getSupportFragmentManager());
 
         listView.setAdapter(mUserGroupListAdapter);
 
