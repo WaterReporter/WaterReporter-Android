@@ -14,8 +14,14 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.viableindustries.waterreporter.OrganizationCampaignsActivity;
+import com.viableindustries.waterreporter.OrganizationMembersActivity;
+import com.viableindustries.waterreporter.OrganizationWatershedsActivity;
 import com.viableindustries.waterreporter.R;
+import com.viableindustries.waterreporter.UserCampaignsActivity;
+import com.viableindustries.waterreporter.UserGroupsActivity;
 import com.viableindustries.waterreporter.UserProfileCardActivity;
+import com.viableindustries.waterreporter.UserWatershedsActivity;
 
 /**
  * Created by brendanmcintyre on 3/26/18.
@@ -51,10 +57,19 @@ public class UserExtrasBottomSheetDialogFragment extends BottomSheetDialogFragme
         dialog.setContentView(R.layout.user_extras_bottom_sheet);
 
         LinearLayout viewFullProfile = (LinearLayout) dialog.findViewById(R.id.viewFullProfile);
+        LinearLayout viewGroups = (LinearLayout) dialog.findViewById(R.id.viewGroups);
+        LinearLayout viewCampaigns = (LinearLayout) dialog.findViewById(R.id.viewCampaigns);
+        LinearLayout viewWatersheds = (LinearLayout) dialog.findViewById(R.id.viewWatersheds);
 
-        if (viewFullProfile != null) {
+        if (viewFullProfile != null &&
+                viewGroups != null &&
+                viewCampaigns != null &&
+                viewWatersheds != null) {
 
             viewFullProfile.setOnClickListener(this);
+            viewGroups.setOnClickListener(this);
+            viewCampaigns.setOnClickListener(this);
+            viewWatersheds.setOnClickListener(this);
 
         } else {
 
@@ -90,6 +105,30 @@ public class UserExtrasBottomSheetDialogFragment extends BottomSheetDialogFragme
             case R.id.viewFullProfile:
 
                 context.startActivity(new Intent(context, UserProfileCardActivity.class));
+
+                dismiss();
+
+                break;
+
+            case R.id.viewGroups:
+
+                context.startActivity(new Intent(context, UserGroupsActivity.class));
+
+                dismiss();
+
+                break;
+
+            case R.id.viewCampaigns:
+
+                context.startActivity(new Intent(context, UserCampaignsActivity.class));
+
+                dismiss();
+
+                break;
+
+            case R.id.viewWatersheds:
+
+                context.startActivity(new Intent(context, UserWatershedsActivity.class));
 
                 dismiss();
 

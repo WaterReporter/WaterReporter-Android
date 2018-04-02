@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/organizationCampaignsView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FBFBFB"
@@ -29,41 +30,23 @@
         android:layout_height="1dp"
         android:background="@color/gray_224" />
 
-    <!--<ListView-->
-    <!--android:id="@+id/list"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content" />-->
-
-    <FrameLayout
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/listViewContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="40dp">
 
-        <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/campaignCollection"
+        <ListView
+            android:id="@+id/listView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="40dp">
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:fadingEdgeLength="0dp"
+            android:listSelector="@drawable/timeline_selector"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
 
-            <ListView
-                android:id="@+id/list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:divider="@null"
-                android:dividerHeight="0dp"
-                android:fadingEdgeLength="0dp"
-                android:listSelector="@drawable/timeline_selector"
-                android:overScrollMode="never"
-                android:scrollbars="none" />
-
-        </android.support.v4.widget.SwipeRefreshLayout>
-
-        <fragment
-            android:id="@+id/navigationFragment"
-            android:name="com.viableindustries.waterreporter.NavigationFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom" />
-
-    </FrameLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

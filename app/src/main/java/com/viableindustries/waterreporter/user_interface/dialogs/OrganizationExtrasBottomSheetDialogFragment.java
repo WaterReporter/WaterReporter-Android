@@ -14,7 +14,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.viableindustries.waterreporter.OrganizationCampaignsActivity;
+import com.viableindustries.waterreporter.OrganizationMembersActivity;
 import com.viableindustries.waterreporter.OrganizationProfileCardActivity;
+import com.viableindustries.waterreporter.OrganizationWatershedsActivity;
 import com.viableindustries.waterreporter.R;
 
 /**
@@ -51,10 +54,19 @@ public class OrganizationExtrasBottomSheetDialogFragment extends BottomSheetDial
         dialog.setContentView(R.layout.organization_extras_bottom_sheet);
 
         LinearLayout viewFullProfile = (LinearLayout) dialog.findViewById(R.id.viewFullProfile);
+        LinearLayout viewMembers = (LinearLayout) dialog.findViewById(R.id.viewMembers);
+        LinearLayout viewCampaigns = (LinearLayout) dialog.findViewById(R.id.viewCampaigns);
+        LinearLayout viewWatersheds = (LinearLayout) dialog.findViewById(R.id.viewWatersheds);
 
-        if (viewFullProfile != null) {
+        if (viewFullProfile != null &&
+                viewMembers != null &&
+                viewCampaigns != null &&
+                viewWatersheds != null) {
 
             viewFullProfile.setOnClickListener(this);
+            viewMembers.setOnClickListener(this);
+            viewCampaigns.setOnClickListener(this);
+            viewWatersheds.setOnClickListener(this);
 
         } else {
 
@@ -90,6 +102,30 @@ public class OrganizationExtrasBottomSheetDialogFragment extends BottomSheetDial
             case R.id.viewFullProfile:
 
                 context.startActivity(new Intent(context, OrganizationProfileCardActivity.class));
+
+                dismiss();
+
+                break;
+
+            case R.id.viewMembers:
+
+                context.startActivity(new Intent(context, OrganizationMembersActivity.class));
+
+                dismiss();
+
+                break;
+
+            case R.id.viewCampaigns:
+
+                context.startActivity(new Intent(context, OrganizationCampaignsActivity.class));
+
+                dismiss();
+
+                break;
+
+            case R.id.viewWatersheds:
+
+                context.startActivity(new Intent(context, OrganizationWatershedsActivity.class));
 
                 dismiss();
 
