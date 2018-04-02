@@ -577,8 +577,14 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                     ModelStorage.storeModel(mSharedPreferences, mOrganization, "stored_organization");
 
+                    Bundle args = new Bundle();
+
+                    args.putBoolean("profile_context", true);
+
                     OrganizationExtrasBottomSheetDialogFragment organizationExtrasBottomSheetDialogFragment =
                             new OrganizationExtrasBottomSheetDialogFragment();
+
+                    organizationExtrasBottomSheetDialogFragment.setArguments(args);
 
                     organizationExtrasBottomSheetDialogFragment.show(getSupportFragmentManager(), "organization-extras-dialog");
 

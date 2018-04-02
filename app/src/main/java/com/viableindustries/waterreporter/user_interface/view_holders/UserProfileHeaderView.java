@@ -1,15 +1,12 @@
 package com.viableindustries.waterreporter.user_interface.view_holders;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.animation.LinearOutSlowInInterpolator;
-import android.support.v4.widget.TextViewCompat;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -273,8 +270,14 @@ public class UserProfileHeaderView {
 
                 ModelStorage.storeModel(sharedPreferences, user, "stored_user");
 
+                Bundle args = new Bundle();
+
+                args.putBoolean("profile_context", true);
+
                 UserExtrasBottomSheetDialogFragment userExtrasBottomSheetDialogFragment =
                         new UserExtrasBottomSheetDialogFragment();
+
+                userExtrasBottomSheetDialogFragment.setArguments(args);
 
                 userExtrasBottomSheetDialogFragment.show(fragmentManager, "user-extras-dialog");
 

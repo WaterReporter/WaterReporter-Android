@@ -66,7 +66,26 @@ public class UserExtrasBottomSheetDialogFragment extends BottomSheetDialogFragme
                 viewCampaigns != null &&
                 viewWatersheds != null) {
 
-            viewFullProfile.setOnClickListener(this);
+            try {
+
+                boolean profileContext = getArguments().getBoolean("profile_context", false);
+
+                if (profileContext) {
+
+                    viewFullProfile.setVisibility(View.GONE);
+
+                } else {
+
+                    viewFullProfile.setOnClickListener(this);
+
+                }
+
+            } catch (NullPointerException e) {
+
+                viewFullProfile.setVisibility(View.GONE);
+
+            }
+
             viewGroups.setOnClickListener(this);
             viewCampaigns.setOnClickListener(this);
             viewWatersheds.setOnClickListener(this);

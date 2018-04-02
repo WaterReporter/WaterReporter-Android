@@ -63,7 +63,26 @@ public class OrganizationExtrasBottomSheetDialogFragment extends BottomSheetDial
                 viewCampaigns != null &&
                 viewWatersheds != null) {
 
-            viewFullProfile.setOnClickListener(this);
+            try {
+
+                boolean profileContext = getArguments().getBoolean("profile_context", false);
+
+                if (!profileContext) {
+
+                    viewFullProfile.setVisibility(View.GONE);
+
+                } else {
+
+                    viewFullProfile.setOnClickListener(this);
+
+                }
+
+            } catch (NullPointerException e) {
+
+                viewFullProfile.setVisibility(View.GONE);
+
+            }
+
             viewMembers.setOnClickListener(this);
             viewCampaigns.setOnClickListener(this);
             viewWatersheds.setOnClickListener(this);
