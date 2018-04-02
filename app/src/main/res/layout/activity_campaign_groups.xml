@@ -24,14 +24,6 @@
             android:scaleType="fitXY"
             android:src="@drawable/logo_horizontal_lockup" />
 
-        <RelativeLayout
-            android:id="@+id/saveForm"
-            android:layout_width="56dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true">
-
-        </RelativeLayout>
-
     </RelativeLayout>
 
     <View

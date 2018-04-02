@@ -84,6 +84,7 @@
     <!-- Extra actions -->
     <string name="view_members">View members</string>
     <string name="view_groups">View groups</string>
+    <string name="view_users">View users</string>
     <string name="view_watersheds">View watersheds</string>
     <string name="view_campaigns">View campaigns</string>
     <string name="view_full_profile">View full profile</string>
@@ -420,5 +421,8 @@
     <string name="title_activity_organization_watersheds">OrganizationWatershedsActivity</string>
     <string name="title_activity_user_campaigns">UserCampaignsActivity</string>
     <string name="title_activity_organization_campaigns">OrganizationCampaignsActivity</string>
+    <string name="title_activity_watershed_groups">WatershedGroupsActivity</string>
+    <string name="title_activity_watershed_campaigns">WatershedCampaignsActivity</string>
+    <string name="title_activity_watershed_users">WatershedUsersActivity</string>
 
 </resources>

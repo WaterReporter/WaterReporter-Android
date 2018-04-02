@@ -89,15 +89,23 @@ public class CampaignWatershedsActivity extends AppCompatActivity {
 
         try {
 
-            int campaignId = mCampaign.properties.id;
+            fetchCampaignWatersheds(1, mCampaign.properties.id, true);
 
-            fetchCampaignWatersheds(1, campaignId, true);
+        } catch (NullPointerException e1) {
 
-        } catch (NullPointerException _e) {
+            try {
 
-            startActivity(new Intent(this, MainActivity.class));
+                fetchCampaignWatersheds(1, mCampaign.id, true);
 
-            finish();
+            } catch (NullPointerException e2) {
+
+                Log.v("NO-STORED-CAMPAIGN", e2.toString());
+
+                startActivity(new Intent(this, MainActivity.class));
+
+                finish();
+
+            }
 
         }
 
@@ -116,7 +124,7 @@ public class CampaignWatershedsActivity extends AppCompatActivity {
 
     private void populateList(List<SnapshotShallowWatershed> campaignWatersheds) {
 
-        mCampaignWatershedListAdapter = new SnapshotWatershedListAdapter(this, campaignWatersheds);
+        mCampaignWatershedListAdapter = new SnapshotWatershedListAdapter(this, campaignWatersheds, getSupportFragmentManager());
 
         listView.setAdapter(mCampaignWatershedListAdapter);
 
@@ -192,7 +200,7 @@ public class CampaignWatershedsActivity extends AppCompatActivity {
 
                     if (status == 403) {
 
-                        startActivity(new Intent(CampaignWatershedsActivity.this, SignInActivity.class));
+                        startActivity(new Intent(mContext, SignInActivity.class));
 
                     }
 
@@ -209,9 +217,13 @@ public class CampaignWatershedsActivity extends AppCompatActivity {
 
         super.onResume();
 
-        // Retrieve stored Organization
+        // Retrieve stored campaign
 
-        retrieveStoredCampaign();
+        if (mCampaign == null) {
+
+            retrieveStoredCampaign();
+
+        }
 
     }
 
@@ -226,10 +238,6 @@ public class CampaignWatershedsActivity extends AppCompatActivity {
         super.onDestroy();
 
         ButterKnife.unbind(this);
-
-        // Cancel all pending network requests
-
-        //Callback.cancelAll();
 
     }
 

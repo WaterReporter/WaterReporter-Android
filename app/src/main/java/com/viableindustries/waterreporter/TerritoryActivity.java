@@ -571,7 +571,7 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
         try {
 
-            int mTerritoryId = mTerritory.id;
+            long mTerritoryId = mTerritory.id;
 
         } catch (NullPointerException e) {
 

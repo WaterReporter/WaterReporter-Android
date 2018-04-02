@@ -132,7 +132,7 @@ public class UserWatershedsActivity extends AppCompatActivity {
 
     private void populateList(List<SnapshotShallowWatershed> campaignWatersheds) {
 
-        mUserWatershedListAdapter = new SnapshotWatershedListAdapter(this, campaignWatersheds);
+        mUserWatershedListAdapter = new SnapshotWatershedListAdapter(this, campaignWatersheds, getSupportFragmentManager());
 
         listView.setAdapter(mUserWatershedListAdapter);
 

@@ -14,7 +14,7 @@ import java.util.List;
 public class SnapshotShallowWatershed {
 
     @SerializedName("code")
-    public int code;
+    public long code;
 
     @SerializedName("last_active")
     public String last_active;

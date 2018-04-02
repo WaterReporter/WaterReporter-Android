@@ -128,28 +128,28 @@ public interface SnapshotService {
     void getWatershed(@Header("Authorization") String authorization,
                       @Header("Content-Type") String contentType,
                       @Query("page") int page,
-                      @Path("watershedId") int watershedId,
+                      @Path("watershedId") long watershedId,
                       Callback<OrganizationSnapshot> organizationSnapshotCallback);
 
     @GET("/data/snapshot/watershed/{watershedId}/campaigns")
     void getWatershedCampaigns(@Header("Authorization") String authorization,
                                @Header("Content-Type") String contentType,
                                @Query("page") int page,
-                               @Path("watershedId") int watershedId,
+                               @Path("watershedId") long watershedId,
                                Callback<SnapshotCampaignList> snapshotCampaignListCallback);
 
     @GET("/data/snapshot/watershed/{watershedId}/groups")
     void getWatershedGroups(@Header("Authorization") String authorization,
                             @Header("Content-Type") String contentType,
                             @Query("page") int page,
-                            @Path("watershedId") int watershedId,
+                            @Path("watershedId") long watershedId,
                             Callback<SnapshotGroupList> snapshotGroupListCallback);
 
     @GET("/data/snapshot/watershed/{watershedId}/users")
     void getWatershedUsers(@Header("Authorization") String authorization,
                            @Header("Content-Type") String contentType,
                            @Query("page") int page,
-                           @Path("watershedId") int watershedId,
+                           @Path("watershedId") long watershedId,
                            Callback<SnapshotMemberList> snapshotMemberListCallback);
 
 }

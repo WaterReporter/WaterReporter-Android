@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -89,15 +90,23 @@ public class CampaignGroupsActivity extends AppCompatActivity {
 
         try {
 
-            int campaignId = mCampaign.properties.id;
+            fetchCampaignGroups(1, mCampaign.properties.id, true);
 
-            fetchCampaignGroups(1, campaignId, true);
+        } catch (NullPointerException e1) {
 
-        } catch (NullPointerException _e) {
+            try {
 
-            startActivity(new Intent(this, MainActivity.class));
+                fetchCampaignGroups(1, mCampaign.id, true);
 
-            finish();
+            } catch (NullPointerException e2) {
+
+                Log.v("NO-STORED-CAMPAIGN", e2.toString());
+
+                startActivity(new Intent(this, MainActivity.class));
+
+                finish();
+
+            }
 
         }
 
@@ -192,7 +201,7 @@ public class CampaignGroupsActivity extends AppCompatActivity {
 
                     if (status == 403) {
 
-                        startActivity(new Intent(CampaignGroupsActivity.this, SignInActivity.class));
+                        startActivity(new Intent(mContext, SignInActivity.class));
 
                     }
 
@@ -209,9 +218,13 @@ public class CampaignGroupsActivity extends AppCompatActivity {
 
         super.onResume();
 
-        // Retrieve stored Organization
+        // Retrieve stored campaign
 
-        retrieveStoredCampaign();
+        if (mCampaign == null) {
+
+            retrieveStoredCampaign();
+
+        }
 
     }
 
@@ -226,10 +239,6 @@ public class CampaignGroupsActivity extends AppCompatActivity {
         super.onDestroy();
 
         ButterKnife.unbind(this);
-
-        // Cancel all pending network requests
-
-        //Callback.cancelAll();
 
     }
 

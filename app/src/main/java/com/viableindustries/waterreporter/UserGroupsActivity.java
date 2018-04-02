@@ -225,9 +225,13 @@ public class UserGroupsActivity extends AppCompatActivity {
 
         super.onResume();
 
-        // Retrieve stored Organization
+        // Retrieve stored user
 
-        retrieveStoredUser();
+        if (mUser == null) {
+
+            retrieveStoredUser();
+
+        }
 
     }
 

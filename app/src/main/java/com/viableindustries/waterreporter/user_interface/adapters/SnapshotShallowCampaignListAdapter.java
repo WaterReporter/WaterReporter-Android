@@ -2,8 +2,10 @@ package com.viableindustries.waterreporter.user_interface.adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +19,9 @@ import com.squareup.picasso.Picasso;
 import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.api.models.campaign.Campaign;
 import com.viableindustries.waterreporter.api.models.snapshot.SnapshotShallowCampaign;
+import com.viableindustries.waterreporter.user_interface.dialogs.CampaignExtrasBottomSheetDialogFragment;
 import com.viableindustries.waterreporter.user_interface.listeners.CampaignProfileListener;
+import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import java.util.List;
 
@@ -59,6 +63,7 @@ public class SnapshotShallowCampaignListAdapter extends ArrayAdapter<SnapshotSha
         TextView campaignName;
         LinearLayout campaignItem;
         RelativeLayout extraActions;
+        ImageView extraActionsIconView;
     }
 
     @Override
@@ -77,8 +82,7 @@ public class SnapshotShallowCampaignListAdapter extends ArrayAdapter<SnapshotSha
             viewHolder.campaignName = (TextView) convertView.findViewById(R.id.campaignName);
             viewHolder.campaignItem = (LinearLayout) convertView.findViewById(R.id.campaignItem);
             viewHolder.extraActions = (RelativeLayout) convertView.findViewById(R.id.extraActions);
-
-            viewHolder.extraActions.setVisibility(View.GONE);
+            viewHolder.extraActionsIconView = (ImageView) convertView.findViewById(R.id.extraActionsIconView);
 
             convertView.setTag(viewHolder);
 
@@ -92,17 +96,35 @@ public class SnapshotShallowCampaignListAdapter extends ArrayAdapter<SnapshotSha
 
         // Populate layout elements
 
+        viewHolder.extraActionsIconView.setColorFilter(ContextCompat.getColor(mContext, R.color.white), PorterDuff.Mode.SRC_ATOP);
+
         viewHolder.campaignName.setText(snapshotShallowCampaign.name);
 
         Picasso.with(mContext).load(snapshotShallowCampaign.picture).into(viewHolder.campaignImage);
 
         // Add click listeners to layout elements
 
-        Campaign campaign = new Campaign();
+        final Campaign campaign = new Campaign();
 
         campaign.id = snapshotShallowCampaign.id;
 
         viewHolder.campaignItem.setOnClickListener(new CampaignProfileListener(mContext, campaign));
+
+        viewHolder.extraActions.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                ModelStorage.storeModel(mSharedPreferences, campaign, "stored_campaign");
+
+                CampaignExtrasBottomSheetDialogFragment campaignExtrasBottomSheetDialogFragment =
+                        new CampaignExtrasBottomSheetDialogFragment();
+
+                campaignExtrasBottomSheetDialogFragment.show(mFragmentManager, "campaign-extras-dialog");
+
+            }
+
+        });
 
         return convertView;
 
