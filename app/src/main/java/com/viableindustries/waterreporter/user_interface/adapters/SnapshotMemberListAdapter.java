@@ -95,6 +95,8 @@ public class SnapshotMemberListAdapter extends ArrayAdapter<SnapshotShallowUser>
         String subText = UtilityMethods.makeSecondaryListPostCountText(mContext.getResources(),
                 campaignMember.posts, campaignMember.last_active);
 
+        viewHolder.postCount.setTextColor(ContextCompat.getColor(mContext, R.color.black_87));
+
         viewHolder.postCount.setText(subText);
 
         long timeDelta = UtilityMethods.timeDelta(

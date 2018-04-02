@@ -4,7 +4,7 @@
     android:id="@+id/campaignItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#FFFFFF"
+    android:background="@color/gray_f5f7f9"
     android:orientation="vertical"
     android:paddingEnd="8dp"
     android:paddingLeft="8dp"

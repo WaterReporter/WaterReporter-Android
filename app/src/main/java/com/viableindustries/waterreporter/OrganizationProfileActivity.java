@@ -1,28 +1,18 @@
 package com.viableindustries.waterreporter;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.graphics.Palette;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,30 +28,23 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.FeatureCollection;
 import com.viableindustries.waterreporter.api.models.group.Group;
-import com.viableindustries.waterreporter.api.models.group.GroupFeatureCollection;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
-import com.viableindustries.waterreporter.api.models.organization.OrganizationMemberList;
 import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.api.models.query.QueryFilter;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
 import com.viableindustries.waterreporter.api.models.snapshot.OrganizationSnapshot;
-import com.viableindustries.waterreporter.api.models.snapshot.UserSnapshot;
 import com.viableindustries.waterreporter.api.models.user.User;
-import com.viableindustries.waterreporter.api.models.user.UserCollection;
 import com.viableindustries.waterreporter.api.models.user.UserMembershipPatch;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
-import com.viableindustries.waterreporter.user_interface.dialogs.CampaignExtrasBottomSheetDialogFragment;
 import com.viableindustries.waterreporter.user_interface.dialogs.OrganizationExtrasBottomSheetDialogFragment;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 import com.viableindustries.waterreporter.utilities.PatternEditableBuilder;
-import com.viableindustries.waterreporter.utilities.UtilityMethods;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -288,7 +271,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
         }
 
     }
-    
+
     private void setOrganizationData(Organization organization) {
 
         // Inflate and insert timeline header view
@@ -310,7 +293,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             fetchPosts(5, 1, buildQuery(true, null), false);
 
         }
-        
+
     }
 
     private void startPost() {
@@ -348,7 +331,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         while (it.hasNext()) {
 
-            Map.Entry pair = (Map.Entry)it.next();
+            Map.Entry pair = (Map.Entry) it.next();
 
             System.out.println(pair.getKey() + " = " + pair.getValue());
 
@@ -385,7 +368,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
                 CharSequence text = String.format("Successfully %s %s", action, organization.properties.name);
 
-                Snackbar.make(timeLineContainer,text,
+                Snackbar.make(timeLineContainer, text,
                         Snackbar.LENGTH_SHORT)
                         .show();
 
@@ -468,11 +451,11 @@ public class OrganizationProfileActivity extends AppCompatActivity {
             String firstChar = mOrganization.properties.name.substring(0, 1).toLowerCase();
 
             String[] alphabet = {
-                    "a","b","c","d","e","f",
-                    "g","h","i","j","k","l",
-                    "m","n","o","p","q","r",
-                    "s","t","u","v","w","x",
-                    "y","z"};
+                    "a", "b", "c", "d", "e", "f",
+                    "g", "h", "i", "j", "k", "l",
+                    "m", "n", "o", "p", "q", "r",
+                    "s", "t", "u", "v", "w", "x",
+                    "y", "z"};
 
             int charIdx = Arrays.asList(alphabet).indexOf(firstChar);
 
@@ -520,49 +503,6 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                                     }
                                 }).into(organizationDescription);
 
-//                organizationDescription.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//
-//                        ObjectAnimator animation;
-//
-//                        int duration;
-//
-//                        int maxLines = TextViewCompat.getMaxLines(organizationDescription);
-//
-//                        if (maxLines == 2) {
-//
-//                            organizationDescription.setEllipsize(null);
-//
-//                            animation = ObjectAnimator.ofInt(
-//                                    organizationDescription,
-//                                    "maxLines",
-//                                    2,
-//                                    1000);
-//
-//                            duration = 400;
-//
-//                        } else {
-//
-//                            organizationDescription.setEllipsize(TextUtils.TruncateAt.END);
-//
-//                            animation = ObjectAnimator.ofInt(
-//                                    organizationDescription,
-//                                    "maxLines",
-//                                    1000,
-//                                    2);
-//
-//                            duration = 200;
-//
-//                        }
-//
-//                        animation.setDuration(duration);
-//                        animation.setInterpolator(new LinearOutSlowInInterpolator());
-//                        animation.start();
-//
-//                    }
-//                });
-
             } catch (NullPointerException ne) {
 
                 organizationDescription.setVisibility(View.GONE);
@@ -584,6 +524,10 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
+                    complexQuery = buildQuery(true, new String[][]{
+                            {"state", "eq", "closed"}
+                    });
+
                     actionFocus = true;
 
                     if (timeLine != null) {
@@ -603,13 +547,9 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                    if (hasMembers) {
+                    Intent intent = new Intent(mContext, OrganizationMembersActivity.class);
 
-                        Intent intent = new Intent(mContext, OrganizationMembersActivity.class);
-
-                        startActivity(intent);
-
-                    }
+                    startActivity(intent);
 
                 }
             });
@@ -672,116 +612,6 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
     }
 
-//    private void countPosts(String query, final String filterName) {
-//
-//        final String accessToken = mSharedPreferences.getString("access_token", "");
-//
-//        RestClient.getReportService().getReports(accessToken, "application/json", 1, 1, query, new Callback<FeatureCollection>() {
-//
-//            @Override
-//            public void success(FeatureCollection featureCollection, Response response) {
-//
-//                int count = featureCollection.getProperties().num_results;
-//
-//                switch (filterName) {
-//                    case "state":
-//                        if (count > 0) {
-//                            actionStat.setVisibility(View.VISIBLE);
-//                            actionCount = count;
-//                            actionCounter.setText(String.valueOf(actionCount));
-//                            actionCountLabel.setText(resources.getQuantityString(R.plurals.action_label, actionCount, actionCount));
-//                        }
-//                        break;
-//                    default:
-//                        reportCount = count;
-//                        setPostCountState(reportCount);
-//                        break;
-//                }
-//
-//            }
-//
-//            @Override
-//            public void failure(RetrofitError error) {
-//
-//                if (error == null) return;
-//
-//                Response errorResponse = error.getResponse();
-//
-//                // If we have a valid response object, check the status code and redirect to log in view if necessary
-//
-//                if (errorResponse != null) {
-//
-//                    int status = errorResponse.getStatus();
-//
-//                    if (status == 403) {
-//
-//                        startActivity(new Intent(OrganizationProfileActivity.this, SignInActivity.class));
-//
-//                    }
-//
-//                }
-//
-//            }
-//
-//        });
-//
-//    }
-
-//    private void fetchOrganizationMembers(int limit, int page, int mOrganizationId) {
-//
-//        final String accessToken = mSharedPreferences.getString("access_token", "");
-//
-//        RestClient.getOrganizationService().getOrganizationMembers(accessToken, "application/json", mOrganizationId, page, limit, null, new Callback<UserCollection>() {
-//
-//            @Override
-//            public void success(UserCollection userCollection, Response response) {
-//
-//                ArrayList<User> members = userCollection.getFeatures();
-//
-//                if (!members.isEmpty()) {
-//
-//                    int memberCount = userCollection.getProperties().num_results;
-//
-//                    peopleCounter.setText(String.valueOf(memberCount));
-//                    peopleCountLabel.setText(resources.getQuantityString(R.plurals.member_label, memberCount, memberCount));
-//
-//                    peopleStat.setVisibility(View.VISIBLE);
-//
-//                    OrganizationMemberList.setList(members);
-//
-//                    hasMembers = true;
-//
-//                }
-//
-//            }
-//
-//            @Override
-//            public void failure(RetrofitError error) {
-//
-//                if (error == null) return;
-//
-//                Response errorResponse = error.getResponse();
-//
-//                // If we have a valid response object, check the status code and redirect to log in view if necessary
-//
-//                if (errorResponse != null) {
-//
-//                    int status = errorResponse.getStatus();
-//
-//                    if (status == 403) {
-//
-//                        startActivity(new Intent(mContext, SignInActivity.class));
-//
-//                    }
-//
-//                }
-//
-//            }
-//
-//        });
-//
-//    }
-
     private void fetchSnapshot(int organizationId) {
 
         final String accessToken = mSharedPreferences.getString("access_token", "");
@@ -795,9 +625,21 @@ public class OrganizationProfileActivity extends AppCompatActivity {
                         resources.getQuantityString(R.plurals.post_label, organizationSnapshot.posts, organizationSnapshot.posts));
                 reportCounter.setText(reportCountText);
 
+                if (organizationSnapshot.actions < 1) {
+
+                    actionStat.setOnClickListener(null);
+
+                }
+
                 String actionCountText = String.format("%s %s", String.valueOf(organizationSnapshot.actions),
                         resources.getQuantityString(R.plurals.action_label, organizationSnapshot.actions, organizationSnapshot.actions));
                 actionCounter.setText(actionCountText);
+
+                if (organizationSnapshot.members < 1) {
+
+                    peopleStat.setOnClickListener(null);
+
+                }
 
                 String peopleCountText = String.format("%s %s", String.valueOf(organizationSnapshot.members),
                         resources.getQuantityString(R.plurals.member_label, organizationSnapshot.members, organizationSnapshot.members));

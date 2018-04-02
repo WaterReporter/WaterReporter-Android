@@ -617,9 +617,21 @@ public class UserProfileActivity extends AppCompatActivity implements
                         resources.getQuantityString(R.plurals.post_label, userSnapshot.posts, userSnapshot.posts));
                 mUserProfileHeaderView.reportCounter.setText(reportCountText);
 
+                if (userSnapshot.actions < 1) {
+
+                    mUserProfileHeaderView.actionStat.setOnClickListener(null);
+
+                }
+
                 String actionCountText = String.format("%s %s", String.valueOf(userSnapshot.actions),
                         resources.getQuantityString(R.plurals.action_label, userSnapshot.actions, userSnapshot.actions));
                 mUserProfileHeaderView.actionCounter.setText(actionCountText);
+
+                if (userSnapshot.groups < 1) {
+
+                    mUserProfileHeaderView.groupStat.setOnClickListener(null);
+
+                }
 
                 String groupCountText = String.format("%s %s", String.valueOf(userSnapshot.groups),
                         resources.getQuantityString(R.plurals.group_label, userSnapshot.groups, userSnapshot.groups));
@@ -799,6 +811,11 @@ public class UserProfileActivity extends AppCompatActivity implements
     }
 
     public void showActions() {
+
+        complexQuery = String.format(
+                getResources().getString(R.string.complex_actions_query),
+                mUser.id,
+                mUser.id);
 
         actionFocus = true;
 

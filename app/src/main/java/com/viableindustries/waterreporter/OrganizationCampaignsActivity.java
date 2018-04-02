@@ -118,9 +118,17 @@ public class OrganizationCampaignsActivity extends AppCompatActivity {
 
         mOrganizationCampaignListAdapter = new SnapshotShallowCampaignListAdapter(this, snapshotShallowCampaigns, getSupportFragmentManager());
 
-        listView.setAdapter(mOrganizationCampaignListAdapter);
+        try {
 
-        attachScrollListener();
+            listView.setAdapter(mOrganizationCampaignListAdapter);
+
+            attachScrollListener();
+
+        } catch (NullPointerException e) {
+
+            finish();
+
+        }
 
     }
 
