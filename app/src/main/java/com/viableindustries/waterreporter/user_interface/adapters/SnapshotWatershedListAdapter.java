@@ -146,6 +146,8 @@ public class SnapshotWatershedListAdapter extends ArrayAdapter<SnapshotShallowWa
 
         final Territory territory = new Territory();
 
+        territory.id = campaignWatershed.code;
+
         territory.properties = territoryProperties;
 
         viewHolder.shallowWatershedItem.setOnClickListener(new TerritoryProfileListener(mContext, territory));

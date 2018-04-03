@@ -221,7 +221,11 @@ public class WatershedUsersActivity extends AppCompatActivity {
 
         // Retrieve stored Territory
 
-        retrieveStoredTerritory();
+        if (mTerritory == null) {
+
+            retrieveStoredTerritory();
+
+        }
 
     }
 
