@@ -50,7 +50,7 @@ public class WatershedExtrasBottomSheetDialogFragment extends BottomSheetDialogF
         BottomSheetDialog dialog =
                 new BottomSheetDialog(getActivity());
 
-        dialog.setContentView(R.layout.user_extras_bottom_sheet);
+        dialog.setContentView(R.layout.watershed_extras_bottom_sheet);
 
         LinearLayout viewGroups = (LinearLayout) dialog.findViewById(R.id.viewGroups);
         LinearLayout viewCampaigns = (LinearLayout) dialog.findViewById(R.id.viewCampaigns);

@@ -184,25 +184,9 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
         retrieveStoredTerritory();
 
-        // Inflate and insert timeline header view
-
-        addListViewHeader();
-
         // Initialize MapView
 
         mapView.onCreate(savedInstanceState);
-
-        // With the header layout in place, render the map
-
-        renderMap(mapView);
-
-        // Generate all required query strings
-
-        generateQueries();
-
-        // Count related groups
-
-        fetchOrganizations(10, 1, buildQuery(false, "group", null));
 
         scrollListener = new EndlessScrollListener() {
             @Override
@@ -293,23 +277,55 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
 
         try {
 
-            int mTerritoryId = mTerritory.properties.id;
+            initializeComponents();
 
-            // Retrieve first batch of posts
+        } catch (NullPointerException e1) {
 
-            if (reportCollection.isEmpty()) {
+            try {
 
-                mMasterQuery = buildQuery(true, "report", null);
+                Log.d("ID ONLY", "proceed to load profile data");
 
-                fetchPosts(5, 1, mMasterQuery, true);
+                initializeComponents();
+
+            } catch (NullPointerException e2) {
+
+                Log.v("NO-STORED-TERRITORY", e2.toString());
+
+                startActivity(new Intent(this, MainActivity.class));
+
+                finish();
 
             }
 
-        } catch (NullPointerException _e) {
+        }
 
-            startActivity(new Intent(this, MainActivity.class));
+    }
 
-            finish();
+    private void initializeComponents() {
+
+        // Generate all required query strings
+
+        generateQueries();
+
+        // Inflate and insert timeline header view
+
+        addListViewHeader();
+
+        // With the header layout in place, render the map
+
+        renderMap(mapView);
+
+        // Count related groups
+
+        fetchOrganizations(10, 1, buildQuery(false, "group", null));
+
+        // Load posts
+
+        if (reportCollection.isEmpty()) {
+
+            mMasterQuery = buildQuery(true, "report", null);
+
+            fetchPosts(5, 1, mMasterQuery, true);
 
         }
 
@@ -1010,10 +1026,6 @@ public class TerritoryActivity extends AppCompatActivity implements TimelineFilt
         ButterKnife.unbind(this);
 
         ModelStorage.removeModel(mSharedPreferences, "stored_territory");
-
-        // Cancel all pending network requests
-
-        //Callback.cancelAll();
 
     }
 

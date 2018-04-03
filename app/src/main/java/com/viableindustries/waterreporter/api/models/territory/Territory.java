@@ -12,7 +12,7 @@ public class Territory {
     public GeometryResponse geometry;
 
     @SerializedName("id")
-    public long id;
+    public int id;
 
     @SerializedName("properties")
     public TerritoryProperties properties;

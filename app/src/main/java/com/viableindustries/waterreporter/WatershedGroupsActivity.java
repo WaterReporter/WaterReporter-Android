@@ -153,7 +153,7 @@ public class WatershedGroupsActivity extends AppCompatActivity {
 
     }
 
-    private void fetchTerritoryGroups(int page, long territoryId, final boolean refresh) {
+    private void fetchTerritoryGroups(int page, int territoryId, final boolean refresh) {
 
         final SharedPreferences mSharedPreferences =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);

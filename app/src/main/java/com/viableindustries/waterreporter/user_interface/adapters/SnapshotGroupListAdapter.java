@@ -69,7 +69,7 @@ public class SnapshotGroupListAdapter extends ArrayAdapter<SnapshotShallowGroup>
         TextView postCount;
         RelativeLayout extraActions;
         ImageView extraActionsIconView;
-        LinearLayout campaignGroupItem;
+        LinearLayout shallowGroupItem;
     }
 
     @Override
@@ -89,7 +89,7 @@ public class SnapshotGroupListAdapter extends ArrayAdapter<SnapshotShallowGroup>
             viewHolder.postCount = (TextView) convertView.findViewById(R.id.postCount);
             viewHolder.extraActions = (RelativeLayout) convertView.findViewById(R.id.extraActions);
             viewHolder.extraActionsIconView = (ImageView) convertView.findViewById(R.id.extraActionsIconView);
-            viewHolder.campaignGroupItem = (LinearLayout) convertView.findViewById(R.id.campaignGroupItem);
+            viewHolder.shallowGroupItem = (LinearLayout) convertView.findViewById(R.id.shallowGroupItem);
 
             convertView.setTag(viewHolder);
 
@@ -136,7 +136,7 @@ public class SnapshotGroupListAdapter extends ArrayAdapter<SnapshotShallowGroup>
 
         organization.id = campaignGroup.id;
 
-        viewHolder.campaignGroupItem.setOnClickListener(new OrganizationProfileListener(mContext, organization));
+        viewHolder.shallowGroupItem.setOnClickListener(new OrganizationProfileListener(mContext, organization));
 
         //
         // Present extra actions dialog (bottom sheet)

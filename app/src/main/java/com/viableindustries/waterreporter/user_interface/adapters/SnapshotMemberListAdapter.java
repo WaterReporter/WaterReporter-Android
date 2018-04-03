@@ -69,7 +69,7 @@ public class SnapshotMemberListAdapter extends ArrayAdapter<SnapshotShallowUser>
         TextView postCount;
         RelativeLayout extraActions;
         ImageView extraActionsIconView;
-        LinearLayout campaignMemberItem;
+        LinearLayout shallowMemberItem;
     }
 
     @Override
@@ -89,7 +89,7 @@ public class SnapshotMemberListAdapter extends ArrayAdapter<SnapshotShallowUser>
             viewHolder.postCount = (TextView) convertView.findViewById(R.id.postCount);
             viewHolder.extraActions = (RelativeLayout) convertView.findViewById(R.id.extraActions);
             viewHolder.extraActionsIconView = (ImageView) convertView.findViewById(R.id.extraActionsIconView);
-            viewHolder.campaignMemberItem = (LinearLayout) convertView.findViewById(R.id.campaignMemberItem);
+            viewHolder.shallowMemberItem = (LinearLayout) convertView.findViewById(R.id.shallowMemberItem);
 
             convertView.setTag(viewHolder);
 
@@ -136,7 +136,7 @@ public class SnapshotMemberListAdapter extends ArrayAdapter<SnapshotShallowUser>
 
         final User user = User.createUser(campaignMember.id, null);
 
-        viewHolder.campaignMemberItem.setOnClickListener(new UserProfileListener(mContext, user));
+        viewHolder.shallowMemberItem.setOnClickListener(new UserProfileListener(mContext, user));
 
         //
         // Present extra actions dialog (bottom sheet)

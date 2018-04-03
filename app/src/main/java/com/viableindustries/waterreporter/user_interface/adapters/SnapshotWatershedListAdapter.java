@@ -20,6 +20,7 @@ import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.api.models.campaign.Campaign;
 import com.viableindustries.waterreporter.api.models.snapshot.SnapshotShallowWatershed;
 import com.viableindustries.waterreporter.api.models.territory.Territory;
+import com.viableindustries.waterreporter.api.models.territory.TerritoryProperties;
 import com.viableindustries.waterreporter.constants.HucStates;
 import com.viableindustries.waterreporter.user_interface.dialogs.CampaignExtrasBottomSheetDialogFragment;
 import com.viableindustries.waterreporter.user_interface.dialogs.WatershedExtrasBottomSheetDialogFragment;
@@ -72,7 +73,7 @@ public class SnapshotWatershedListAdapter extends ArrayAdapter<SnapshotShallowWa
         TextView stateList;
         RelativeLayout extraActions;
         ImageView extraActionsIconView;
-        LinearLayout campaignWatershedItem;
+        RelativeLayout shallowWatershedItem;
     }
 
     @Override
@@ -92,7 +93,7 @@ public class SnapshotWatershedListAdapter extends ArrayAdapter<SnapshotShallowWa
             viewHolder.stateList = (TextView) convertView.findViewById(R.id.stateList);
             viewHolder.extraActions = (RelativeLayout) convertView.findViewById(R.id.extraActions);
             viewHolder.extraActionsIconView = (ImageView) convertView.findViewById(R.id.extraActionsIconView);
-            viewHolder.campaignWatershedItem = (LinearLayout) convertView.findViewById(R.id.campaignWatershedItem);
+            viewHolder.shallowWatershedItem = (RelativeLayout) convertView.findViewById(R.id.shallowWatershedItem);
 
             convertView.setTag(viewHolder);
 
@@ -138,11 +139,16 @@ public class SnapshotWatershedListAdapter extends ArrayAdapter<SnapshotShallowWa
         // `Territory` and setting its id to the shallow watershed object's
         // `code` attribute.
 
+        TerritoryProperties territoryProperties = new TerritoryProperties();
+
+        territoryProperties.huc_8_code = campaignWatershed.code;
+        territoryProperties.huc_8_name = campaignWatershed.name;
+
         final Territory territory = new Territory();
 
-        territory.id = campaignWatershed.code;
+        territory.properties = territoryProperties;
 
-        viewHolder.campaignWatershedItem.setOnClickListener(new TerritoryProfileListener(mContext, territory));
+        viewHolder.shallowWatershedItem.setOnClickListener(new TerritoryProfileListener(mContext, territory));
 
         viewHolder.extraActions.setOnClickListener(new View.OnClickListener() {
 

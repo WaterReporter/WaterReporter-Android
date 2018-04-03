@@ -161,7 +161,7 @@ public class WatershedCampaignsActivity extends AppCompatActivity {
 
     }
 
-    private void fetchTerritoryCampaigns(int page, long territoryId, final boolean refresh) {
+    private void fetchTerritoryCampaigns(int page, int territoryId, final boolean refresh) {
 
         final SharedPreferences mSharedPreferences =
                 getSharedPreferences(getPackageName(), MODE_PRIVATE);

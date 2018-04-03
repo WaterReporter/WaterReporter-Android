@@ -1,43 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/campaignWatershedItem"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/shallowWatershedItem"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#FFFFFF"
-    android:orientation="horizontal"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:paddingEnd="16dp"
+    android:paddingStart="16dp">
 
     <ImageView
         android:id="@+id/territoryIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
         android:alpha="0.4"
         android:scaleType="fitXY"
         android:src="@drawable/ic_droplet_black_24dp" />
 
     <LinearLayout
+        android:id="@+id/shallowWatershedMetadata"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:background="@color/white"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_toEndOf="@id/territoryIcon"
         android:orientation="vertical"
-        android:paddingBottom="16dp"
-        android:paddingEnd="0dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingStart="16dp"
-        android:paddingTop="16dp">
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp">
 
         <TextView
             android:id="@+id/featureName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:ellipsize="end"
             android:gravity="center_vertical"
+            android:maxLines="1"
             android:paddingBottom="0dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="0dp"
             android:paddingTop="0dp"
             android:textColor="@color/black_87"
             android:textSize="16sp" />
@@ -48,7 +51,7 @@
             android:layout_height="wrap_content"
             android:alpha="0.5"
             android:paddingBottom="2dp"
-            android:paddingEnd="0dp"
+            android:paddingEnd="16dp"
             android:paddingStart="0dp"
             android:paddingTop="0dp"
             android:textSize="14sp" />
@@ -66,4 +69,22 @@
 
     </LinearLayout>
 
-</LinearLayout>
+    <RelativeLayout
+        android:id="@+id/extraActions"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp">
+
+        <ImageView
+            android:id="@+id/extraActionsIconView"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerInParent="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_more_horiz_black_24dp" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
