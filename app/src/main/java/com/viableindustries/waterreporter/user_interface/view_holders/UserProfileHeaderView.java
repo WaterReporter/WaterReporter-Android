@@ -306,6 +306,64 @@ public class UserProfileHeaderView {
 
     }
 
+    public void buildWelcomeHeader(final Context context,
+                            final SharedPreferences sharedPreferences,
+                            final FragmentManager fragmentManager,
+                            ViewGroup header, final User user) {
+
+        userName = (TextView) header.findViewById(R.id.userName);
+        userAvatar = (ImageView) header.findViewById(R.id.userAvatar);
+        headerCanvas = (ImageView) header.findViewById(R.id.headerCanvas);
+
+        String userNameText = String.format("Hello %s!", user.properties.first_name);
+
+        // Locate valid avatar field
+
+        String userAvatarUrl = user.properties.picture;
+
+        if (userAvatarUrl.contains("b68f1074c0ed485ba0c30cba2632189f")) {
+
+            headerCanvas.setBackgroundColor(ContextCompat.getColor(context, R.color.base_purple));
+
+            Picasso.with(context)
+                    .load(R.drawable.profile_header_background_transparent)
+                    .into(headerCanvas);
+
+        } else if (userAvatarUrl.contains("c45aea8bfa7c4196ae24847a9920009c")) {
+
+            headerCanvas.setBackgroundColor(ContextCompat.getColor(context, R.color.splash_blue));
+
+            Picasso.with(context)
+                    .load(R.drawable.profile_header_background_transparent)
+                    .into(headerCanvas);
+
+        } else if (userAvatarUrl.contains("36d4719efa3d4c12aeaff27a1aa06521")) {
+
+            headerCanvas.setBackgroundColor(ContextCompat.getColor(context, R.color.base_cyan));
+
+            Picasso.with(context)
+                    .load(R.drawable.profile_header_background_transparent)
+                    .into(headerCanvas);
+
+        } else {
+
+            Picasso.with(context)
+                    .load(userAvatarUrl)
+                    .transform(new BlurTransformation(context, 20, 1)).into(headerCanvas);
+
+        }
+
+        Picasso.with(context)
+                .load(userAvatarUrl)
+                .placeholder(R.drawable.user_avatar_placeholder_003)
+                .transform(new CircleTransform()).into(userAvatar);
+
+        userName.setText(userNameText);
+
+        header.setTag(this);
+
+    }
+
     public void showActions(Context context, View view) {
 
         ((UserProfileHeaderView.UserProfileHeaderCallback) context).showActions();

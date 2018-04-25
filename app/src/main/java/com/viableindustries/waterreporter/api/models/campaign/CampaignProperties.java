@@ -34,6 +34,9 @@ public class CampaignProperties {
     @SerializedName("images")
     public List<ReportPhoto> images;
 
+    @SerializedName("is_curated")
+    public Boolean is_curated;
+
     @SerializedName("is_featured")
     public Boolean is_featured;
 

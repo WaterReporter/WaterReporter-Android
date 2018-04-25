@@ -188,7 +188,7 @@
 
     <!-- User profile -->
 
-    <string name="welcome_message">Hello %1$s! Welcome and thanks for joining Water Reporter. Take a look around the community, then create your first post.</string>
+    <string name="welcome_message">Welcome and thanks for joining Water Reporter. Take a look around the community, then create your first post.</string>
 
     <string name="user_first_name">First Name</string>
     <string name="user_last_name">Last Name</string>

@@ -353,32 +353,6 @@ public class CampaignProfileActivity extends AppCompatActivity
 
             leaderBoardItems = (LinearLayout) header.findViewById(R.id.leaderBoardItems);
 
-            // If campaign is still active, add text and click listener to startPostButton
-
-            boolean campaignIsExpired = UtilityMethods.dateExpired(
-                    new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US),
-                    mCampaign.properties.expiration_date
-            );
-
-            Button startPostButton = (Button) header.findViewById(R.id.startPost);
-
-            if (!campaignIsExpired) {
-
-                startPostButton.setText(getString(R.string.share_post_prompt));
-
-                startPostButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        startPost();
-                    }
-                });
-
-            } else {
-
-                startPostButton.setVisibility(View.GONE);
-
-            }
-
             campaignName = (TextView) header.findViewById(R.id.campaignName);
 
             campaignTagline = (TextView) header.findViewById(R.id.campaignTagline);
@@ -396,6 +370,42 @@ public class CampaignProfileActivity extends AppCompatActivity
             actionStat = (RelativeLayout) header.findViewById(R.id.actionStat);
 
             peopleStat = (RelativeLayout) header.findViewById(R.id.peopleStat);
+
+            //
+            // If campaign is still active, add text and click listener to startPostButton
+            //
+
+            boolean campaignIsExpired = UtilityMethods.dateExpired(
+                    new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US),
+                    mCampaign.properties.expiration_date
+            );
+
+            Button startPostButton = (Button) header.findViewById(R.id.startPost);
+
+            if (!campaignIsExpired || !mCampaign.properties.is_curated) {
+
+                startPostButton.setText(getString(R.string.share_post_prompt));
+
+                startPostButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startPost();
+                    }
+                });
+
+            } else {
+
+                leaderBoardComponent.setVisibility(View.GONE);
+
+                startPostButton.setVisibility(View.GONE);
+
+                reportStat.setVisibility(View.GONE);
+
+                actionStat.setVisibility(View.GONE);
+
+                peopleStat.setVisibility(View.GONE);
+
+            }
 
             String campaignTaglineText = mCampaign.properties.tagline;
             String campaignNameText = mCampaign.properties.name;

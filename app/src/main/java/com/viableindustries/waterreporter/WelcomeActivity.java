@@ -64,7 +64,12 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private void retrieveStoredUser() {
 
-        mUser = ModelStorage.getStoredUser(mSharedPreferences, "stored_user");
+        //
+        // Must access the core profile for the authenticated user
+        // rather than the generic application preferences.
+        //
+
+        mUser = ModelStorage.getStoredUser(mCoreProfile, "auth_user");
 
         try {
 
@@ -92,7 +97,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         ViewGroup header = (ViewGroup) inflater.inflate(R.layout.user_welcome_header, scrollView, false);
 
-        mUserProfileHeaderView.buildHeader(this, mSharedPreferences, getSupportFragmentManager(), header, user);
+        mUserProfileHeaderView.buildWelcomeHeader(this, mSharedPreferences, getSupportFragmentManager(), header, user);
 
         scrollView.addView(header);
 
