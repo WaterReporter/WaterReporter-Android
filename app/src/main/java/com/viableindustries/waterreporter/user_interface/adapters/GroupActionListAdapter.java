@@ -28,9 +28,11 @@ import com.viableindustries.waterreporter.utilities.CircleTransform;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -170,7 +172,7 @@ public class GroupActionListAdapter extends ArrayAdapter<SnapshotShallowGroup> i
 
         while (it.hasNext()) {
 
-            Map.Entry pair = (Map.Entry)it.next();
+            Map.Entry pair = (Map.Entry) it.next();
 
             System.out.println(pair.getKey() + " = " + pair.getValue());
 
@@ -325,26 +327,49 @@ public class GroupActionListAdapter extends ArrayAdapter<SnapshotShallowGroup> i
 
             FilterResults results = new FilterResults();
 
-            // Perform filtering operation
-            // May need to implement partial/fuzzy matching as the number of organizations grows
+            String _filterString = constraint.toString().toLowerCase();
 
-            List<SnapshotShallowGroup> nOrgList = new ArrayList<>();
+            //
+            // Initialize a copy of the original list
+            //
 
-            for (SnapshotShallowGroup group : sourceList) {
+            final List<SnapshotShallowGroup> _list = sourceList;
 
-                if (group.name.toUpperCase().startsWith(constraint.toString().toUpperCase())) {
+            //
+            // If filter string is empty, return the original list
+            //
+
+            if (_filterString.isEmpty()) {
+                results.values = _list;
+                results.count = _list.size();
+                return results;
+            }
+
+            //
+            // Find case-insensitive matches
+            //
+
+            Set<String> _matches = new HashSet<>();
+
+            List<SnapshotShallowGroup> _shortList = new ArrayList<>();
+
+            for (SnapshotShallowGroup group : _list) {
+
+                if (group.name.toLowerCase().contains(_filterString) &&
+                        !_matches.contains(group.name)) {
 
                     Log.d("name", group.name);
 
-                    nOrgList.add(group);
+                    _matches.add(group.name);
+
+                    _shortList.add(group);
 
                 }
 
             }
 
-            results.values = nOrgList;
-
-            results.count = nOrgList.size();
+            results.values = _shortList;
+            results.count = _shortList.size();
 
             return results;
 
@@ -358,17 +383,9 @@ public class GroupActionListAdapter extends ArrayAdapter<SnapshotShallowGroup> i
 
             // Inform the adapter about the new filtered list
 
-            if (results.count == 0) {
+            filteredList = (List<SnapshotShallowGroup>) results.values;
 
-                notifyDataSetInvalidated();
-
-            } else {
-
-                filteredList = (List<SnapshotShallowGroup>) results.values;
-
-                notifyDataSetChanged();
-
-            }
+            notifyDataSetChanged();
 
         }
 
