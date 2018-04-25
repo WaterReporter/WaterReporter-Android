@@ -71,7 +71,7 @@ public interface UserService {
                                 Callback<User> userResponseCallback);
 
     @GET("/data/user/{user}/organization")
-    void getUserOrganization(@Header("Authorization") String authorization,
+    void getUserOrganizations(@Header("Authorization") String authorization,
                              @Header("Content-Type") String contentType,
                              @Path("user") int user_id,
                              Callback<OrganizationFeatureCollection> organizationCollectionResponseCallback);

@@ -1,7 +1,7 @@
 package com.viableindustries.waterreporter.api.models.user;
 
-import com.viableindustries.waterreporter.api.models.group.Group;
 import com.viableindustries.waterreporter.api.models.group.GroupProperties;
+import com.viableindustries.waterreporter.api.models.organization.Organization;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,24 +27,24 @@ public final class UserMembershipPatch {
 
     }
 
-    private static List<GroupProperties> buildGroupList(List<Group> groups, int userId, int orgId, String action) {
+    private static List<GroupProperties> buildGroupList(List<Organization> groups, int userId, int orgId, String action) {
 
         List<GroupProperties> groupList = new ArrayList<>();
 
-        for (Group group : groups) {
+        for (Organization organization : groups) {
 
             if (action.equals("remove")) {
 
                 // If the user is an admin of the group, retain their membership!
 
-                if (group.properties.isAdmin || group.properties.organizationId != orgId) {
+                if (organization.properties.id != orgId) {
 
                     groupList.add(new GroupProperties(
-                            group.properties.joined,
-                            group.properties.organizationId,
-                            group.properties.userId,
-                            group.properties.isAdmin,
-                            group.properties.isMember
+                            null,
+                            organization.properties.id,
+                            userId,
+                            false,
+                            false
                     ));
 
                 }
@@ -52,11 +52,11 @@ public final class UserMembershipPatch {
             } else {
 
                 groupList.add(new GroupProperties(
-                        group.properties.joined,
-                        group.properties.organizationId,
-                        group.properties.userId,
-                        group.properties.isAdmin,
-                        group.properties.isMember
+                        null,
+                        organization.properties.id,
+                        userId,
+                        false,
+                        false
                 ));
 
             }
@@ -79,19 +79,19 @@ public final class UserMembershipPatch {
 
     }
 
-    private static List<Map> buildOrganizationList(List<Group> groups, int orgId, String action) {
+    private static List<Map> buildOrganizationList(List<Organization> groups, int orgId, String action) {
 
         List<Map> organizationList = new ArrayList<>();
 
-        for (Group group : groups) {
+        for (Organization organization : groups) {
 
             Map<String, Integer> organizationObject = new HashMap<>();
 
             if (action.equals("remove")) {
 
-                if (group.properties.organizationId != orgId) {
+                if (organization.properties.id != orgId) {
 
-                    organizationObject.put("id", group.properties.organizationId);
+                    organizationObject.put("id", organization.properties.id);
 
                     organizationList.add(organizationObject);
 
@@ -99,7 +99,7 @@ public final class UserMembershipPatch {
 
             } else {
 
-                organizationObject.put("id", group.properties.organizationId);
+                organizationObject.put("id", organization.properties.id);
 
                 organizationList.add(organizationObject);
 
@@ -121,7 +121,7 @@ public final class UserMembershipPatch {
 
     }
 
-    public static Map<String, List> buildRequest(List<Group> groups, int userId, int orgId, String action) {
+    public static Map<String, List> buildRequest(List<Organization> groups, int userId, int orgId, String action) {
 
         Map<String, List> requestData = new HashMap<>();
 

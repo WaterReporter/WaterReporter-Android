@@ -54,6 +54,14 @@ public class ModelStorage {
 
     }
 
+    public static Organization getStoredOrganization(SharedPreferences sharedPreferences, String key) {
+
+        String storedOrganization = sharedPreferences.getString(key, "");
+
+        return new Gson().fromJson(storedOrganization, Organization.class);
+
+    }
+
     public static OrganizationSnapshot getStoredOrganizationSnapshot(SharedPreferences sharedPreferences) {
 
         String storedOrganizationSnapshot = sharedPreferences.getString("stored_organization_snapshot", "");

@@ -162,7 +162,7 @@ public class GroupActionListAdapter extends ArrayAdapter<SnapshotShallowGroup> i
 
         // Build request object
 
-        List<Group> currentGroups = new ArrayList<>();
+        List<Organization> currentGroups = new ArrayList<>();
 
         Map<String, ?> storedGroups = groupMembership.getAll();
 
@@ -174,7 +174,7 @@ public class GroupActionListAdapter extends ArrayAdapter<SnapshotShallowGroup> i
 
             System.out.println(pair.getKey() + " = " + pair.getValue());
 
-            currentGroups.add(ModelStorage.getStoredGroup(groupMembership, pair.getKey().toString()));
+            currentGroups.add(ModelStorage.getStoredOrganization(groupMembership, pair.getKey().toString()));
 
             it.remove(); // avoids a ConcurrentModificationException
 
@@ -191,11 +191,11 @@ public class GroupActionListAdapter extends ArrayAdapter<SnapshotShallowGroup> i
 
                 groupMembership.edit().clear().apply();
 
-                if (user.properties.groups.size() > 0) {
+                if (user.properties.organizations.size() > 0) {
 
-                    for (Group group : user.properties.groups) {
+                    for (Organization organization : user.properties.organizations) {
 
-                        ModelStorage.storeModel(groupMembership, group, String.format("group_%s", group.properties.organizationId));
+                        ModelStorage.storeModel(groupMembership, organization, String.format("group_%s", organization.properties.id));
 
                     }
 

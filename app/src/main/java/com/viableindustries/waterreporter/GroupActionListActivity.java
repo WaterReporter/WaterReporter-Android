@@ -21,6 +21,8 @@ import com.google.gson.Gson;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.group.Group;
 import com.viableindustries.waterreporter.api.models.group.GroupFeatureCollection;
+import com.viableindustries.waterreporter.api.models.organization.Organization;
+import com.viableindustries.waterreporter.api.models.organization.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
 import com.viableindustries.waterreporter.api.models.snapshot.SnapshotGroupList;
@@ -207,12 +209,12 @@ public class GroupActionListActivity extends AppCompatActivity {
 
     private void fetchUserGroups(int userId) {
 
-        RestClient.getUserService().getUserGroups(mAccessToken, "application/json", userId, new Callback<GroupFeatureCollection>() {
+        RestClient.getUserService().getUserOrganizations(mAccessToken, "application/json", userId, new Callback<OrganizationFeatureCollection>() {
 
             @Override
-            public void success(GroupFeatureCollection groupFeatureCollection, Response response) {
+            public void success(OrganizationFeatureCollection organizationFeatureCollection, Response response) {
 
-                ArrayList<Group> groups = groupFeatureCollection.getFeatures();
+                ArrayList<Organization> groups = organizationFeatureCollection.getFeatures();
 
                 // Reset the user's stored groups.
 
@@ -220,9 +222,9 @@ public class GroupActionListActivity extends AppCompatActivity {
 
                 groupMembership.edit().clear().apply();
 
-                for (Group group : groups) {
+                for (Organization organization : groups) {
 
-                    ModelStorage.storeModel(groupMembership, group, String.format("group_%s", group.properties.organizationId));
+                    ModelStorage.storeModel(groupMembership, organization, String.format("group_%s", organization.properties.id));
 
                 }
 

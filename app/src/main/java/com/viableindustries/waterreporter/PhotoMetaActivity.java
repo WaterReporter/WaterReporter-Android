@@ -67,6 +67,7 @@ import com.viableindustries.waterreporter.api.models.open_graph.OpenGraphPropert
 import com.viableindustries.waterreporter.api.models.open_graph.OpenGraphResponse;
 import com.viableindustries.waterreporter.api.models.organization.AbbreviatedOrganization;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
+import com.viableindustries.waterreporter.api.models.organization.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.api.models.post.ReportHolder;
 import com.viableindustries.waterreporter.api.models.post.ReportPatchBody;
@@ -1741,20 +1742,20 @@ public class PhotoMetaActivity extends AppCompatActivity
 
         String mAccessToken = mSharedPreferences.getString("access_token", "");
 
-        RestClient.getUserService().getUserGroups(mAccessToken, "application/json", userId, new Callback<GroupFeatureCollection>() {
+        RestClient.getUserService().getUserOrganizations(mAccessToken, "application/json", userId, new Callback<OrganizationFeatureCollection>() {
 
             @Override
-            public void success(GroupFeatureCollection groupFeatureCollection, Response response) {
+            public void success(OrganizationFeatureCollection organizationFeatureCollection, Response response) {
 
                 // Clear any stale group references
 
                 associatedGroups.edit().clear().apply();
 
-                ArrayList<Group> groups = groupFeatureCollection.getFeatures();
+                ArrayList<Organization> groups = organizationFeatureCollection.getFeatures();
 
-                for (Group group : groups) {
+                for (Organization organization : groups) {
 
-                    abbreviatedOrganizations.add(new AbbreviatedOrganization(group.properties.organizationId, group.properties.organization.properties.name));
+                    abbreviatedOrganizations.add(new AbbreviatedOrganization(organization.properties.id, organization.properties.name));
 
                 }
 

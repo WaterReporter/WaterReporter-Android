@@ -335,7 +335,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
         // Build request object
 
-        List<Group> currentGroups = new ArrayList<>();
+        List<Organization> currentGroups = new ArrayList<>();
 
         Map<String, ?> storedGroups = groupMembership.getAll();
 
@@ -347,7 +347,7 @@ public class OrganizationProfileActivity extends AppCompatActivity {
 
             System.out.println(pair.getKey() + " = " + pair.getValue());
 
-            currentGroups.add(ModelStorage.getStoredGroup(groupMembership, pair.getKey().toString()));
+            currentGroups.add(ModelStorage.getStoredOrganization(groupMembership, pair.getKey().toString()));
 
             it.remove(); // avoids a ConcurrentModificationException
 
