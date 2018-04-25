@@ -21,10 +21,10 @@ import com.google.gson.Gson;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.group.Group;
 import com.viableindustries.waterreporter.api.models.group.GroupFeatureCollection;
-import com.viableindustries.waterreporter.api.models.organization.Organization;
-import com.viableindustries.waterreporter.api.models.organization.OrganizationFeatureCollection;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
+import com.viableindustries.waterreporter.api.models.snapshot.SnapshotGroupList;
+import com.viableindustries.waterreporter.api.models.snapshot.SnapshotShallowGroup;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.user_interface.adapters.GroupActionListAdapter;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
@@ -53,7 +53,7 @@ public class GroupActionListActivity extends AppCompatActivity {
     @Bind(R.id.organizationList)
     ListView listView;
 
-    private ArrayList<Organization> organizations;
+    private List<SnapshotShallowGroup> organizations;
 
     private GroupActionListAdapter adapter;
 
@@ -83,6 +83,17 @@ public class GroupActionListActivity extends AppCompatActivity {
         if (extras != null && extras.getBoolean("POST_REGISTER", false)) {
 
             skipAhead.setVisibility(View.VISIBLE);
+
+            skipAhead.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+
+                    startActivity(new Intent(GroupActionListActivity.this, WelcomeActivity.class));
+
+                }
+
+            });
 
         }
 
@@ -273,12 +284,12 @@ public class GroupActionListActivity extends AppCompatActivity {
 
         Log.d("URL", query);
 
-        RestClient.getOrganizationService().getOrganizations(accessToken, "application/json", page, limit, query, new Callback<OrganizationFeatureCollection>() {
+        RestClient.getSnapshotService().getGroups(accessToken, "application/json", page, new Callback<SnapshotGroupList>() {
 
             @Override
-            public void success(OrganizationFeatureCollection organizationCollectionResponse, Response response) {
+            public void success(SnapshotGroupList snapshotGroupList, Response response) {
 
-                ArrayList<Organization> features = organizationCollectionResponse.getFeatures();
+                List<SnapshotShallowGroup> features = snapshotGroupList.features;
 
                 Log.v("list", features.toString());
 
@@ -353,7 +364,7 @@ public class GroupActionListActivity extends AppCompatActivity {
 
     }
 
-    private void populateOrganizations(ArrayList<Organization> orgs) {
+    private void populateOrganizations(List<SnapshotShallowGroup> orgs) {
 
         adapter = new GroupActionListAdapter(this, orgs, true, listView);
 
@@ -390,12 +401,6 @@ public class GroupActionListActivity extends AppCompatActivity {
         }
 
         attachScrollListener();
-
-    }
-
-    public void toFeed(View view) {
-
-        startActivity(new Intent(this, MainActivity.class));
 
     }
 

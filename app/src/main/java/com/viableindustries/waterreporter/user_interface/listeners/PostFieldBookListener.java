@@ -35,6 +35,8 @@ public class PostFieldBookListener implements View.OnClickListener {
 
         Intent intent = new Intent(mContext, FieldBookActivity.class);
 
+        intent.putExtra("EDIT_MODE", true);
+
         mContext.startActivity(intent);
 
     }

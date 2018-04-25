@@ -13,4 +13,7 @@ public class SnapshotGroupList {
     @SerializedName("results")
     public List<SnapshotShallowGroup> groups;
 
+    @SerializedName("features")
+    public List<SnapshotShallowGroup> features;
+
 }

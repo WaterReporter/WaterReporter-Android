@@ -21,6 +21,7 @@ import com.viableindustries.waterreporter.R;
 import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.group.Group;
 import com.viableindustries.waterreporter.api.models.organization.Organization;
+import com.viableindustries.waterreporter.api.models.snapshot.SnapshotShallowGroup;
 import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.api.models.user.UserMembershipPatch;
 import com.viableindustries.waterreporter.utilities.CircleTransform;
@@ -39,7 +40,7 @@ import retrofit.client.Response;
  * Created by brendanmcintyre on 10/5/16.
  */
 
-public class GroupActionListAdapter extends ArrayAdapter<Organization> implements Filterable {
+public class GroupActionListAdapter extends ArrayAdapter<SnapshotShallowGroup> implements Filterable {
 
     private final Context mContext;
 
@@ -47,9 +48,9 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
     protected int id;
 
-    private final ArrayList<Organization> sourceList;
+    private final List<SnapshotShallowGroup> sourceList;
 
-    private ArrayList<Organization> filteredList;
+    private List<SnapshotShallowGroup> filteredList;
 
     private GroupActionListAdapter.OrganizationFilter mFilter;
 
@@ -61,7 +62,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
     private String[] userGroups;
 
-    public GroupActionListAdapter(Context aContext, ArrayList<Organization> features, boolean aShowLeaveButton, View aParentView) {
+    public GroupActionListAdapter(Context aContext, List<SnapshotShallowGroup> features, boolean aShowLeaveButton, View aParentView) {
 
         super(aContext, 0, features);
 
@@ -94,7 +95,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
     }
 
-    public Organization getItem(int position) {
+    public SnapshotShallowGroup getItem(int position) {
 
         return filteredList.get(position);
 
@@ -147,7 +148,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 //
 //    }
 
-    private void changeOrgStatus(final Organization organization, final View view) {
+    private void changeOrgStatus(final SnapshotShallowGroup snapshotShallowGroup, final View view) {
 
         final String operation = (view.getTag().equals("join_group")) ? "add" : "remove";
 
@@ -179,7 +180,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
         }
 
-        Map<String, List> userPatch = UserMembershipPatch.buildRequest(currentGroups, id, organization.id, operation);
+        Map<String, List> userPatch = UserMembershipPatch.buildRequest(currentGroups, id, snapshotShallowGroup.id, operation);
 
         RestClient.getUserService().updateUserMemberships(accessToken, "application/json", id, userPatch, new Callback<User>() {
 
@@ -224,7 +225,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
                 }
 
-                CharSequence text = String.format("Successfully %s %s", action, organization.properties.name);
+                CharSequence text = String.format("Successfully %s %s", action, snapshotShallowGroup.name);
 
                 Snackbar.make(parentView, text,
                         Snackbar.LENGTH_SHORT)
@@ -272,17 +273,17 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
         }
 
-        final Organization organization = filteredList.get(position);
+        final SnapshotShallowGroup snapshotShallowGroup = filteredList.get(position);
 
         // Populate layout elements
 
-        viewHolder.organizationName.setText(organization.properties.name);
+        viewHolder.organizationName.setText(snapshotShallowGroup.name);
 
-        Picasso.with(mContext).load(organization.properties.picture).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(viewHolder.organizationLogo);
+        Picasso.with(mContext).load(snapshotShallowGroup.picture).placeholder(R.drawable.user_avatar_placeholder).transform(new CircleTransform()).into(viewHolder.organizationLogo);
 
         // Check group membership
 
-        Group targetGroup = ModelStorage.getStoredGroup(groupMembership, String.format("group_%s", organization.properties.id));
+        Group targetGroup = ModelStorage.getStoredGroup(groupMembership, String.format("group_%s", snapshotShallowGroup.id));
 
         try {
 
@@ -308,7 +309,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
             @Override
             public void onClick(View v) {
 
-                changeOrgStatus(organization, v);
+                changeOrgStatus(snapshotShallowGroup, v);
 
             }
         });
@@ -327,15 +328,15 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
             // Perform filtering operation
             // May need to implement partial/fuzzy matching as the number of organizations grows
 
-            ArrayList<Organization> nOrgList = new ArrayList<>();
+            List<SnapshotShallowGroup> nOrgList = new ArrayList<>();
 
-            for (Organization org : sourceList) {
+            for (SnapshotShallowGroup group : sourceList) {
 
-                if (org.properties.name.toUpperCase().startsWith(constraint.toString().toUpperCase())) {
+                if (group.name.toUpperCase().startsWith(constraint.toString().toUpperCase())) {
 
-                    Log.d("name", org.properties.name);
+                    Log.d("name", group.name);
 
-                    nOrgList.add(org);
+                    nOrgList.add(group);
 
                 }
 
@@ -363,7 +364,7 @@ public class GroupActionListAdapter extends ArrayAdapter<Organization> implement
 
             } else {
 
-                filteredList = (ArrayList<Organization>) results.values;
+                filteredList = (List<SnapshotShallowGroup>) results.values;
 
                 notifyDataSetChanged();
 

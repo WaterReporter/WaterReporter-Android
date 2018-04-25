@@ -31,6 +31,7 @@ import com.viableindustries.waterreporter.api.interfaces.RestClient;
 import com.viableindustries.waterreporter.api.models.FeatureCollection;
 import com.viableindustries.waterreporter.api.models.campaign.Campaign;
 import com.viableindustries.waterreporter.api.models.post.Report;
+import com.viableindustries.waterreporter.api.models.post.ReportHolder;
 import com.viableindustries.waterreporter.api.models.query.QueryFilter;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
@@ -41,6 +42,7 @@ import com.viableindustries.waterreporter.api.models.user.User;
 import com.viableindustries.waterreporter.user_interface.adapters.CampaignLeaderListAdapter;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
 import com.viableindustries.waterreporter.user_interface.dialogs.CampaignExtrasBottomSheetDialogFragment;
+import com.viableindustries.waterreporter.user_interface.dialogs.ReportActionDialog;
 import com.viableindustries.waterreporter.utilities.EndlessScrollListener;
 import com.viableindustries.waterreporter.utilities.ModelStorage;
 import com.viableindustries.waterreporter.utilities.UtilityMethods;
@@ -57,7 +59,8 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class CampaignProfileActivity extends AppCompatActivity {
+public class CampaignProfileActivity extends AppCompatActivity
+        implements ReportActionDialog.ReportActionDialogCallback {
 
     private RelativeLayout reportStat;
 
@@ -470,6 +473,15 @@ public class CampaignProfileActivity extends AppCompatActivity {
         timeLineContainer.setRefreshing(true);
 
         fetchPosts(5, 1, buildQuery(true, null), true);
+
+    }
+
+    @Override
+    public void onPostDelete(Report post) {
+
+        ReportHolder.setReport(null);
+
+        resetStats();
 
     }
 

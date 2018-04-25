@@ -152,4 +152,14 @@ public interface SnapshotService {
                            @Path("watershedId") int watershedId,
                            Callback<SnapshotMemberList> snapshotMemberListCallback);
 
+    //
+    // Collections
+    //
+
+    @GET("/data/snapshot/organization")
+    void getGroups(@Header("Authorization") String authorization,
+                                   @Header("Content-Type") String contentType,
+                                   @Query("page") int page,
+                                   Callback<SnapshotGroupList> snapshotGroupListCallback);
+
 }

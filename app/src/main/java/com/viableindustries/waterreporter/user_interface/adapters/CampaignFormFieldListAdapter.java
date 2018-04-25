@@ -35,17 +35,33 @@ public class CampaignFormFieldListAdapter extends ArrayAdapter<CampaignFormField
 
     protected int id;
 
+    private boolean authUserOwnsPost = true;
+
     private final List<CampaignFormField> sourceList;
 
     private SharedPreferences mFieldBookEntries;
 
-    public CampaignFormFieldListAdapter(Context aContext, List<CampaignFormField> features) {
+    public CampaignFormFieldListAdapter(Context aContext, List<CampaignFormField> aFeatures) {
 
-        super(aContext, 0, features);
+        super(aContext, 0, aFeatures);
 
-        this.sourceList = features;
+        this.sourceList = aFeatures;
 
         this.mContext = aContext;
+
+        this.mFieldBookEntries = mContext.getSharedPreferences(mContext.getString(R.string.field_book_entries_key), 0);
+
+    }
+
+    public CampaignFormFieldListAdapter(Context aContext, boolean aAuthUserOwnsPost, List<CampaignFormField> aFeatures) {
+
+        super(aContext, 0, aFeatures);
+
+        this.sourceList = aFeatures;
+
+        this.mContext = aContext;
+
+        this.authUserOwnsPost = aAuthUserOwnsPost;
 
         this.mFieldBookEntries = mContext.getSharedPreferences(mContext.getString(R.string.field_book_entries_key), 0);
 
@@ -137,6 +153,13 @@ public class CampaignFormFieldListAdapter extends ArrayAdapter<CampaignFormField
 
         viewHolder.formFieldValue.setVisibility(View.VISIBLE);
 
+        if (!authUserOwnsPost) {
+
+            viewHolder.formFieldValue.setEnabled(false);
+            viewHolder.formFieldValue.setInputType(InputType.TYPE_NULL);
+
+        }
+
         viewHolder.formFieldSpinner.setVisibility(View.GONE);
 
         //
@@ -206,6 +229,13 @@ public class CampaignFormFieldListAdapter extends ArrayAdapter<CampaignFormField
 
                 final ArrayAdapter<String> adapter =
                         new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_1, campaignFormField.options);
+
+                if (!authUserOwnsPost) {
+
+                    viewHolder.formFieldSpinner.setEnabled(false);
+                    viewHolder.formFieldSpinner.setClickable(false);
+
+                }
 
                 viewHolder.formFieldSpinner.setAdapter(adapter);
 

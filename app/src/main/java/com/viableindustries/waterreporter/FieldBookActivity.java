@@ -45,6 +45,8 @@ public class FieldBookActivity extends AppCompatActivity {
     @Bind(R.id.saveFieldBookIcon)
     ImageView saveFieldBookIcon;
 
+    private boolean mEditMode = false;
+
     private FieldBook mFieldBook;
 
     private Report mPost;
@@ -72,6 +74,8 @@ public class FieldBookActivity extends AppCompatActivity {
 
         mCoreProfile = getSharedPreferences(getString(R.string.active_user_profile_key), MODE_PRIVATE);
 
+        mEditMode = getIntent().getExtras().getBoolean("EDIT_MODE");
+
         // Clear any stored field book values
 
         resetFieldBookStorage();
@@ -86,7 +90,7 @@ public class FieldBookActivity extends AppCompatActivity {
 
     }
 
-    private void checkOwnership() {
+    private boolean authUserOwnsPost() {
 
         User authUser = ModelStorage.getStoredUser(mCoreProfile, "auth_user");
 
@@ -95,17 +99,12 @@ public class FieldBookActivity extends AppCompatActivity {
         Log.v("AUTH_USER_COMPARE", mFieldBook.owner.properties.id + "");
 
         if (authUser.id == mFieldBook.owner.properties.id) {
-
-            saveFieldBook.setVisibility(View.VISIBLE);
-
-            saveFieldBook.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    stageFieldBookData();
-                }
-            });
+            
+            return true;
 
         }
+        
+        return false;
 
     }
 
@@ -144,9 +143,21 @@ public class FieldBookActivity extends AppCompatActivity {
 
     private void populateFields(List<CampaignFormField> campaignFormFields) {
 
+        //
         // Populating a LinearLayout here rather than a ListView
+        //
 
-        CampaignFormFieldListAdapter mCampaignFormFieldListAdapter = new CampaignFormFieldListAdapter(this, campaignFormFields);
+        CampaignFormFieldListAdapter mCampaignFormFieldListAdapter;
+        
+        if (authUserOwnsPost()) {
+
+            mCampaignFormFieldListAdapter = new CampaignFormFieldListAdapter(this, campaignFormFields);
+
+        } else {
+
+            mCampaignFormFieldListAdapter = new CampaignFormFieldListAdapter(this, false, campaignFormFields);
+            
+        }
 
         final int adapterCount = mCampaignFormFieldListAdapter.getCount();
 
@@ -185,14 +196,21 @@ public class FieldBookActivity extends AppCompatActivity {
 
     private void returnToTimeline() {
 
-        // Re-direct user to main activity feed, which has the effect of preventing
-        // unwanted access to the history stack
+        //
+        // Return to the previous view. If the user
+        // arrived here after creating a post,
+        // re-direct to the main timeline.
+        //
 
-        Intent intent = new Intent(FieldBookActivity.this, MainActivity.class);
+        if (mEditMode) {
 
-        startActivity(intent);
+            finish();
 
-        finish();
+        } else {
+
+            startActivity(new Intent(this, MainActivity.class));
+
+        }
 
     }
 
@@ -221,14 +239,25 @@ public class FieldBookActivity extends AppCompatActivity {
 
                 storeExistingValues(fieldList);
 
+                // Check field book feature ownership against the
+                // authenticated user to determine write permission.
+                
+                if (authUserOwnsPost()) {
+
+                    saveFieldBook.setVisibility(View.VISIBLE);
+
+                    saveFieldBook.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            stageFieldBookData();
+                        }
+                    });
+
+                }
+
                 // Render form UI elements
 
                 populateFields(fieldList);
-
-                // Check field book feature ownership against the
-                // authenticated user to determine write permission.
-
-                checkOwnership();
 
             }
 
@@ -323,7 +352,7 @@ public class FieldBookActivity extends AppCompatActivity {
 
         super.onResume();
 
-        // Retrieve stored Organization
+        // Retrieve stored Post
 
         if (mPost == null) {
 
@@ -354,7 +383,15 @@ public class FieldBookActivity extends AppCompatActivity {
 
         resetFieldBookStorage();
 
-        startActivity(new Intent(this, MainActivity.class));
+        if (mEditMode) {
+
+            finish();
+
+        } else {
+
+            startActivity(new Intent(this, MainActivity.class));
+
+        }
 
     }
 
