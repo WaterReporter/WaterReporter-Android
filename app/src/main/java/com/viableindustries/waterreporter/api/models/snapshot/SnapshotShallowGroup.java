@@ -13,6 +13,9 @@ import java.util.List;
 
 public class SnapshotShallowGroup {
 
+    @SerializedName("alias")
+    public String alias;
+
     @SerializedName("description")
     public String description;
 

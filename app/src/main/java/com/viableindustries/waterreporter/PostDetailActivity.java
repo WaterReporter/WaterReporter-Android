@@ -38,6 +38,7 @@ import com.viableindustries.waterreporter.api.interfaces.data.territory.Territor
 import com.viableindustries.waterreporter.api.models.comment.Comment;
 import com.viableindustries.waterreporter.api.models.comment.CommentCollection;
 import com.viableindustries.waterreporter.api.models.post.Report;
+import com.viableindustries.waterreporter.api.models.post.ReportHolder;
 import com.viableindustries.waterreporter.api.models.query.QueryParams;
 import com.viableindustries.waterreporter.api.models.query.QuerySort;
 import com.viableindustries.waterreporter.api.models.territory.HucFeature;
@@ -45,6 +46,7 @@ import com.viableindustries.waterreporter.api.models.territory.Territory;
 import com.viableindustries.waterreporter.user_interface.adapters.CommentAdapter;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineAdapter;
 import com.viableindustries.waterreporter.user_interface.adapters.TimelineItemViewHolder;
+import com.viableindustries.waterreporter.user_interface.dialogs.ReportActionDialog;
 import com.viableindustries.waterreporter.user_interface.listeners.PostCommentListener;
 import com.viableindustries.waterreporter.user_interface.listeners.PostFavoriteCountListener;
 import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
@@ -68,7 +70,8 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.fillOpacity;
  * This activity displays detailed information about a report after clicking on its map marker.
  */
 
-public class PostDetailActivity extends AppCompatActivity {
+public class PostDetailActivity extends AppCompatActivity
+        implements ReportActionDialog.ReportActionDialogCallback {
 
     ListView commentList;
 
@@ -605,6 +608,15 @@ public class PostDetailActivity extends AppCompatActivity {
         CommentAdapter commentAdapter = new CommentAdapter(this, mSharedPreferences, commentList, comments);
 
         commentList.setAdapter(commentAdapter);
+
+    }
+
+    @Override
+    public void onPostDelete(Report post) {
+
+        ReportHolder.setReport(null);
+
+        startActivity(new Intent(this, AuthUserActivity.class));
 
     }
 

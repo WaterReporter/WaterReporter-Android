@@ -340,36 +340,55 @@ public class GroupActionListAdapter extends ArrayAdapter<SnapshotShallowGroup> i
             //
 
             if (_filterString.isEmpty()) {
+
                 results.values = _list;
                 results.count = _list.size();
-                return results;
-            }
 
-            //
-            // Find case-insensitive matches
-            //
+            } else {
 
-            Set<String> _matches = new HashSet<>();
+                //
+                // Find case-insensitive matches
+                //
 
-            List<SnapshotShallowGroup> _shortList = new ArrayList<>();
+                Set<String> _matches = new HashSet<>();
 
-            for (SnapshotShallowGroup group : _list) {
+                List<SnapshotShallowGroup> _shortList = new ArrayList<>();
 
-                if (group.name.toLowerCase().contains(_filterString) &&
-                        !_matches.contains(group.name)) {
+                for (SnapshotShallowGroup group : _list) {
 
-                    Log.d("name", group.name);
+                    Log.e("GROUP-TOKEN", group.name);
+                    Log.e("GROUP-TOKEN-MATCH", group.name.toLowerCase().contains(_filterString) + "");
 
-                    _matches.add(group.name);
+                    if (group.name.toLowerCase().contains(_filterString) &&
+                            !_matches.contains(group.name)) {
 
-                    _shortList.add(group);
+                        Log.e("GROUP-MATCH", group.name);
+
+                        _matches.add(group.name);
+
+                        _shortList.add(group);
+
+                    } else if (group.alias != null &&
+                            group.alias.toLowerCase().contains(_filterString) &&
+                            !_matches.contains(group.name)) {
+
+                        Log.e("GROUP-MATCH", group.name);
+
+                        _matches.add(group.name);
+
+                        _shortList.add(group);
+
+                    }
 
                 }
 
-            }
+                Log.e("MATCH-RESULTS", _shortList.toString());
+                Log.e("MATCH-RESULTS", _shortList.size() + "");
 
-            results.values = _shortList;
-            results.count = _shortList.size();
+                results.values = _shortList;
+                results.count = _shortList.size();
+
+            }
 
             return results;
 
@@ -381,11 +400,21 @@ public class GroupActionListAdapter extends ArrayAdapter<SnapshotShallowGroup> i
         protected void publishResults(CharSequence constraint,
                                       FilterResults results) {
 
+            //
             // Inform the adapter about the new filtered list
+            //
 
-            filteredList = (List<SnapshotShallowGroup>) results.values;
+            Log.e("FILTER-LIST", results.count + "");
+            Log.e("FILTER-LIST", results.values + "");
 
-            notifyDataSetChanged();
+            if (results.count > 0 &&
+                    results.values != null) {
+
+                filteredList = (ArrayList<SnapshotShallowGroup>) results.values;
+
+                notifyDataSetChanged();
+
+            }
 
         }
 

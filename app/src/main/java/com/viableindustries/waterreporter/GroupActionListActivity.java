@@ -402,8 +402,6 @@ public class GroupActionListActivity extends AppCompatActivity {
 
         }
 
-        attachScrollListener();
-
     }
 
     @Override

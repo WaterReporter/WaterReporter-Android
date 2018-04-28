@@ -347,6 +347,11 @@ public class CampaignProfileActivity extends AppCompatActivity
 
             extraActionsIconView.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
 
+            // Empty collection message
+
+            promptBlock = (LinearLayout) header.findViewById(R.id.promptBlock);
+            promptMessage = (TextView) header.findViewById(R.id.prompt);
+
             // Leaderboard views
 
             leaderBoardComponent = (HorizontalScrollView) header.findViewById(R.id.leaderBoardComponent);
@@ -507,7 +512,7 @@ public class CampaignProfileActivity extends AppCompatActivity
 
                 promptBlock.setVisibility(View.VISIBLE);
 
-                promptMessage.setText(getString(R.string.prompt_no_posts_group));
+                promptMessage.setText(getString(R.string.prompt_no_posts_campaign));
 
             } catch (NullPointerException e) {
 

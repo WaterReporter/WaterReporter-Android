@@ -149,12 +149,11 @@
                     android:id="@+id/reportStat"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="end|center_vertical">
+                    android:layout_weight="1">
 
                     <TextView
                         android:id="@+id/reportCount"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:paddingBottom="0dp"
@@ -171,16 +170,11 @@
                     android:id="@+id/actionStat"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:paddingEnd="24dp"
-                    android:paddingLeft="24dp"
-                    android:paddingRight="24dp"
-                    android:paddingStart="24dp">
+                    android:layout_weight="1">
 
                     <TextView
                         android:id="@+id/actionCount"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
@@ -198,12 +192,11 @@
                     android:id="@+id/peopleStat"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="start|center_vertical">
+                    android:layout_weight="1">
 
                     <TextView
                         android:id="@+id/peopleCount"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:gravity="center"
@@ -271,6 +264,8 @@
             android:paddingStart="16dp" />
 
     </HorizontalScrollView>
+
+    <include layout="@layout/empty_campaign_prompt" />
 
     <View
         android:layout_width="match_parent"

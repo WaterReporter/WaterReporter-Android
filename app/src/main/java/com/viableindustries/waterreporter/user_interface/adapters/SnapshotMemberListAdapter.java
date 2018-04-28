@@ -113,20 +113,32 @@ public class SnapshotMemberListAdapter extends ArrayAdapter<SnapshotShallowUser>
                 .transform(new CircleTransform())
                 .into(viewHolder.featureIcon);
 
-        String subText = UtilityMethods.makeSecondaryListPostCountText(mContext.getResources(),
-                campaignMember.posts, campaignMember.last_active);
+        if (campaignMember.posts > 0) {
 
-        viewHolder.postCount.setTextColor(ContextCompat.getColor(mContext, R.color.black_54));
+            viewHolder.postCount.setVisibility(View.VISIBLE);
 
-        viewHolder.postCount.setText(subText);
+            String subText = UtilityMethods.makeSecondaryListPostCountText(mContext.getResources(),
+                    campaignMember.posts, campaignMember.last_active);
 
-        long timeDelta = UtilityMethods.timeDelta(
-                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US),
-                campaignMember.last_active);
+            viewHolder.postCount.setTextColor(ContextCompat.getColor(mContext, R.color.black_54));
 
-        if (timeDelta > 0 && timeDelta < (DateUtils.DAY_IN_MILLIS * 30)) {
+            viewHolder.postCount.setText(subText);
 
-            viewHolder.postCount.setTextColor(ContextCompat.getColor(mContext, R.color.post_count_orange));
+            long timeDelta = UtilityMethods.timeDelta(
+                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US),
+                    campaignMember.last_active);
+
+            if (timeDelta > 0 && timeDelta < (DateUtils.DAY_IN_MILLIS * 30)) {
+
+                viewHolder.postCount.setTextColor(ContextCompat.getColor(mContext, R.color.post_count_orange));
+
+            }
+
+        } else {
+
+            viewHolder.postCount.setText("");
+
+            viewHolder.postCount.setVisibility(View.GONE);
 
         }
 
