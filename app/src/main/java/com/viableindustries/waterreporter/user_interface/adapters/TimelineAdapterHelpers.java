@@ -37,7 +37,6 @@ import com.viableindustries.waterreporter.api.models.organization.Organization;
 import com.viableindustries.waterreporter.api.models.post.Report;
 import com.viableindustries.waterreporter.api.models.post.ReportPhoto;
 import com.viableindustries.waterreporter.user_interface.listeners.OrganizationProfileListener;
-import com.viableindustries.waterreporter.user_interface.listeners.PostCommentListener;
 import com.viableindustries.waterreporter.user_interface.listeners.PostFieldBookListener;
 import com.viableindustries.waterreporter.user_interface.listeners.TerritoryProfileListener;
 import com.viableindustries.waterreporter.utilities.AttributeTransformUtility;
@@ -51,9 +50,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.regex.Pattern;
 
-import jp.wasabeef.picasso.transformations.BlurTransformation;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -284,8 +283,18 @@ public class TimelineAdapterHelpers {
 
     public static void setDate(final Report post, TextView textView) {
 
+        SimpleDateFormat postDateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.US);
+
+        //
+        // Post timestamps are now stored in Coordinated Universal Time,
+        // therefore they need to be handled as such regardless of the
+        // user's device settings.
+        //
+
+        postDateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+
         String creationDate = (String) AttributeTransformUtility.relativeTime(
-                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.US),
+                postDateFormatter,
                 post.properties.created);
 
         textView.setText(creationDate);
