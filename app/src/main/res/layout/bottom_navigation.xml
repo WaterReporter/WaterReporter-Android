@@ -79,7 +79,7 @@
                 android:background="@android:color/transparent"
                 android:gravity="center"
                 android:scaleType="fitXY"
-                android:src="@drawable/ic_timeline_black_24dp" />
+                android:src="@drawable/round_public_black_24" />
 
         </LinearLayout>
 
@@ -193,7 +193,7 @@
                 android:background="@android:color/transparent"
                 android:gravity="center"
                 android:scaleType="fitXY"
-                android:src="@drawable/ic_account_circle_black_24dp" />
+                android:src="@drawable/round_home_black_24" />
 
         </LinearLayout>
 

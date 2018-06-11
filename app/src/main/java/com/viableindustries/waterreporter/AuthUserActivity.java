@@ -163,7 +163,17 @@ public class AuthUserActivity extends AppCompatActivity implements
 
         // Inflate and insert timeline header view
 
-        addListViewHeader();
+        try {
+
+            addListViewHeader();
+
+        } catch (NullPointerException e) {
+
+            startActivity(new Intent(this, SignInActivity.class));
+
+            finish();
+
+        }
 
         // Retrieve user snapshot data
 
@@ -216,7 +226,7 @@ public class AuthUserActivity extends AppCompatActivity implements
 
         } catch (NullPointerException _e) {
 
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, SignInActivity.class));
 
             finish();
 

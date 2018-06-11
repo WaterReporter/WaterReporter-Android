@@ -250,7 +250,7 @@ public class RegistrationActivity extends AppCompatActivity {
             // The user is logged in and may already have reports in the system.
             // Let's attempt to fetch the user's report collection and, if none exist,
             // direct the user to submit their first report.
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, AuthUserActivity.class));
 
         }
 

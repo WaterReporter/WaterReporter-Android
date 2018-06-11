@@ -309,7 +309,7 @@ public class PhotoMetaActivity extends AppCompatActivity
             Toast toast = Toast.makeText(getBaseContext(), text, duration);
             toast.show();
 
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, AuthUserActivity.class));
 
             return;
 
@@ -1257,7 +1257,7 @@ public class PhotoMetaActivity extends AppCompatActivity
                     // Re-direct user to main activity feed, which has the effect of preventing
                     // unwanted access to the history stack
 
-                    Intent intent = new Intent(PhotoMetaActivity.this, MainActivity.class);
+                    Intent intent = new Intent(PhotoMetaActivity.this, AuthUserActivity.class);
 
                     startActivity(intent);
 
@@ -1297,7 +1297,7 @@ public class PhotoMetaActivity extends AppCompatActivity
             Toast toast = Toast.makeText(getBaseContext(), text, duration);
             toast.show();
 
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, AuthUserActivity.class));
 
             finish();
 
@@ -1713,7 +1713,7 @@ public class PhotoMetaActivity extends AppCompatActivity
                                 // Re-direct user to main activity feed, which has the effect of preventing
                                 // unwanted access to the history stack
 
-                                Intent intent = new Intent(PhotoMetaActivity.this, MainActivity.class);
+                                Intent intent = new Intent(PhotoMetaActivity.this, AuthUserActivity.class);
 
                                 startActivity(intent);
 
@@ -2034,7 +2034,7 @@ public class PhotoMetaActivity extends AppCompatActivity
 
                             // If the user really doesn't want to play ball, at least them browse reports
 
-                            startActivity(new Intent(getBaseContext(), MainActivity.class));
+                            startActivity(new Intent(getBaseContext(), AuthUserActivity.class));
 
                         }
                     })
@@ -2150,7 +2150,7 @@ public class PhotoMetaActivity extends AppCompatActivity
             Toast toast = Toast.makeText(getBaseContext(), text, duration);
             toast.show();
 
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, AuthUserActivity.class));
 
             finish();
 
