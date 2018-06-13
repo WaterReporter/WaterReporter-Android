@@ -328,7 +328,7 @@
                 android:layout_gravity="center_vertical"
                 android:contentDescription="Favorite icon"
                 android:scaleType="fitXY"
-                android:src="@drawable/ic_favorite_black_24dp" />
+                android:src="@drawable/round_star_black_24" />
 
             <TextView
                 android:id="@+id/abbrFavoriteCount"

@@ -32,6 +32,7 @@ import com.viableindustries.waterreporter.utilities.PatternEditableBuilder;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 import retrofit.RetrofitError;
@@ -144,8 +145,22 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
 
         }
 
+        //
+        // Format comment `created` timestamp, ensuring display in UTC
+        //
+
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.US);
+
+        //
+        // Comment timestamps are now stored in Coordinated Universal Time,
+        // therefore they need to be handled as such regardless of the
+        // user's device settings.
+        //
+
+        dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+
         String creationDate = (String) AttributeTransformUtility.relativeTime(
-                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.US),
+                dateFormatter,
                 feature.properties.created);
 
         Integer featureId = feature.id;

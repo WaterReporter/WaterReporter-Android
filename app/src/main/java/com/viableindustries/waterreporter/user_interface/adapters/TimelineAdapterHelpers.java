@@ -135,13 +135,13 @@ public class TimelineAdapterHelpers {
                 if (currentCount == 0) {
 
                     ObjectAnimator colorAnim = ObjectAnimator.ofInt(textView, "textColor",
-                            Color.WHITE, ContextCompat.getColor(context, R.color.favorite_red));
+                            Color.WHITE, ContextCompat.getColor(context, R.color.vivid_yellow));
                     colorAnim.setEvaluator(new ArgbEvaluator());
                     colorAnim.start();
 
                 }
 
-                imageView.setColorFilter(ContextCompat.getColor(context, R.color.favorite_red), PorterDuff.Mode.SRC_ATOP);
+                imageView.setColorFilter(ContextCompat.getColor(context, R.color.vivid_yellow), PorterDuff.Mode.SRC_ATOP);
 
                 // Replace the target post item with the
                 // updated API response object
@@ -468,7 +468,7 @@ public class TimelineAdapterHelpers {
 
         if (favoriteCount > 0) {
 
-            textView.setTextColor(ContextCompat.getColor(context, R.color.favorite_red));
+            textView.setTextColor(ContextCompat.getColor(context, R.color.vivid_yellow));
 
             textView.setText(String.format("%s", favoriteCount));
 
@@ -477,7 +477,7 @@ public class TimelineAdapterHelpers {
 //            colorAnim.setEvaluator(new ArgbEvaluator());
 //            colorAnim.start();
 
-            imageView.setColorFilter(ContextCompat.getColor(context, R.color.favorite_red), PorterDuff.Mode.SRC_ATOP);
+            imageView.setColorFilter(ContextCompat.getColor(context, R.color.vivid_yellow), PorterDuff.Mode.SRC_ATOP);
 
         }
 

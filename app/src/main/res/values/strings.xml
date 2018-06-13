@@ -99,13 +99,13 @@
     <!-- Timeline filter actions -->
     <string name="filter_all">All posts</string>
     <string name="filter_actions">Posts with actions</string>
-    <string name="filter_likes">Posts with likes</string>
+    <string name="filter_likes">Starred posts</string>
     <string name="filter_comments">Posts with comments</string>
     <string name="filter_stories">Posts with shared links</string>
 
     <!-- Timeline filter categories -->
     <string name="filter_category_actions">Actions</string>
-    <string name="filter_category_likes">Likes</string>
+    <string name="filter_category_likes">Stars</string>
     <string name="filter_category_comments">Comments</string>
     <string name="filter_category_stories">Shares</string>
 
